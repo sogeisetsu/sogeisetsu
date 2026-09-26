@@ -1,13 +1,13 @@
-![近 30 天活动](./assets/30-day-activity.svg)
+![GitHub activity over the last 30 days](./assets/30-day-activity.svg)
 
 <!--START:activity-->
-_以下内容每天自动更新：2026-09-26_
+_Updated automatically: 2026-09-26_
 
-<details><summary>🔨 我对自己仓库做的事</summary>
+<details><summary>🔨 On my own repositories</summary>
 
-- 📝 向 `sogeisetsu/opencode-go-model-picker` 推送了 62 次提交
-- 📝 向 `sogeisetsu/asset-inventory` 推送了 8 次提交
-- 📝 向 `sogeisetsu/sogeisetsu` 推送了 1 次提交
+- 📝 Pushed 62 commits to `sogeisetsu/opencode-go-model-picker`
+- 📝 Pushed 8 commits to `sogeisetsu/asset-inventory`
+- 📝 Pushed 1 commit to `sogeisetsu/sogeisetsu`
 - 🚀 [feat: v1.7.0 - seven languages, Material docs site, rendered examples](https://github.com/sogeisetsu/asset-inventory/pull/8) · merged
 - 🚀 [chore: bump to 1.6.1](https://github.com/sogeisetsu/asset-inventory/pull/7) · merged
 - 🚀 [fix: v1.6.1 - correct skill provenance and agent model chains](https://github.com/sogeisetsu/asset-inventory/pull/6) · merged
@@ -18,18 +18,18 @@ _以下内容每天自动更新：2026-09-26_
 
 </details>
 
-<details><summary>🌐 我对别人仓库做的事</summary>
+<details><summary>🌐 On other people's repositories</summary>
 
-- 🐛 [\[Listing\]: Request indexing for sogeisetsu/asset-inventory](https://github.com/vercel-labs/skills/issues/2298)
-- 🐛 [\[Listing\]: Request indexing for sogeisetsu/opencode-go-model-picker](https://github.com/vercel-labs/skills/issues/2297)
+- 🐛 Opened issue [\[Listing\]: Request indexing for sogeisetsu/asset-inventory](https://github.com/vercel-labs/skills/issues/2298) in `vercel-labs/skills`
+- 🐛 Opened issue [\[Listing\]: Request indexing for sogeisetsu/opencode-go-model-picker](https://github.com/vercel-labs/skills/issues/2297) in `vercel-labs/skills`
 - 🚀 [Add skill: sogeisetsu/asset-inventory](https://github.com/VoltAgent/awesome-agent-skills/pull/1103) · open
-- 💬 在 [openchamber/openchamber#3965](https://github.com/openchamber/openchamber/issues/3965) 留言：Behavior 设置页：外部修改 AGENTS.md 后保存会静默覆盖（stale-save clobber）
-- 🐛 [Behavior settings: saving after an external AGENTS.md edit silently overwrites the file \(stale-save clobber\)](https://github.com/openchamber/openchamber/issues/3966)
-- 🐛 [Behavior 设置页：外部修改 AGENTS.md 后保存会静默覆盖（stale-save clobber）](https://github.com/openchamber/openchamber/issues/3965)
-- 🐛 [websearch: tinyfish provider returns HTTP 400 \(missing Mcp-Session-Id\) on every search](https://github.com/anomalyco/opencode/issues/51263)
-- ⭐ Star 了 `firecrawl/firecrawl`
-- 🐛 [\[Bug\] Small-model background calls to OpenCode Go fail with missing x-opencode-session on 2.0.1 — AI rename / walkthrough broken for Go models](https://github.com/openchamber/openchamber/issues/3950)
-- 🐛 [\[Bug\] v2.0.1 release is missing latest.yml / latest-mac.yml — auto-update finds nothing on Windows and macOS](https://github.com/openchamber/openchamber/issues/3947)
+- 💬 Commented on [openchamber/openchamber#3965](https://github.com/openchamber/openchamber/issues/3965): Behavior 设置页：外部修改 AGENTS.md 后保存会静默覆盖（stale-save clobber）
+- 🐛 Opened issue [Behavior settings: saving after an external AGENTS.md edit silently overwrites the file \(stale-save clobber\)](https://github.com/openchamber/openchamber/issues/3966) in `openchamber/openchamber`
+- 🐛 Opened issue [Behavior 设置页：外部修改 AGENTS.md 后保存会静默覆盖（stale-save clobber）](https://github.com/openchamber/openchamber/issues/3965) in `openchamber/openchamber`
+- 🐛 Opened issue [websearch: tinyfish provider returns HTTP 400 \(missing Mcp-Session-Id\) on every search](https://github.com/anomalyco/opencode/issues/51263) in `anomalyco/opencode`
+- ⭐ Starred `firecrawl/firecrawl`
+- 🐛 Opened issue [\[Bug\] Small-model background calls to OpenCode Go fail with missing x-opencode-session on 2.0.1 — AI rename / walkthrough broken for Go models](https://github.com/openchamber/openchamber/issues/3950) in `openchamber/openchamber`
+- 🐛 Opened issue [\[Bug\] v2.0.1 release is missing latest.yml / latest-mac.yml — auto-update finds nothing on Windows and macOS](https://github.com/openchamber/openchamber/issues/3947) in `openchamber/openchamber`
 
 </details>
 <!--END:activity-->

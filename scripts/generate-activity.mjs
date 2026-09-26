@@ -57,11 +57,11 @@ const REPO_TOP_N = 12; // 传给渲染层，渲染层按两栏条数自适应折
 const DETAIL_MAX = 10; // README 每个 <details> 最多 10 条
 
 const QUIPS = [
-  "过去 30 天我安静得像还没初始化的仓库",
-  "这 30 天，我的贡献图进入了禅模式",
-  "我什么都没干，理直气壮",
-  "30 天零提交，我在憋一个大的",
-  "连一颗星星都懒得点亮",
+  "quiet as a repo that never got initialized",
+  "my contribution graph entered zen mode",
+  "did absolutely nothing, and honestly I regret nothing",
+  "empty calendar, suspiciously clear mind",
+  "too lazy to even click a star",
 ];
 
 const GRAPHQL_QUERY = `
@@ -486,7 +486,9 @@ function buildOwnLines(details) {
   for (const c of details.commits
     .filter((c) => c.own)
     .sort((a, b) => b.count - a.count)) {
-    lines.push(`- 📝 向 \`${c.name}\` 推送了 ${c.count} 次提交`);
+    lines.push(
+      `- 📝 Pushed ${c.count} commit${c.count === 1 ? "" : "s"} to \`${c.name}\``
+    );
   }
   // 第 2 层：自己仓库的 PR / Issue / 评审，按时间倒序
   const contributions = [
@@ -498,10 +500,16 @@ function buildOwnLines(details) {
       })),
     ...details.issues
       .filter((x) => x.own)
-      .map((x) => ({ ts: x.ts, text: `- 🐛 [${escMd(x.title)}](${x.url})` })),
+      .map((x) => ({
+        ts: x.ts,
+        text: `- 🐛 Opened issue [${escMd(x.title)}](${x.url}) in \`${x.repo}\``,
+      })),
     ...details.reviews
       .filter((x) => x.own)
-      .map((x) => ({ ts: x.ts, text: `- 👀 评审了 [${escMd(x.title)}](${x.url})` })),
+      .map((x) => ({
+        ts: x.ts,
+        text: `- 👀 Reviewed [${escMd(x.title)}](${x.url})`,
+      })),
   ];
   lines.push(...sortDesc(contributions).map((x) => x.text));
   // 第 3 层：自己仓库的评论 / Release / Star，仅在有余量时补位
@@ -510,19 +518,19 @@ function buildOwnLines(details) {
       .filter((x) => x.own)
       .map((x) => ({
         ts: x.ts,
-        text: `- 💬 在 [${x.label}](${x.url}) 留言${
-          x.title ? `：${escMd(x.title)}` : ""
+        text: `- 💬 Commented on [${x.label}](${x.url})${
+          x.title ? `: ${escMd(x.title)}` : ""
         }`,
       })),
     ...details.releases
       .filter((x) => x.own)
       .map((x) => ({
         ts: x.ts,
-        text: `- 📦 发布 \`${x.repo}\` 的 [${escMd(x.tag)}](${x.url})`,
+        text: `- 📦 Released [${escMd(x.tag)}](${x.url}) in \`${x.repo}\``,
       })),
     ...details.stars
       .filter((x) => x.own)
-      .map((x) => ({ ts: x.ts, text: `- ⭐ Star 了 \`${x.repo}\`` })),
+      .map((x) => ({ ts: x.ts, text: `- ⭐ Starred \`${x.repo}\`` })),
   ];
   lines.push(...sortDesc(ownEvents).map((x) => x.text));
   return lines.slice(0, DETAIL_MAX);
@@ -538,55 +546,61 @@ function buildOtherLines(details) {
       })),
     ...details.issues
       .filter((x) => !x.own)
-      .map((x) => ({ ts: x.ts, text: `- 🐛 [${escMd(x.title)}](${x.url})` })),
+      .map((x) => ({
+        ts: x.ts,
+        text: `- 🐛 Opened issue [${escMd(x.title)}](${x.url}) in \`${x.repo}\``,
+      })),
     ...details.reviews
       .filter((x) => !x.own)
-      .map((x) => ({ ts: x.ts, text: `- 👀 评审了 [${escMd(x.title)}](${x.url})` })),
+      .map((x) => ({
+        ts: x.ts,
+        text: `- 👀 Reviewed [${escMd(x.title)}](${x.url})`,
+      })),
     ...details.comments
       .filter((x) => !x.own)
       .map((x) => ({
         ts: x.ts,
-        text: `- 💬 在 [${x.label}](${x.url}) 留言${
-          x.title ? `：${escMd(x.title)}` : ""
+        text: `- 💬 Commented on [${x.label}](${x.url})${
+          x.title ? `: ${escMd(x.title)}` : ""
         }`,
       })),
     ...details.releases
       .filter((x) => !x.own)
       .map((x) => ({
         ts: x.ts,
-        text: `- 📦 发布 \`${x.repo}\` 的 [${escMd(x.tag)}](${x.url})`,
+        text: `- 📦 Released [${escMd(x.tag)}](${x.url}) in \`${x.repo}\``,
       })),
     ...details.stars
       .filter((x) => !x.own)
-      .map((x) => ({ ts: x.ts, text: `- ⭐ Star 了 \`${x.repo}\`` })),
+      .map((x) => ({ ts: x.ts, text: `- ⭐ Starred \`${x.repo}\`` })),
   ];
   const lines = sortDesc(timed).map((x) => x.text);
-  if (lines.length === 0) lines.push("- （这段时间没在别人的仓库留下痕迹）");
+  if (lines.length === 0) lines.push("- (no traces left on other people's repos lately)");
   return lines.slice(0, DETAIL_MAX);
 }
 
 function buildReadmeBlock(data, details, todayISO) {
-  const head = `_以下内容每天自动更新：${todayISO}_`;
+  const head = `_Updated automatically: ${todayISO}_`;
   if (data.empty) {
     return [
       head,
       "",
-      `> 🦥 ${data.quip} —— 连一次 commit 都没有，我在憋一个大的。`,
+      `> 🦥 ${data.quip} — not a single commit. I'm cooking something.`,
     ].join("\n");
   }
   const ownLines = buildOwnLines(details);
   const otherLines = buildOtherLines(details);
-  if (ownLines.length === 0) ownLines.push("- （这段时间没动自己的仓库）");
+  if (ownLines.length === 0) ownLines.push("- (didn't touch my own repos lately)");
   return [
     head,
     "",
-    "<details><summary>🔨 我对自己仓库做的事</summary>",
+    "<details><summary>🔨 On my own repositories</summary>",
     "",
     ...ownLines,
     "",
     "</details>",
     "",
-    "<details><summary>🌐 我对别人仓库做的事</summary>",
+    "<details><summary>🌐 On other people's repositories</summary>",
     "",
     ...otherLines,
     "",

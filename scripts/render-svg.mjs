@@ -10,21 +10,22 @@
  * Every string that reaches the SVG goes through esc().
  *
  * Two shapes the data can take, and how they are handled:
- *   · 分布均匀     → 线性刻度，左上方标出「峰值 n」。
- *   · 有离群日     → 纵轴在“第二名”之上封顶（axisScale）：普通日保持真实相对高度，
- *                    超出的柱子在图顶截断、画两道斜杠标记，柱子上方标真实数值，
- *                    图注写明封顶值，读者不会把截断误读成真实比例。
- *   · 两栏条数悬殊 → 卡片高度跟较多的一栏走；较多的一栏提前折叠成「其他 n 个仓库」，
- *                    两栏末尾共用一行淡字「共 n 个仓库」收底，短的一栏不留大片空档。
+ *   · Even spread   → linear scale; the note line reports peak + daily average.
+ *   · One outlier   → the axis is clamped just above the runner-up (axisScale): ordinary
+ *                     days keep honest relative heights, bars above the cap are cut at the
+ *                     top and marked with two slashes, their true value sits above the bar.
+ *                     The note never explains the cut — it only states peak and average.
+ *   · Lopsided cols → card height follows the taller column; the longer list folds early
+ *                     into "n more repos", both columns close on one shared total line.
  */
 
 const FONT_STACK =
   '-apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif';
 
 /** Supporting line under the empty-state headline (schema carries no field for it). */
-const EMPTY_SUB = '连一次 commit 都没有，我在憋大的。';
+const EMPTY_SUB = "No commits yet. I'm working on something big.";
 /** Used only when data.empty === true but data.quip is missing. */
-const EMPTY_QUIP_FALLBACK = '这 30 天，我的提交记录安静得像凌晨四点的自习室。';
+const EMPTY_QUIP_FALLBACK = 'My commit log has been as quiet as a library at 4 a.m.';
 
 /** Escape a value for XML text / attribute context. */
 export function esc(value) {
@@ -64,6 +65,17 @@ function ellipsize(str, maxW, size) {
     w += cw;
   }
   return `${head}…`;
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** "2026-09-21" -> "Sep 21" for the note line. Falls back to MM-DD if unparsable. */
+function shortDate(iso) {
+  const s = String(iso || '');
+  const parts = s.split('-');
+  const mon = MONTHS[Number(parts[1]) - 1];
+  if (parts.length < 3 || !mon) return s.slice(5);
+  return `${mon} ${Number(parts[2])}`;
 }
 
 /** Round a chart value up to a comfortable tick step (1/1.5/2/2.5/3/… × 10^k). */
@@ -194,10 +206,10 @@ text{font-family:var(--font);}
 ]]></style>`;
 
 const STAT_DEFS = [
-  { key: 'commits', label: '提交' },
-  { key: 'prs', label: 'Pull Request' },
-  { key: 'issues', label: 'Issue' },
-  { key: 'reviews', label: '评审' },
+  { key: 'commits', label: 'Commits' },
+  { key: 'prs', label: 'Pull requests' },
+  { key: 'issues', label: 'Issues' },
+  { key: 'reviews', label: 'Reviews' },
 ];
 
 const W = 880;
@@ -232,7 +244,7 @@ function normalizeRepos(items) {
     .sort((a, b) => b.count - a.count);
 }
 
-/** Sort desc, cap at `limit`, fold the tail into an "其他 n 个仓库" row. */
+/** Sort desc, cap at `limit`, fold the tail into an "n more repos" row. */
 function prepareRows(items, limit) {
   const list = normalizeRepos(items);
   const head = list.slice(0, limit);
@@ -240,7 +252,7 @@ function prepareRows(items, limit) {
   const rows = head.map((r) => ({ name: r.name, count: r.count, more: false }));
   if (rest.length) {
     rows.push({
-      name: `其他 ${rest.length} 个仓库`,
+      name: `${rest.length} more repos`,
       count: rest.reduce((a, r) => a + r.count, 0),
       more: true,
     });
@@ -276,7 +288,7 @@ export function renderActivityCard(data) {
 
   // ---- 1. title row -------------------------------------------------------
   const TITLE_BASE = 68;
-  out += t(LEFT, TITLE_BASE, '近 30 天在 GitHub 干了什么', 'title');
+  out += t(LEFT, TITLE_BASE, 'Last 30 days on GitHub', 'title');
   out += t(RIGHT, TITLE_BASE - 2, `${d.windowStart || ''} → ${d.windowEnd || ''}`, 'range', 'end');
 
   if (empty) {
@@ -311,7 +323,7 @@ export function renderActivityCard(data) {
       out += `<rect class="stat" x="${n(cx)}" y="${CHIP_TOP}" width="${n(chipW)}" height="${CHIP_H}" rx="12" ry="12"/>`;
       out += t(cx + 20, CHIP_TOP + 48, String(total), 'stat-num');
       out += t(cx + 20, CHIP_TOP + 74, def.label, 'stat-label');
-      out += t(cx + 20, CHIP_TOP + 96, `自己 ${num(sp.own)} · 别人 ${num(sp.others)}`, 'stat-sub');
+      out += t(cx + 20, CHIP_TOP + 96, `Own ${num(sp.own)} · Others ${num(sp.others)}`, 'stat-sub');
     });
 
     const chipsBottom = CHIP_TOP + CHIP_H;
@@ -329,9 +341,9 @@ export function renderActivityCard(data) {
     const cut = totals.some((v) => v > axisMax);
 
     const SECTION_BASE = chipsBottom + 38;
-    // When a bar is cut, the caption that explains the cap and the bar's own
-    // value tag each get their own row above the plot, so the two can never
-    // land on top of each other whatever day the peak falls on.
+    // When a bar is cut, the note line and the bar's own value tag each get
+    // their own row above the plot, so the two can never land on top of each
+    // other whatever day the peak falls on.
     const NOTE_Y = SECTION_BASE + (cut ? 20 : 25);
     const TAG_Y = cut ? SECTION_BASE + 34 : SECTION_BASE + 25;
     const PLOT_TOP = SECTION_BASE + (cut ? 44 : 34);
@@ -339,12 +351,12 @@ export function renderActivityCard(data) {
     const slot = CONTENT / 30;
     const barW = slot * 0.6;
 
-    out += t(LEFT, SECTION_BASE, '每日活动', 'sect');
+    out += t(LEFT, SECTION_BASE, 'Daily activity', 'sect');
 
     if (max > 0) {
       const legend = [
-        { label: '自己的仓库', cls: 'dot-own' },
-        { label: '别人的仓库', cls: 'dot-other' },
+        { label: 'Your repos', cls: 'dot-own' },
+        { label: 'Other repos', cls: 'dot-other' },
       ];
       const lDotR = 4;
       const lGap = 6;
@@ -358,19 +370,22 @@ export function renderActivityCard(data) {
         lx += lWidths[i] + lItemGap;
       });
 
-      const peakDay = String(daily[totals.indexOf(max)].date).slice(5);
-      if (cut) {
-        const peakLabel = peakDay ? `${peakDay} 单日 ${max} 次` : `单日峰值 ${max} 次`;
-        out += t(LEFT, NOTE_Y, `纵轴封顶 ${axisMax} · ${peakLabel}，柱高已截断`, 'note');
-      } else {
-        out += t(LEFT, NOTE_Y, `峰值 ${max}`, 'note');
-      }
+      // One plain summary: peak value + its day, then the 30-day daily average.
+      const peakDate = shortDate(daily[totals.indexOf(max)].date);
+      const dayTotal = totals.reduce((a, v) => a + v, 0);
+      const avg = (dayTotal / 30).toFixed(1);
+      out += t(
+        LEFT,
+        NOTE_Y,
+        `Peak ${max}${peakDate ? ` on ${peakDate}` : ''} · Average ${avg} / day`,
+        'note'
+      );
     }
 
     out += `<line class="base" x1="${LEFT}" y1="${PLOT_BOTTOM}" x2="${RIGHT}" y2="${PLOT_BOTTOM}"/>`;
 
     if (max === 0) {
-      out += t(440, (PLOT_TOP + PLOT_BOTTOM) / 2, '这 30 天一条活动都没有', 'axis', 'middle');
+      out += t(440, (PLOT_TOP + PLOT_BOTTOM) / 2, 'No activity in the last 30 days', 'axis', 'middle');
     } else {
       daily.forEach((day, i) => {
         const total = day.own + day.other;
@@ -419,8 +434,8 @@ export function renderActivityCard(data) {
     const barMaxW = colW - COUNT_W - 8 - BAR_X;
 
     const columns = [
-      { title: '我自己的仓库', items: d.reposOwn, color: 'repobar-own', x: LEFT },
-      { title: '我参与的别人仓库', items: d.reposOther, color: 'repobar-other', x: LEFT + colW + COL_GAP },
+      { title: 'My repos', items: d.reposOwn, color: 'repobar-own', x: LEFT },
+      { title: 'Repos I contributed to', items: d.reposOther, color: 'repobar-other', x: LEFT + colW + COL_GAP },
     ];
 
     // Both columns share one band (and one closing total line), so the longer
@@ -451,7 +466,7 @@ export function renderActivityCard(data) {
         const baseY = cy + 5;
 
         if (row.none) {
-          out += t(col.x, baseY, '（无）', 'none');
+          out += t(col.x, baseY, '(none)', 'none');
           return;
         }
 
@@ -466,7 +481,7 @@ export function renderActivityCard(data) {
       });
 
       if (col.total > 0) {
-        out += t(col.x, summaryY, `共 ${col.total} 个仓库`, 'note');
+        out += t(col.x, summaryY, `${col.total} repos total`, 'note');
       }
     });
 
@@ -474,9 +489,9 @@ export function renderActivityCard(data) {
   }
 
   // ---- 5. footer ----------------------------------------------------------
-  let footerText = '数据来自 GitHub 官方贡献统计 · 每天自动更新';
+  let footerText = 'Data from GitHub contribution stats · Updated daily';
   if (d.truncated === true && d.truncatedFrom) {
-    footerText += ` · 每日分布仅覆盖 ${d.truncatedFrom} 之后的可用区间`;
+    footerText += ` · Daily breakdown covers ${d.truncatedFrom} onward`;
   }
   const footerBase = contentBottom + 32;
   out += t(LEFT, footerBase, footerText, 'foot');
@@ -486,8 +501,8 @@ export function renderActivityCard(data) {
   const head =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" ` +
-    `role="img" aria-label="近 30 天在 GitHub 的活动概览">\n` +
-    `<title>近 30 天在 GitHub 干了什么</title>\n` +
+    `role="img" aria-label="Activity over the last 30 days on GitHub">\n` +
+    `<title>Last 30 days on GitHub</title>\n` +
     STYLE;
 
   const card = `<rect class="card" x="1" y="1" width="${W - 2}" height="${H - 2}" rx="28" ry="28"/>`;
