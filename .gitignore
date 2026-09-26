@@ -1,4 +1,5 @@
 .openchamber/
+.opencode/
 scripts/preview-normal.svg
 scripts/preview-empty.svg
 scripts/preview-real.svg
