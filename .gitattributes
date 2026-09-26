@@ -1,0 +1,11 @@
+# Normalize all text files to LF in the repo and in the working tree,
+# regardless of platform. Overrides the machine-level core.autocrlf.
+* text=auto eol=lf
+
+# Explicitly keep things that must never be converted as binary.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
