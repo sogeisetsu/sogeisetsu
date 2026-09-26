@@ -1,0 +1,5 @@
+.openchamber/
+scripts/preview-normal.svg
+scripts/preview-empty.svg
+scripts/preview-real.svg
+assets/_preview.html

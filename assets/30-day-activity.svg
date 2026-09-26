@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="700" viewBox="0 0 880 700" role="img" aria-label="近 30 天在 GitHub 的活动概览">
+<title>近 30 天在 GitHub 干了什么</title>
+<style><![CDATA[
+:root{
+  --card:#FFFBFE;
+  --on-surface:#1D1B20;
+  --on-surface-variant:#49454F;
+  --outline-variant:#CAC4D0;
+  --primary:#6750A4;
+  --primary-container:#EADDFF;
+  --on-primary-container:#21005D;
+  --secondary-container:#E8DEF8;
+  --on-secondary-container:#1D1B20;
+  --tertiary:#7D5260;
+  --tertiary-container:#633B48;
+  --on-tertiary-container:#FFD8E4;
+  --surface-container:#F3EDF7;
+  --font:-apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --card:#211F26;
+    --on-surface:#E6E0E9;
+    --on-surface-variant:#CAC4D0;
+    --outline-variant:#49454F;
+    --primary:#D0BCFF;
+    --primary-container:#4F378B;
+    --on-primary-container:#EADDFF;
+    --secondary-container:#4A4458;
+    --on-secondary-container:#E8DEF8;
+    --tertiary:#EFB8C8;
+    --tertiary-container:#633B48;
+    --on-tertiary-container:#FFD8E4;
+    --surface-container:#2B2930;
+  }
+}
+text{font-family:var(--font);}
+.card{fill:var(--card);stroke:var(--outline-variant);stroke-width:1;}
+.title{font-size:24px;font-weight:600;fill:var(--on-surface);}
+.range{font-size:12px;font-weight:400;fill:var(--on-surface-variant);}
+.sect{font-size:14px;font-weight:500;fill:var(--on-surface-variant);}
+.stat{fill:var(--secondary-container);}
+.stat-num{font-size:28px;font-weight:600;fill:var(--on-secondary-container);}
+.stat-label{font-size:14px;font-weight:500;fill:var(--on-secondary-container);}
+.stat-sub{font-size:12px;font-weight:400;fill:var(--on-surface-variant);}
+.note{font-size:12px;font-weight:400;fill:var(--on-surface-variant);}
+.peak-tag{font-size:12px;font-weight:600;fill:var(--on-surface);}
+.axis{font-size:12px;font-weight:400;fill:var(--on-surface-variant);}
+.legend{font-size:12px;font-weight:400;fill:var(--on-surface-variant);}
+.bar-own{fill:var(--primary);}
+.bar-other{fill:var(--tertiary);}
+.break{fill:none;stroke:var(--card);stroke-width:2;stroke-linecap:butt;}
+.base{stroke:var(--outline-variant);stroke-width:1;}
+.col-title{font-size:14px;font-weight:500;fill:var(--on-surface);}
+.repo{font-size:14px;font-weight:400;fill:var(--on-surface);}
+.repo-more{font-size:13px;font-weight:400;fill:var(--on-surface-variant);}
+.repo-count{font-size:13px;font-weight:500;fill:var(--on-surface-variant);}
+.none{font-size:13px;font-weight:400;fill:var(--on-surface-variant);}
+.repobar-own{fill:var(--primary);}
+.repobar-other{fill:var(--tertiary);}
+.repobar-more{fill:var(--outline-variant);}
+.foot{font-size:12px;font-weight:400;fill:var(--on-surface-variant);}
+.empty-box{fill:var(--surface-container);stroke:var(--outline-variant);stroke-width:1;stroke-dasharray:7 7;}
+.dot-own{fill:var(--primary);}
+.dot-mid{fill:var(--outline-variant);}
+.dot-other{fill:var(--tertiary);}
+.quip{font-size:22px;font-weight:500;fill:var(--on-surface);}
+.quip-sub{font-size:14px;font-weight:400;fill:var(--on-surface-variant);}
+]]></style>
+<rect class="card" x="1" y="1" width="878" height="698" rx="28" ry="28"/>
+<text x="48" y="68" class="title">近 30 天在 GitHub 干了什么</text><text x="832" y="66" class="range" text-anchor="end">2026-08-28 → 2026-09-26</text><rect class="stat" x="48" y="100" width="184" height="108" rx="12" ry="12"/><text x="68" y="148" class="stat-num">70</text><text x="68" y="174" class="stat-label">提交</text><text x="68" y="196" class="stat-sub">自己 70 · 别人 0</text><rect class="stat" x="248" y="100" width="184" height="108" rx="12" ry="12"/><text x="268" y="148" class="stat-num">9</text><text x="268" y="174" class="stat-label">Pull Request</text><text x="268" y="196" class="stat-sub">自己 8 · 别人 1</text><rect class="stat" x="448" y="100" width="184" height="108" rx="12" ry="12"/><text x="468" y="148" class="stat-num">8</text><text x="468" y="174" class="stat-label">Issue</text><text x="468" y="196" class="stat-sub">自己 0 · 别人 8</text><rect class="stat" x="648" y="100" width="184" height="108" rx="12" ry="12"/><text x="668" y="148" class="stat-num">0</text><text x="668" y="174" class="stat-label">评审</text><text x="668" y="196" class="stat-sub">自己 0 · 别人 0</text><text x="48" y="246" class="sect">每日活动</text><circle class="dot-own" cx="668" cy="242" r="4"/><text x="678" y="246" class="legend">自己的仓库</text><circle class="dot-other" cx="762" cy="242" r="4"/><text x="772" y="246" class="legend">别人的仓库</text><text x="48" y="266" class="note">纵轴封顶 30 · 09-21 单日 50 次，柱高已截断</text><line class="base" x1="48" y1="394" x2="832" y2="394"/><path class="bar-own" d="M 288.43 394 L 288.43 372.73 Q 288.43 369.73 291.43 369.73 L 301.11 369.73 Q 304.11 369.73 304.11 372.73 L 304.11 394 Z"/><path class="bar-own" d="M 340.69 394 L 340.69 369.27 Q 340.69 366.27 343.69 366.27 L 353.37 366.27 Q 356.37 366.27 356.37 369.27 L 356.37 394 Z"/><path class="bar-own" d="M 471.36 394 L 471.36 372.73 Q 471.36 369.73 474.36 369.73 L 484.04 369.73 Q 487.04 369.73 487.04 372.73 L 487.04 394 Z"/><path class="bar-other" d="M 654.29 394 L 654.29 392.27 Q 654.29 390.53 656.03 390.53 L 668.24 390.53 Q 669.97 390.53 669.97 392.27 L 669.97 394 Z"/><path class="bar-own" d="M 680.43 394 L 680.43 293 Q 680.43 290 683.43 290 L 693.11 290 Q 696.11 290 696.11 293 L 696.11 394 Z"/><path class="break" d="M 680.43 306 L 696.11 298 M 680.43 311 L 696.11 303"/><text x="688.27" y="280" class="peak-tag" text-anchor="middle">↑50</text><rect class="bar-own" x="706.56" y="355.87" width="15.68" height="38.13"/><path class="bar-other" d="M 706.56 355.87 L 706.56 351.93 Q 706.56 348.93 709.56 348.93 L 719.24 348.93 Q 722.24 348.93 722.24 351.93 L 722.24 355.87 Z"/><rect class="bar-own" x="758.83" y="359.33" width="15.68" height="34.67"/><path class="bar-other" d="M 758.83 359.33 L 758.83 351.93 Q 758.83 348.93 761.83 348.93 L 771.51 348.93 Q 774.51 348.93 774.51 351.93 L 774.51 359.33 Z"/><rect class="bar-own" x="784.96" y="348.93" width="15.68" height="45.07"/><path class="bar-other" d="M 784.96 348.93 L 784.96 317.27 Q 784.96 314.27 787.96 314.27 L 797.64 314.27 Q 800.64 314.27 800.64 317.27 L 800.64 348.93 Z"/><path class="bar-own" d="M 811.09 394 L 811.09 379.67 Q 811.09 376.67 814.09 376.67 L 823.77 376.67 Q 826.77 376.67 826.77 379.67 L 826.77 394 Z"/><text x="64.8" y="414" class="axis" text-anchor="middle">08-28</text><text x="191.73" y="414" class="axis" text-anchor="middle">09-02</text><text x="322.4" y="414" class="axis" text-anchor="middle">09-07</text><text x="453.07" y="414" class="axis" text-anchor="middle">09-12</text><text x="583.73" y="414" class="axis" text-anchor="middle">09-17</text><text x="714.4" y="414" class="axis" text-anchor="middle">09-22</text><text x="48" y="456" class="col-title">我自己的仓库</text><text x="48" y="487" class="repo">sogeisetsu/asset-inventory</text><text x="424" y="487" class="repo-count" text-anchor="end">111</text><path class="repobar-own" d="M 268 477 L 375 477 Q 380 477 380 482 L 380 482 Q 380 487 375 487 L 268 487 Z"/><text x="48" y="515" class="repo">sogeisetsu/opencode-go-mo…</text><text x="424" y="515" class="repo-count" text-anchor="end">76</text><path class="repobar-own" d="M 268 505 L 339.68 505 Q 344.68 505 344.68 510 L 344.68 510 Q 344.68 515 339.68 515 L 268 515 Z"/><text x="48" y="543" class="repo">sogeisetsu/awesome-agent-…</text><text x="424" y="543" class="repo-count" text-anchor="end">2</text><path class="repobar-own" d="M 268 533 L 270 533 Q 272 533 272 535 L 272 541 Q 272 543 270 543 L 268 543 Z"/><text x="48" y="632" class="note">共 3 个仓库</text><text x="456" y="456" class="col-title">我参与的别人仓库</text><text x="456" y="487" class="repo">openchamber/openchamber</text><text x="832" y="487" class="repo-count" text-anchor="end">10</text><path class="repobar-other" d="M 676 477 L 783 477 Q 788 477 788 482 L 788 482 Q 788 487 783 487 L 676 487 Z"/><text x="456" y="515" class="repo">vercel-labs/skills</text><text x="832" y="515" class="repo-count" text-anchor="end">4</text><path class="repobar-other" d="M 676 505 L 715.8 505 Q 720.8 505 720.8 510 L 720.8 510 Q 720.8 515 715.8 515 L 676 515 Z"/><text x="456" y="543" class="repo">VoltAgent/awesome-agent-s…</text><text x="832" y="543" class="repo-count" text-anchor="end">3</text><path class="repobar-other" d="M 676 533 L 704.6 533 Q 709.6 533 709.6 538 L 709.6 538 Q 709.6 543 704.6 543 L 676 543 Z"/><text x="456" y="571" class="repo">anomalyco/opencode</text><text x="832" y="571" class="repo-count" text-anchor="end">2</text><path class="repobar-other" d="M 676 561 L 693.4 561 Q 698.4 561 698.4 566 L 698.4 566 Q 698.4 571 693.4 571 L 676 571 Z"/><text x="456" y="599" class="repo-more">其他 5 个仓库</text><text x="832" y="599" class="repo-count" text-anchor="end">6</text><path class="repobar-more" d="M 676 589 L 738.2 589 Q 743.2 589 743.2 594 L 743.2 594 Q 743.2 599 738.2 599 L 676 599 Z"/><text x="456" y="632" class="note">共 9 个仓库</text><text x="48" y="664" class="foot">数据来自 GitHub 官方贡献统计 · 每天自动更新</text>
+</svg>
