@@ -7,6 +7,7 @@ _以下内容每天自动更新：2026-09-26_
 
 - 📝 向 `sogeisetsu/opencode-go-model-picker` 推送了 62 次提交
 - 📝 向 `sogeisetsu/asset-inventory` 推送了 8 次提交
+- 📝 向 `sogeisetsu/sogeisetsu` 推送了 1 次提交
 - 🚀 [feat: v1.7.0 - seven languages, Material docs site, rendered examples](https://github.com/sogeisetsu/asset-inventory/pull/8) · merged
 - 🚀 [chore: bump to 1.6.1](https://github.com/sogeisetsu/asset-inventory/pull/7) · merged
 - 🚀 [fix: v1.6.1 - correct skill provenance and agent model chains](https://github.com/sogeisetsu/asset-inventory/pull/6) · merged
@@ -14,7 +15,6 @@ _以下内容每天自动更新：2026-09-26_
 - 🚀 [fix: v1.5.0 — deliver ja glossary, close checker gap, drop duplicate example](https://github.com/sogeisetsu/asset-inventory/pull/4) · merged
 - 🚀 [feat: v1.4.0 — automate doc checks, fix language promise, trim SKILL.md](https://github.com/sogeisetsu/asset-inventory/pull/3) · merged
 - 🚀 [chore\(docs\): fix 1.3.0 release date and add version + glossary checks](https://github.com/sogeisetsu/asset-inventory/pull/2) · merged
-- 🚀 [release: v1.3.0 — English-first restructure & docs tooling](https://github.com/sogeisetsu/asset-inventory/pull/1) · merged
 
 </details>
 
