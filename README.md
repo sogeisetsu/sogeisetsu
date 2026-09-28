@@ -20,6 +20,8 @@ _Updated automatically: 2026-09-28_
 
 <details><summary>🌐 Contributed to</summary>
 
+- 💬 Commented on [antongulin/opencode-skill-creator#42](https://github.com/antongulin/opencode-skill-creator/pull/42): fix: harden eval robustness in parsing, aggregation, and install
+- 💬 Commented on [antongulin/opencode-skill-creator#42](https://github.com/antongulin/opencode-skill-creator/pull/42): fix: harden eval robustness in parsing, aggregation, and install
 - 🐛 Opened issue [Deleting a multi-run leaves orphaned MCP child processes; git worktree remove --force then fails with Permission denied](https://github.com/openchamber/openchamber/issues/4111) in `openchamber/openchamber`
 - 💬 Commented on [antongulin/opencode-skill-creator#42](https://github.com/antongulin/opencode-skill-creator/pull/42): fix: harden eval robustness in parsing, aggregation, and install
 - 🚀 [fix: harden eval robustness in parsing, aggregation, and install](https://github.com/antongulin/opencode-skill-creator/pull/42) · open
@@ -28,8 +30,6 @@ _Updated automatically: 2026-09-28_
 - 🚀 [fix: open review URL with platform-specific browser command](https://github.com/antongulin/opencode-skill-creator/pull/39) · open
 - 🐛 Opened issue [\[Listing\]: Request indexing for sogeisetsu/asset-inventory](https://github.com/vercel-labs/skills/issues/2298) in `vercel-labs/skills`
 - 🐛 Opened issue [\[Listing\]: Request indexing for sogeisetsu/opencode-go-model-picker](https://github.com/vercel-labs/skills/issues/2297) in `vercel-labs/skills`
-- 🚀 [Add skill: sogeisetsu/asset-inventory](https://github.com/VoltAgent/awesome-agent-skills/pull/1103) · open
-- 💬 Commented on [openchamber/openchamber#3965](https://github.com/openchamber/openchamber/issues/3965): Behavior 设置页：外部修改 AGENTS.md 后保存会静默覆盖（stale-save clobber）
 
 </details>
 <!--END:activity-->
