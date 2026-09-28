@@ -3,7 +3,7 @@
 <!--START:activity-->
 _Updated automatically: 2026-09-28_
 
-<details><summary>🔨 On my own repositories</summary>
+<details><summary>🔨 Owned repos</summary>
 
 - 📝 Pushed 62 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 8 commits to `sogeisetsu/asset-inventory`
@@ -18,8 +18,10 @@ _Updated automatically: 2026-09-28_
 
 </details>
 
-<details><summary>🌐 On other people's repositories</summary>
+<details><summary>🌐 Contributed to</summary>
 
+- 🐛 Opened issue [Deleting a multi-run leaves orphaned MCP child processes; git worktree remove --force then fails with Permission denied](https://github.com/openchamber/openchamber/issues/4111) in `openchamber/openchamber`
+- 💬 Commented on [antongulin/opencode-skill-creator#42](https://github.com/antongulin/opencode-skill-creator/pull/42): fix: harden eval robustness in parsing, aggregation, and install
 - 🚀 [fix: harden eval robustness in parsing, aggregation, and install](https://github.com/antongulin/opencode-skill-creator/pull/42) · open
 - 🚀 [fix: dispose review servers on plugin unload](https://github.com/antongulin/opencode-skill-creator/pull/41) · open
 - 🚀 [fix: accept CRLF line endings in skill frontmatter validation](https://github.com/antongulin/opencode-skill-creator/pull/40) · open
@@ -28,8 +30,6 @@ _Updated automatically: 2026-09-28_
 - 🐛 Opened issue [\[Listing\]: Request indexing for sogeisetsu/opencode-go-model-picker](https://github.com/vercel-labs/skills/issues/2297) in `vercel-labs/skills`
 - 🚀 [Add skill: sogeisetsu/asset-inventory](https://github.com/VoltAgent/awesome-agent-skills/pull/1103) · open
 - 💬 Commented on [openchamber/openchamber#3965](https://github.com/openchamber/openchamber/issues/3965): Behavior 设置页：外部修改 AGENTS.md 后保存会静默覆盖（stale-save clobber）
-- 🐛 Opened issue [Behavior settings: saving after an external AGENTS.md edit silently overwrites the file \(stale-save clobber\)](https://github.com/openchamber/openchamber/issues/3966) in `openchamber/openchamber`
-- 🐛 Opened issue [Behavior 设置页：外部修改 AGENTS.md 后保存会静默覆盖（stale-save clobber）](https://github.com/openchamber/openchamber/issues/3965) in `openchamber/openchamber`
 
 </details>
 <!--END:activity-->
