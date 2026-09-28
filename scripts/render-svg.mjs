@@ -323,7 +323,11 @@ export function renderActivityCard(data) {
       out += `<rect class="stat" x="${n(cx)}" y="${CHIP_TOP}" width="${n(chipW)}" height="${CHIP_H}" rx="12" ry="12"/>`;
       out += t(cx + 20, CHIP_TOP + 48, String(total), 'stat-num');
       out += t(cx + 20, CHIP_TOP + 74, def.label, 'stat-label');
-      out += t(cx + 20, CHIP_TOP + 96, `Owned ${num(sp.own)} · Others ${num(sp.others)}`, 'stat-sub');
+      // Only show the own/others split when it actually adds up to the total;
+      // a truncated split must not print a sub-line that contradicts the number.
+      if (num(sp.own) + num(sp.others) === total) {
+        out += t(cx + 20, CHIP_TOP + 96, `Owned ${num(sp.own)} · Others ${num(sp.others)}`, 'stat-sub');
+      }
     });
 
     const chipsBottom = CHIP_TOP + CHIP_H;

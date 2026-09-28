@@ -53,7 +53,7 @@ const WINDOW_DAYS = 30;
 const EVENT_MAX_PAGES = 5; // 分页上限（per_page=100）
 const EVENT_MAX = 300; // 事件总条数上限（取满则 truncated 可能为 true）
 const EVENT_PER_PAGE = 100;
-const REPO_TOP_N = 12; // 传给渲染层，渲染层按两栏条数自适应折叠（3~5 条 + 「其他 n 个仓库」）
+const REPO_TOP_N = 100; // 上限放宽到 API 上限，明细不再先截断；渲染层仍按两栏条数自适应折叠（3~5 条 + 「其他 n 个仓库」）
 const DETAIL_MAX = 10; // README 每个 <details> 最多 10 条
 
 const QUIPS = [
@@ -72,11 +72,11 @@ query ($login: String!, $from: DateTime!, $to: DateTime!) {
       totalIssueContributions
       totalPullRequestContributions
       totalPullRequestReviewContributions
-      commitContributionsByRepository(maxRepositories: 25) {
+      commitContributionsByRepository(maxRepositories: 100) {
         repository { nameWithOwner owner { login } }
         contributions { totalCount }
       }
-      issueContributions(first: 50) {
+      issueContributions(first: 100) {
         totalCount
         nodes {
           issue {
@@ -87,7 +87,7 @@ query ($login: String!, $from: DateTime!, $to: DateTime!) {
           }
         }
       }
-      pullRequestContributions(first: 50) {
+      pullRequestContributions(first: 100) {
         totalCount
         nodes {
           pullRequest {
@@ -100,7 +100,7 @@ query ($login: String!, $from: DateTime!, $to: DateTime!) {
           }
         }
       }
-      pullRequestReviewContributions(first: 50) {
+      pullRequestReviewContributions(first: 100) {
         totalCount
         nodes {
           repository { nameWithOwner owner { login } }
@@ -682,6 +682,21 @@ async function main() {
       ` · issues=${data.splits.issues.own}/${data.splits.issues.others}` +
       ` · reviews=${data.splits.reviews.own}/${data.splits.reviews.others}`
   );
+  // 对账：splits 之和必须等于 GitHub 权威总数，不等说明明细仍被截断
+  for (const { key, label } of [
+    { key: "commits", label: "提交" },
+    { key: "prs", label: "PR" },
+    { key: "issues", label: "Issue" },
+    { key: "reviews", label: "评审" },
+  ]) {
+    const splitSum = num(data.splits[key].own) + num(data.splits[key].others);
+    const total = num(data.totals[key]);
+    if (splitSum !== total) {
+      console.warn(
+        `警告: ${label}（${key}）明细对不上总数：own ${num(data.splits[key].own)} + others ${num(data.splits[key].others)} = ${splitSum}，但总数为 ${total}`
+      );
+    }
+  }
   console.log(
     `empty: ${data.empty}${data.quip ? `（quip: ${data.quip}）` : ""}`
   );
