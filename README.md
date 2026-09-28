@@ -1,7 +1,7 @@
 ![GitHub activity over the last 30 days](./assets/30-day-activity.svg)
 
 <!--START:activity-->
-_Updated automatically: 2026-09-27_
+_Updated automatically: 2026-09-28_
 
 <details><summary>🔨 On my own repositories</summary>
 
@@ -20,16 +20,16 @@ _Updated automatically: 2026-09-27_
 
 <details><summary>🌐 On other people's repositories</summary>
 
+- 🚀 [fix: harden eval robustness in parsing, aggregation, and install](https://github.com/antongulin/opencode-skill-creator/pull/42) · open
+- 🚀 [fix: dispose review servers on plugin unload](https://github.com/antongulin/opencode-skill-creator/pull/41) · open
+- 🚀 [fix: accept CRLF line endings in skill frontmatter validation](https://github.com/antongulin/opencode-skill-creator/pull/40) · open
+- 🚀 [fix: open review URL with platform-specific browser command](https://github.com/antongulin/opencode-skill-creator/pull/39) · open
 - 🐛 Opened issue [\[Listing\]: Request indexing for sogeisetsu/asset-inventory](https://github.com/vercel-labs/skills/issues/2298) in `vercel-labs/skills`
 - 🐛 Opened issue [\[Listing\]: Request indexing for sogeisetsu/opencode-go-model-picker](https://github.com/vercel-labs/skills/issues/2297) in `vercel-labs/skills`
 - 🚀 [Add skill: sogeisetsu/asset-inventory](https://github.com/VoltAgent/awesome-agent-skills/pull/1103) · open
 - 💬 Commented on [openchamber/openchamber#3965](https://github.com/openchamber/openchamber/issues/3965): Behavior 设置页：外部修改 AGENTS.md 后保存会静默覆盖（stale-save clobber）
 - 🐛 Opened issue [Behavior settings: saving after an external AGENTS.md edit silently overwrites the file \(stale-save clobber\)](https://github.com/openchamber/openchamber/issues/3966) in `openchamber/openchamber`
 - 🐛 Opened issue [Behavior 设置页：外部修改 AGENTS.md 后保存会静默覆盖（stale-save clobber）](https://github.com/openchamber/openchamber/issues/3965) in `openchamber/openchamber`
-- 🐛 Opened issue [websearch: tinyfish provider returns HTTP 400 \(missing Mcp-Session-Id\) on every search](https://github.com/anomalyco/opencode/issues/51263) in `anomalyco/opencode`
-- ⭐ Starred `firecrawl/firecrawl`
-- 🐛 Opened issue [\[Bug\] Small-model background calls to OpenCode Go fail with missing x-opencode-session on 2.0.1 — AI rename / walkthrough broken for Go models](https://github.com/openchamber/openchamber/issues/3950) in `openchamber/openchamber`
-- 🐛 Opened issue [\[Bug\] v2.0.1 release is missing latest.yml / latest-mac.yml — auto-update finds nothing on Windows and macOS](https://github.com/openchamber/openchamber/issues/3947) in `openchamber/openchamber`
 
 </details>
 <!--END:activity-->
