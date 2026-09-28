@@ -58,8 +58,8 @@ const DETAIL_MAX = 10; // README 每个 <details> 最多 10 条
 
 const QUIPS = [
   "quiet as a repo that never got initialized",
-  "my contribution graph entered zen mode",
-  "did absolutely nothing, and honestly I regret nothing",
+  "the contribution graph entered zen mode",
+  "did absolutely nothing, and honestly no regrets",
   "empty calendar, suspiciously clear mind",
   "too lazy to even click a star",
 ];
@@ -585,22 +585,22 @@ function buildReadmeBlock(data, details, todayISO) {
     return [
       head,
       "",
-      `> 🦥 ${data.quip} — not a single commit. I'm cooking something.`,
+      `> 🦥 ${data.quip} — not a single commit all month.`,
     ].join("\n");
   }
   const ownLines = buildOwnLines(details);
   const otherLines = buildOtherLines(details);
-  if (ownLines.length === 0) ownLines.push("- (didn't touch my own repos lately)");
+  if (ownLines.length === 0) ownLines.push("- (no activity on owned repos lately)");
   return [
     head,
     "",
-    "<details><summary>🔨 On my own repositories</summary>",
+    "<details><summary>🔨 Owned repos</summary>",
     "",
     ...ownLines,
     "",
     "</details>",
     "",
-    "<details><summary>🌐 On other people's repositories</summary>",
+    "<details><summary>🌐 Contributed to</summary>",
     "",
     ...otherLines,
     "",

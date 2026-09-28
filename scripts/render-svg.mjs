@@ -23,9 +23,9 @@ const FONT_STACK =
   '-apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif';
 
 /** Supporting line under the empty-state headline (schema carries no field for it). */
-const EMPTY_SUB = "No commits yet. I'm working on something big.";
+const EMPTY_SUB = "No public commits yet.";
 /** Used only when data.empty === true but data.quip is missing. */
-const EMPTY_QUIP_FALLBACK = 'My commit log has been as quiet as a library at 4 a.m.';
+const EMPTY_QUIP_FALLBACK = 'The commit log has been as quiet as a library at 4 a.m.';
 
 /** Escape a value for XML text / attribute context. */
 export function esc(value) {
@@ -323,7 +323,7 @@ export function renderActivityCard(data) {
       out += `<rect class="stat" x="${n(cx)}" y="${CHIP_TOP}" width="${n(chipW)}" height="${CHIP_H}" rx="12" ry="12"/>`;
       out += t(cx + 20, CHIP_TOP + 48, String(total), 'stat-num');
       out += t(cx + 20, CHIP_TOP + 74, def.label, 'stat-label');
-      out += t(cx + 20, CHIP_TOP + 96, `Own ${num(sp.own)} · Others ${num(sp.others)}`, 'stat-sub');
+      out += t(cx + 20, CHIP_TOP + 96, `Owned ${num(sp.own)} · Others ${num(sp.others)}`, 'stat-sub');
     });
 
     const chipsBottom = CHIP_TOP + CHIP_H;
@@ -355,7 +355,7 @@ export function renderActivityCard(data) {
 
     if (max > 0) {
       const legend = [
-        { label: 'Your repos', cls: 'dot-own' },
+        { label: 'Owned repos', cls: 'dot-own' },
         { label: 'Other repos', cls: 'dot-other' },
       ];
       const lDotR = 4;
@@ -377,7 +377,7 @@ export function renderActivityCard(data) {
       out += t(
         LEFT,
         NOTE_Y,
-        `Peak ${max}${peakDate ? ` on ${peakDate}` : ''} · Average ${avg} / day`,
+        `Peak ${max}${peakDate ? ` on ${peakDate}` : ''} · Average ${avg}/day`,
         'note'
       );
     }
@@ -434,8 +434,8 @@ export function renderActivityCard(data) {
     const barMaxW = colW - COUNT_W - 8 - BAR_X;
 
     const columns = [
-      { title: 'My repos', items: d.reposOwn, color: 'repobar-own', x: LEFT },
-      { title: 'Repos I contributed to', items: d.reposOther, color: 'repobar-other', x: LEFT + colW + COL_GAP },
+      { title: 'Owned repos', items: d.reposOwn, color: 'repobar-own', x: LEFT, stripOwner: true },
+      { title: 'Contributed to', items: d.reposOther, color: 'repobar-other', x: LEFT + colW + COL_GAP },
     ];
 
     // Both columns share one band (and one closing total line), so the longer
@@ -470,7 +470,8 @@ export function renderActivityCard(data) {
           return;
         }
 
-        out += t(col.x, baseY, ellipsize(row.name, NAME_W, 14), row.more ? 'repo-more' : 'repo');
+        const label = col.stripOwner && !row.more ? row.name.replace(/^[^/]+\//, '') : row.name;
+        out += t(col.x, baseY, ellipsize(label, NAME_W, 14), row.more ? 'repo-more' : 'repo');
         out += t(col.x + colW, baseY, String(row.count), 'repo-count', 'end');
 
         if (row.count > 0) {
