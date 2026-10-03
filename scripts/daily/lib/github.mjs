@@ -6,9 +6,9 @@
  *
  * 数据源与职责：
  *   1. REST /users/:u/events/public      —— 窗口内动作级事件（PR / Issue / 评审 / 自己的评论），
- *                                          以及 PushEvent（发现被推过的仓库 + before/head）
- *   2. REST /repos/:o/:r/compare         —— 对每个窗口内 PushEvent 复核“用户本人提交数”
- *                                          （该端点 payload 不含 size/commits，无法直接加权）
+ *                                          以及 PushEvent（用于发现要扫描提交历史的仓库）
+ *   2. REST /repos/:o/:r/commits         —— 按提交日期归属：某仓窗口内的提交历史，
+ *                                          拆成用户本人 vs 机器人（[bot]）两类
  *   3. REST /users/:u/repos + releases    —— 自有仓库的 Release（published_at 落在窗口内）
  *   4. GraphQL repository.stargazerCount —— 自有仓库星标总数：全量存入 starInventory 作次日基准，
  *                                          展示的 stars 只列 delta 非 0 的变化项
@@ -20,11 +20,12 @@
  * 窗口定义：date 当天 00:00:00+08:00 ≤ ts < 次日 00:00:00+08:00（Asia/Shanghai 固定 UTC+8，无夏令时）。
  *
  * totals 口径（公开日报恒等式）：totals 只由实际展示的公开数据求和得出 ——
- *   commits = Σcommits[].count（PushEvent 逐次复核的用户本人提交数，按仓库累计），
+ *   commits = Σcommits[].count（按提交日期归属的用户本人提交数，按仓库累计），
  *   prs/issues/reviews = 对应数组长度。
  *   automatedCommits（机器人提交）与条目 state 回填都不进 totals / empty。
  *   弃用 contributionsCollection：同一瞬间窗口用 +08:00 与 Z 表达会得到不同且错误的归因
- *   （提交会同时漏进相邻两天），且 user-scoped token 下含私有贡献 —— 本模块不再发起该查询。
+ *   （提交会同时漏进相邻两天），且 user-scoped token 下含私有贡献 —— 本模块不再发起该查询；
+ *   也弃用 PushEvent/compare 归属（推送时间 ≠ 提交时间会漏计），提交一律以提交历史日期为准。
  *
  * 错误策略：
  *   - 任何一段失败（401/403/404/限流/网络/GraphQL）→ 打警告 + 该段返回空数组，绝不抛错
@@ -57,7 +58,8 @@ const SEARCH_PER_PAGE = 50; // Search 每个查询取一页
 const TARGET_MAX = 25; // “我发起的条目”检索上限（回复 / 状态变更两段共用）
 const NOTES_MAX = 800; // release notes 折叠空白后截断长度
 const EXCERPT_MAX = 200; // 回复摘录折叠空白后截断长度
-const PUSH_COMPARE_MAX = 20; // 单次运行最多对多少个 PushEvent 走 compare 复核（防失控）
+const COMMIT_SCAN_REPOS_MAX = 30; // 提交历史扫描的仓库数上限（PushEvent 仓库优先）
+const COMMIT_PAGES_MAX = 2; // 每仓 /commits 分页上限（per_page=100）
 const COMMIT_MSG_MAX = 160; // 提交标题（message 首行）折叠空白后的截断长度
 
 // ---------------------------------------------------------------- 小工具
@@ -283,125 +285,113 @@ function mapEvents(rawEvents, username, win) {
   return { pullRequests, reviews, issues };
 }
 
-// ---------------------------------------------------------------- 2. 提交（PushEvent → REST 复核）
+// ---------------------------------------------------------------- 2. 提交（按提交日期扫描仓库历史）
 
 /**
- * 一次 PushEvent 的提交检视（compare before...head，单次调用）：
- *   count     = 用户本人提交数（totals.commits 的唯一来源）
- *   messages  = 用户本人提交的 {sha, message, ts}（message 取首行、折叠空白截断 COMMIT_MSG_MAX）
- *   automated = 机器人提交数（author.login / commit.author.name 以 [bot] 结尾，或 author.type === "Bot"）
- *   bots      = 这些机器人提交的发起者身份（author.login || commit.author.name，空值跳过，去重数组）
- * 公共事件端点的 PushEvent.payload 只有 repository_id / push_id / ref / head / before，
- * 不含 size / commits —— 因此按 before...head 走 compare 复核（与 REST /repos/:o/:r/commits 的
- * user-authored 真值口径一致）。seenSha 为跨 push 的全局去重集合（compare 区间可能重叠），
- * 见过的 sha 直接跳过，保证“先去重后计数”（bot 与用户提交同样受此去重约束）。
- * 返回 null 表示无法复核（compare 失败 / before 缺失或为全零），由调用方回退到规格默认权重 1。
+ * 拉取某仓窗口内的提交历史：since / until 用窗口起止的真实 UTC ISO（不是 +08:00 串），
+ * 跟随 Link rel="next" 最多 COMMIT_PAGES_MAX 页（per_page=100）；
+ * 任何失败都返回 []（restGet 不抛错，已打警告）。
  */
-async function inspectPush(token, repoName, before, head, username, seenSha) {
-  if (!repoName || !before || !head || /^0+$/.test(before)) return null;
-  const m = /^([^/]+)\/(.+)$/.exec(repoName);
-  if (!m) return null;
-  const url =
-    `https://api.github.com/repos/${encodeURIComponent(m[1])}/${encodeURIComponent(m[2])}` +
-    `/compare/${encodeURIComponent(before)}...${encodeURIComponent(head)}`;
-  const got = await restGet(url, token, "commits");
-  const list = got && got.data && got.data.commits;
-  if (!Array.isArray(list)) return null;
-  const me = String(username ?? "").toLowerCase();
-  const isBotName = (name) => String(name ?? "").toLowerCase().endsWith("[bot]");
-  const result = { count: 0, messages: [], automated: 0, bots: new Set() };
-  for (const c of list) {
-    const sha = String(c.sha ?? "");
-    if (sha && seenSha.has(sha)) continue; // 跨 push 重叠区间：已计过的 sha 不再计
-    const bot =
-      c.author?.type === "Bot" || isBotName(c.author?.login) || isBotName(c.commit?.author?.name);
-    const mine = [c.author?.login, c.author?.name, c.commit?.author?.name].some(
-      (n) => String(n ?? "").toLowerCase() === me
-    );
-    if (bot) {
-      if (sha) seenSha.add(sha);
-      result.automated += 1; // 机器人提交：只进 automated，不进 totals
-      const who = c.author?.login || c.commit?.author?.name || "";
-      if (who) result.bots.add(who); // 记录是谁触发的（空身份跳过）
-    } else if (mine) {
-      if (sha) seenSha.add(sha);
-      result.count += 1;
-      result.messages.push({
-        sha,
-        message: collapse(String(c.commit?.message ?? "").split("\n")[0], COMMIT_MSG_MAX),
-        ts: c.commit?.committer?.date || c.commit?.author?.date || "",
-      });
-    }
-    // 他人提交：不计数（其 sha 也无需登记，重复出现时同样不计）
+async function fetchRepoCommits(token, owner, repoName, win) {
+  const base =
+    `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repoName)}` +
+    `/commits?since=${encodeURIComponent(new Date(win.startMs).toISOString())}` +
+    `&until=${encodeURIComponent(new Date(win.endMs).toISOString())}&per_page=100`;
+  const all = [];
+  let url = base;
+  for (let page = 1; page <= COMMIT_PAGES_MAX && url; page += 1) {
+    const got = await restGet(url, token, "commits");
+    if (!got) break; // 失败即止，已取部分仍可用（restGet 已打警告）
+    const chunk = got.data;
+    if (!Array.isArray(chunk)) break;
+    all.push(...chunk);
+    if (chunk.length === 0) break;
+    const next = /<([^>]+)>;\s*rel="next"/.exec(got.link);
+    url = next ? next[1] : null;
   }
-  return {
-    count: result.count,
-    messages: result.messages,
-    automated: result.automated,
-    bots: [...result.bots],
-  };
+  return all;
 }
 
 /**
- * 从窗口内 PushEvent 汇总逐仓提交：
- *   weight = payload.size ?? payload.commits?.length ??（compare 检视的用户提交数）?? 1
- * 前两项是规格口径（该端点实测不返回，保留分支以防上游补齐）；compare 复核失败才落回 1（无明细）。
- * 同仓多次 push 累计；用户提交经全局 sha 去重后计入；count>0 或 automated>0 的仓库进表
- * （纯机器人提交的仓库也保留 automated 行，并计入顶层 automatedCommits；
- * automatedBots 为该仓触发 automated 的机器人身份，去重后排序）。
+ * 按提交日期归属统计各仓窗口内的提交（不再走 PushEvent / compare —— 推送时间 ≠ 提交时间会漏计）：
+ * 扫描仓库集 = (a) 窗口内 PushEvent 的仓库（优先） + (b) ownRepos 中 pushed_at ≥ 窗口起点的仓库，
+ * 按 owner/repo 去重、上限 COMMIT_SCAN_REPOS_MAX。
+ * 逐条提交判定：
+ *   机器人（login / commit.author.name 以 [bot] 结尾，或 author.type === "Bot"）
+ *     → automated += 1，身份 login || name 进 bots 集合；
+ *   用户本人（login 或 commit.author.name 等于 username，忽略大小写）
+ *     → count += 1，messages.push({sha, message 首行, ts})；
+ *   其他人类提交 → 忽略。
+ * ts = committer.date || author.date，必须落在窗口内（防御）；全局按 sha 去重。
+ * count>0 或 automated>0 的仓库才进表；messages 按 ts 倒序，automatedBots 去重后排序。
  */
-async function buildCommits(rawEvents, token, username, win) {
-  const byRepo = new Map(); // repo → { count, messages, automated, bots }
-  const seenSha = new Set(); // 全轮跨 push 的 sha 去重（compare 区间可能重叠，bot 同样受约束）
-  const pushes = (rawEvents || []).filter(
-    (ev) => ev.type === "PushEvent" && inWindow(tsOf(ev.created_at), win) && ev.repo && ev.repo.name
-  );
-  let compared = 0;
-  let capWarned = false;
-  for (const ev of pushes) {
-    const repo = ev.repo.name;
-    const p = ev.payload || {};
-    const slot = byRepo.get(repo) || { count: 0, messages: [], automated: 0, bots: new Set() };
-    byRepo.set(repo, slot);
+async function buildCommits(rawEvents, token, username, win, ownRepos) {
+  // --- 扫描仓库集：(a) PushEvent 仓库优先，再补 (b) 窗口内推送过的自有仓库 ---
+  const seenRepos = new Set();
+  const queue = [];
+  const addRepo = (full) => {
+    if (!full || seenRepos.has(full) || queue.length >= COMMIT_SCAN_REPOS_MAX) return;
+    const m = /^([^/]+)\/(.+)$/.exec(full);
+    if (!m) return;
+    seenRepos.add(full);
+    queue.push({ owner: m[1], repoName: m[2], full });
+  };
+  for (const ev of rawEvents || []) {
+    if (ev.type !== "PushEvent" || !inWindow(tsOf(ev.created_at), win)) continue;
+    addRepo(ev.repo && ev.repo.name); // (a)
+  }
+  for (const r of ownRepos || []) {
+    if (tsOf(r.pushed_at) < win.startMs) continue; // (b)
+    addRepo(r.full_name || `${r.owner && r.owner.login}/${r.name}`);
+  }
 
-    const payloadWeight = p.size ?? p.commits?.length ?? null;
-    if (payloadWeight !== null) {
-      // 规格口径分支：payload 明细存在时直接用（该端点实测不返回，保留以防上游补齐）
-      const n = num(payloadWeight);
-      if (n > 0) slot.count += n;
-      continue;
-    }
-
-    let inspected = null;
-    if (compared >= PUSH_COMPARE_MAX) {
-      if (!capWarned) {
-        warn("commits", `窗口内 PushEvent 超过 ${PUSH_COMPARE_MAX} 次，超出部分按每次 1 计`);
-        capWarned = true;
+  const seenSha = new Set(); // 全局 sha 去重（fork 会带来同一提交出现在多个扫描仓库的情况）
+  const entries = [];
+  for (const { owner, repoName, full } of queue) {
+    const list = await fetchRepoCommits(token, owner, repoName, win);
+    if (list.length === 0) continue;
+    const slot = { count: 0, messages: [], automated: 0, bots: new Set() };
+    for (const c of list) {
+      const login = c.author?.login || "";
+      const name = c.commit?.author?.name || "";
+      const committerName = c.commit?.committer?.name || ""; // 规格要求采集（当前判定规则未用到）
+      const isBot =
+        /\[bot\]$/i.test(login) || /\[bot\]$/i.test(name) || c.author?.type === "Bot";
+      const isUser =
+        login.toLowerCase() === username.toLowerCase() ||
+        name.toLowerCase() === username.toLowerCase();
+      const ts = c.commit?.committer?.date || c.commit?.author?.date || "";
+      if (!inWindow(tsOf(ts), win)) continue; // 防御：提交时间必须落在窗口内
+      const sha = String(c.sha ?? "");
+      if (!sha || seenSha.has(sha)) continue;
+      seenSha.add(sha);
+      if (isBot) {
+        slot.automated += 1; // 机器人提交：只进 automated，不进 totals
+        const who = login || name;
+        if (who) slot.bots.add(who);
+      } else if (isUser) {
+        slot.count += 1;
+        slot.messages.push({
+          sha,
+          message: collapse(String(c.commit?.message ?? "").split("\n")[0], COMMIT_MSG_MAX),
+          ts,
+        });
       }
-    } else {
-      compared += 1;
-      inspected = await inspectPush(token, repo, p.before, p.head, username, seenSha);
+      // 其他人类提交：忽略
     }
-    if (inspected) {
-      slot.count += inspected.count;
-      slot.automated += inspected.automated;
-      slot.messages.push(...inspected.messages);
-      for (const bot of inspected.bots) slot.bots.add(bot);
-    } else {
-      slot.count += 1; // 规格默认权重，无消息明细
+    if (slot.count > 0 || slot.automated > 0) {
+      slot.messages.sort((a, b) => tsOf(b.ts) - tsOf(a.ts));
+      entries.push({
+        repo: full,
+        count: slot.count,
+        own: isOwnRepoName(full, username),
+        messages: slot.messages,
+        automated: slot.automated,
+        automatedBots: [...slot.bots].sort(), // 去重 + 排序
+      });
     }
   }
-  return [...byRepo.entries()]
-    .map(([repo, s]) => ({
-      repo,
-      count: s.count,
-      own: isOwnRepoName(repo, username),
-      messages: s.messages,
-      automated: s.automated,
-      automatedBots: [...s.bots].sort(), // 去重 + 排序
-    }))
-    .filter((x) => x.count > 0 || x.automated > 0)
-    .sort((a, b) => b.count - a.count || a.repo.localeCompare(b.repo));
+  return entries.sort((a, b) => b.count - a.count || a.repo.localeCompare(b.repo));
 }
 
 // ---------------------------------------------------------------- 3. 自有仓库 + Release
@@ -770,9 +760,10 @@ const byTsDesc = (a, b) => tsOf(b.ts) - tsOf(a.ts);
  *   { date, windowStart, windowEnd, username, generatedAt, empty,
  *     totals:{commits,prs,issues,reviews},   // = Σcommits[].count（仅用户提交）及各数组长度
  *     commits:[{repo,count,own,messages:[{sha,message,ts}],automated,automatedBots:[login]}],
- *                                             // PushEvent × compare 复核；messages 为用户提交标题，
- *                                             // sha 跨 push 去重；automated = 机器人提交数，
- *                                             // automatedBots = 触发它们的机器人身份（去重排序）
+ *                                             // 按提交日期扫描仓库历史（REST commits since/until，
+ *                                             // 真实 UTC ISO）；messages 为用户提交标题（ts 倒序），
+ *                                             // 全局 sha 去重；automated = 机器人提交数，
+ *                                             // automatedBots = 机器人身份（去重排序）
  *     automatedCommits:number,                // = Σcommits[].automated（不进 totals / empty）
  *     pullRequests:[{repo,number,title,url,action,ts,own,state?}],
  *     reviews:[{repo,number,title,url,ts,own}],
@@ -791,30 +782,33 @@ export async function collectDailyData({ token, username, date, previousData }) 
   // --- 1. 公共事件（窗口过滤；事件流本身就是公开数据）---
   const rawEvents = await fetchPublicEvents(token, username, win);
   const { pullRequests, reviews, issues } = mapEvents(rawEvents, username, win);
-  // --- 2. 提交：PushEvent 发现活跃仓库，REST compare 复核用户本人提交数 ---
-  const commits = await buildCommits(rawEvents, token, username, win);
   pullRequests.sort(byTsDesc);
   reviews.sort(byTsDesc);
   issues.sort(byTsDesc);
 
-  // --- 3. 自有仓库 → Release ---
+  // --- 2. 自有仓库（提交扫描 / Release / 星标三段共用）---
   const ownRepos = await fetchOwnRepos(token, username);
+
+  // --- 3. 提交：按提交日期扫描仓库历史，拆分用户本人 vs 机器人 ---
+  const commits = await buildCommits(rawEvents, token, username, win, ownRepos);
+
+  // --- 4. 自有仓库 → Release ---
   const releases = await fetchReleases(token, username, ownRepos, win);
 
-  // --- 4. 星标：全量清单持久化 + 展示仅列有变化的 ---
+  // --- 5. 星标：全量清单持久化 + 展示仅列有变化的 ---
   const starCounts = await fetchStarCounts(token, username, ownRepos);
   const starInventory = buildStarInventory(starCounts);
   const stars = buildStars(ownRepos, starCounts, previousData);
 
-  // --- 5. 我发起的条目（Search 定位，回复与状态变更共用同一目标列表与公开性缓存）---
+  // --- 6. 我发起的条目（Search 定位，回复与状态变更共用同一目标列表与公开性缓存）---
   const targets = await searchAuthoredTargets(token, username, win);
   const repoVisibility = new Map(); // 仓库公开性缓存（每仓只查一次，两段共用）
   const replies = await fetchReplies(token, username, win, targets, repoVisibility);
 
-  // --- 6. 他人对我 Issue/PR 的状态变更（closed / merged / reopened，不计入 totals）---
+  // --- 7. 他人对我 Issue/PR 的状态变更（closed / merged / reopened，不计入 totals）---
   const stateChanges = await fetchStateChanges(token, username, win, targets, repoVisibility);
 
-  // --- 7. 端点状态回填：以窗口结束时刻为准，原地写入 issues / pullRequests 的 state ---
+  // --- 8. 端点状态回填：以窗口结束时刻为准，原地写入 issues / pullRequests 的 state ---
   applyEndStates(issues, pullRequests, stateChanges);
 
   // --- 合计：只由实际展示的公开数据求和，保证 totals 与各段恒等 ---
@@ -917,7 +911,7 @@ async function main() {
     console.log(
       `${LOG}   · ${c.repo} ×${c.count}（自动 ${c.automated}` +
         `${c.automatedBots.length ? `：${c.automatedBots.join(", ")}` : ""}）` +
-        (c.messages.length ? "" : "（无 compare 明细）")
+        (c.messages.length ? "" : "（无用户提交）")
     );
     for (const m of c.messages) console.log(`${LOG}     - ${String(m.sha).slice(0, 7)} ${m.message}`);
   }

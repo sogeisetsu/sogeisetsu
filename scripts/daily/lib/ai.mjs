@@ -156,6 +156,7 @@ const SYSTEM_PROMPT = [
   "- releaseNotes: one entry ONLY for each release in the input, matching repo+tag exactly; each summary at most 3 sentences; use [] when there are no releases.",
   "- Commits: for the user's OWN commits (commits[].messages), summarize what they actually changed by synthesizing their commit messages — group and shorten them; do NOT list the messages verbatim.",
   "- If automatedCommits is non-zero (or a commit entry has automated > 0), mention only the automated commit count and who created them (the automatedBots logins), e.g. \"2 automated commits by github-actions[bot]\"; never describe the automated commits' contents.",
+  "- Issues: the issues total covers items you opened, closed, or commented on. Summarize it as \"opened or closed N issues\" (新开或关闭 N 个 issue) — never \"opened and closed\" / \"新开并关闭\", and never imply that all of them were closed. When the per-item actions are known, describe what actually happened (e.g. \"opened 3 issues, one of which was later closed\").",
   "- en and zh must state exactly the same facts.",
   "- zh must be natural Simplified Chinese, not a literal machine translation.",
   "- Neutral and factual: no hype, no speculation, no invented facts; keep repo names, numbers and tags verbatim from the input.",

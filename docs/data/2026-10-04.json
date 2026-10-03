@@ -3,20 +3,99 @@
   "windowStart": "2026-10-04T00:00:00+08:00",
   "windowEnd": "2026-10-05T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-03T18:19:31.508Z",
+  "generatedAt": "2026-10-03T18:52:41.170Z",
   "empty": false,
   "totals": {
-    "commits": 3,
+    "commits": 21,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
     {
-      "repo": "sogeisetsu/sogeisetsu",
-      "count": 3,
+      "repo": "sogeisetsu/meld-deepresearch",
+      "count": 11,
       "own": true,
       "messages": [
+        {
+          "sha": "fad250cd99733f340ec2e72cda737fed11682712",
+          "message": "merge: drop local worktree ignore blocks",
+          "ts": "2026-10-03T18:19:07Z"
+        },
+        {
+          "sha": "f77bf24283764683c5d22f8719dd73f311e05999",
+          "message": "chore: drop local worktree ignore blocks",
+          "ts": "2026-10-03T18:19:07Z"
+        },
+        {
+          "sha": "8914a93791488c1834e4670709e8e86979ea91db",
+          "message": "merge: live Q2 evaluation results",
+          "ts": "2026-10-03T18:13:15Z"
+        },
+        {
+          "sha": "ab51ecae6061974480a1e89c86fd48bc9c6bce3e",
+          "message": "docs(eval): add live Q2 comparison results across three skills",
+          "ts": "2026-10-03T18:13:15Z"
+        },
+        {
+          "sha": "8eaeb7faddb29f9312083d48fb0c46860ebef22c",
+          "message": "merge: deep research evaluation standard",
+          "ts": "2026-10-03T17:56:20Z"
+        },
+        {
+          "sha": "74a04ab2f81d2e0ca16e70c6dafd191ac99dc26d",
+          "message": "merge: landing-page feedback",
+          "ts": "2026-10-03T17:56:20Z"
+        },
+        {
+          "sha": "b1d2bd929860bd11b03604a033d95bbe469e6044",
+          "message": "merge: zh readme stray-space cleanup",
+          "ts": "2026-10-03T17:56:19Z"
+        },
+        {
+          "sha": "21733183ef512dfbd6fa43a144e307a4a390fcf1",
+          "message": "chore: ignore local worktree lanes",
+          "ts": "2026-10-03T17:56:19Z"
+        },
+        {
+          "sha": "1747454699b37d1d382373ed5831bf7b3ed4df72",
+          "message": "docs(eval): add deep research evaluation standard and three-skill comparison",
+          "ts": "2026-10-03T17:56:11Z"
+        },
+        {
+          "sha": "de1a1a44cb7626de9aceae02f0897b8ba91dac63",
+          "message": "fix(pages): land landing-page feedback and drop card reveals",
+          "ts": "2026-10-03T17:56:11Z"
+        },
+        {
+          "sha": "b628716d8359898c90acbba67d0b0b5a70c8ea43",
+          "message": "docs(zh): remove stray spaces around em dashes",
+          "ts": "2026-10-03T17:56:11Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 7,
+      "own": true,
+      "messages": [
+        {
+          "sha": "c27e2583897543f5edce3f0cdb0ef8bae8ec478a",
+          "message": "feat: 自动提交行补充「由谁发起 + 不计入总数」",
+          "ts": "2026-10-03T18:20:04Z"
+        },
+        {
+          "sha": "db5f063373c49aacac57e33b4aef43f2d62dd2ad",
+          "message": "fix: 首页→报告链接加数据版本缓存击穿",
+          "ts": "2026-10-03T18:07:49Z"
+        },
+        {
+          "sha": "7a76cfbb0bab87cf1ee0397485e32c20db28e807",
+          "message": "feat: 纯机器人提交的仓库保留（只显次数）",
+          "ts": "2026-10-03T18:01:09Z"
+        },
         {
           "sha": "66506d61ca355308b09af0829b8b1790cc971d1b",
           "message": "feat: 条目状态徽章 + UTC+8 时间 + 提交标题入摘要",
@@ -28,9 +107,38 @@
           "ts": "2026-10-03T16:45:09Z"
         },
         {
+          "sha": "6aa3de0d1a92f8e0bd0fcad2e56e2d74e07524a5",
+          "message": "feat: 状态变更分节 + 时间/文案修正 + AI 输出加固",
+          "ts": "2026-10-03T16:41:51Z"
+        },
+        {
           "sha": "76933b056e689ebb01c7fd9fcb3e2f6de1f6f4ab",
           "message": "feat: 加 GitHub 主页按钮；30 天卡改每 2 小时；AI 失败保留上次叙述",
           "ts": "2026-10-03T16:08:29Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "count": 3,
+      "own": true,
+      "messages": [
+        {
+          "sha": "e95b9225fefabccc7e1ba1b139b5585708f9d397",
+          "message": "Merge branch 'feat/skill-remediation'",
+          "ts": "2026-10-03T17:42:22Z"
+        },
+        {
+          "sha": "acc41857672b45c2d80e4f0e8670d74cee1ebcea",
+          "message": "docs: record vision verification, Windows refresh path, role-overview column",
+          "ts": "2026-10-03T17:42:14Z"
+        },
+        {
+          "sha": "e6a35307493d9803dea11cff28b97cf65794e700",
+          "message": "feat: add agent-discovery and snapshot-summary scripts",
+          "ts": "2026-10-03T17:42:13Z"
         }
       ],
       "automated": 0,
@@ -138,28 +246,28 @@
   "stateChanges": [],
   "ai": {
     "en": {
-      "headline": "3 commits to sogeisetsu/sogeisetsu; opencode-go-model-picker v1.3.0 released",
-      "summary": "On 2026-10-04, sogeisetsu made 3 commits to the sogeisetsu/sogeisetsu repository. The commits added entry status badges with UTC+8 time display and commit titles in summaries, fixed status change badges to preserve the actor's original case and introduced a --rerender flag, and added a GitHub homepage button, changed the 30-day card to update every 2 hours, and made AI failures retain the last narrative. A release was published for sogeisetsu/opencode-go-model-picker at v1.3.0, rolling up v1.2.0 and v1.3.0 work. The release introduced scripts/discover-agents.mjs for read-only agent discovery and chain safety checks, scripts/snapshot-summary.mjs for compact model snapshot digests, and added a role overview column to the recommendation table.",
+      "headline": "21 commits across 3 repos; opencode-go-model-picker v1.3.0 released",
+      "summary": "On 2026-10-04, sogetisetsu made 21 commits across three repositories with no pull requests, issues, or reviews. In meld-deepresearch (11 commits), work centered on evaluation documentation — adding live Q2 comparison results across three skills and a deep research evaluation standard — along with landing-page feedback fixes and cleanup of local worktree ignore blocks. In sogetisetsu (7 commits), the daily report generator was improved: automated-commit lines now show who initiated them and note they do not count toward totals, pure-bot repos are retained showing only counts, status-change badges preserve actor casing, a --rerender flag was added, status changes were split into their own section, and a GitHub homepage button was added with the 30-day card refreshing every 2 hours. In opencode-go-model-picker (3 commits), agent-discovery and snapshot-summary scripts were added, along with documentation for vision verification and a role-overview column. The repo also published release v1.3.0, rolling up v1.2.0 and v1.3.0 work including the new discover-agents.mjs CLI for listing custom agents and flagging risky fallback chains, and snapshot-summary.mjs for compact model snapshot digests.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v1.3.0",
-          "summary": "Rolled up v1.2.0 and v1.3.0 work. Introduced scripts/discover-agents.mjs for read-only agent discovery and chain safety checks, and scripts/snapshot-summary.mjs for compact model snapshot digests. Added a role overview column to the recommendation table."
+          "summary": "Rolls up v1.2.0 and v1.3.0. Adds discover-agents.mjs, a read-only CLI that lists custom agents and flags risky fallback chains (duplicate model IDs, chains outside 2–4 entries, unconfirmed non-Go fallback IDs, unverified vision lanes). Also adds snapshot-summary.mjs for a compact model snapshot digest (~97% shorter than raw), and a role-overview column to the recommendation table."
         }
       ]
     },
     "zh": {
-      "headline": "sogeisetsu/sogeisetsu 3 次提交；opencode-go-model-picker 发布 v1.3.0",
-      "summary": "2026-10-04，sogeisetsu 在 sogeisetsu/sogeisetsu 仓库提交了 3 次代码。提交内容包括：新增条目状态徽章、UTC+8 时间显示及提交标题入摘要；修复状态变更徽章保留 actor 原始大小写并新增 --rerender 参数；添加 GitHub 主页按钮、30 天卡片改为每 2 小时更新、AI 失败时保留上次叙述。同日，sogeisetsu/opencode-go-model-picker 发布了 v1.3.0，合并了 v1.2.0 和 v1.3.0 的工作。该版本引入了 scripts/discover-agents.mjs 用于只读代理发现和链安全检查、scripts/snapshot-summary.mjs 用于生成紧凑的模型快照摘要，并在推荐表格中新增了角色概览列。",
+      "headline": "3 个仓库共 21 次提交；opencode-go-model-picker 发布 v1.3.0",
+      "summary": "2026-10-04，sogeisetsu 在三个仓库共提交 21 次，无 PR、issue 或 review。meld-deepresearch（11 次提交）主要围绕评估文档——添加三项技能的 Q2 实时对比结果和深度研究评估标准——以及落地页反馈修复和本地 worktree 忽略块清理。sogeisetsu（7 次提交）改进了日报生成器：自动提交行补充了发起人并标注不计入总数，纯机器人提交的仓库仅显示次数，状态变更徽章保留 actor 原始大小写，新增 --rerender 参数，状态变更独立分节，并添加了 GitHub 主页按钮、30 天卡片改为每 2 小时刷新。opencode-go-model-picker（3 次提交）新增了 agent-discovery 和 snapshot-summary 脚本，并补充了视觉验证和角色概览列的文档。该仓库还发布了 v1.3.0，合并了 v1.2.0 和 v1.3.0 的工作，包括新增的 discover-agents.mjs CLI（列出自定义 agent 并标记风险回退链）和 snapshot-summary.mjs（紧凑模型快照摘要）。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v1.3.0",
-          "summary": "合并了 v1.2.0 和 v1.3.0 的工作。引入了 scripts/discover-agents.mjs 用于只读代理发现和链安全检查，以及 scripts/snapshot-summary.mjs 用于生成紧凑的模型快照摘要。在推荐表格中新增了角色概览列。"
+          "summary": "合并了 v1.2.0 和 v1.3.0 的工作。新增 discover-agents.mjs，一个只读 CLI，可列出自定义 agent 并标记风险回退链（重复模型 ID、链长不在 2–4 条、未确认的非 Go 回退 ID、未验证的视觉通道）。同时新增 snapshot-summary.mjs 用于紧凑模型快照摘要（比原始文件小约 97%），并在推荐表中添加了角色概览列。"
         }
       ]
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "dc639abeededc2e11bd9cea5db4680c6ee8d1f7704185fefeeb8318737f6f427"
+  "dataHash": "31eec2f518a03f72d9d7d17f48a4c59b633351eb86be51c0ea4dcf9bac709975"
 }
