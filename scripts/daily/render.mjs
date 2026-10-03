@@ -181,10 +181,8 @@ function toMs(ts) {
 function fmtTime(ts) {
   const t = toMs(ts);
   if (!t) return '';
-  const d = new Date(t);
-  const hh = String(d.getUTCHours()).padStart(2, '0');
-  const mm = String(d.getUTCMinutes()).padStart(2, '0');
-  return `${hh}:${mm} UTC`;
+  const { hh, mm } = utc8(t);
+  return `${hh}:${mm} · UTC+8`;
 }
 
 function fmtDate(value) {
@@ -274,6 +272,18 @@ function actionBadge(action) {
   const m = map[String(action == null ? '' : action).toLowerCase()];
   if (!m) return '';
   return `<span class="badge ${m.cls}">${i18n(m.en, m.zh)}</span>`;
+}
+
+/**
+ * Badge for an issue/PR row: prefer the item's end-of-window `state`
+ * (open|closed|merged), falling back to its original `action` (e.g. commented).
+ */
+function statusBadge(it) {
+  const state = String(it && it.state != null ? it.state : '').toLowerCase();
+  if (state === 'open') return actionBadge('opened');
+  if (state === 'closed') return actionBadge('closed');
+  if (state === 'merged') return actionBadge('merged');
+  return actionBadge(it && it.action);
 }
 
 function langToggle() {
@@ -379,13 +389,33 @@ function commitsSection(items, totals) {
       const own = it.own
         ? `<span class="chip chip-own">${i18n('Owned', '自有')}</span>`
         : `<span class="chip chip-ext">${i18n('External', '外部')}</span>`;
+      const messages = A(it.messages)
+        .map((m) => (m && typeof m === 'object' ? m.message : m))
+        .map((m) => String(m == null ? '' : m).trim())
+        .filter(Boolean);
+      const msgList = messages.length
+        ? `<ul class="commit-msgs">` +
+          messages.map((msg) => `<li class="commit-msg">${esc(msg)}</li>`).join('') +
+          `</ul>`
+        : '';
+      const autoCount = num(it.automated);
+      const automated =
+        autoCount > 0
+          ? `<p class="commit-auto">${i18n(
+              `· ${autoCount} automated commits`,
+              `· 另 ${autoCount} 次自动提交`
+            )}</p>`
+          : '';
       return (
-        `<li class="row">` +
+        `<li class="row-block">` +
+        `<div class="row">` +
         `<div class="row-lead">` +
         `<span class="row-name">${esc(it.repo)}</span>${own}` +
         `</div>` +
         `<span class="row-count"><span class="num">${esc(num(it.count))}</span>` +
         `<span class="unit">${i18n('commits', '次提交')}</span></span>` +
+        `</div>` +
+        `${msgList}${automated}` +
         `</li>`
       );
     })
@@ -399,7 +429,7 @@ function prSection(items, totals) {
       const title = String(it.title || '').trim() ? it.title : UNTITLED();
       return (
         `<li class="row row-block">` +
-        `<div class="row-head">${actionBadge(it.action)}${extLink(it.url, title, 'row-title')}</div>` +
+        `<div class="row-head">${statusBadge(it)}${extLink(it.url, title, 'row-title')}</div>` +
         `<div class="row-meta">${repoSpan(it.repo)}${SEP}<span class="num">#${esc(it.number)}</span>${timeHtml(it.ts)}</div>` +
         `</li>`
       );
@@ -429,7 +459,7 @@ function issuesSection(items, totals) {
       const title = String(it.title || '').trim() ? it.title : UNTITLED();
       return (
         `<li class="row row-block">` +
-        `<div class="row-head">${actionBadge(it.action)}${extLink(it.url, title, 'row-title')}</div>` +
+        `<div class="row-head">${statusBadge(it)}${extLink(it.url, title, 'row-title')}</div>` +
         `<div class="row-meta">${repoSpan(it.repo)}${SEP}<span class="num">#${esc(it.number)}</span>${timeHtml(it.ts)}</div>` +
         `</li>`
       );
@@ -837,6 +867,14 @@ h1{margin:0;font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.025
 .repo{font-family:var(--mono);font-size:.8rem}
 .time{font-variant-numeric:tabular-nums;font-size:.78rem;white-space:nowrap}
 .dot{color:var(--outline);padding:0 1px}
+.commit-msgs{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:3px}
+.commit-msg{
+  position:relative;padding-left:14px;font-size:.8rem;color:var(--on-surface-variant);
+  overflow-wrap:anywhere;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.commit-msg::before{content:'·';position:absolute;left:3px;color:var(--outline);font-weight:800}
+.commit-auto{margin:7px 0 0;font-size:.77rem;color:var(--on-surface-variant)}
 
 .link{color:inherit;text-decoration:underline;text-decoration-color:var(--outline);text-underline-offset:3px;transition:color .15s ease,text-decoration-color .15s ease}
 .link:hover{color:var(--primary);text-decoration-color:var(--primary)}

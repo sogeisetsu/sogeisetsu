@@ -43,8 +43,10 @@ import { pathToFileURL } from "node:url";
 const LOG = "[daily-report]";
 const SENSENOVA_BASE = "https://token.sensenova.cn/v1";
 const SECTION_CAP = 30; // 每个板块最多喂 30 条
+const COMMIT_MSG_CAP = 10; // 每个仓库最多喂 10 条 commit message
+const COMMIT_MSG_LEN = 200; // 每条 commit message 截断到 200 字符
 const RELEASE_NOTES_CAP = 800; // 每条 release notes 最多 800 字符
-const MAX_TOKENS = 2000; // chat max_tokens / responses max_output_tokens 共用
+const MAX_TOKENS = 4096; // chat max_tokens / responses max_output_tokens 共用（中英双摘要 + JSON 结构，2000 会被截断导致解析失败）
 const SUMMARY_MIN_SENTENCES = 2; // 提示词目标 4-8 句；校验放宽容差，避免把「9 句」这种好结果误拒
 const SUMMARY_MAX_SENTENCES = 12;
 const SUMMARY_MAX_CHARS = 1400; // summary 目标 ~900 字符，校验放宽留余量（模型常写到 ~1000+，避免误拒）
@@ -152,6 +154,8 @@ const SYSTEM_PROMPT = [
   "- headline: at most 80 characters.",
   "- summary: 4-8 sentences, at most about 900 characters. Name concrete specifics from the input — repository names, issue/PR numbers and titles, who replied, what a release changed — and describe what actually happened that day, in order. No filler, no repeating the headline, no generic 'a busy day'.",
   "- releaseNotes: one entry ONLY for each release in the input, matching repo+tag exactly; each summary at most 3 sentences; use [] when there are no releases.",
+  "- Commits: for the user's OWN commits (commits[].messages), summarize what they actually changed by synthesizing their commit messages — group and shorten them; do NOT list the messages verbatim.",
+  "- If automatedCommits is non-zero (or a commit entry has automated > 0), mention only the automated commit count; do not describe those automated commits.",
   "- en and zh must state exactly the same facts.",
   "- zh must be natural Simplified Chinese, not a literal machine translation.",
   "- Neutral and factual: no hype, no speculation, no invented facts; keep repo names, numbers and tags verbatim from the input.",
@@ -167,7 +171,20 @@ function buildPrompts(data) {
     windowEnd: data.windowEnd,
     username: data.username,
     totals: data.totals || {},
-    commits: cap(data.commits),
+    // commit 明细：只留消息字符串（丢 sha/ts），每仓库最多 10 条、每条 200 字符
+    commits: cap(data.commits).map((c) => ({
+      repo: c?.repo,
+      count: c?.count,
+      own: c?.own,
+      automated: c?.automated,
+      messages: (Array.isArray(c?.messages) ? c.messages : [])
+        .slice(0, COMMIT_MSG_CAP)
+        .map((m) =>
+          String((m && typeof m === "object" ? m.message : m) ?? "").slice(0, COMMIT_MSG_LEN)
+        )
+        .filter((s) => s.length > 0),
+    })),
+    automatedCommits: data.automatedCommits ?? 0,
     pullRequests: cap(data.pullRequests),
     reviews: cap(data.reviews),
     issues: cap(data.issues),
