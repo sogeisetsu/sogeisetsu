@@ -29,6 +29,11 @@ const FONT_STACK =
 const HEADLINE_STACK =
   '"Chomsky", "Songti SC", "SimSun", "Noto Serif CJK SC", STSong, serif';
 
+// Chinese page headline: no blackletter. 黑体 (sans-serif) so Latin letters
+// inside the title (e.g. "sogeisetsu" / "GitHub") also render sans, not Chomsky.
+const HEADLINE_ZH_STACK =
+  '-apple-system, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", "Heiti SC", "SimHei", "Noto Sans CJK SC", sans-serif';
+
 const MONO_STACK =
   'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
 
@@ -787,6 +792,7 @@ function pageStyle(assetPrefix = '') {
   --shadow:0 1px 2px rgba(0,0,0,.05);
   --font:${FONT_STACK};
   --headline:${HEADLINE_STACK};
+  --headline-zh:${HEADLINE_ZH_STACK};
   --mono:${MONO_STACK};
 }
 @media (prefers-color-scheme: dark){
@@ -880,6 +886,7 @@ html[data-lang="zh"] .langbtn[data-set-lang="zh"]{
   text-transform:uppercase;color:var(--primary);
 }
 h1{margin:0;font-family:var(--headline);font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.01em;font-weight:400}
+html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
 .hero-sub{margin:12px 0 0;color:var(--on-surface-variant);font-size:.94rem;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 
 /* ---- cards ---- */
