@@ -230,6 +230,31 @@ function i18n(en, zh) {
 
 const UNTITLED = () => i18n('(untitled)', '(无标题)');
 
+/**
+ * Split prose into display paragraphs. `zh` splits after each CJK terminator
+ * (。！？), keeping it attached; other languages split on `[.!?]` only when an
+ * uppercase letter / digit / quote / bracket follows, so `v1.3.0`, `file.mjs`
+ * and `e.g.` stay intact. Newlines are hard breaks; blank input yields [].
+ */
+function splitParagraphs(text, lang) {
+  const src = String(text == null ? '' : text).replace(/\r\n?/g, '\n');
+  if (!src.trim()) return [];
+  const out = [];
+  for (const rawLine of src.split('\n')) {
+    const line = rawLine.trim();
+    if (!line) continue;
+    const parts =
+      lang === 'zh'
+        ? line.match(/[^。！？]*[。！？]|[^。！？]+/g) || [line]
+        : line.split(/(?<=[.!?])\s+(?=[A-Z0-9"'(])/);
+    for (const p of parts) {
+      const s = p.trim();
+      if (s) out.push(s);
+    }
+  }
+  return out.length ? out : [src.trim()];
+}
+
 // ---------------------------------------------------------------- fragments
 
 const SEP = '<span class="dot">·</span>';
@@ -640,14 +665,23 @@ function aiSummaryBlock(ai) {
   const en = ai.en && typeof ai.en === 'object' ? ai.en : {};
   const zh = ai.zh && typeof ai.zh === 'object' ? ai.zh : {};
   const headline = i18n(en.headline, zh.headline);
-  const summary = i18n(en.summary, zh.summary);
+  const enSummary = String(en.summary == null ? '' : en.summary);
+  const zhSummary = String(zh.summary == null || zh.summary === '' ? enSummary : zh.summary);
+  const enParas = splitParagraphs(enSummary, 'en');
+  const zhParas = splitParagraphs(zhSummary, 'zh');
+  const parasHtml = (paras) => paras.map((p) => `<p>${esc(p)}</p>`).join('');
+  const summaryHtml =
+    enParas.join('\u0000') === zhParas.join('\u0000')
+      ? `<div class="ai-summary">${parasHtml(enParas)}</div>`
+      : `<div class="ai-summary i18n" data-lang="en">${parasHtml(enParas)}</div>` +
+        `<div class="ai-summary i18n" data-lang="zh">${parasHtml(zhParas)}</div>`;
   const hasHeadline = String(en.headline || zh.headline || '').trim() !== '';
   const hasSummary = String(en.summary || zh.summary || '').trim() !== '';
   return (
     `<section class="card ai">` +
     `<div class="ai-top">${badge}</div>` +
     (hasHeadline ? `<h2 class="ai-headline">${headline}</h2>` : '') +
-    (hasSummary ? `<p class="ai-summary">${summary}</p>` : '') +
+    (hasSummary ? summaryHtml : '') +
     (hasHeadline || hasSummary
       ? ''
       : `<p class="ai-unavailable">${i18n(
@@ -684,7 +718,10 @@ function footerBlock(generatedAt) {
     : '';
   return (
     `<footer class="foot">` +
-    `<span>${i18n('Data from GitHub public activity.', '数据来自 GitHub 公开活动。')}</span>` +
+    `<span>${i18n(
+      'Data from public GitHub activity; commit counts exclude merge commits.',
+      '数据来自 GitHub 公开活动；提交统计不含合并提交。'
+    )}</span>` +
     (when ? `<span class="foot-gen">${i18n('Generated', '生成于')} ${when}</span>` : '') +
     `</footer>`
   );
@@ -955,6 +992,9 @@ h1{margin:0;font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.025
 .ai-badge svg{width:16px;height:16px}
 .ai-headline{margin:0 0 8px;font-size:clamp(1.15rem,3.6vw,1.5rem);line-height:1.25;font-weight:800;letter-spacing:-.015em}
 .ai-summary{margin:0;font-size:.98rem;color:var(--on-surface-variant)}
+.ai-summary.i18n[data-lang]{display:block}
+.ai-summary p{margin:0 0 .55em}
+.ai-summary p:last-child{margin-bottom:0}
 .ai-unavailable{
   margin:0;display:flex;align-items:center;gap:10px;
   background:var(--surface-dim);border:1px dashed var(--outline);
@@ -1189,7 +1229,9 @@ export function renderMarkdown({ data, ai } = {}) {
     const en = ai.en && typeof ai.en === 'object' ? ai.en : {};
     const wrote = [];
     if (String(en.headline || '').trim()) wrote.push(`**${mdInline(en.headline)}**`);
-    if (String(en.summary || '').trim()) wrote.push(mdInline(en.summary));
+    if (String(en.summary || '').trim()) {
+      for (const p of splitParagraphs(en.summary, 'en')) wrote.push(mdInline(p));
+    }
     if (wrote.length) {
       for (const w of wrote) {
         out.push(w);

@@ -316,7 +316,8 @@ async function fetchRepoCommits(token, owner, repoName, win) {
  * 按提交日期归属统计各仓窗口内的提交（不再走 PushEvent / compare —— 推送时间 ≠ 提交时间会漏计）：
  * 扫描仓库集 = (a) 窗口内 PushEvent 的仓库（优先） + (b) ownRepos 中 pushed_at ≥ 窗口起点的仓库，
  * 按 owner/repo 去重、上限 COMMIT_SCAN_REPOS_MAX。
- * 逐条提交判定：
+ * 逐条提交判定（合并提交整体排除：parents 多于 1 个的提交在归属判定与 sha 去重之前即跳过，
+ * 既不算用户本人提交、也不算机器人提交，不产生 messages）：
  *   机器人（login / commit.author.name 以 [bot] 结尾，或 author.type === "Bot"）
  *     → automated += 1，身份 login || name 进 bots 集合；
  *   用户本人（login 或 commit.author.name 等于 username，忽略大小写）
@@ -352,6 +353,7 @@ async function buildCommits(rawEvents, token, username, win, ownRepos) {
     if (list.length === 0) continue;
     const slot = { count: 0, messages: [], automated: 0, bots: new Set() };
     for (const c of list) {
+      if (Array.isArray(c.parents) && c.parents.length > 1) continue; // 合并提交：不计用户也不计机器人
       const login = c.author?.login || "";
       const name = c.commit?.author?.name || "";
       const committerName = c.commit?.committer?.name || ""; // 规格要求采集（当前判定规则未用到）
