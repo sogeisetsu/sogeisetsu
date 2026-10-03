@@ -106,7 +106,7 @@ function listDays() {
       const j = readJsonIfExists(path.join(DATA_DIR, `${d}.json`));
       return {
         date: d,
-        url: `./report/${d}.html`,
+        url: `./report/${d}.html${j?.dataHash ? `?v=${String(j.dataHash).slice(0, 10)}` : ""}`,
         headline_en: j?.ai?.en?.headline ?? null,
         headline_zh: j?.ai?.zh?.headline ?? null,
         empty: j?.empty === true,
