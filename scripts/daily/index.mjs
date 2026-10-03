@@ -13,8 +13,9 @@
  *   docs/data/YYYY-MM-DD.json 为结构化真相源，含 dataHash 供「无变化跳过」。
  *
  * 用法：
- *   node scripts/daily/index.mjs [--date=YYYY-MM-DD] [--force] [--dry-run] [--no-ai]
+ *   node scripts/daily/index.mjs [--date=YYYY-MM-DD] [--rerender] [--force] [--dry-run] [--no-ai]
  *   --date      只处理指定自然日（默认：同时处理「昨天（定稿）」与「今天（滚动）」）
+ *   --rerender  只用已存 JSON 重新渲染 HTML/MD 与 index，不抓数据、不调 AI（改渲染代码后用）
  *   --force     忽略内容哈希，强制重新生成
  *   --dry-run   只打印摘要，不写任何文件
  *   --no-ai     跳过 AI 调用，直接产出「无叙述」确定版（联调用）
@@ -55,6 +56,7 @@ const DRY_RUN = args.includes("--dry-run");
 const NO_AI = args.includes("--no-ai");
 const FORCE = args.includes("--force");
 const DATE_ARG = argVal("date");
+const RERENDER = args.includes("--rerender");
 
 /** Asia/Shanghai 日历日，往前推 days 天，返回 YYYY-MM-DD。 */
 function cstDayMinus(days) {
@@ -110,6 +112,16 @@ function listDays() {
         empty: j?.empty === true,
       };
     });
+}
+
+/** 扫描 docs/data，返回所有已存在的日期（新→旧）。 */
+function listDateStrings() {
+  if (!existsSync(DATA_DIR)) return [];
+  return readdirSync(DATA_DIR)
+    .filter((f) => f.endsWith(".json") && DATE_RE.test(f.slice(0, 10)))
+    .map((f) => f.slice(0, 10))
+    .sort()
+    .reverse();
 }
 
 function sectionCount(data) {
@@ -184,6 +196,25 @@ async function processDate(date) {
 // ---------------------------------------------------------------- 主流程
 
 async function main() {
+  if (RERENDER) {
+    const dates = DATE_ARG ? [DATE_ARG] : listDateStrings();
+    for (const d of dates) {
+      const j = readJsonIfExists(path.join(DATA_DIR, `${d}.json`));
+      if (!j) {
+        console.warn(`[daily-report] ${d} 无数据文件，跳过`);
+        continue;
+      }
+      const ai = j.ai || null;
+      writeAtomic(path.join(REPORT_DIR, `${d}.html`), renderReportPage({ data: j, ai }));
+      writeAtomic(path.join(REPORT_DIR, `${d}.md`), renderMarkdown({ data: j, ai }));
+      console.log(`[daily-report] 重新渲染 docs/report/${d}.html/.md`);
+    }
+    const days = listDays();
+    writeAtomic(INDEX_PATH, renderIndexPage({ days, generatedAt: new Date().toISOString(), username: USERNAME }));
+    console.log(`[daily-report] 已重写 docs/index.html（归档 ${days.length} 天）`);
+    return;
+  }
+
   // 默认：同时处理「昨天（定稿）」与「今天（滚动）」
   const dates = DATE_ARG ? [DATE_ARG] : [cstDayMinus(1), cstDayMinus(0)];
 

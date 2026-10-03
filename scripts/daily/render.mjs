@@ -447,9 +447,19 @@ function stateChangeBadge(action, actor) {
   const m = map[String(action == null ? '' : action).toLowerCase()];
   if (!m) return '';
   const login = String(actor == null ? '' : actor).trim();
-  const en = login ? `${m.en} by @${login}` : m.en;
-  const zh = login ? `被 @${login} ${m.zh}` : m.zh;
-  return `<span class="badge ${m.cls}">${i18n(en, zh)}</span>`;
+  // Keep the action word uppercased (badge style) but let the login keep its
+  // true case: the actor lives outside the uppercase context.
+  const who = login ? `<span class="badge-who">@${esc(login)}</span>` : '';
+  const actionEn = `<span class="badge-action">${esc(m.en)}</span>`;
+  const actionZh = `<span class="badge-action">${esc(m.zh)}</span>`;
+  const en = who ? `${actionEn} by ${who}` : actionEn;
+  const zh = who ? `被 ${who} ${actionZh}` : actionZh;
+  const inner =
+    en === zh
+      ? en
+      : `<span class="i18n" data-lang="en">${en}</span>` +
+        `<span class="i18n" data-lang="zh">${zh}</span>`;
+  return `<span class="badge ${m.cls}">${inner}</span>`;
 }
 
 function stateChangesSection(items) {
@@ -845,6 +855,8 @@ h1{margin:0;font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.025
 .badge-merged{background:var(--ok-container);color:var(--on-ok-container)}
 .badge-closed{background:var(--err-container);color:var(--on-err-container)}
 .badge-commented,.badge-reviewed{background:var(--secondary-container);color:var(--on-secondary-container)}
+.badge .badge-action{text-transform:uppercase}
+.badge .badge-who{text-transform:none;letter-spacing:normal}
 
 /* ---- releases ---- */
 .release-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px}

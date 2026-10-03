@@ -188,6 +188,8 @@ h1{margin:0;font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.025
 .badge-merged{background:var(--ok-container);color:var(--on-ok-container)}
 .badge-closed{background:var(--err-container);color:var(--on-err-container)}
 .badge-commented,.badge-reviewed{background:var(--secondary-container);color:var(--on-secondary-container)}
+.badge .badge-action{text-transform:uppercase}
+.badge .badge-who{text-transform:none;letter-spacing:normal}
 
 /* ---- releases ---- */
 .release-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
@@ -308,7 +310,7 @@ h1{margin:0;font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.025
 <ul class="daylist">
 <li><a class="day" href="./report/2026-10-04.html"><span class="day-date"><span class="i18n" data-lang="en">Oct 4, 2026</span><span class="i18n" data-lang="zh">2026年10月4日</span></span><span class="day-head"><span class="i18n" data-lang="en">sogeisetsu made 1 commit to sogeisetsu/sogeisetsu on 2026-10-04</span><span class="i18n" data-lang="zh">sogeisetsu 于 2026-10-04 向 sogeisetsu/sogeisetsu 提交 1 次代码</span></span></a></li><li><a class="day" href="./report/2026-10-03.html"><span class="day-date"><span class="i18n" data-lang="en">Oct 3, 2026</span><span class="i18n" data-lang="zh">2026年10月3日</span></span><span class="day-head"><span class="i18n" data-lang="en">3 issues opened on openchamber; 3 commits to sogeisetsu/sogeisetsu</span><span class="i18n" data-lang="zh">在 openchamber 上提交 3 个 issue；向 sogeisetsu/sogeisetsu 推送 3 次提交</span></span></a></li><li><a class="day" href="./report/2026-10-02.html"><span class="day-date"><span class="i18n" data-lang="en">Oct 2, 2026</span><span class="i18n" data-lang="zh">2026年10月2日</span></span><span class="day-head day-head-empty"><span class="i18n" data-lang="en">A quiet day</span><span class="i18n" data-lang="zh">安静的一天</span></span></a></li>
 </ul>
-<footer class="foot"><span><span class="i18n" data-lang="en">Data from GitHub public activity.</span><span class="i18n" data-lang="zh">数据来自 GitHub 公开活动。</span></span><span class="foot-gen"><span class="i18n" data-lang="en">Generated</span><span class="i18n" data-lang="zh">生成于</span> <time datetime="2026-10-03T16:41:31.290Z">2026-10-04 00:41 · UTC+8</time></span></footer>
+<footer class="foot"><span><span class="i18n" data-lang="en">Data from GitHub public activity.</span><span class="i18n" data-lang="zh">数据来自 GitHub 公开活动。</span></span><span class="foot-gen"><span class="i18n" data-lang="en">Generated</span><span class="i18n" data-lang="zh">生成于</span> <time datetime="2026-10-03T16:44:50.039Z">2026-10-04 00:44 · UTC+8</time></span></footer>
 </div>
 <script>(function(){function sync(l){var a=document.querySelectorAll('[data-set-lang]');for(var i=0;i<a.length;i++){a[i].setAttribute('aria-pressed',a[i].getAttribute('data-set-lang')===l?'true':'false');}}function set(l){if(l!=='en'&&l!=='zh')return;var e=document.documentElement;e.setAttribute('data-lang',l);e.lang=(l==='zh')?'zh-CN':'en';try{localStorage.setItem('gh-report-lang',l);}catch(err){}sync(l);}document.addEventListener('click',function(ev){var t=ev.target;var b=(t&&t.closest)?t.closest('[data-set-lang]'):null;if(!b)return;set(b.getAttribute('data-set-lang'));});sync(document.documentElement.getAttribute('data-lang')||'en');})();</script>
 </body>
