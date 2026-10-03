@@ -3,7 +3,7 @@
   "windowStart": "2026-10-03T00:00:00+08:00",
   "windowEnd": "2026-10-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-03T16:08:01.724Z",
+  "generatedAt": "2026-10-03T16:40:25.393Z",
   "empty": false,
   "totals": {
     "commits": 3,
@@ -157,18 +157,30 @@
       "own": false
     }
   ],
+  "stateChanges": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4337,
+      "title": "[Docs] Multi-run docs still point to a sidebar header button that was removed in d9fbf6b (moved to the composer)",
+      "url": "https://github.com/openchamber/openchamber/issues/4337",
+      "action": "closed",
+      "actor": "btriapitsyn",
+      "ts": "2026-10-03T14:56:55.000Z",
+      "own": false
+    }
+  ],
   "ai": {
     "en": {
-      "headline": "sogeisetsu opens 3 openchamber issues on multi-run UI/docs/test gaps",
-      "summary": "On 2026-10-03, sogeisetsu made 3 commits in their personal repository sogeisetsu/sogeisetsu. They opened three issues in openchamber/openchamber, all related to the multi-run feature after commit d9fbf6b removed the sidebar header button. Issue #4337, opened at 12:52 UTC, reports that multi-run documentation still references the removed sidebar header button, which has moved to the composer. Issue #4345, opened at 15:10 UTC, notes that the command palette's 'Parallel run' entry shares the checkbox-multiple icon with the sidebar's 'Select sessions' toggle. Issue #4346, opened at 15:10 UTC, flags that SidebarHeader.test.tsx still passes even though onOpenMultiRun and canOpenMultiRun were removed in d9fbf6b. The openchamber-bot replied to both #4337 and #4345, marking them as fix-ready with traced causes. No pull requests, reviews, or releases were recorded.",
+      "headline": "3 issues opened on openchamber; 3 commits to sogeisetsu/sogeisetsu",
+      "summary": "sogeisetsu made 3 commits to their own repository sogeisetsu/sogeisetsu. Three issues were opened on openchamber/openchamber, all related to commit d9fbf6b which removed the sidebar header button for multi-run functionality. Issue #4337 (opened 12:52 UTC) reported that multi-run docs still reference the removed sidebar header button; openchamber-bot[bot] confirmed the issue at 12:55 UTC, and btriapitsyn closed it at 14:56 UTC. Issue #4345 (opened 15:10 UTC) noted that the command palette 'Parallel run' shares the checkbox-multiple icon with the sidebar 'Select sessions' toggle; openchamber-bot[bot] replied at 15:15 UTC noting that multi-run's identity elsewhere uses ArrowsMerge. Issue #4346 (opened 15:10 UTC) flagged that SidebarHeader.test.tsx still passes despite onOpenMultiRun and canOpenMultiRun being removed in d9fbf6b. No pull requests, reviews, or releases occurred during the window.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 在 openchamber 提交 3 个关于多运行功能的 issue",
-      "summary": "2026年10月3日，sogeisetsu 在个人仓库 sogeisetsu/sogeisetsu 中提交了 3 次代码提交。同日，他们在 openchamber/openchamber 中创建了三个 issue，均与 d9fbf6b 提交移除侧边栏头部按钮后的多运行功能相关。#4337（12:52 UTC 创建）指出多运行文档仍引用已移除的侧边栏头部按钮，该功能已移至 composer。#4345（15:10 UTC 创建）反映命令面板的 'Parallel run' 条目与侧边栏 'Select sessions' 切换共用 checkbox-multiple 图标。#4346（15:10 UTC 创建）指出 SidebarHeader.test.tsx 在 d9fbf6b 移除 onOpenMultiRun 和 canOpenMultiRun 后仍然通过。openchamber-bot 分别回复了 #4337 和 #4345，标记为 fix-ready 并追踪了原因。当日无合并请求、代码审查或版本发布记录。",
+      "headline": "在 openchamber 上提交 3 个 issue；向 sogeisetsu/sogeisetsu 推送 3 次提交",
+      "summary": "sogeisetsu 在自己的仓库 sogeisetsu/sogeisetsu 上完成了 3 次提交。在 openchamber/openchamber 上提交了 3 个 issue，均与提交 d9fbf6b 移除侧边栏头部多运行按钮有关。Issue #4337（12:52 UTC 提交）报告多运行文档仍引用已移除的侧边栏头部按钮；openchamber-bot[bot] 在 12:55 UTC 确认了该问题，btriapitsyn 在 14:56 UTC 关闭了该 issue。Issue #4345（15:10 UTC 提交）指出命令面板 'Parallel run' 与侧边栏 'Select sessions' 使用了相同的 checkbox-multiple 图标；openchamber-bot[bot] 在 15:15 UTC 回复称多运行功能在其他位置使用的是 ArrowsMerge。Issue #4346（15:10 UTC 提交）指出 SidebarHeader.test.tsx 在 d9fbf6b 移除了 onOpenMultiRun 和 canOpenMultiRun 后仍然通过。该时间窗口内没有合并请求、代码审查或发布。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "ba3da810b13803056e33c756ee14c85e3979c6ecc8954663e599775629630dc9"
+  "dataHash": "80332aed89d9c9ff6bcfd47584cee433b6127750e11f070f090e9e5fa457ea2d"
 }

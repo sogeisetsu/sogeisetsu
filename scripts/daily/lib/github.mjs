@@ -12,7 +12,10 @@
  *   3. REST /users/:u/repos + releases    —— 自有仓库的 Release（published_at 落在窗口内）
  *   4. GraphQL repository.stargazerCount —— 自有仓库星标总数：全量存入 starInventory 作次日基准，
  *                                          展示的 stars 只列 delta 非 0 的变化项
- *   5. REST /search/issues + 评论列表     —— 他人在我 PR / Issue 下的回复（逐仓校验公开后才收录）
+ *   5. REST /search/issues + 评论列表     —— 定位我最近更新的条目（回复 / 状态变更共用，上限 25），
+ *                                          以及他人在我 PR / Issue 下的回复（逐仓校验公开后才收录）
+ *   6. REST /repos/:o/:r/issues/:n/events —— 他人对我条目的 closed / merged / reopened
+ *                                          （stateChanges 段，不计入 totals）
  *
  * 窗口定义：date 当天 00:00:00+08:00 ≤ ts < 次日 00:00:00+08:00（Asia/Shanghai 固定 UTC+8，无夏令时）。
  *
@@ -50,7 +53,7 @@ const REPO_LIST_MAX_PAGES = 3; // 自有仓库列表分页上限（per_page=100�
 const RELEASES_PER_PAGE = 30; // 每仓库 Release 只取一页
 const RELEASE_SCAN_MAX = 100; // 扫描 Release 的仓库数硬上限（防失控）
 const SEARCH_PER_PAGE = 50; // Search 每个查询取一页
-const REPLY_HITS_MAX = 25; // 回复扫描最多跟进 25 个条目
+const TARGET_MAX = 25; // “我发起的条目”检索上限（回复 / 状态变更两段共用）
 const NOTES_MAX = 800; // release notes 折叠空白后截断长度
 const EXCERPT_MAX = 200; // 回复摘录折叠空白后截断长度
 const PUSH_COMPARE_MAX = 20; // 单次运行最多对多少个 PushEvent 走 compare 复核（防失控）
@@ -490,10 +493,10 @@ function buildStars(repos, starCounts, previousData) {
   return stars;
 }
 
-// ---------------------------------------------------------------- 5. 他人回复
+// ---------------------------------------------------------------- 5. 我的条目定位 + 他人回复
 
 /**
- * 仓库是否确认公开（每仓只查一次，结果缓存）。
+ * 仓库是否确认公开（每仓只查一次，结果缓存；回复 / 状态变更两段共用同一份缓存）。
  * private === true 或 visibility 存在且非 "public" → 不公开；
  * 404 以及任何拿不到/读不懂响应的情形 → 一律按不公开处理（宁可少报，不可泄露）。
  */
@@ -503,7 +506,7 @@ async function isPublicRepo(owner, repoName, token, cache) {
   const got = await restGet(
     `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repoName)}`,
     token,
-    "replies"
+    "visibility"
   );
   let isPublic = false;
   if (got && got.data && typeof got.data === "object") {
@@ -517,14 +520,10 @@ async function isPublicRepo(owner, repoName, token, cache) {
 }
 
 /**
- * 他人的 PR / Issue 评论（回复我发的条目）：
- * Search API 定位我最近更新的条目（去重后最多 25 个）→ 逐个拉评论 →
- * 只保留非本人、且 created_at 落在窗口内的评论。
- * Search 带 token 可能命中私有仓库：任何 kind 的回复都必须先确认所在仓库公开才收录。
+ * Search API 定位“我发起且窗口内更新过”的 Issue / PR —— 回复与状态变更两段共用的目标列表：
+ * 三个查询（全部 / type:pr / type:issue）合并去重后截断到 TARGET_MAX 条；某查询失败只跳过它。
  */
-async function fetchReplies(token, username, win) {
-  const replies = [];
-  const repoVisibility = new Map(); // 仓库公开性缓存（每个仓库只查一次）
+async function searchAuthoredTargets(token, username, win) {
   const queries = [
     `author:${username} updated:>=${win.date}`,
     `author:${username} updated:>=${win.date} type:pr`,
@@ -544,8 +543,16 @@ async function fetchReplies(token, username, win) {
       if (!hits.has(key)) hits.set(key, item);
     }
   }
-  if (hits.size === 0) return replies;
-  const targets = [...hits.values()].slice(0, REPLY_HITS_MAX);
+  return [...hits.values()].slice(0, TARGET_MAX);
+}
+
+/**
+ * 他人的 PR / Issue 评论（回复我发的条目）：
+ * 基于目标列表逐个拉评论 → 只保留非本人、且 created_at 落在窗口内的评论。
+ * 任何 kind 的回复都必须先确认目标所在仓库公开（走共享缓存）。
+ */
+async function fetchReplies(token, username, win, targets, repoVisibility) {
+  const replies = [];
 
   for (const t of targets) {
     const m = /\/repos\/([^/]+)\/([^/]+)$/.exec(String(t.repository_url || ""));
@@ -592,6 +599,67 @@ async function fetchReplies(token, username, win) {
   return replies;
 }
 
+// ---------------------------------------------------------------- 6. 他人状态变更
+
+/**
+ * 他人对我发起的 Issue / PR 做出的状态变更（closed / merged / reopened）：
+ * 对每个目标拉 /issues/:n/events（每目标 1 次调用，≤ TARGET_MAX 次/轮），
+ * 只保留窗口内、actor 非本人、且仓库通过公开性闸门的事件；按 repo+number+action+ts 去重。
+ * 不计入 totals（totals 仍只有 commits / prs / issues / reviews 四项）。
+ */
+async function fetchStateChanges(token, username, win, targets, repoVisibility) {
+  const changes = [];
+  const seen = new Set(); // repo+number+action+ts 去重
+  for (const t of targets) {
+    const m = /\/repos\/([^/]+)\/([^/]+)$/.exec(String(t.repository_url || ""));
+    if (!m) continue;
+    const owner = m[1];
+    const repoName = m[2];
+    const repo = `${owner}/${repoName}`;
+    // 与回复同一道公开性闸门（共享缓存，正常情况下不再发额外请求）
+    if (!(await isPublicRepo(owner, repoName, token, repoVisibility))) continue;
+    const isPr = Boolean(t.pull_request);
+    const url =
+      `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repoName)}` +
+      `/issues/${t.number}/events?per_page=100`;
+    const got = await restGet(url, token, "state");
+    if (!got || !Array.isArray(got.data)) continue;
+    for (const ev of got.data) {
+      const type = String(ev.event || "");
+      let action = null;
+      if (type === "merged") {
+        action = "merged"; // 显式 merged 事件类型
+      } else if (type === "closed") {
+        // PR 的 closed 带 commit_id ⇒ 实为合并；Issue 的 closed 就是关闭
+        action = isPr && ev.commit_id != null ? "merged" : "closed";
+      } else if (type === "reopened") {
+        action = "reopened";
+      } else {
+        continue; // assigned / labeled / commented 等不计
+      }
+      const ms = tsOf(ev.created_at);
+      if (!inWindow(ms, win)) continue;
+      const actor = (ev.actor && ev.actor.login) || "";
+      if (!actor || isOwnLogin(actor, username)) continue; // 只要他人的操作
+      const key = `${repo}#${t.number}+${action}+${ms}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      changes.push({
+        repo,
+        number: t.number ?? 0,
+        title: t.title || "",
+        url: t.html_url || `https://github.com/${repo}/issues/${t.number ?? 0}`,
+        action,
+        actor,
+        ts: isoOf(ms),
+        own: isOwnLogin(owner, username),
+      });
+    }
+  }
+  changes.sort((a, b) => tsOf(b.ts) - tsOf(a.ts));
+  return changes;
+}
+
 // ---------------------------------------------------------------- 排序与汇总
 
 const byTsDesc = (a, b) => tsOf(b.ts) - tsOf(a.ts);
@@ -620,7 +688,9 @@ const byTsDesc = (a, b) => tsOf(b.ts) - tsOf(a.ts);
  *     releases:[{repo,tag,name,url,publishedAt,notes}],
  *     stars:[{repo,delta,total}],            // 展示用：仅 delta 为数字且非 0 的仓库
  *     starInventory:[{repo,total}],          // 全量自有仓库星标清单（供次日 delta 基准，不过滤）
- *     replies:[{repo,number,title,url,author,excerpt,kind,ts,own}] }  // 仅公开仓库
+ *     replies:[{repo,number,title,url,author,excerpt,kind,ts,own}],   // 仅公开仓库
+ *     stateChanges:[{repo,number,title,url,action,actor,ts,own}] }    // action: closed|merged|reopened
+ *                                                                     // 他人操作，actor 恒非本人；不计入 totals
  */
 export async function collectDailyData({ token, username, date, previousData }) {
   const win = computeWindow(date);
@@ -643,8 +713,13 @@ export async function collectDailyData({ token, username, date, previousData }) 
   const starInventory = buildStarInventory(starCounts);
   const stars = buildStars(ownRepos, starCounts, previousData);
 
-  // --- 5. 他人回复 ---
-  const replies = await fetchReplies(token, username, win);
+  // --- 5. 我发起的条目（Search 定位，回复与状态变更共用同一目标列表与公开性缓存）---
+  const targets = await searchAuthoredTargets(token, username, win);
+  const repoVisibility = new Map(); // 仓库公开性缓存（每仓只查一次，两段共用）
+  const replies = await fetchReplies(token, username, win, targets, repoVisibility);
+
+  // --- 6. 他人对我 Issue/PR 的状态变更（closed / merged / reopened，不计入 totals）---
+  const stateChanges = await fetchStateChanges(token, username, win, targets, repoVisibility);
 
   // --- 合计：只由实际展示的公开数据求和，保证 totals 与各段恒等 ---
   const totals = {
@@ -671,6 +746,7 @@ export async function collectDailyData({ token, username, date, previousData }) 
     stars,
     starInventory,
     replies,
+    stateChanges,
   };
 }
 
@@ -743,6 +819,14 @@ async function main() {
       ` · replies ${data.replies.length}`
   );
   console.log(`${LOG} empty: ${data.empty} · generatedAt: ${data.generatedAt}`);
+  console.log(
+    `${LOG} stateChanges: ${data.stateChanges.length} 条` +
+      (data.stateChanges.length
+        ? `（${data.stateChanges
+            .map((s) => `${s.repo}#${s.number} ${s.action} by ${s.actor} @ ${s.ts}`)
+            .join("; ")}）`
+        : "")
+  );
 
   if (dumpArg) {
     const p = path.resolve(dumpArg.slice("--dump=".length));

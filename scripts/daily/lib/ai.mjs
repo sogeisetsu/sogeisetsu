@@ -45,12 +45,12 @@ const SENSENOVA_BASE = "https://token.sensenova.cn/v1";
 const SECTION_CAP = 30; // 每个板块最多喂 30 条
 const RELEASE_NOTES_CAP = 800; // 每条 release notes 最多 800 字符
 const MAX_TOKENS = 2000; // chat max_tokens / responses max_output_tokens 共用
-const SUMMARY_MIN_SENTENCES = 4;
-const SUMMARY_MAX_SENTENCES = 8;
-const SUMMARY_MAX_CHARS = 1000; // summary 目标 ~900 字符，校验留 ~100 余量
+const SUMMARY_MIN_SENTENCES = 2; // 提示词目标 4-8 句；校验放宽容差，避免把「9 句」这种好结果误拒
+const SUMMARY_MAX_SENTENCES = 12;
+const SUMMARY_MAX_CHARS = 1400; // summary 目标 ~900 字符，校验放宽留余量（模型常写到 ~1000+，避免误拒）
 const RELEASE_NOTE_MAX_SENTENCES = 3;
 const RETRY_WAIT_MS = 2000; // 429/5xx 重试前等待 ~2s
-const MAX_ROUNDS = 6; // 单 provider 内部循环安全上限
+const MAX_ROUNDS = 8; // 单 provider 内部循环安全上限（json 重试×2 + rf-400 退让 + 429 重试 + 形态切换）
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -58,6 +58,15 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // baseUrl → 已解析 model；只缓存成功结果（失败不缓存，允许下次重试）
 const senseNovaModelCache = new Map();
+
+// 进程内记住不支持 response_format 的 provider（key: name+baseUrl），后续调用直接跳过
+const jsonModeUnsupported = new Set();
+
+// JSON 提取失败时逐次加严的提醒（第 1 次请求不带提醒，之后最多追加 2 次 → 共 3 次尝试）
+const JSON_REMINDERS = [
+  "Return ONLY valid JSON, no prose, no markdown fences.",
+  "Output must start with { and end with }. No other text.",
+];
 
 /**
  * GET {baseUrl}/models，按优先级挑模型：
@@ -172,6 +181,15 @@ function buildPrompts(data) {
     })),
     stars: cap(data.stars),
     replies: cap(data.replies),
+    // 他人 close/merge/reopen 的状态变化：去掉 url/own 省 token
+    stateChanges: cap(data.stateChanges).map((s) => ({
+      repo: s?.repo,
+      number: s?.number,
+      title: s?.title,
+      action: s?.action,
+      actor: s?.actor,
+      ts: s?.ts,
+    })),
   };
   const user =
     `Write the daily report for ${data.date} as ONE strict JSON object.\n` +
@@ -313,20 +331,26 @@ function extractContent(json, shape) {
 
 /**
  * 对一个 provider 完整尝试（含内部重试）：
+ *   · chat 形态默认带 response_format JSON 模式；带 rf 收到 400 → 去掉 rf 重试一次，
+ *     并在进程内记住该 provider 不支持（后续调用直接跳过），绝不因此放弃该 provider
  *   · 429/5xx → 等 ~2s 重试一次 → 仍失败换下一家
  *   · SenseNova chat 404/405 → 同 provider 换 responses 形态再试一次
- *   · JSON 提取/校验失败 → 追加 "Return ONLY valid JSON, no prose." 重试一次 → 换下一家
+ *   · JSON 提取/校验失败 → 逐次加严提醒，最多追加 2 次（共 3 次尝试）→ 换下一家
  */
 async function attemptProvider(provider, system, user, data) {
   const base = String(provider.baseUrl || "").replace(/\/+$/, "");
+  const providerKey = `${provider.name}\u0000${base}`;
   let shape = provider.shape === "responses" ? "responses" : "chat";
   let prompt = user;
   let retriedStatus = false; // 429/5xx 已重试过
-  let retriedJson = false; // 已按“只输出 JSON”重试过
+  let jsonTries = 0; // 已因 JSON/校验失败追加提醒的次数（最多 JSON_REMINDERS.length 次）
   let triedResponses = false; // SenseNova 404/405 → responses 已切换过
 
   for (let round = 0; round < MAX_ROUNDS; round += 1) {
     const url = `${base}/${shape === "responses" ? "responses" : "chat/completions"}`;
+    // chat 形态请求 JSON 模式；已知该 provider 不支持则跳过
+    const useJsonMode =
+      shape === "chat" && !jsonModeUnsupported.has(providerKey);
     const body =
       shape === "responses"
         ? {
@@ -345,6 +369,7 @@ async function attemptProvider(provider, system, user, data) {
             ],
             temperature: 0.4,
             max_tokens: MAX_TOKENS,
+            ...(useJsonMode ? { response_format: { type: "json_object" } } : {}),
           };
 
     let res;
@@ -389,6 +414,15 @@ async function attemptProvider(provider, system, user, data) {
       continue;
     }
 
+    // 带 response_format 收到 400：去掉 JSON 模式重试一次，并进程内记住该 provider 不支持（不放弃该 provider）
+    if (res.status === 400 && useJsonMode) {
+      jsonModeUnsupported.add(providerKey);
+      console.error(
+        `${LOG} ${provider.name}: HTTP 400 且请求带了 response_format，改为不带 JSON 模式重试（该 provider 进程内不再发送）`
+      );
+      continue;
+    }
+
     if (!res.ok) {
       const snippet = (await res.text().catch(() => "")).slice(0, 300);
       return { ok: false, reason: `HTTP ${res.status} ${snippet}` };
@@ -404,11 +438,14 @@ async function attemptProvider(provider, system, user, data) {
       : { ok: false, reason: "无法从返回文本中提取 JSON" };
     if (checked.ok) return { ok: true, value: checked.value };
 
-    if (!retriedJson) {
-      retriedJson = true;
-      prompt = `${user}\nReturn ONLY valid JSON, no prose.`;
+    if (jsonTries < JSON_REMINDERS.length) {
+      const reminder = JSON_REMINDERS[jsonTries];
+      jsonTries += 1;
+      prompt = `${user}\n${reminder}`;
       console.error(
-        `${LOG} ${provider.name}: 返回不合约束（${checked.reason}），追加“只输出 JSON”后重试一次`
+        `${LOG} ${provider.name}: 返回不合约束（${checked.reason}），追加提醒后重试（第 ${jsonTries + 1}/${
+          JSON_REMINDERS.length + 1
+        } 次）`
       );
       continue;
     }

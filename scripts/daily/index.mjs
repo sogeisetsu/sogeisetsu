@@ -107,6 +107,7 @@ function listDays() {
         url: `./report/${d}.html`,
         headline_en: j?.ai?.en?.headline ?? null,
         headline_zh: j?.ai?.zh?.headline ?? null,
+        empty: j?.empty === true,
       };
     });
 }

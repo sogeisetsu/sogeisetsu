@@ -138,25 +138,33 @@ function mdInlineToHtml(text) {
 }
 
 /**
- * Friendly UTC+8 (Asia/Shanghai) window label built from the report date and
- * the generator timestamp: a past day reads "Full day", the current day reads
- * "As of HH:MM". Returns null when there is no usable timestamp.
+ * Break an instant into Asia/Shanghai (UTC+8) wall-clock parts.
  */
-function friendlyWindowLabel(date, generatedAt) {
+function utc8(ms) {
+  const t = new Date(ms + 8 * 3600 * 1000);
+  const pad = (n) => String(n).padStart(2, '0');
+  return {
+    date: `${t.getUTCFullYear()}-${pad(t.getUTCMonth() + 1)}-${pad(t.getUTCDate())}`,
+    hh: pad(t.getUTCHours()),
+    mm: pad(t.getUTCMinutes()),
+  };
+}
+
+/**
+ * Explicit UTC+8 window label: `YYYY-MM-DD HH:MM – HH:MM · UTC+8`. A finalized
+ * day (before the current Shanghai day) runs 00:00 – 24:00; the rolling current
+ * day ends at the generator wall-clock time. Returns null with no timestamp.
+ */
+function windowLabel(date, generatedAt) {
   const ms = toMs(generatedAt);
   if (!ms) return null;
-  const t = new Date(ms + 8 * 3600 * 1000);
-  const y = t.getUTCFullYear();
-  const mo = String(t.getUTCMonth() + 1).padStart(2, '0');
-  const da = String(t.getUTCDate()).padStart(2, '0');
-  const hh = String(t.getUTCHours()).padStart(2, '0');
-  const mm = String(t.getUTCMinutes()).padStart(2, '0');
-  const generatedDate = `${y}-${mo}-${da}`;
+  const gen = utc8(ms);
   const reportDate = String(date == null ? '' : date).trim().slice(0, 10);
-  const finalized =
-    /^\d{4}-\d{2}-\d{2}$/.test(reportDate) && reportDate < generatedDate;
-  if (finalized) return { en: 'Full day · UTC+8', zh: '全天 · UTC+8' };
-  return { en: `As of ${hh}:${mm} · UTC+8`, zh: `截至 ${hh}:${mm} · UTC+8` };
+  const finalized = /^\d{4}-\d{2}-\d{2}$/.test(reportDate) && reportDate < gen.date;
+  const shownDate = finalized ? reportDate : gen.date;
+  const end = finalized ? '24:00' : `${gen.hh}:${gen.mm}`;
+  const label = `${shownDate} 00:00 – ${end} · UTC+8`;
+  return { en: label, zh: label };
 }
 
 // ---------------------------------------------------------------- values
@@ -430,6 +438,35 @@ function issuesSection(items, totals) {
   return section('issue', 'Issues', 'Issue', pill(totals.issues, items.length), `<ul class="list">${rows}</ul>`);
 }
 
+function stateChangeBadge(action, actor) {
+  const map = {
+    closed: { en: 'Closed', zh: '关闭', cls: 'badge-closed' },
+    merged: { en: 'Merged', zh: '合并', cls: 'badge-merged' },
+    reopened: { en: 'Reopened', zh: '重新打开', cls: 'badge-opened' },
+  };
+  const m = map[String(action == null ? '' : action).toLowerCase()];
+  if (!m) return '';
+  const login = String(actor == null ? '' : actor).trim();
+  const en = login ? `${m.en} by @${login}` : m.en;
+  const zh = login ? `被 @${login} ${m.zh}` : m.zh;
+  return `<span class="badge ${m.cls}">${i18n(en, zh)}</span>`;
+}
+
+function stateChangesSection(items) {
+  const rows = items
+    .map((it) => {
+      const title = String(it.title || '').trim() ? it.title : UNTITLED();
+      return (
+        `<li class="row row-block">` +
+        `<div class="row-head">${stateChangeBadge(it.action, it.actor)}${extLink(it.url, title, 'row-title')}</div>` +
+        `<div class="row-meta">${repoSpan(it.repo)}${SEP}<span class="num">#${esc(it.number)}</span>${timeHtml(it.ts)}</div>` +
+        `</li>`
+      );
+    })
+    .join('');
+  return section('issue', 'Status changes', '状态变更', pill(items.length, items.length), `<ul class="list">${rows}</ul>`);
+}
+
 function releasesSection(items, ai) {
   const keyOf = (repo, tag) => `${String(repo || '')}\u0000${String(tag || '')}`;
   const enNotes = new Map();
@@ -584,8 +621,15 @@ function emptyState() {
 }
 
 function footerBlock(generatedAt) {
-  const when = generatedAt
-    ? `<time datetime="${esc(generatedAt)}">${esc(generatedAt)}</time>`
+  const ms = toMs(generatedAt);
+  const when = ms
+    ? (() => {
+        const t = utc8(ms);
+        return (
+          `<time datetime="${esc(generatedAt)}">` +
+          `${esc(`${t.date} ${t.hh}:${t.mm} · UTC+8`)}</time>`
+        );
+      })()
     : '';
   return (
     `<footer class="foot">` +
@@ -934,6 +978,7 @@ export function renderReportPage({ data, ai } = {}) {
   const pullRequests = A(d.pullRequests).filter(Boolean);
   const reviews = A(d.reviews).filter(Boolean);
   const issues = A(d.issues).filter(Boolean);
+  const stateChanges = A(d.stateChanges).filter(Boolean);
   const releases = A(d.releases).filter(Boolean);
   const stars = A(d.stars).filter(Boolean);
   const replies = A(d.replies).filter(Boolean);
@@ -954,8 +999,8 @@ export function renderReportPage({ data, ai } = {}) {
   // hero
   const subBits = [];
   if (username) subBits.push(`<span class="mono">@${esc(username)}</span>`);
-  const friendly = friendlyWindowLabel(date, generatedAt);
-  if (friendly) subBits.push(i18n(friendly.en, friendly.zh));
+  const win = windowLabel(date, generatedAt);
+  if (win) subBits.push(i18n(win.en, win.zh));
   parts.push(
     `<header class="hero">` +
       `<p class="eyebrow">${
@@ -974,7 +1019,7 @@ export function renderReportPage({ data, ai } = {}) {
   // body
   const anyItems =
     commits.length || pullRequests.length || reviews.length || issues.length ||
-    releases.length || stars.length || replies.length;
+    stateChanges.length || releases.length || stars.length || replies.length;
 
   if (empty) {
     parts.push(emptyState());
@@ -984,6 +1029,7 @@ export function renderReportPage({ data, ai } = {}) {
     if (pullRequests.length) parts.push(prSection(pullRequests, totals));
     if (reviews.length) parts.push(reviewsSection(reviews, totals));
     if (issues.length) parts.push(issuesSection(issues, totals));
+    if (stateChanges.length) parts.push(stateChangesSection(stateChanges));
     if (releases.length) parts.push(releasesSection(releases, ai));
     if (stars.length) parts.push(starsSection(stars));
     if (replies.length) parts.push(repliesSection(replies));
@@ -1014,9 +1060,12 @@ export function renderIndexPage({ days, generatedAt, username } = {}) {
       const hasHead =
         String(entry.headline_en || '').trim() !== '' ||
         String(entry.headline_zh || '').trim() !== '';
-      const head = hasHead
-        ? `<span class="day-head">${i18n(entry.headline_en, entry.headline_zh)}</span>`
-        : `<span class="day-head day-head-empty">${i18n('Report available', '日报已生成')}</span>`;
+      const head =
+        entry.empty === true
+          ? `<span class="day-head day-head-empty">${i18n('A quiet day', '安静的一天')}</span>`
+          : hasHead
+            ? `<span class="day-head">${i18n(entry.headline_en, entry.headline_zh)}</span>`
+            : `<span class="day-head day-head-empty">${i18n('Report available', '日报已生成')}</span>`;
       const inner =
         `<span class="day-date">${i18n(dateLabel.en, dateLabel.zh)}</span>${head}`;
       if (href) return `<li><a class="day" href="${esc(href)}">${inner}</a></li>`;
@@ -1028,7 +1077,6 @@ export function renderIndexPage({ days, generatedAt, username } = {}) {
     `<div class="wrap">\n` +
     `<div class="topbar">${topbarRight(user)}</div>\n` +
     `<header class="hero">` +
-    `<p class="eyebrow">${i18n('Archive', '归档')}</p>` +
     `<h1>${
       user
         ? i18n(`${user} · Daily GitHub activity`, `${user} 的 GitHub 每日动态`)
@@ -1065,8 +1113,8 @@ export function renderMarkdown({ data, ai } = {}) {
 
   const metaBits = [];
   if (d.username) metaBits.push(`@${mdInline(d.username)}`);
-  const friendly = friendlyWindowLabel(d.date, d.generatedAt);
-  if (friendly) metaBits.push(mdInline(friendly.en));
+  const win = windowLabel(d.date, d.generatedAt);
+  if (win) metaBits.push(mdInline(win.en));
   if (d.generatedAt) metaBits.push(`generated ${mdInline(d.generatedAt)}`);
   if (metaBits.length) {
     out.push(`_${metaBits.join(' · ')}_`);

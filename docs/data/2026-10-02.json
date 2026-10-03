@@ -3,7 +3,7 @@
   "windowStart": "2026-10-02T00:00:00+08:00",
   "windowEnd": "2026-10-03T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-03T16:06:07.719Z",
+  "generatedAt": "2026-10-03T16:30:42.601Z",
   "empty": true,
   "totals": {
     "commits": 0,
@@ -100,7 +100,8 @@
     }
   ],
   "replies": [],
+  "stateChanges": [],
   "ai": null,
   "aiProvider": null,
-  "dataHash": "3a9bb3c2927140fe3ac6ab1030c00292c669985f510e46db89ea9f0578a87364"
+  "dataHash": "595eead1ece112d8966f42dcd1aa21a2d9f10a6d8fd351179e255027e7cf9c8c"
 }
