@@ -44,7 +44,11 @@ const LOG = "[daily-report]";
 const SENSENOVA_BASE = "https://token.sensenova.cn/v1";
 const SECTION_CAP = 30; // 每个板块最多喂 30 条
 const RELEASE_NOTES_CAP = 800; // 每条 release notes 最多 800 字符
-const MAX_TOKENS = 1200;
+const MAX_TOKENS = 2000; // chat max_tokens / responses max_output_tokens 共用
+const SUMMARY_MIN_SENTENCES = 4;
+const SUMMARY_MAX_SENTENCES = 8;
+const SUMMARY_MAX_CHARS = 1000; // summary 目标 ~900 字符，校验留 ~100 余量
+const RELEASE_NOTE_MAX_SENTENCES = 3;
 const RETRY_WAIT_MS = 2000; // 429/5xx 重试前等待 ~2s
 const MAX_ROUNDS = 6; // 单 provider 内部循环安全上限
 
@@ -137,8 +141,8 @@ const SYSTEM_PROMPT = [
   'Schema: {"en":{"headline":"...","summary":"...","releaseNotes":[{"repo":"...","tag":"...","summary":"..."}]},"zh":{...same shape...}}',
   "Rules:",
   "- headline: at most 80 characters.",
-  "- summary: 2-4 sentences.",
-  "- releaseNotes: one entry ONLY for each release in the input, matching repo+tag exactly; each summary at most 2 sentences; use [] when there are no releases.",
+  "- summary: 4-8 sentences, at most about 900 characters. Name concrete specifics from the input — repository names, issue/PR numbers and titles, who replied, what a release changed — and describe what actually happened that day, in order. No filler, no repeating the headline, no generic 'a busy day'.",
+  "- releaseNotes: one entry ONLY for each release in the input, matching repo+tag exactly; each summary at most 3 sentences; use [] when there are no releases.",
   "- en and zh must state exactly the same facts.",
   "- zh must be natural Simplified Chinese, not a literal machine translation.",
   "- Neutral and factual: no hype, no speculation, no invented facts; keep repo names, numbers and tags verbatim from the input.",
@@ -236,8 +240,17 @@ function validateNarrative(raw, data) {
     }
     if (!summary) return { ok: false, reason: `${lang}.summary 为空` };
     const sentences = countSentences(summary);
-    if (sentences < 2 || sentences > 4) {
-      return { ok: false, reason: `${lang}.summary 句数 ${sentences} 不在 2-4` };
+    if (sentences < SUMMARY_MIN_SENTENCES || sentences > SUMMARY_MAX_SENTENCES) {
+      return {
+        ok: false,
+        reason: `${lang}.summary 句数 ${sentences} 不在 ${SUMMARY_MIN_SENTENCES}-${SUMMARY_MAX_SENTENCES}`,
+      };
+    }
+    if (summary.length > SUMMARY_MAX_CHARS) {
+      return {
+        ok: false,
+        reason: `${lang}.summary 超长 ${summary.length} > ${SUMMARY_MAX_CHARS} 字符`,
+      };
     }
 
     let notes = sec.releaseNotes;
@@ -260,10 +273,10 @@ function validateNarrative(raw, data) {
         return { ok: false, reason: `${lang}.releaseNotes ${repo}@${tag} summary 为空` };
       }
       const noteSentences = countSentences(text);
-      if (noteSentences > 2) {
+      if (noteSentences > RELEASE_NOTE_MAX_SENTENCES) {
         return {
           ok: false,
-          reason: `${lang}.releaseNotes ${repo}@${tag} 句数 ${noteSentences} > 2`,
+          reason: `${lang}.releaseNotes ${repo}@${tag} 句数 ${noteSentences} > ${RELEASE_NOTE_MAX_SENTENCES}`,
         };
       }
       normNotes.push({ repo, tag, summary: text });

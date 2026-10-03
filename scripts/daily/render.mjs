@@ -84,6 +84,81 @@ function mdLink(text, url) {
   return `[${mdInline(text)}](<${href}>)`;
 }
 
+/** Un-escape the HTML entities we emit, so a link target can be inspected. */
+function unesc(value) {
+  return String(value == null ? '' : value)
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'");
+}
+
+/**
+ * Apply a tiny, bounded inline-markdown subset (`code`, **bold**, *italic*,
+ * _italic_) to a string that is ALREADY HTML-escaped. Placeholders keep code
+ * spans out of the emphasis passes, so their contents are never rewritten.
+ */
+function renderInlineEmphasis(escaped) {
+  let s = String(escaped == null ? '' : escaped);
+  const codes = [];
+  s = s.replace(/`([^`\n]+?)`/g, (_m, code) => {
+    codes.push(code);
+    return `\uE000${codes.length - 1}\uE001`;
+  });
+  s = s.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
+  s = s.replace(/_([^_\n]+?)_/g, '<em>$1</em>');
+  s = s.replace(/\uE000(\d+)\uE001/g, (_m, i) => `<code>${codes[Number(i)] || ''}</code>`);
+  return s;
+}
+
+/**
+ * Render a SAFE inline-markdown subset for UNTRUSTED text (other people's
+ * comments and release notes). The whole string is HTML-escaped first, so raw
+ * HTML can never survive; only a whitelist of inline markers is then expanded.
+ * Links are accepted only for http(s) targets; other markers stay literal.
+ * Regexes are bounded so a stray `**` cannot swallow the rest of the string.
+ */
+function mdInlineToHtml(text) {
+  let s = esc(text);
+  const stash = [];
+  s = s.replace(/\[([^\]\n]+?)\]\((https?:\/\/[^\s)]+)\)/g, (m, label, url) => {
+    const href = safeHref(unesc(url));
+    if (!href) return m;
+    stash.push(
+      `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">` +
+        `${renderInlineEmphasis(label)}</a>`
+    );
+    return `\uE002${stash.length - 1}\uE003`;
+  });
+  s = renderInlineEmphasis(s);
+  s = s.replace(/\uE002(\d+)\uE003/g, (_m, i) => stash[Number(i)] || '');
+  return s;
+}
+
+/**
+ * Friendly UTC+8 (Asia/Shanghai) window label built from the report date and
+ * the generator timestamp: a past day reads "Full day", the current day reads
+ * "As of HH:MM". Returns null when there is no usable timestamp.
+ */
+function friendlyWindowLabel(date, generatedAt) {
+  const ms = toMs(generatedAt);
+  if (!ms) return null;
+  const t = new Date(ms + 8 * 3600 * 1000);
+  const y = t.getUTCFullYear();
+  const mo = String(t.getUTCMonth() + 1).padStart(2, '0');
+  const da = String(t.getUTCDate()).padStart(2, '0');
+  const hh = String(t.getUTCHours()).padStart(2, '0');
+  const mm = String(t.getUTCMinutes()).padStart(2, '0');
+  const generatedDate = `${y}-${mo}-${da}`;
+  const reportDate = String(date == null ? '' : date).trim().slice(0, 10);
+  const finalized =
+    /^\d{4}-\d{2}-\d{2}$/.test(reportDate) && reportDate < generatedDate;
+  if (finalized) return { en: 'Full day · UTC+8', zh: '全天 · UTC+8' };
+  return { en: `As of ${hh}:${mm} · UTC+8`, zh: `截至 ${hh}:${mm} · UTC+8` };
+}
+
 // ---------------------------------------------------------------- values
 
 const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : 0);
@@ -346,7 +421,7 @@ function releasesSection(items, ai) {
           ? `<p class="ai-note"><span class="ai-tag">AI</span> ${i18n(en, zh)}</p>`
           : '';
       const notes = String(it.notes || '').trim()
-        ? `<p class="release-notes">${esc(it.notes)}</p>`
+        ? `<p class="release-notes">${mdInlineToHtml(it.notes)}</p>`
         : '';
       const title = String(it.name || '').trim() ? it.name : it.tag || UNTITLED();
       return (
@@ -397,7 +472,7 @@ function repliesSection(items) {
       const chip = k ? `<span class="chip chip-kind">${i18n(k.en, k.zh)}</span>` : '';
       const title = String(it.title || '').trim() ? it.title : UNTITLED();
       const excerpt = String(it.excerpt || '').trim()
-        ? `<p class="excerpt">${esc(it.excerpt)}</p>`
+        ? `<p class="excerpt">${mdInlineToHtml(it.excerpt)}</p>`
         : '';
       return (
         `<li class="reply">` +
@@ -712,6 +787,13 @@ h1{margin:0;font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.025
   margin:10px 0 0;padding:2px 0 2px 14px;border-left:3px solid var(--outline-variant);
   color:var(--on-surface-variant);font-size:.9rem;white-space:pre-wrap;overflow-wrap:anywhere;
 }
+.excerpt code,.release-notes code{
+  font-family:var(--mono);font-size:.86em;padding:.12em .42em;border-radius:6px;
+  background:var(--surface-dim);color:var(--on-surface);overflow-wrap:anywhere;
+}
+.excerpt strong,.release-notes strong{color:var(--on-surface);font-weight:750}
+.excerpt em,.release-notes em{font-style:italic}
+.excerpt a,.release-notes a{text-decoration:underline;text-underline-offset:2px}
 
 /* ---- AI block ---- */
 .card.ai{
@@ -801,8 +883,7 @@ export function renderReportPage({ data, ai } = {}) {
 
   const date = d.date || d.windowEnd || '';
   const username = d.username || '';
-  const windowStart = d.windowStart || '';
-  const windowEnd = d.windowEnd || '';
+  const user = String(username == null ? '' : username).trim();
   const generatedAt = d.generatedAt || '';
 
   const commits = A(d.commits).filter(Boolean);
@@ -827,16 +908,17 @@ export function renderReportPage({ data, ai } = {}) {
   );
 
   // hero
-  const range =
-    windowStart && windowEnd && windowStart !== windowEnd
-      ? `${windowStart} → ${windowEnd}`
-      : '';
   const subBits = [];
   if (username) subBits.push(`<span class="mono">@${esc(username)}</span>`);
-  if (range) subBits.push(`<span class="mono">${esc(range)}</span>`);
+  const friendly = friendlyWindowLabel(date, generatedAt);
+  if (friendly) subBits.push(i18n(friendly.en, friendly.zh));
   parts.push(
     `<header class="hero">` +
-      `<p class="eyebrow">${i18n('Daily GitHub activity', 'GitHub 每日动态')}</p>` +
+      `<p class="eyebrow">${
+        user
+          ? i18n(`${user} · Daily GitHub activity`, `${user} 的 GitHub 每日动态`)
+          : i18n('Daily GitHub activity', 'GitHub 每日动态')
+      }</p>` +
       `<h1>${i18n(dateLabel.en, dateLabel.zh)}</h1>` +
       (subBits.length ? `<p class="hero-sub">${subBits.join(SEP)}</p>` : '') +
       `</header>`
@@ -939,13 +1021,8 @@ export function renderMarkdown({ data, ai } = {}) {
 
   const metaBits = [];
   if (d.username) metaBits.push(`@${mdInline(d.username)}`);
-  if (d.windowStart) {
-    const range =
-      d.windowEnd && d.windowEnd !== d.windowStart
-        ? `${d.windowStart} → ${d.windowEnd}`
-        : d.windowStart;
-    metaBits.push(mdInline(range));
-  }
+  const friendly = friendlyWindowLabel(d.date, d.generatedAt);
+  if (friendly) metaBits.push(mdInline(friendly.en));
   if (d.generatedAt) metaBits.push(`generated ${mdInline(d.generatedAt)}`);
   if (metaBits.length) {
     out.push(`_${metaBits.join(' · ')}_`);

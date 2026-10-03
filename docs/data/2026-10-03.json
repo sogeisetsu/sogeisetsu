@@ -3,10 +3,10 @@
   "windowStart": "2026-10-03T00:00:00+08:00",
   "windowEnd": "2026-10-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-03T15:28:06.440Z",
+  "generatedAt": "2026-10-03T15:52:26.106Z",
   "empty": false,
   "totals": {
-    "commits": 2,
+    "commits": 3,
     "prs": 0,
     "issues": 3,
     "reviews": 0
@@ -14,7 +14,7 @@
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 2,
+      "count": 3,
       "own": true
     }
   ],
@@ -159,15 +159,16 @@
   ],
   "ai": {
     "en": {
-      "headline": "sogeisetsu opens 3 issues on openchamber, 2 commits to personal repo",
-      "summary": "On 2026-10-03, sogeisetsu made 2 commits to their personal repository and opened 3 issues on openchamber/openchamber. The issues cover a test file still passing after API removal, a UI icon conflict between command palette and sidebar, and outdated multi-run documentation referencing a removed sidebar button. Two of the issues received automated triage comments from openchamber-bot.",
+      "headline": "sogeisetsu opens three openchamber issues on multi-run UI/docs/test gaps",
+      "summary": "On 2026-10-03, sogeisetsu made 3 commits to their own repository sogeisetsu/sogeisetsu and opened three issues on openchamber/openchamber, all related to the multi-run feature after commit d9fbf6b removed the sidebar header button. The first issue, #4337, reported that multi-run documentation still references the removed sidebar header button, which has moved to the composer. The second issue, #4345, noted that the command palette's \"Parallel run\" entry shares the checkbox-multiple icon with the sidebar's \"Select sessions\" toggle, causing visual confusion. The third issue, #4346, pointed out that SidebarHeader.test.tsx still passes despite onOpenMultiRun and canOpenMultiRun having been removed. openchamber-bot replied to both #4337 and #4345 within minutes, tagging each as fix-ready with traced root causes. No pull requests, reviews, or releases were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 在 openchamber 提交 3 个 issue，个人仓库 2 次提交",
-      "summary": "2026-10-03，sogeisetsu 在个人仓库完成 2 次提交，并在 openchamber/openchamber 上提交了 3 个 issue。这些 issue 涉及 API 移除后测试文件仍通过、命令面板与侧边栏图标冲突，以及多运行文档仍引用已移除的侧边栏按钮。其中两个 issue 收到了 openchamber-bot 的自动分诊评论。",
+      "headline": "sogeisetsu 在 openchamber 提交三个关于 multi-run 的 UI/文档/测试问题",
+      "summary": "2026-10-03，sogeisetsu 在自己的仓库 sogeisetsu/sogeisetsu 提交了 3 次 commit，并在 openchamber/openchamber 上开了三个 issue，均与 commit d9fbf6b 移除侧边栏头部按钮后的 multi-run 功能相关。第一个 issue #4337 指出 multi-run 文档仍引用已移除的侧边栏头部按钮，该按钮已移至 composer。第二个 issue #4345 指出命令面板的\"Parallel run\"条目与侧边栏\"Select sessions\"切换共用 checkbox-multiple 图标，造成视觉混淆。第三个 issue #4346 指出 SidebarHeader.test.tsx 在 onOpenMultiRun 和 canOpenMultiRun 被移除后仍然通过。openchamber-bot 在数分钟内分别回复了 #4337 和 #4345，将两者标记为 fix-ready 并追溯了根因。当天无 PR、review 或 release 记录。",
       "releaseNotes": []
     }
   },
-  "aiProvider": "sensenova"
+  "aiProvider": "sensenova",
+  "dataHash": "ba3da810b13803056e33c756ee14c85e3979c6ecc8954663e599775629630dc9"
 }

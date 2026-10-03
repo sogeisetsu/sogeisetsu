@@ -5,21 +5,26 @@
  * 每日活动日报编排器（零依赖 ESM，Node 20+）。
  *
  * 数据流：
- *   collectDailyData()  → 过去一天（Asia/Shanghai 自然日）的公开活动数据
- *   generateNarrative() → 主 Zen / 备商汤，产出 en+zh 结构化叙述（失败则 null）
+ *   collectDailyData()  → 指定自然日（Asia/Shanghai）的公开活动数据
+ *   generateNarrative() → 主商汤 / 备 Zen，产出 en+zh 结构化叙述（失败则 null）
  *   renderReportPage()  → docs/report/YYYY-MM-DD.html（中英内联切换）
  *   renderMarkdown()    → docs/report/YYYY-MM-DD.md（仓库内可读）
  *   renderIndexPage()   → docs/index.html（最新一天 + 归档列表，列最近 60 天）
- *   docs/data/YYYY-MM-DD.json 为结构化真相源。
+ *   docs/data/YYYY-MM-DD.json 为结构化真相源，含 dataHash 供「无变化跳过」。
  *
  * 用法：
- *   node scripts/daily/index.mjs [--date=YYYY-MM-DD] [--dry-run] [--no-ai]
- *   --date      指定要生成的自然日（默认：Asia/Shanghai 的昨天）
+ *   node scripts/daily/index.mjs [--date=YYYY-MM-DD] [--force] [--dry-run] [--no-ai]
+ *   --date      只处理指定自然日（默认：同时处理「昨天（定稿）」与「今天（滚动）」）
+ *   --force     忽略内容哈希，强制重新生成
  *   --dry-run   只打印摘要，不写任何文件
  *   --no-ai     跳过 AI 调用，直接产出「无叙述」确定版（联调用）
+ *
+ * 无变化跳过：每次先抓数据、算内容哈希（忽略 generatedAt/ai/aiProvider/dataHash），
+ * 与已存 JSON 的 dataHash 相同则不调用 AI、不写文件、不提交，避免浪费 token。
  */
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -48,6 +53,7 @@ const argVal = (name) => {
 };
 const DRY_RUN = args.includes("--dry-run");
 const NO_AI = args.includes("--no-ai");
+const FORCE = args.includes("--force");
 const DATE_ARG = argVal("date");
 
 /** Asia/Shanghai 日历日，往前推 days 天，返回 YYYY-MM-DD。 */
@@ -79,6 +85,12 @@ function writeAtomic(file, text) {
   renameSync(tmp, file);
 }
 
+/** 内容哈希：忽略 generatedAt / ai / aiProvider / dataHash，其余参与比较。 */
+function contentHash(data) {
+  const { generatedAt, ai, aiProvider, dataHash, ...rest } = data;
+  return createHash("sha256").update(JSON.stringify(rest)).digest("hex");
+}
+
 /** 扫描 docs/data，返回最近 ARCHIVE_LIMIT 天的索引条目（新→旧）。 */
 function listDays() {
   if (!existsSync(DATA_DIR)) return [];
@@ -105,21 +117,27 @@ function sectionCount(data) {
     .join(" ");
 }
 
-// ---------------------------------------------------------------- 主流程
+// ---------------------------------------------------------------- 单日处理
 
-async function main() {
-  const date = DATE_ARG || cstDayMinus(1);
+/** 处理一个自然日；返回 { date, changed }。 */
+async function processDate(date) {
   if (!DATE_RE.test(date)) {
-    console.error(`[daily-report] 错误：--date 必须是 YYYY-MM-DD，收到 "${date}"`);
+    console.error(`[daily-report] 错误：日期必须是 YYYY-MM-DD，收到 "${date}"`);
     process.exit(1);
   }
   const prevDate = prevDateOf(date);
   const previousData = readJsonIfExists(path.join(DATA_DIR, `${prevDate}.json`));
-
   console.log(`[daily-report] 目标日: ${date}（Asia/Shanghai），上一日数据: ${prevDate}（${previousData ? "有" : "无"}）`);
 
   const data = await collectDailyData({ token: TOKEN, username: USERNAME, date, previousData });
   console.log(`[daily-report] 数据: totals=${JSON.stringify(data.totals)} · ${sectionCount(data)} · empty=${data.empty}`);
+
+  const hash = contentHash(data);
+  const existing = readJsonIfExists(path.join(DATA_DIR, `${date}.json`));
+  if (!DRY_RUN && !FORCE && existing && existing.dataHash === hash) {
+    console.log(`[daily-report] ${date} 内容无变化，跳过 AI 与写入`);
+    return { date, changed: false };
+  }
 
   let ai = null;
   let aiProvider = null;
@@ -140,23 +158,44 @@ async function main() {
   }
   data.ai = ai;
   data.aiProvider = aiProvider;
+  data.dataHash = hash;
 
   const html = renderReportPage({ data, ai });
   const md = renderMarkdown({ data, ai });
 
   if (DRY_RUN) {
-    console.log("[daily-report] --dry-run：未写入任何文件");
-    console.log(`[daily-report] html=${html.length} 字节 · md=${md.length} 字节 · ai=${ai ? "有" : "无"}`);
-    return;
+    console.log(`[daily-report] --dry-run：html=${html.length} 字节 · md=${md.length} 字节 · ai=${ai ? "有" : "无"}（未写入）`);
+    return { date, changed: false };
   }
 
   writeAtomic(path.join(DATA_DIR, `${date}.json`), JSON.stringify(data, null, 2));
   writeAtomic(path.join(REPORT_DIR, `${date}.html`), html);
   writeAtomic(path.join(REPORT_DIR, `${date}.md`), md);
   console.log(`[daily-report] 已写入 docs/data/${date}.json、docs/report/${date}.html、docs/report/${date}.md`);
+  return { date, changed: true };
+}
+
+// ---------------------------------------------------------------- 主流程
+
+async function main() {
+  // 默认：同时处理「昨天（定稿）」与「今天（滚动）」
+  const dates = DATE_ARG ? [DATE_ARG] : [cstDayMinus(1), cstDayMinus(0)];
+
+  const results = [];
+  for (const d of dates) results.push(await processDate(d));
+
+  if (DRY_RUN) {
+    console.log("[daily-report] --dry-run：未写入任何文件");
+    return;
+  }
+
+  if (!results.some((r) => r.changed)) {
+    console.log("[daily-report] 所有日期均无变化，未重写 index");
+    return;
+  }
 
   const days = listDays();
-  writeAtomic(INDEX_PATH, renderIndexPage({ days, generatedAt: data.generatedAt, username: USERNAME }));
+  writeAtomic(INDEX_PATH, renderIndexPage({ days, generatedAt: new Date().toISOString(), username: USERNAME }));
   console.log(`[daily-report] 已写入 docs/index.html（归档 ${days.length} 天）`);
 }
 

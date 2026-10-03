@@ -2,8 +2,8 @@ name: Update daily report
 
 on:
   schedule:
-    # 09:00 Asia/Shanghai (UTC+8)
-    - cron: "0 1 * * *"
+    # 每 2 小时（UTC）：每次定稿「昨天」+ 滚动刷新「今天」
+    - cron: "0 */2 * * *"
   workflow_dispatch:
     inputs:
       date:
@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: 生成过去一天的活动日报
+      - name: 生成/刷新日报（昨天定稿 + 今天滚动）
         run: node scripts/daily/index.mjs ${{ inputs.date && format('--date={0}', inputs.date) || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
