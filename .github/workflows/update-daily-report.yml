@@ -5,6 +5,11 @@ on:
     # 09:00 Asia/Shanghai (UTC+8)
     - cron: "0 1 * * *"
   workflow_dispatch:
+    inputs:
+      date:
+        description: "要生成的自然日（YYYY-MM-DD，留空=昨天，Asia/Shanghai）"
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -31,7 +36,7 @@ jobs:
           node-version: 20
 
       - name: 生成过去一天的活动日报
-        run: node scripts/daily/index.mjs
+        run: node scripts/daily/index.mjs ${{ inputs.date && format('--date={0}', inputs.date) || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
