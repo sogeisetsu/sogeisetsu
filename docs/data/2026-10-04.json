@@ -3,79 +3,35 @@
   "windowStart": "2026-10-04T00:00:00+08:00",
   "windowEnd": "2026-10-05T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-03T19:56:33.035Z",
+  "generatedAt": "2026-10-03T22:43:22.810Z",
   "empty": false,
   "totals": {
-    "commits": 22,
+    "commits": 26,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
     {
-      "repo": "sogeisetsu/meld-deepresearch",
-      "count": 10,
-      "own": true,
-      "messages": [
-        {
-          "sha": "8ae34d4708fde1a81cd2ecf144f658d3ec3dd23b",
-          "message": "chore(release): prepare 0.2.0",
-          "ts": "2026-10-03T19:23:58Z"
-        },
-        {
-          "sha": "4107e1446d6f5fda1cc6492a5332304a7cf08203",
-          "message": "fix(pages): apply the same chapter background alternation to the Chinese main",
-          "ts": "2026-10-03T19:15:38Z"
-        },
-        {
-          "sha": "e07584a25866a420a9f634e8465f43bdd496a53f",
-          "message": "fix(pages): footer readme per language, brand scroll-to-top, drop reveal outside pipeline, hero copy",
-          "ts": "2026-10-03T19:07:52Z"
-        },
-        {
-          "sha": "f6c48a3ca15c661dadaeb43f0ad5145f9c060386",
-          "message": "feat(skill): make access-blocked handling explicit, add validator hints, warn on same-publisher origins, allow mid-run budget uplift",
-          "ts": "2026-10-03T18:35:16Z"
-        },
-        {
-          "sha": "f77bf24283764683c5d22f8719dd73f311e05999",
-          "message": "chore: drop local worktree ignore blocks",
-          "ts": "2026-10-03T18:19:07Z"
-        },
-        {
-          "sha": "ab51ecae6061974480a1e89c86fd48bc9c6bce3e",
-          "message": "docs(eval): add live Q2 comparison results across three skills",
-          "ts": "2026-10-03T18:13:15Z"
-        },
-        {
-          "sha": "21733183ef512dfbd6fa43a144e307a4a390fcf1",
-          "message": "chore: ignore local worktree lanes",
-          "ts": "2026-10-03T17:56:19Z"
-        },
-        {
-          "sha": "1747454699b37d1d382373ed5831bf7b3ed4df72",
-          "message": "docs(eval): add deep research evaluation standard and three-skill comparison",
-          "ts": "2026-10-03T17:56:11Z"
-        },
-        {
-          "sha": "de1a1a44cb7626de9aceae02f0897b8ba91dac63",
-          "message": "fix(pages): land landing-page feedback and drop card reveals",
-          "ts": "2026-10-03T17:56:11Z"
-        },
-        {
-          "sha": "b628716d8359898c90acbba67d0b0b5a70c8ea43",
-          "message": "docs(zh): remove stray spaces around em dashes",
-          "ts": "2026-10-03T17:56:11Z"
-        }
-      ],
-      "automated": 0,
-      "automatedBots": []
-    },
-    {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 10,
+      "count": 13,
       "own": true,
       "messages": [
+        {
+          "sha": "99475eb813ed5d9aba14693e0082fd38a53453f4",
+          "message": "chore: 新增仓库 AGENTS.md 与 scripts/daily/verify.mjs",
+          "ts": "2026-10-03T20:22:40Z"
+        },
+        {
+          "sha": "23e789c299522d1a553f658433e282c6c38f4100",
+          "message": "fix: 中文页面标题改黑体（含英文），英文页面保留 Chomsky",
+          "ts": "2026-10-03T20:06:38Z"
+        },
+        {
+          "sha": "85683f1e633bc3ce8bab87e5f3364627863164c9",
+          "message": "feat: 标题换 Chomsky（NYT 报头哥特体）+ 中文宋体；AI 提交措辞/总数修正",
+          "ts": "2026-10-03T19:57:48Z"
+        },
         {
           "sha": "a6ac033e53a6611adbc9de9e6bdcd617b456d27b",
           "message": "feat: 标题用报纸衬线（Newsreader + 霞鹜文楷）+ favicon",
@@ -131,6 +87,70 @@
       "automatedBots": [
         "github-actions[bot]"
       ]
+    },
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "count": 11,
+      "own": true,
+      "messages": [
+        {
+          "sha": "935fb79dfc6f1b26917249e1191eeb314fc14e1c",
+          "message": "fix(site): keep the middle-path card centered on desktop",
+          "ts": "2026-10-03T20:34:16Z"
+        },
+        {
+          "sha": "8ae34d4708fde1a81cd2ecf144f658d3ec3dd23b",
+          "message": "chore(release): prepare 0.2.0",
+          "ts": "2026-10-03T19:23:58Z"
+        },
+        {
+          "sha": "4107e1446d6f5fda1cc6492a5332304a7cf08203",
+          "message": "fix(pages): apply the same chapter background alternation to the Chinese main",
+          "ts": "2026-10-03T19:15:38Z"
+        },
+        {
+          "sha": "e07584a25866a420a9f634e8465f43bdd496a53f",
+          "message": "fix(pages): footer readme per language, brand scroll-to-top, drop reveal outside pipeline, hero copy",
+          "ts": "2026-10-03T19:07:52Z"
+        },
+        {
+          "sha": "f6c48a3ca15c661dadaeb43f0ad5145f9c060386",
+          "message": "feat(skill): make access-blocked handling explicit, add validator hints, warn on same-publisher origins, allow mid-run budget uplift",
+          "ts": "2026-10-03T18:35:16Z"
+        },
+        {
+          "sha": "f77bf24283764683c5d22f8719dd73f311e05999",
+          "message": "chore: drop local worktree ignore blocks",
+          "ts": "2026-10-03T18:19:07Z"
+        },
+        {
+          "sha": "ab51ecae6061974480a1e89c86fd48bc9c6bce3e",
+          "message": "docs(eval): add live Q2 comparison results across three skills",
+          "ts": "2026-10-03T18:13:15Z"
+        },
+        {
+          "sha": "21733183ef512dfbd6fa43a144e307a4a390fcf1",
+          "message": "chore: ignore local worktree lanes",
+          "ts": "2026-10-03T17:56:19Z"
+        },
+        {
+          "sha": "1747454699b37d1d382373ed5831bf7b3ed4df72",
+          "message": "docs(eval): add deep research evaluation standard and three-skill comparison",
+          "ts": "2026-10-03T17:56:11Z"
+        },
+        {
+          "sha": "de1a1a44cb7626de9aceae02f0897b8ba91dac63",
+          "message": "fix(pages): land landing-page feedback and drop card reveals",
+          "ts": "2026-10-03T17:56:11Z"
+        },
+        {
+          "sha": "b628716d8359898c90acbba67d0b0b5a70c8ea43",
+          "message": "docs(zh): remove stray spaces around em dashes",
+          "ts": "2026-10-03T17:56:11Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
     },
     {
       "repo": "sogeisetsu/opencode-go-model-picker",
@@ -259,40 +279,7 @@
   ],
   "replies": [],
   "stateChanges": [],
-  "ai": {
-    "en": {
-      "headline": "22 commits across 3 repos; v0.2.0 and v1.3.0 released",
-      "summary": "On 2026-10-04, sogeisetsu made 22 commits across three repositories. In meld-deepresearch (10 commits), work centered on preparing the v0.2.0 release, fixing landing-page and chapter-background issues, adding explicit access-blocked handling and validator hints to the research skill, and documenting live Q2 evaluation comparisons across three skills. In sogeisetsu (10 own commits plus 2 automated commits by github-actions[bot]), changes included switching to Newsreader and 霞鹜文楷 serif fonts with a new favicon, restructuring commit statistics to separate own and bot counts, adding status-change badges with UTC+8 timestamps, and improving AI output resilience. In opencode-go-model-picker (2 commits), new agent-discovery and snapshot-summary scripts were added along with documentation for vision verification and Windows refresh paths. Two releases were published: meld-deepresearch v0.2.0, which formalizes blocked-source handling and adds validator fix hints, and opencode-go-model-picker v1.3.0, which introduces the discover-agents and snapshot-summary CLIs plus a role-overview column in recommendations. No pull requests, issues, or reviews were recorded.",
-      "releaseNotes": [
-        {
-          "repo": "sogeisetsu/meld-deepresearch",
-          "tag": "v0.2.0",
-          "summary": "Hardens the research protocol by formalizing blocked-source handling (logging HTTP status, labelling unreachable claims as unknown) and adding validator fix hints to failed runs. Also ships evaluation documentation comparing three deep-research skills."
-        },
-        {
-          "repo": "sogeisetsu/opencode-go-model-picker",
-          "tag": "v1.3.0",
-          "summary": "Adds discover-agents.mjs for listing custom agents and flagging risky fallback chains, plus snapshot-summary.mjs for compact model-snapshot digests. The recommendation table gains a role-overview column."
-        }
-      ]
-    },
-    "zh": {
-      "headline": "3 个仓库共 22 次提交；发布 v0.2.0 与 v1.3.0",
-      "summary": "2026 年 10 月 4 日，sogeisetsu 在三个仓库共提交 22 次。在 meld-deepresearch（10 次提交）中，主要工作包括准备 v0.2.0 发布、修复落地页和章节背景问题、为研究技能添加显式的访问受限处理和验证器提示，以及记录三项技能的 Q2 实时评估对比。在 sogeisetsu（10 次本人提交，另有 2 次由 github-actions[bot] 自动提交）中，改动包括切换至 Newsreader 和霞鹜文楷衬线字体并新增 favicon、重构提交统计以区分本人与机器人计数、添加带 UTC+8 时间戳的状态变更徽章，以及增强 AI 输出的容错能力。在 opencode-go-model-picker（2 次提交）中，新增了 agent-discovery 和 snapshot-summary 脚本，并补充了视觉验证和 Windows 刷新路径的文档。当天发布了两个版本：meld-deepresearch v0.2.0，正式规范了受限来源的处理流程并新增验证器修复提示；opencode-go-model-picker v1.3.0，引入 discover-agents 和 snapshot-summary CLI 工具，并在推荐表中增加了角色概览列。当日无合并请求、issue 或代码审查记录。",
-      "releaseNotes": [
-        {
-          "repo": "sogeisetsu/meld-deepresearch",
-          "tag": "v0.2.0",
-          "summary": "强化研究协议，正式规范受限来源的处理流程（记录 HTTP 状态码、将不可达来源的声明标记为 unknown），并为失败运行添加验证器修复提示。同时发布三项深度研究技能的评估对比文档。"
-        },
-        {
-          "repo": "sogeisetsu/opencode-go-model-picker",
-          "tag": "v1.3.0",
-          "summary": "新增 discover-agents.mjs 用于列出自定义 agent 并标记有风险的 fallback 链，以及 snapshot-summary.mjs 用于生成紧凑的模型快照摘要。推荐表新增角色概览列。"
-        }
-      ]
-    }
-  },
-  "aiProvider": "sensenova",
-  "dataHash": "f715365ac78fcb74b352127010632c5d3f1a6321b45c598ba171724cd52fca0b"
+  "ai": null,
+  "aiProvider": null,
+  "dataHash": "3c162f09dc62bbfd18b84d4baea9fcea0648082679e67ff006c4ec414da4be1c"
 }
