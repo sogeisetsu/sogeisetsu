@@ -155,7 +155,7 @@ const SYSTEM_PROMPT = [
   "- summary: 4-8 sentences, at most about 900 characters. Name concrete specifics from the input — repository names, issue/PR numbers and titles, who replied, what a release changed — and describe what actually happened that day, in order. No filler, no repeating the headline, no generic 'a busy day'.",
   "- releaseNotes: one entry ONLY for each release in the input, matching repo+tag exactly; each summary at most 3 sentences; use [] when there are no releases.",
   "- Commits: for the user's OWN commits (commits[].messages), summarize what they actually changed by synthesizing their commit messages — group and shorten them; do NOT list the messages verbatim.",
-  "- If automatedCommits is non-zero (or a commit entry has automated > 0), mention only the automated commit count; do not describe those automated commits.",
+  "- If automatedCommits is non-zero (or a commit entry has automated > 0), mention only the automated commit count and who created them (the automatedBots logins), e.g. \"2 automated commits by github-actions[bot]\"; never describe the automated commits' contents.",
   "- en and zh must state exactly the same facts.",
   "- zh must be natural Simplified Chinese, not a literal machine translation.",
   "- Neutral and factual: no hype, no speculation, no invented facts; keep repo names, numbers and tags verbatim from the input.",
@@ -177,6 +177,7 @@ function buildPrompts(data) {
       count: c?.count,
       own: c?.own,
       automated: c?.automated,
+      automatedBots: (Array.isArray(c?.automatedBots) ? c.automatedBots : []).slice(0, 3), // 最多喂 3 个 bot login
       messages: (Array.isArray(c?.messages) ? c.messages : [])
         .slice(0, COMMIT_MSG_CAP)
         .map((m) =>

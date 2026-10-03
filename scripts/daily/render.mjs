@@ -399,13 +399,19 @@ function commitsSection(items, totals) {
           `</ul>`
         : '';
       const autoCount = num(it.automated);
+      const bots = A(it.automatedBots)
+        .map((b) => String(b == null ? '' : b).trim())
+        .filter(Boolean)
+        .map((b) => `@${b}`);
+      const enWord = autoCount === 1 ? 'commit' : 'commits';
+      const en = bots.length
+        ? `${autoCount} automated ${enWord} by ${bots.join(', ')} · not counted in the total`
+        : `${autoCount} automated ${enWord} · not counted in the total`;
+      const zh = bots.length
+        ? `${autoCount} 次自动提交，由 ${bots.join('、')} 发起 · 不计入总提交数`
+        : `${autoCount} 次自动提交 · 不计入总提交数`;
       const automated =
-        autoCount > 0
-          ? `<p class="commit-auto">${i18n(
-              `· ${autoCount} automated commits`,
-              `· 另 ${autoCount} 次自动提交`
-            )}</p>`
-          : '';
+        autoCount > 0 ? `<p class="commit-auto">${i18n(en, zh)}</p>` : '';
       const count = num(it.count);
       const countBlock =
         count > 0

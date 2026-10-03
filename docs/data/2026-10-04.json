@@ -3,7 +3,7 @@
   "windowStart": "2026-10-04T00:00:00+08:00",
   "windowEnd": "2026-10-05T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-03T18:00:28.572Z",
+  "generatedAt": "2026-10-03T18:19:31.508Z",
   "empty": false,
   "totals": {
     "commits": 3,
@@ -33,14 +33,24 @@
           "ts": "2026-10-03T16:08:29Z"
         }
       ],
-      "automated": 0
+      "automated": 0,
+      "automatedBots": []
     }
   ],
   "automatedCommits": 0,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
-  "releases": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "tag": "v1.3.0",
+      "name": "v1.3.0",
+      "url": "https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v1.3.0",
+      "publishedAt": "2026-10-03T18:06:08Z",
+      "notes": "Two versions of work are rolled up here (v1.2.0 and v1.3.0). ## Better agent discovery and chain safety - New `scripts/discover-agents.mjs`: a read-only, zero-dependency CLI that lists your custom agents (slim and native sources) and flags risky fallback chains — duplicate model ids, chains outside 2–4 entries, non-Go fallback ids not confirmed in the local registry, and vision lanes whose model is not marked vision-verified. It prints compact JSON instead of making you read config files by hand. - New `scripts/snapshot-summary.mjs`: a compact digest of the cached model snapshot (~97% shorter than the raw file), with `--ids`, `--trait`, and `--json`. ## Clearer recommendations - The recommendation table now includes a **role overview** column: a one-line, plain-language description of wha…"
+    }
+  ],
   "stars": [],
   "starInventory": [
     {
@@ -128,16 +138,28 @@
   "stateChanges": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu pushes 3 commits to sogeisetsu/sogeisetsu",
-      "summary": "On 2026-10-04, user sogeisetsu made 3 commits to the repository sogeisetsu/sogeisetsu. The first commit added item status badges, UTC+8 timezone display, and included commit titles in summaries. The second commit fixed status change badges to preserve the actor's original casing and introduced a --rerender option. The third commit added a GitHub homepage button, changed the 30-day card to refresh every 2 hours, and ensured the last narrative is preserved when AI processing fails. No pull requests, issues, reviews, or releases were recorded on this date.",
-      "releaseNotes": []
+      "headline": "3 commits to sogeisetsu/sogeisetsu; opencode-go-model-picker v1.3.0 released",
+      "summary": "On 2026-10-04, sogeisetsu made 3 commits to the sogeisetsu/sogeisetsu repository. The commits added entry status badges with UTC+8 time display and commit titles in summaries, fixed status change badges to preserve the actor's original case and introduced a --rerender flag, and added a GitHub homepage button, changed the 30-day card to update every 2 hours, and made AI failures retain the last narrative. A release was published for sogeisetsu/opencode-go-model-picker at v1.3.0, rolling up v1.2.0 and v1.3.0 work. The release introduced scripts/discover-agents.mjs for read-only agent discovery and chain safety checks, scripts/snapshot-summary.mjs for compact model snapshot digests, and added a role overview column to the recommendation table.",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "tag": "v1.3.0",
+          "summary": "Rolled up v1.2.0 and v1.3.0 work. Introduced scripts/discover-agents.mjs for read-only agent discovery and chain safety checks, and scripts/snapshot-summary.mjs for compact model snapshot digests. Added a role overview column to the recommendation table."
+        }
+      ]
     },
     "zh": {
-      "headline": "sogeisetsu 向 sogeisetsu/sogeisetsu 推送 3 次提交",
-      "summary": "2026-10-04，用户 sogeisetsu 向仓库 sogeisetsu/sogeisetsu 提交了 3 次代码变更。首次提交新增了条目状态徽章、UTC+8 时区显示，并将提交标题纳入摘要。第二次提交修复了状态变更徽章中 actor 原始大小写被改变的问题，并新增了 --rerender 选项。第三次提交添加了 GitHub 主页按钮，将 30 天卡片改为每 2 小时刷新一次，并确保 AI 处理失败时保留上次的叙述内容。当日无合并请求、议题、代码审查或版本发布记录。",
-      "releaseNotes": []
+      "headline": "sogeisetsu/sogeisetsu 3 次提交；opencode-go-model-picker 发布 v1.3.0",
+      "summary": "2026-10-04，sogeisetsu 在 sogeisetsu/sogeisetsu 仓库提交了 3 次代码。提交内容包括：新增条目状态徽章、UTC+8 时间显示及提交标题入摘要；修复状态变更徽章保留 actor 原始大小写并新增 --rerender 参数；添加 GitHub 主页按钮、30 天卡片改为每 2 小时更新、AI 失败时保留上次叙述。同日，sogeisetsu/opencode-go-model-picker 发布了 v1.3.0，合并了 v1.2.0 和 v1.3.0 的工作。该版本引入了 scripts/discover-agents.mjs 用于只读代理发现和链安全检查、scripts/snapshot-summary.mjs 用于生成紧凑的模型快照摘要，并在推荐表格中新增了角色概览列。",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "tag": "v1.3.0",
+          "summary": "合并了 v1.2.0 和 v1.3.0 的工作。引入了 scripts/discover-agents.mjs 用于只读代理发现和链安全检查，以及 scripts/snapshot-summary.mjs 用于生成紧凑的模型快照摘要。在推荐表格中新增了角色概览列。"
+        }
+      ]
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "efec610a047cf48ae11e243c04eda6704f828bbb40edb9e8baf1a3b36310be3e"
+  "dataHash": "dc639abeededc2e11bd9cea5db4680c6ee8d1f7704185fefeeb8318737f6f427"
 }

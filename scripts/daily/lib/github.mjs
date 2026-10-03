@@ -290,10 +290,11 @@ function mapEvents(rawEvents, username, win) {
  *   count     = 用户本人提交数（totals.commits 的唯一来源）
  *   messages  = 用户本人提交的 {sha, message, ts}（message 取首行、折叠空白截断 COMMIT_MSG_MAX）
  *   automated = 机器人提交数（author.login / commit.author.name 以 [bot] 结尾，或 author.type === "Bot"）
+ *   bots      = 这些机器人提交的发起者身份（author.login || commit.author.name，空值跳过，去重数组）
  * 公共事件端点的 PushEvent.payload 只有 repository_id / push_id / ref / head / before，
  * 不含 size / commits —— 因此按 before...head 走 compare 复核（与 REST /repos/:o/:r/commits 的
  * user-authored 真值口径一致）。seenSha 为跨 push 的全局去重集合（compare 区间可能重叠），
- * 见过的 sha 直接跳过，保证“先去重后计数”。
+ * 见过的 sha 直接跳过，保证“先去重后计数”（bot 与用户提交同样受此去重约束）。
  * 返回 null 表示无法复核（compare 失败 / before 缺失或为全零），由调用方回退到规格默认权重 1。
  */
 async function inspectPush(token, repoName, before, head, username, seenSha) {
@@ -308,7 +309,7 @@ async function inspectPush(token, repoName, before, head, username, seenSha) {
   if (!Array.isArray(list)) return null;
   const me = String(username ?? "").toLowerCase();
   const isBotName = (name) => String(name ?? "").toLowerCase().endsWith("[bot]");
-  const result = { count: 0, messages: [], automated: 0 };
+  const result = { count: 0, messages: [], automated: 0, bots: new Set() };
   for (const c of list) {
     const sha = String(c.sha ?? "");
     if (sha && seenSha.has(sha)) continue; // 跨 push 重叠区间：已计过的 sha 不再计
@@ -320,6 +321,8 @@ async function inspectPush(token, repoName, before, head, username, seenSha) {
     if (bot) {
       if (sha) seenSha.add(sha);
       result.automated += 1; // 机器人提交：只进 automated，不进 totals
+      const who = c.author?.login || c.commit?.author?.name || "";
+      if (who) result.bots.add(who); // 记录是谁触发的（空身份跳过）
     } else if (mine) {
       if (sha) seenSha.add(sha);
       result.count += 1;
@@ -331,7 +334,12 @@ async function inspectPush(token, repoName, before, head, username, seenSha) {
     }
     // 他人提交：不计数（其 sha 也无需登记，重复出现时同样不计）
   }
-  return result;
+  return {
+    count: result.count,
+    messages: result.messages,
+    automated: result.automated,
+    bots: [...result.bots],
+  };
 }
 
 /**
@@ -339,11 +347,12 @@ async function inspectPush(token, repoName, before, head, username, seenSha) {
  *   weight = payload.size ?? payload.commits?.length ??（compare 检视的用户提交数）?? 1
  * 前两项是规格口径（该端点实测不返回，保留分支以防上游补齐）；compare 复核失败才落回 1（无明细）。
  * 同仓多次 push 累计；用户提交经全局 sha 去重后计入；count>0 或 automated>0 的仓库进表
- * （纯机器人提交的仓库也保留 automated 行，并计入顶层 automatedCommits）。
+ * （纯机器人提交的仓库也保留 automated 行，并计入顶层 automatedCommits；
+ * automatedBots 为该仓触发 automated 的机器人身份，去重后排序）。
  */
 async function buildCommits(rawEvents, token, username, win) {
-  const byRepo = new Map(); // repo → { count, messages, automated }
-  const seenSha = new Set(); // 全轮跨 push 的 sha 去重（compare 区间可能重叠）
+  const byRepo = new Map(); // repo → { count, messages, automated, bots }
+  const seenSha = new Set(); // 全轮跨 push 的 sha 去重（compare 区间可能重叠，bot 同样受约束）
   const pushes = (rawEvents || []).filter(
     (ev) => ev.type === "PushEvent" && inWindow(tsOf(ev.created_at), win) && ev.repo && ev.repo.name
   );
@@ -352,7 +361,7 @@ async function buildCommits(rawEvents, token, username, win) {
   for (const ev of pushes) {
     const repo = ev.repo.name;
     const p = ev.payload || {};
-    const slot = byRepo.get(repo) || { count: 0, messages: [], automated: 0 };
+    const slot = byRepo.get(repo) || { count: 0, messages: [], automated: 0, bots: new Set() };
     byRepo.set(repo, slot);
 
     const payloadWeight = p.size ?? p.commits?.length ?? null;
@@ -377,6 +386,7 @@ async function buildCommits(rawEvents, token, username, win) {
       slot.count += inspected.count;
       slot.automated += inspected.automated;
       slot.messages.push(...inspected.messages);
+      for (const bot of inspected.bots) slot.bots.add(bot);
     } else {
       slot.count += 1; // 规格默认权重，无消息明细
     }
@@ -388,6 +398,7 @@ async function buildCommits(rawEvents, token, username, win) {
       own: isOwnRepoName(repo, username),
       messages: s.messages,
       automated: s.automated,
+      automatedBots: [...s.bots].sort(), // 去重 + 排序
     }))
     .filter((x) => x.count > 0 || x.automated > 0)
     .sort((a, b) => b.count - a.count || a.repo.localeCompare(b.repo));
@@ -758,9 +769,10 @@ const byTsDesc = (a, b) => tsOf(b.ts) - tsOf(a.ts);
  * @returns {Promise<object>} 固定 shape 的日报数据，每个 key 恒存在、数组可为空：
  *   { date, windowStart, windowEnd, username, generatedAt, empty,
  *     totals:{commits,prs,issues,reviews},   // = Σcommits[].count（仅用户提交）及各数组长度
- *     commits:[{repo,count,own,messages:[{sha,message,ts}],automated}],
+ *     commits:[{repo,count,own,messages:[{sha,message,ts}],automated,automatedBots:[login]}],
  *                                             // PushEvent × compare 复核；messages 为用户提交标题，
- *                                             // sha 跨 push 去重；automated = 机器人提交数
+ *                                             // sha 跨 push 去重；automated = 机器人提交数，
+ *                                             // automatedBots = 触发它们的机器人身份（去重排序）
  *     automatedCommits:number,                // = Σcommits[].automated（不进 totals / empty）
  *     pullRequests:[{repo,number,title,url,action,ts,own,state?}],
  *     reviews:[{repo,number,title,url,ts,own}],
@@ -903,7 +915,8 @@ async function main() {
   console.log(`${LOG} automatedCommits: ${data.automatedCommits}（不计入 totals）`);
   for (const c of data.commits) {
     console.log(
-      `${LOG}   · ${c.repo} ×${c.count}（自动 ${c.automated}）` +
+      `${LOG}   · ${c.repo} ×${c.count}（自动 ${c.automated}` +
+        `${c.automatedBots.length ? `：${c.automatedBots.join(", ")}` : ""}）` +
         (c.messages.length ? "" : "（无 compare 明细）")
     );
     for (const m of c.messages) console.log(`${LOG}     - ${String(m.sha).slice(0, 7)} ${m.message}`);
