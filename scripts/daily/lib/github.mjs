@@ -5,8 +5,10 @@
  * 每日报告 · GitHub 数据采集（零依赖 ESM，Node 20+ 内置 fetch，风格对齐 scripts/generate-activity.mjs）。
  *
  * 数据源与职责：
- *   1. GraphQL contributionsCollection —— 逐仓库公开提交明细（核心调用，只有它失败才允许抛错）
- *   2. REST /users/:u/events/public      —— 窗口内动作级事件（PR / Issue / 评审 / 自己的评论）
+ *   1. REST /users/:u/events/public      —— 窗口内动作级事件（PR / Issue / 评审 / 自己的评论），
+ *                                          以及 PushEvent（发现被推过的仓库 + before/head）
+ *   2. REST /repos/:o/:r/compare         —— 对每个窗口内 PushEvent 复核“用户本人提交数”
+ *                                          （该端点 payload 不含 size/commits，无法直接加权）
  *   3. REST /users/:u/repos + releases    —— 自有仓库的 Release（published_at 落在窗口内）
  *   4. GraphQL repository.stargazerCount —— 自有仓库星标总数：全量存入 starInventory 作次日基准，
  *                                          展示的 stars 只列 delta 非 0 的变化项
@@ -15,13 +17,15 @@
  * 窗口定义：date 当天 00:00:00+08:00 ≤ ts < 次日 00:00:00+08:00（Asia/Shanghai 固定 UTC+8，无夏令时）。
  *
  * totals 口径（公开日报恒等式）：totals 只由实际展示的公开数据求和得出 ——
- *   commits = Σcommits[].count，prs/issues/reviews = 对应数组长度；
- *   GraphQL 的 total*Contributions 含私有贡献（user-scoped token），弃用。
+ *   commits = Σcommits[].count（PushEvent 逐次复核的用户本人提交数，按仓库累计），
+ *   prs/issues/reviews = 对应数组长度。
+ *   弃用 contributionsCollection：同一瞬间窗口用 +08:00 与 Z 表达会得到不同且错误的归因
+ *   （提交会同时漏进相邻两天），且 user-scoped token 下含私有贡献 —— 本模块不再发起该查询。
  *
  * 错误策略：
- *   - 核心 GraphQL 失败且带 token → 抛错；无 token 时 GraphQL 必然 401，降级为警告 + 零值
- *   - 其余任何一段失败（401/403/404/限流/网络）→ 打警告 + 该段返回空数组，绝不抛错
+ *   - 任何一段失败（401/403/404/限流/网络/GraphQL）→ 打警告 + 该段返回空数组，绝不抛错
  *   - 5xx / 网络异常重试 2 次（指数退避），所有分页/枚举均有硬上限
+ *   - 仅 --date 格式非法时 CLI 报错退出
  *
  * 用法（CLI 冒烟）：
  *   node scripts/daily/lib/github.mjs --date=YYYY-MM-DD [--dump=path.json]
@@ -49,21 +53,7 @@ const SEARCH_PER_PAGE = 50; // Search 每个查询取一页
 const REPLY_HITS_MAX = 25; // 回复扫描最多跟进 25 个条目
 const NOTES_MAX = 800; // release notes 折叠空白后截断长度
 const EXCERPT_MAX = 200; // 回复摘录折叠空白后截断长度
-
-// 只取逐仓库提交明细（totals 由各段实际展示的公开数据求和，total* 含私有贡献、一律不用）；
-// isPrivate 用于把私有仓库的提交挡在公开日报之外。
-const GRAPHQL_QUERY = `
-query ($login: String!, $from: DateTime!, $to: DateTime!) {
-  user(login: $login) {
-    contributionsCollection(from: $from, to: $to) {
-      commitContributionsByRepository(maxRepositories: 100) {
-        repository { nameWithOwner owner { login } isPrivate }
-        contributions { totalCount }
-      }
-    }
-  }
-}
-`;
+const PUSH_COMPARE_MAX = 20; // 单次运行最多对多少个 PushEvent 走 compare 复核（防失控）
 
 // ---------------------------------------------------------------- 小工具
 
@@ -182,56 +172,7 @@ const isOwnLogin = (login, username) =>
 const isOwnRepoName = (nameWithOwner, username) =>
   isOwnLogin(String(nameWithOwner ?? "").split("/")[0], username);
 
-// ---------------------------------------------------------------- 1. GraphQL 贡献（核心）
-
-/**
- * 核心 GraphQL：contributionsCollection。
- * 失败时：带 token → 抛错（唯一允许抛错的地方）；无 token → 警告 + null（由调用方按零值降级）。
- */
-async function fetchContributions(token, username, win) {
-  const coreFail = (message) => {
-    if (token) throw new Error(`核心 contributionsCollection 失败: ${message}`);
-    warn(
-      "contributions",
-      `${message}（无 token，GraphQL 不可用，提交明细按空处理）`
-    );
-    return null;
-  };
-
-  let status = 0;
-  let text = "";
-  try {
-    const res = await httpFetch("https://api.github.com/graphql", {
-      method: "POST",
-      headers: apiHeaders(token, { "content-type": "application/json" }),
-      body: JSON.stringify({
-        query: GRAPHQL_QUERY,
-        variables: { login: username, from: win.startISO, to: win.endISO },
-      }),
-    });
-    status = res.status;
-    text = await res.text();
-  } catch (err) {
-    return coreFail(`请求失败: ${err.message}`);
-  }
-  if (status >= 400) {
-    return coreFail(`GraphQL HTTP ${status}: ${String(text).slice(0, 300)}`);
-  }
-  let body;
-  try {
-    body = JSON.parse(text);
-  } catch (err) {
-    return coreFail(`响应不是合法 JSON: ${err.message}`);
-  }
-  if (Array.isArray(body.errors) && body.errors.length > 0) {
-    return coreFail(`errors 字段: ${JSON.stringify(body.errors).slice(0, 500)}`);
-  }
-  const collection = body.data && body.data.user && body.data.user.contributionsCollection;
-  if (!collection) return coreFail("未返回 user.contributionsCollection");
-  return collection;
-}
-
-// ---------------------------------------------------------------- 2. 公共事件（动作级）
+// ---------------------------------------------------------------- 1. 公共事件（动作级）
 
 /** 抓取公共事件：跟随 Link rel="next"，上限 5 页 / 300 条；失败返回已取部分（可能为空）。 */
 async function fetchPublicEvents(token, username, win) {
@@ -259,7 +200,10 @@ async function fetchPublicEvents(token, username, win) {
   return all.slice(0, EVENT_MAX);
 }
 
-/** 把窗口内事件映射为 pullRequests / reviews / issues 三类条目。 */
+/**
+ * 把窗口内动作级事件映射为 pullRequests / reviews / issues 条目
+ * （PushEvent 不在此处理，见 buildCommits）。
+ */
 function mapEvents(rawEvents, username, win) {
   const pullRequests = [];
   const reviews = [];
@@ -332,6 +276,69 @@ function mapEvents(rawEvents, username, win) {
     }
   }
   return { pullRequests, reviews, issues };
+}
+
+// ---------------------------------------------------------------- 2. 提交（PushEvent → REST 复核）
+
+/**
+ * 一次 PushEvent 中“用户本人提交”的数量。
+ * 公共事件端点的 PushEvent.payload 只有 repository_id / push_id / ref / head / before，
+ * 不含 size / commits —— 因此按 before...head 走 compare，只数 author 与 username 匹配的提交
+ * （与 REST /repos/:o/:r/commits 的 user-authored 真值口径一致）。
+ * 返回 null 表示无法复核（compare 失败 / before 缺失或为全零），由调用方回退到规格默认权重。
+ */
+async function countUserCommitsInPush(token, repoName, before, head, username) {
+  if (!repoName || !before || !head || /^0+$/.test(before)) return null;
+  const m = /^([^/]+)\/(.+)$/.exec(repoName);
+  if (!m) return null;
+  const url =
+    `https://api.github.com/repos/${encodeURIComponent(m[1])}/${encodeURIComponent(m[2])}` +
+    `/compare/${encodeURIComponent(before)}...${encodeURIComponent(head)}`;
+  const got = await restGet(url, token, "commits");
+  const list = got && got.data && got.data.commits;
+  if (!Array.isArray(list)) return null;
+  const me = String(username ?? "").toLowerCase();
+  return list.filter((c) =>
+    [c.author?.login, c.author?.name, c.commit?.author?.name].some(
+      (n) => String(n ?? "").toLowerCase() === me
+    )
+  ).length;
+}
+
+/**
+ * 从窗口内 PushEvent 汇总逐仓提交数：
+ *   weight = payload.size ?? payload.commits?.length ??（REST compare 复核的用户提交数）?? 1
+ * 前两项是规格口径（该端点实测不返回，保留分支以防上游补齐）；compare 复核失败才落回 1。
+ * 同仓多次 push 累计，count>0 的仓库才进表。
+ */
+async function buildCommits(rawEvents, token, username, win) {
+  const counts = new Map(); // repo → 提交数
+  const pushes = (rawEvents || []).filter(
+    (ev) => ev.type === "PushEvent" && inWindow(tsOf(ev.created_at), win) && ev.repo && ev.repo.name
+  );
+  let compared = 0;
+  let capWarned = false;
+  for (const ev of pushes) {
+    const p = ev.payload || {};
+    let weight = p.size ?? p.commits?.length ?? null;
+    if (weight === null) {
+      if (compared >= PUSH_COMPARE_MAX) {
+        if (!capWarned) {
+          warn("commits", `窗口内 PushEvent 超过 ${PUSH_COMPARE_MAX} 次，超出部分按每次 1 计`);
+          capWarned = true;
+        }
+        weight = 1; // 规格默认权重
+      } else {
+        compared += 1;
+        weight = (await countUserCommitsInPush(token, ev.repo.name, p.before, p.head, username)) ?? 1;
+      }
+    }
+    const n = num(weight);
+    if (n > 0) counts.set(ev.repo.name, (counts.get(ev.repo.name) || 0) + n);
+  }
+  return [...counts.entries()]
+    .map(([repo, count]) => ({ repo, count, own: isOwnRepoName(repo, username) }))
+    .sort((a, b) => b.count - a.count || a.repo.localeCompare(b.repo));
 }
 
 // ---------------------------------------------------------------- 3. 自有仓库 + Release
@@ -593,20 +600,20 @@ const byTsDesc = (a, b) => tsOf(b.ts) - tsOf(a.ts);
  * 采集指定日（Asia/Shanghai）的 GitHub 活动数据。
  *
  * 窗口 = [date 00:00:00+08:00, 次日 00:00:00+08:00)。
- * 数据为公开口径：totals 恒等于实际展示的各段之和（不使用 GraphQL 的 total*Contributions，
- * 后者在 user-scoped token 下含私有贡献）。
- * 除核心 contributionsCollection（带 token 失败时抛错）外，任何一段失败都只打警告并返回空数组。
+ * 数据为公开口径：totals 恒等于实际展示的各段之和；提交数由公共 PushEvent 汇总
+ * （contributionsCollection 对 +08:00 / Z 窗口归因不一致且含私有贡献，已彻底弃用）。
+ * 任何一段失败都只打警告并返回空数组，绝不抛错。
  *
  * @param {object} opts 采集参数
- * @param {string|null} opts.token GitHub token（可为 null：GraphQL 段降级为空明细）
+ * @param {string|null} opts.token GitHub token（可为 null：GraphQL 星标段降级为空）
  * @param {string} opts.username GitHub 用户名（如 "sogeisetsu"）
  * @param {string} opts.date 报告日，格式 "YYYY-MM-DD"（Asia/Shanghai 日历日）
  * @param {object|null} opts.previousData 前一日 docs/data/YYYY-MM-DD.json 解析结果（星标 delta 基准：
  *   优先用其 starInventory，缺失时回退 stars），可为 null
  * @returns {Promise<object>} 固定 shape 的日报数据，每个 key 恒存在、数组可为空：
  *   { date, windowStart, windowEnd, username, generatedAt, empty,
- *     totals:{commits,prs,issues,reviews},   // = Σcommits[].count 及各数组长度
- *     commits:[{repo,count,own}],
+ *     totals:{commits,prs,issues,reviews},   // = Σcommits[].count（PushEvent 汇总）及各数组长度
+ *     commits:[{repo,count,own}],            // PushEvent × REST compare 复核的用户提交数，按仓库累计
  *     pullRequests:[{repo,number,title,url,action,ts,own}],
  *     reviews:[{repo,number,title,url,ts,own}],
  *     issues:[{repo,number,title,url,action,ts,own}],
@@ -618,26 +625,11 @@ const byTsDesc = (a, b) => tsOf(b.ts) - tsOf(a.ts);
 export async function collectDailyData({ token, username, date, previousData }) {
   const win = computeWindow(date);
 
-  // --- 1. 核心贡献（逐仓库公开提交；私有仓库直接不进日报）---
-  const collection = await fetchContributions(token, username, win);
-  const commits = [];
-  for (const row of (collection && collection.commitContributionsByRepository) || []) {
-    const repo = row && row.repository && row.repository.nameWithOwner;
-    if (!repo) continue;
-    if (row.repository.isPrivate) continue; // 公开日报不展示私有仓库
-    const count = num(row.contributions && row.contributions.totalCount);
-    if (count <= 0) continue;
-    commits.push({
-      repo,
-      count,
-      own: isOwnLogin(row.repository.owner && row.repository.owner.login, username),
-    });
-  }
-  commits.sort((a, b) => b.count - a.count || a.repo.localeCompare(b.repo));
-
-  // --- 2. 动作级事件（窗口过滤后映射；公共事件流本身就是公开数据）---
+  // --- 1. 公共事件（窗口过滤；事件流本身就是公开数据）---
   const rawEvents = await fetchPublicEvents(token, username, win);
   const { pullRequests, reviews, issues } = mapEvents(rawEvents, username, win);
+  // --- 2. 提交：PushEvent 发现活跃仓库，REST compare 复核用户本人提交数 ---
+  const commits = await buildCommits(rawEvents, token, username, win);
   pullRequests.sort(byTsDesc);
   reviews.sort(byTsDesc);
   issues.sort(byTsDesc);
@@ -704,8 +696,10 @@ function loadPreviousData(date) {
   const file = path.join(root, "docs", "data", `${prev}.json`);
   try {
     const data = JSON.parse(readFileSync(file, "utf8"));
-    const n = Array.isArray(data.stars) ? data.stars.length : 0;
-    console.log(`${LOG} 上一日基准: docs/data/${prev}.json（stars 基准 ${n} 条）`);
+    const inv = Array.isArray(data.starInventory) ? data.starInventory.length : 0;
+    const legacy = Array.isArray(data.stars) ? data.stars.length : 0;
+    const label = inv > 0 ? `starInventory ${inv} 条` : `stars ${legacy} 条（旧格式回退）`;
+    console.log(`${LOG} 上一日基准: docs/data/${prev}.json（${label}）`);
     return data;
   } catch {
     console.log(`${LOG} 上一日基准: docs/data/${prev}.json 不可用（stars delta 按无基准处理）`);

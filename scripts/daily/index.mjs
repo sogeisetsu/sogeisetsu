@@ -156,7 +156,7 @@ async function main() {
   console.log(`[daily-report] 已写入 docs/data/${date}.json、docs/report/${date}.html、docs/report/${date}.md`);
 
   const days = listDays();
-  writeAtomic(INDEX_PATH, renderIndexPage({ days, generatedAt: data.generatedAt }));
+  writeAtomic(INDEX_PATH, renderIndexPage({ days, generatedAt: data.generatedAt, username: USERNAME }));
   console.log(`[daily-report] 已写入 docs/index.html（归档 ${days.length} 天）`);
 }
 

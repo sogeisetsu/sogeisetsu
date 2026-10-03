@@ -578,9 +578,7 @@ body{
   font-size:16px;
   line-height:1.6;
   color:var(--on-surface);
-  background:
-    radial-gradient(1100px 560px at 82% -12%, var(--aura), transparent 62%),
-    var(--surface);
+  background:var(--surface);
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
@@ -823,7 +821,7 @@ export function renderReportPage({ data, ai } = {}) {
   // top bar
   parts.push(
     `<div class="topbar">` +
-      `<a class="back" href="./index.html">${i18n('← All reports', '← 全部日报')}</a>` +
+      `<a class="back" href="../index.html">${i18n('← All reports', '← 全部日报')}</a>` +
       langToggle() +
       `</div>`
   );
@@ -878,8 +876,9 @@ export function renderReportPage({ data, ai } = {}) {
 
 // ---------------------------------------------------------------- index page
 
-export function renderIndexPage({ days, generatedAt } = {}) {
+export function renderIndexPage({ days, generatedAt, username } = {}) {
   const list = A(days).slice(0, 60);
+  const user = username == null ? '' : String(username).trim();
 
   const rows = list
     .map((day) => {
@@ -904,7 +903,11 @@ export function renderIndexPage({ days, generatedAt } = {}) {
     `<div class="topbar">${langToggle()}</div>\n` +
     `<header class="hero">` +
     `<p class="eyebrow">${i18n('Archive', '归档')}</p>` +
-    `<h1>${i18n('Daily GitHub activity', 'GitHub 每日动态')}</h1>` +
+    `<h1>${
+      user
+        ? i18n(`${user} · Daily GitHub activity`, `${user} 的 GitHub 每日动态`)
+        : i18n('Daily GitHub activity', 'GitHub 每日动态')
+    }</h1>` +
     `<p class="hero-sub">${i18n(
       'One report per day, newest first.',
       '每日一份报告，最新在前。'

@@ -3,12 +3,12 @@
   "windowStart": "2026-10-03T00:00:00+08:00",
   "windowEnd": "2026-10-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-03T14:48:47.801Z",
+  "generatedAt": "2026-10-03T15:28:06.440Z",
   "empty": false,
   "totals": {
     "commits": 2,
     "prs": 0,
-    "issues": 1,
+    "issues": 3,
     "reviews": 0
   },
   "commits": [
@@ -21,6 +21,24 @@
   "pullRequests": [],
   "reviews": [],
   "issues": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4346,
+      "title": "[test] SidebarHeader.test.tsx still passes onOpenMultiRun/canOpenMultiRun removed in d9fbf6b",
+      "url": "https://github.com/openchamber/openchamber/issues/4346",
+      "action": "opened",
+      "ts": "2026-10-03T15:10:49.000Z",
+      "own": false
+    },
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4345,
+      "title": "[UI] Command palette 'Parallel run' shares the checkbox-multiple icon with sidebar 'Select sessions'",
+      "url": "https://github.com/openchamber/openchamber/issues/4345",
+      "action": "opened",
+      "ts": "2026-10-03T15:10:41.000Z",
+      "own": false
+    },
     {
       "repo": "openchamber/openchamber",
       "number": 4337,
@@ -118,6 +136,17 @@
   "replies": [
     {
       "repo": "openchamber/openchamber",
+      "number": 4345,
+      "title": "[UI] Command palette 'Parallel run' shares the checkbox-multiple icon with sidebar 'Select sessions'",
+      "url": "https://github.com/openchamber/openchamber/issues/4345",
+      "author": "openchamber-bot[bot]",
+      "excerpt": "**For the maintainer:** `fix-ready` — cause traced The palette multi-run item and the sidebar selection toggle both use `checkbox-multiple`. Multi-run's identity elsewhere is already `ArrowsMerge`. W…",
+      "kind": "issue_comment",
+      "ts": "2026-10-03T15:15:52.000Z",
+      "own": false
+    },
+    {
+      "repo": "openchamber/openchamber",
       "number": 4337,
       "title": "[Docs] Multi-run docs still point to a sidebar header button that was removed in d9fbf6b (moved to the composer)",
       "url": "https://github.com/openchamber/openchamber/issues/4337",
@@ -130,13 +159,13 @@
   ],
   "ai": {
     "en": {
-      "headline": "2 commits to own repo; opened 1 docs issue on openchamber",
-      "summary": "On 2026-10-03, sogeisetsu made 2 commits to their personal repository sogeisetsu/sogeisetsu. They also opened issue #4337 on openchamber/openchamber, reporting that the Multi-run documentation still references a sidebar header button that was removed in commit d9fbf6b and moved to the composer. No pull requests, reviews, or releases were recorded during this period.",
+      "headline": "sogeisetsu opens 3 issues on openchamber, 2 commits to personal repo",
+      "summary": "On 2026-10-03, sogeisetsu made 2 commits to their personal repository and opened 3 issues on openchamber/openchamber. The issues cover a test file still passing after API removal, a UI icon conflict between command palette and sidebar, and outdated multi-run documentation referencing a removed sidebar button. Two of the issues received automated triage comments from openchamber-bot.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "向个人仓库提交2次代码；在openchamber上提出1个文档问题",
-      "summary": "2026年10月3日，sogeisetsu向个人仓库sogeisetsu/sogeisetsu提交了2次代码。此外，他们在openchamber/openchamber上提出了issue #4337，指出Multi-run文档仍引用了在提交d9fbf6b中被移除并迁移至composer的侧边栏头部按钮。该时段内未记录到任何拉取请求、代码审查或版本发布。",
+      "headline": "sogeisetsu 在 openchamber 提交 3 个 issue，个人仓库 2 次提交",
+      "summary": "2026-10-03，sogeisetsu 在个人仓库完成 2 次提交，并在 openchamber/openchamber 上提交了 3 个 issue。这些 issue 涉及 API 移除后测试文件仍通过、命令面板与侧边栏图标冲突，以及多运行文档仍引用已移除的侧边栏按钮。其中两个 issue 收到了 openchamber-bot 的自动分诊评论。",
       "releaseNotes": []
     }
   },

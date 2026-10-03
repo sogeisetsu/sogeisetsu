@@ -70,9 +70,7 @@ body{
   font-size:16px;
   line-height:1.6;
   color:var(--on-surface);
-  background:
-    radial-gradient(1100px 560px at 82% -12%, var(--aura), transparent 62%),
-    var(--surface);
+  background:var(--surface);
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
@@ -285,11 +283,11 @@ h1{margin:0;font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.025
 <body>
 <div class="wrap">
 <div class="topbar"><div class="langtoggle" role="group" aria-label="Language / 语言"><button type="button" class="langbtn" data-set-lang="en" aria-pressed="true">EN</button><button type="button" class="langbtn" data-set-lang="zh" aria-pressed="false">中文</button></div></div>
-<header class="hero"><p class="eyebrow"><span class="i18n" data-lang="en">Archive</span><span class="i18n" data-lang="zh">归档</span></p><h1><span class="i18n" data-lang="en">Daily GitHub activity</span><span class="i18n" data-lang="zh">GitHub 每日动态</span></h1><p class="hero-sub"><span class="i18n" data-lang="en">One report per day, newest first.</span><span class="i18n" data-lang="zh">每日一份报告，最新在前。</span></p></header>
+<header class="hero"><p class="eyebrow"><span class="i18n" data-lang="en">Archive</span><span class="i18n" data-lang="zh">归档</span></p><h1><span class="i18n" data-lang="en">sogeisetsu · Daily GitHub activity</span><span class="i18n" data-lang="zh">sogeisetsu 的 GitHub 每日动态</span></h1><p class="hero-sub"><span class="i18n" data-lang="en">One report per day, newest first.</span><span class="i18n" data-lang="zh">每日一份报告，最新在前。</span></p></header>
 <ul class="daylist">
-<li><a class="day" href="./report/2026-10-03.html"><span class="day-date"><span class="i18n" data-lang="en">Oct 3, 2026</span><span class="i18n" data-lang="zh">2026年10月3日</span></span><span class="day-head"><span class="i18n" data-lang="en">2 commits to own repo; opened 1 docs issue on openchamber</span><span class="i18n" data-lang="zh">向个人仓库提交2次代码；在openchamber上提出1个文档问题</span></span></a></li><li><a class="day" href="./report/2026-10-02.html"><span class="day-date"><span class="i18n" data-lang="en">Oct 2, 2026</span><span class="i18n" data-lang="zh">2026年10月2日</span></span><span class="day-head day-head-empty"><span class="i18n" data-lang="en">Report available</span><span class="i18n" data-lang="zh">日报已生成</span></span></a></li>
+<li><a class="day" href="./report/2026-10-03.html"><span class="day-date"><span class="i18n" data-lang="en">Oct 3, 2026</span><span class="i18n" data-lang="zh">2026年10月3日</span></span><span class="day-head"><span class="i18n" data-lang="en">sogeisetsu opens 3 issues on openchamber, 2 commits to personal repo</span><span class="i18n" data-lang="zh">sogeisetsu 在 openchamber 提交 3 个 issue，个人仓库 2 次提交</span></span></a></li><li><a class="day" href="./report/2026-10-02.html"><span class="day-date"><span class="i18n" data-lang="en">Oct 2, 2026</span><span class="i18n" data-lang="zh">2026年10月2日</span></span><span class="day-head day-head-empty"><span class="i18n" data-lang="en">Report available</span><span class="i18n" data-lang="zh">日报已生成</span></span></a></li>
 </ul>
-<footer class="foot"><span><span class="i18n" data-lang="en">Data from GitHub public activity.</span><span class="i18n" data-lang="zh">数据来自 GitHub 公开活动。</span></span><span class="foot-gen"><span class="i18n" data-lang="en">Generated</span><span class="i18n" data-lang="zh">生成于</span> <time datetime="2026-10-03T14:48:47.801Z">2026-10-03T14:48:47.801Z</time></span></footer>
+<footer class="foot"><span><span class="i18n" data-lang="en">Data from GitHub public activity.</span><span class="i18n" data-lang="zh">数据来自 GitHub 公开活动。</span></span><span class="foot-gen"><span class="i18n" data-lang="en">Generated</span><span class="i18n" data-lang="zh">生成于</span> <time datetime="2026-10-03T15:28:06.440Z">2026-10-03T15:28:06.440Z</time></span></footer>
 </div>
 <script>(function(){function sync(l){var a=document.querySelectorAll('[data-set-lang]');for(var i=0;i<a.length;i++){a[i].setAttribute('aria-pressed',a[i].getAttribute('data-set-lang')===l?'true':'false');}}function set(l){if(l!=='en'&&l!=='zh')return;var e=document.documentElement;e.setAttribute('data-lang',l);e.lang=(l==='zh')?'zh-CN':'en';try{localStorage.setItem('gh-report-lang',l);}catch(err){}sync(l);}document.addEventListener('click',function(ev){var t=ev.target;var b=(t&&t.closest)?t.closest('[data-set-lang]'):null;if(!b)return;set(b.getAttribute('data-set-lang'));});sync(document.documentElement.getAttribute('data-lang')||'en');})();</script>
 </body>
