@@ -2,7 +2,8 @@ name: Update activity README
 
 on:
   schedule:
-    - cron: "17 2 * * *"
+    # 每 2 小时（UTC）；比日报错开 30 分钟，避免同时排队
+    - cron: "30 */2 * * *"
   workflow_dispatch:
 
 permissions:
@@ -10,7 +11,7 @@ permissions:
 
 concurrency:
   group: update-activity
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   update-activity:

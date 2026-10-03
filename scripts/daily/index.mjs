@@ -152,6 +152,11 @@ async function processDate(date) {
       ai = { en: res.en, zh: res.zh };
       aiProvider = res.provider;
       console.log(`[daily-report] AI 叙述: 成功（provider=${aiProvider}）`);
+    } else if (existing && existing.ai && existing.dataHash === hash) {
+      // 数据未变、只是 AI 临时失败：保留上一次叙述，避免把已发布页面降级成「无叙述」
+      ai = existing.ai;
+      aiProvider = existing.aiProvider ?? null;
+      console.warn("[daily-report] AI 叙述: 失败，数据未变，保留上一次叙述");
     } else {
       console.warn("[daily-report] AI 叙述: 全部 provider 失败，产出无叙述确定版");
     }
