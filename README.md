@@ -1,3 +1,5 @@
+📊 **Daily activity report** → https://sogeisetsu.github.io/sogeisetsu/
+
 ![GitHub activity over the last 30 days](./assets/30-day-activity.svg)
 
 <!--START:activity-->

@@ -1,0 +1,52 @@
+name: Update daily report
+
+on:
+  schedule:
+    # 09:00 Asia/Shanghai (UTC+8)
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: read
+  pull-requests: read
+
+# Shared with update-activity.yml so the two workflows never race on push.
+concurrency:
+  group: update-activity
+  cancel-in-progress: false
+
+jobs:
+  daily-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: 设置 Node.js 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+
+      - name: 生成过去一天的活动日报
+        run: node scripts/daily/index.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
+
+      - name: 提交并推送更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: 更新每日活动日报"
+          for i in 1 2 3; do
+            git push && exit 0
+            git pull --rebase --autostash origin main
+          done
+          echo "推送失败：重试 3 次后仍未成功" >&2
+          exit 1
