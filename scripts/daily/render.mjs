@@ -23,6 +23,12 @@
 const FONT_STACK =
   '-apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif';
 
+// Headline only. Newsreader (self-hosted latin 700) for a newspaper feel, then
+// LXGW WenKai (霞鹜文楷, loaded over jsDelivr) so CJK headlines match, then
+// platform Chinese serifs, then a generic serif tail.
+const HEADLINE_STACK =
+  '"Newsreader", "LXGW WenKai", "Songti SC", "SimSun", STSong, serif';
+
 const MONO_STACK =
   'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
 
@@ -751,7 +757,10 @@ const STAGGER = Array.from({ length: 14 }, (_, i) =>
   `.wrap > *:nth-child(${i + 1}){animation-delay:${(i * 0.045).toFixed(3)}s}`
 ).join('\n');
 
-const PAGE_STYLE = `
+function pageStyle(assetPrefix = '') {
+  return `
+@import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/lxgwwenkai-regular.css');
+@font-face{font-family:'Newsreader';src:url('${assetPrefix}assets/fonts/newsreader-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
 :root{
   color-scheme:light dark;
   --surface:#FEF7FF;
@@ -778,6 +787,7 @@ const PAGE_STYLE = `
   --aura:rgba(103,80,164,.12);
   --shadow:0 1px 2px rgba(0,0,0,.05);
   --font:${FONT_STACK};
+  --headline:${HEADLINE_STACK};
   --mono:${MONO_STACK};
 }
 @media (prefers-color-scheme: dark){
@@ -870,7 +880,7 @@ html[data-lang="zh"] .langbtn[data-set-lang="zh"]{
   margin:0 0 10px;font-size:.76rem;font-weight:800;letter-spacing:.16em;
   text-transform:uppercase;color:var(--primary);
 }
-h1{margin:0;font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.025em;font-weight:800}
+h1{margin:0;font-family:var(--headline);font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.01em;font-weight:700}
 .hero-sub{margin:12px 0 0;color:var(--on-surface-variant);font-size:.94rem;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 
 /* ---- cards ---- */
@@ -1045,8 +1055,9 @@ ${STAGGER}
   .ghbtn-label{display:none}
 }
 `;
+}
 
-function htmlDoc({ title, body }) {
+function htmlDoc({ title, body, assetPrefix = '' }) {
   return `<!doctype html>
 <html lang="en" data-lang="en">
 <head>
@@ -1054,8 +1065,9 @@ function htmlDoc({ title, body }) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>${esc(title)}</title>
+<link rel="icon" type="image/svg+xml" href="${assetPrefix}favicon.svg">
 <script>${LANG_BOOTSTRAP}</script>
-<style>${PAGE_STYLE}</style>
+<style>${pageStyle(assetPrefix)}</style>
 </head>
 <body>
 ${body}
@@ -1144,7 +1156,7 @@ export function renderReportPage({ data, ai } = {}) {
     `<script>${TOGGLE_SCRIPT}</script>`;
 
   const title = `GitHub activity · ${date || 'daily report'}`;
-  return htmlDoc({ title, body });
+  return htmlDoc({ title, body, assetPrefix: '../' });
 }
 
 // ---------------------------------------------------------------- index page
@@ -1198,7 +1210,7 @@ export function renderIndexPage({ days, generatedAt, username } = {}) {
     `</div>\n` +
     `<script>${TOGGLE_SCRIPT}</script>`;
 
-  return htmlDoc({ title: 'Daily GitHub activity', body });
+  return htmlDoc({ title: 'Daily GitHub activity', body, assetPrefix: '' });
 }
 
 // ---------------------------------------------------------------- markdown
