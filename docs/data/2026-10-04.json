@@ -3,20 +3,89 @@
   "windowStart": "2026-10-04T00:00:00+08:00",
   "windowEnd": "2026-10-05T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-03T19:05:24.962Z",
+  "generatedAt": "2026-10-03T19:56:33.035Z",
   "empty": false,
   "totals": {
-    "commits": 16,
+    "commits": 22,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
     {
-      "repo": "sogeisetsu/sogeisetsu",
-      "count": 8,
+      "repo": "sogeisetsu/meld-deepresearch",
+      "count": 10,
       "own": true,
       "messages": [
+        {
+          "sha": "8ae34d4708fde1a81cd2ecf144f658d3ec3dd23b",
+          "message": "chore(release): prepare 0.2.0",
+          "ts": "2026-10-03T19:23:58Z"
+        },
+        {
+          "sha": "4107e1446d6f5fda1cc6492a5332304a7cf08203",
+          "message": "fix(pages): apply the same chapter background alternation to the Chinese main",
+          "ts": "2026-10-03T19:15:38Z"
+        },
+        {
+          "sha": "e07584a25866a420a9f634e8465f43bdd496a53f",
+          "message": "fix(pages): footer readme per language, brand scroll-to-top, drop reveal outside pipeline, hero copy",
+          "ts": "2026-10-03T19:07:52Z"
+        },
+        {
+          "sha": "f6c48a3ca15c661dadaeb43f0ad5145f9c060386",
+          "message": "feat(skill): make access-blocked handling explicit, add validator hints, warn on same-publisher origins, allow mid-run budget uplift",
+          "ts": "2026-10-03T18:35:16Z"
+        },
+        {
+          "sha": "f77bf24283764683c5d22f8719dd73f311e05999",
+          "message": "chore: drop local worktree ignore blocks",
+          "ts": "2026-10-03T18:19:07Z"
+        },
+        {
+          "sha": "ab51ecae6061974480a1e89c86fd48bc9c6bce3e",
+          "message": "docs(eval): add live Q2 comparison results across three skills",
+          "ts": "2026-10-03T18:13:15Z"
+        },
+        {
+          "sha": "21733183ef512dfbd6fa43a144e307a4a390fcf1",
+          "message": "chore: ignore local worktree lanes",
+          "ts": "2026-10-03T17:56:19Z"
+        },
+        {
+          "sha": "1747454699b37d1d382373ed5831bf7b3ed4df72",
+          "message": "docs(eval): add deep research evaluation standard and three-skill comparison",
+          "ts": "2026-10-03T17:56:11Z"
+        },
+        {
+          "sha": "de1a1a44cb7626de9aceae02f0897b8ba91dac63",
+          "message": "fix(pages): land landing-page feedback and drop card reveals",
+          "ts": "2026-10-03T17:56:11Z"
+        },
+        {
+          "sha": "b628716d8359898c90acbba67d0b0b5a70c8ea43",
+          "message": "docs(zh): remove stray spaces around em dashes",
+          "ts": "2026-10-03T17:56:11Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 10,
+      "own": true,
+      "messages": [
+        {
+          "sha": "a6ac033e53a6611adbc9de9e6bdcd617b456d27b",
+          "message": "feat: 标题用报纸衬线（Newsreader + 霞鹜文楷）+ favicon",
+          "ts": "2026-10-03T19:33:40Z"
+        },
+        {
+          "sha": "cfef2a74813532b0e4a0e43ff488031bf3bba381",
+          "message": "feat: 摘要每句一段 + 页脚说明；提交统计排除合并提交",
+          "ts": "2026-10-03T19:07:30Z"
+        },
         {
           "sha": "5bd3ae860afb7189ba9119647f84763c83c49b31",
           "message": "feat: 提交改为按 commit date 统计（本人/机器人分开）",
@@ -58,49 +127,10 @@
           "ts": "2026-10-03T16:08:29Z"
         }
       ],
-      "automated": 1,
+      "automated": 2,
       "automatedBots": [
         "github-actions[bot]"
       ]
-    },
-    {
-      "repo": "sogeisetsu/meld-deepresearch",
-      "count": 6,
-      "own": true,
-      "messages": [
-        {
-          "sha": "f77bf24283764683c5d22f8719dd73f311e05999",
-          "message": "chore: drop local worktree ignore blocks",
-          "ts": "2026-10-03T18:19:07Z"
-        },
-        {
-          "sha": "ab51ecae6061974480a1e89c86fd48bc9c6bce3e",
-          "message": "docs(eval): add live Q2 comparison results across three skills",
-          "ts": "2026-10-03T18:13:15Z"
-        },
-        {
-          "sha": "21733183ef512dfbd6fa43a144e307a4a390fcf1",
-          "message": "chore: ignore local worktree lanes",
-          "ts": "2026-10-03T17:56:19Z"
-        },
-        {
-          "sha": "1747454699b37d1d382373ed5831bf7b3ed4df72",
-          "message": "docs(eval): add deep research evaluation standard and three-skill comparison",
-          "ts": "2026-10-03T17:56:11Z"
-        },
-        {
-          "sha": "de1a1a44cb7626de9aceae02f0897b8ba91dac63",
-          "message": "fix(pages): land landing-page feedback and drop card reveals",
-          "ts": "2026-10-03T17:56:11Z"
-        },
-        {
-          "sha": "b628716d8359898c90acbba67d0b0b5a70c8ea43",
-          "message": "docs(zh): remove stray spaces around em dashes",
-          "ts": "2026-10-03T17:56:11Z"
-        }
-      ],
-      "automated": 0,
-      "automatedBots": []
     },
     {
       "repo": "sogeisetsu/opencode-go-model-picker",
@@ -122,11 +152,19 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 1,
+  "automatedCommits": 2,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
   "releases": [
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "tag": "v0.2.0",
+      "name": "v0.2.0",
+      "url": "https://github.com/sogeisetsu/meld-deepresearch/releases/tag/v0.2.0",
+      "publishedAt": "2026-10-03T19:24:15Z",
+      "notes": "## What's new in 0.2.0 This release hardens the research protocol and ships the evaluation work that came out of comparing this skill against other deep-research skills. ### Sources you cannot open are now handled by rule The strongest primary sources are often behind a paywall or a bot wall. Until now, the right response — record the failure, note the gap, and never pass a snippet off as the original — was implied but not written down. It now is: a blocked page is logged as an observation with its HTTP status, the gap goes into the report as an availability caveat, and a claim whose only support is an unreachable source is labelled `unknown` instead of quietly softened. ### The validator tells you how to fix a failure A failed run used to get a code and a location. It now also gets one \"…"
+    },
     {
       "repo": "sogeisetsu/opencode-go-model-picker",
       "tag": "v1.3.0",
@@ -223,28 +261,38 @@
   "stateChanges": [],
   "ai": {
     "en": {
-      "headline": "16 commits across 3 repos; opencode-go-model-picker v1.3.0 released",
-      "summary": "On 2026-10-04, sogeisetsu pushed 16 commits across three repositories. In sogeisetsu/sogeisetsu (8 commits, 1 automated by github-actions[bot]), the user reworked commit statistics to use commit date with separate bot tracking, added status badges with UTC+8 timestamps, fixed cache busting for report links, kept bot-only repos visible, added a GitHub homepage button, changed the 30-day card to refresh every 2 hours, and added AI failure fallback to retain the last narrative. In sogeisetsu/meld-deepresearch (6 commits), the user cleaned up local worktree ignore blocks, added live Q2 comparison results across three skills, documented a deep research evaluation standard, landed landing-page feedback, and fixed stray spaces around em dashes. In sogeisetsu/opencode-go-model-picker (2 commits), the user documented vision verification and Windows refresh paths, added a role-overview column, and introduced agent-discovery and snapshot-summary scripts. The repository also published release v1.3.0, which bundles v1.2.0 and v1.3.0 work including new agent discovery and snapshot summary CLI tools, improved chain safety checks, and a role overview column in recommendations. No pull requests, issues, or reviews were recorded.",
+      "headline": "22 commits across 3 repos; v0.2.0 and v1.3.0 released",
+      "summary": "On 2026-10-04, sogeisetsu made 22 commits across three repositories. In meld-deepresearch (10 commits), work centered on preparing the v0.2.0 release, fixing landing-page and chapter-background issues, adding explicit access-blocked handling and validator hints to the research skill, and documenting live Q2 evaluation comparisons across three skills. In sogeisetsu (10 own commits plus 2 automated commits by github-actions[bot]), changes included switching to Newsreader and 霞鹜文楷 serif fonts with a new favicon, restructuring commit statistics to separate own and bot counts, adding status-change badges with UTC+8 timestamps, and improving AI output resilience. In opencode-go-model-picker (2 commits), new agent-discovery and snapshot-summary scripts were added along with documentation for vision verification and Windows refresh paths. Two releases were published: meld-deepresearch v0.2.0, which formalizes blocked-source handling and adds validator fix hints, and opencode-go-model-picker v1.3.0, which introduces the discover-agents and snapshot-summary CLIs plus a role-overview column in recommendations. No pull requests, issues, or reviews were recorded.",
       "releaseNotes": [
+        {
+          "repo": "sogeisetsu/meld-deepresearch",
+          "tag": "v0.2.0",
+          "summary": "Hardens the research protocol by formalizing blocked-source handling (logging HTTP status, labelling unreachable claims as unknown) and adding validator fix hints to failed runs. Also ships evaluation documentation comparing three deep-research skills."
+        },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v1.3.0",
-          "summary": "Two versions of work (v1.2.0 and v1.3.0) are rolled up. Adds scripts/discover-agents.mjs for listing custom agents and flagging risky fallback chains, and scripts/snapshot-summary.mjs for compact model snapshot digests. The recommendation table now includes a role overview column."
+          "summary": "Adds discover-agents.mjs for listing custom agents and flagging risky fallback chains, plus snapshot-summary.mjs for compact model-snapshot digests. The recommendation table gains a role-overview column."
         }
       ]
     },
     "zh": {
-      "headline": "3 个仓库共 16 次提交；opencode-go-model-picker 发布 v1.3.0",
-      "summary": "2026-10-04，sogeisetsu 在三个仓库共提交 16 次。在 sogeisetsu/sogeisetsu（8 次提交，其中 1 次由 github-actions[bot] 自动提交），用户将提交统计改为按 commit date 计算并区分机器人与本人，新增状态徽章与 UTC+8 时间显示，修复报告链接缓存击穿问题，保留纯机器人仓库的显示，添加 GitHub 主页按钮，将 30 天卡片改为每 2 小时刷新，并为 AI 失败场景增加保留上次叙述的兜底逻辑。在 sogeisetsu/meld-deepresearch（6 次提交），用户清理了本地 worktree 的 ignore 配置，补充了三项技能的 Q2 实时对比结果，撰写了深度研究评估标准文档，落地了落地页反馈修改，并修复了破折号前后的多余空格。在 sogeisetsu/opencode-go-model-picker（2 次提交），用户记录了视觉验证与 Windows 刷新路径文档，新增角色概览列，并引入 agent-discovery 与 snapshot-summary 脚本。该仓库同日发布了 v1.3.0，合并了 v1.2.0 与 v1.3.0 的工作，包含新的 agent 发现与快照摘要 CLI 工具、改进的链安全检查，以及推荐表中的角色概览列。当日无 Pull Request、Issue 或 Review 记录。",
+      "headline": "3 个仓库共 22 次提交；发布 v0.2.0 与 v1.3.0",
+      "summary": "2026 年 10 月 4 日，sogeisetsu 在三个仓库共提交 22 次。在 meld-deepresearch（10 次提交）中，主要工作包括准备 v0.2.0 发布、修复落地页和章节背景问题、为研究技能添加显式的访问受限处理和验证器提示，以及记录三项技能的 Q2 实时评估对比。在 sogeisetsu（10 次本人提交，另有 2 次由 github-actions[bot] 自动提交）中，改动包括切换至 Newsreader 和霞鹜文楷衬线字体并新增 favicon、重构提交统计以区分本人与机器人计数、添加带 UTC+8 时间戳的状态变更徽章，以及增强 AI 输出的容错能力。在 opencode-go-model-picker（2 次提交）中，新增了 agent-discovery 和 snapshot-summary 脚本，并补充了视觉验证和 Windows 刷新路径的文档。当天发布了两个版本：meld-deepresearch v0.2.0，正式规范了受限来源的处理流程并新增验证器修复提示；opencode-go-model-picker v1.3.0，引入 discover-agents 和 snapshot-summary CLI 工具，并在推荐表中增加了角色概览列。当日无合并请求、issue 或代码审查记录。",
       "releaseNotes": [
+        {
+          "repo": "sogeisetsu/meld-deepresearch",
+          "tag": "v0.2.0",
+          "summary": "强化研究协议，正式规范受限来源的处理流程（记录 HTTP 状态码、将不可达来源的声明标记为 unknown），并为失败运行添加验证器修复提示。同时发布三项深度研究技能的评估对比文档。"
+        },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v1.3.0",
-          "summary": "合并了 v1.2.0 与 v1.3.0 两个版本的工作。新增 scripts/discover-agents.mjs 用于列出自定义 agent 并标记风险回退链，以及 scripts/snapshot-summary.mjs 用于生成精简的模型快照摘要。推荐表现在包含角色概览列。"
+          "summary": "新增 discover-agents.mjs 用于列出自定义 agent 并标记有风险的 fallback 链，以及 snapshot-summary.mjs 用于生成紧凑的模型快照摘要。推荐表新增角色概览列。"
         }
       ]
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "6d42c2fe404cc4e113ada67f46ca9a9817be2474a2b402cc9913703e36322f18"
+  "dataHash": "f715365ac78fcb74b352127010632c5d3f1a6321b45c598ba171724cd52fca0b"
 }

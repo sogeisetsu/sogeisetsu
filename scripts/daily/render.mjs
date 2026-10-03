@@ -23,11 +23,11 @@
 const FONT_STACK =
   '-apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif';
 
-// Headline only. Newsreader (self-hosted latin 700) for a newspaper feel, then
-// LXGW WenKai (霞鹜文楷, loaded over jsDelivr) so CJK headlines match, then
-// platform Chinese serifs, then a generic serif tail.
+// Headline only. Chomsky (self-hosted, NYT-masthead-style blackletter) gives
+// the latin headline its masthead feel; CJK falls straight through to system
+// 宋体 (Songti/SimSun/Noto Serif CJK), then a generic serif tail. No CJK webfont.
 const HEADLINE_STACK =
-  '"Newsreader", "LXGW WenKai", "Songti SC", "SimSun", STSong, serif';
+  '"Chomsky", "Songti SC", "SimSun", "Noto Serif CJK SC", STSong, serif';
 
 const MONO_STACK =
   'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
@@ -759,8 +759,7 @@ const STAGGER = Array.from({ length: 14 }, (_, i) =>
 
 function pageStyle(assetPrefix = '') {
   return `
-@import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/lxgwwenkai-regular.css');
-@font-face{font-family:'Newsreader';src:url('${assetPrefix}assets/fonts/newsreader-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Chomsky';src:url('${assetPrefix}assets/fonts/chomsky.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
 :root{
   color-scheme:light dark;
   --surface:#FEF7FF;
@@ -880,7 +879,7 @@ html[data-lang="zh"] .langbtn[data-set-lang="zh"]{
   margin:0 0 10px;font-size:.76rem;font-weight:800;letter-spacing:.16em;
   text-transform:uppercase;color:var(--primary);
 }
-h1{margin:0;font-family:var(--headline);font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.01em;font-weight:700}
+h1{margin:0;font-family:var(--headline);font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.01em;font-weight:400}
 .hero-sub{margin:12px 0 0;color:var(--on-surface-variant);font-size:.94rem;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 
 /* ---- cards ---- */
