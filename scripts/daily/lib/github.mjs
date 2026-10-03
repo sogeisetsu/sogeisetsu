@@ -338,8 +338,8 @@ async function inspectPush(token, repoName, before, head, username, seenSha) {
  * 从窗口内 PushEvent 汇总逐仓提交：
  *   weight = payload.size ?? payload.commits?.length ??（compare 检视的用户提交数）?? 1
  * 前两项是规格口径（该端点实测不返回，保留分支以防上游补齐）；compare 复核失败才落回 1（无明细）。
- * 同仓多次 push 累计；用户提交经全局 sha 去重后计入；count>0 的仓库才进表
- * （纯机器人提交的仓库不进表，其 automated 不计入顶层 automatedCommits）。
+ * 同仓多次 push 累计；用户提交经全局 sha 去重后计入；count>0 或 automated>0 的仓库进表
+ * （纯机器人提交的仓库也保留 automated 行，并计入顶层 automatedCommits）。
  */
 async function buildCommits(rawEvents, token, username, win) {
   const byRepo = new Map(); // repo → { count, messages, automated }
@@ -389,7 +389,7 @@ async function buildCommits(rawEvents, token, username, win) {
       messages: s.messages,
       automated: s.automated,
     }))
-    .filter((x) => x.count > 0)
+    .filter((x) => x.count > 0 || x.automated > 0)
     .sort((a, b) => b.count - a.count || a.repo.localeCompare(b.repo));
 }
 

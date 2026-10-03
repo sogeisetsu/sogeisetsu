@@ -3,10 +3,10 @@
   "windowStart": "2026-10-04T00:00:00+08:00",
   "windowEnd": "2026-10-05T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-03T17:53:12.048Z",
+  "generatedAt": "2026-10-03T18:00:28.572Z",
   "empty": false,
   "totals": {
-    "commits": 2,
+    "commits": 3,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 2,
+      "count": 3,
       "own": true,
       "messages": [
+        {
+          "sha": "66506d61ca355308b09af0829b8b1790cc971d1b",
+          "message": "feat: 条目状态徽章 + UTC+8 时间 + 提交标题入摘要",
+          "ts": "2026-10-03T17:55:00Z"
+        },
         {
           "sha": "352a66dbf7b2c6f68d8f0984b42ea98db7b12c12",
           "message": "fix: 状态变更徽章保留 actor 原始大小写；新增 --rerender",
@@ -123,16 +128,16 @@
   "stateChanges": [],
   "ai": {
     "en": {
-      "headline": "Two commits in sogeisetsu/sogeisetsu: badge fix, rerender flag, and UI updates",
-      "summary": "On 2026-10-04, user sogeisetsu made 2 commits to the repository sogeisetsu/sogeisetsu. The first commit fixed the status change badge to preserve the actor's original casing and added a new --rerender option. The second commit added a GitHub homepage button, changed the 30-day card to update every 2 hours, and made AI failures retain the previous narrative instead of clearing it. No pull requests, issues, reviews, releases, stars, or replies were recorded during this period.",
+      "headline": "sogeisetsu pushes 3 commits to sogeisetsu/sogeisetsu",
+      "summary": "On 2026-10-04, user sogeisetsu made 3 commits to the repository sogeisetsu/sogeisetsu. The first commit added item status badges, UTC+8 timezone display, and included commit titles in summaries. The second commit fixed status change badges to preserve the actor's original casing and introduced a --rerender option. The third commit added a GitHub homepage button, changed the 30-day card to refresh every 2 hours, and ensured the last narrative is preserved when AI processing fails. No pull requests, issues, reviews, or releases were recorded on this date.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu/sogeisetsu 仓库提交 2 次：徽章大小写修复、rerender 参数及 UI 更新",
-      "summary": "2026年10月4日，用户 sogeisetsu 在 sogeisetsu/sogeisetsu 仓库提交了 2 次代码。第一次提交修复了状态变更徽章保留 actor 原始大小写的问题，并新增了 --rerender 参数。第二次提交添加了 GitHub 主页按钮，将 30 天卡片改为每 2 小时更新，并让 AI 失败时保留上次的叙述内容。当日无合并请求、议题、代码审查、发布、星标或回复记录。",
+      "headline": "sogeisetsu 向 sogeisetsu/sogeisetsu 推送 3 次提交",
+      "summary": "2026-10-04，用户 sogeisetsu 向仓库 sogeisetsu/sogeisetsu 提交了 3 次代码变更。首次提交新增了条目状态徽章、UTC+8 时区显示，并将提交标题纳入摘要。第二次提交修复了状态变更徽章中 actor 原始大小写被改变的问题，并新增了 --rerender 选项。第三次提交添加了 GitHub 主页按钮，将 30 天卡片改为每 2 小时刷新一次，并确保 AI 处理失败时保留上次的叙述内容。当日无合并请求、议题、代码审查或版本发布记录。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "74ab5d95a290a6cca8d8fa93a002688234952b2bec0a7644d57d0182a75f4aa7"
+  "dataHash": "efec610a047cf48ae11e243c04eda6704f828bbb40edb9e8baf1a3b36310be3e"
 }

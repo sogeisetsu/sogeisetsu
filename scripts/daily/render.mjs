@@ -406,14 +406,19 @@ function commitsSection(items, totals) {
               `· 另 ${autoCount} 次自动提交`
             )}</p>`
           : '';
+      const count = num(it.count);
+      const countBlock =
+        count > 0
+          ? `<span class="row-count"><span class="num">${esc(count)}</span>` +
+            `<span class="unit">${i18n('commits', '次提交')}</span></span>`
+          : '';
       return (
         `<li class="row-block">` +
         `<div class="row">` +
         `<div class="row-lead">` +
         `<span class="row-name">${esc(it.repo)}</span>${own}` +
         `</div>` +
-        `<span class="row-count"><span class="num">${esc(num(it.count))}</span>` +
-        `<span class="unit">${i18n('commits', '次提交')}</span></span>` +
+        `${countBlock}` +
         `</div>` +
         `${msgList}${automated}` +
         `</li>`
