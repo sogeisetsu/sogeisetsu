@@ -3,10 +3,10 @@
   "windowStart": "2026-10-04T00:00:00+08:00",
   "windowEnd": "2026-10-05T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-03T18:52:41.170Z",
+  "generatedAt": "2026-10-03T19:03:42.799Z",
   "empty": false,
   "totals": {
-    "commits": 21,
+    "commits": 22,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -78,9 +78,14 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 7,
+      "count": 8,
       "own": true,
       "messages": [
+        {
+          "sha": "5bd3ae860afb7189ba9119647f84763c83c49b31",
+          "message": "feat: 提交改为按 commit date 统计（本人/机器人分开）",
+          "ts": "2026-10-03T18:53:44Z"
+        },
         {
           "sha": "c27e2583897543f5edce3f0cdb0ef8bae8ec478a",
           "message": "feat: 自动提交行补充「由谁发起 + 不计入总数」",
@@ -246,28 +251,28 @@
   "stateChanges": [],
   "ai": {
     "en": {
-      "headline": "21 commits across 3 repos; opencode-go-model-picker v1.3.0 released",
-      "summary": "On 2026-10-04, sogetisetsu made 21 commits across three repositories with no pull requests, issues, or reviews. In meld-deepresearch (11 commits), work centered on evaluation documentation — adding live Q2 comparison results across three skills and a deep research evaluation standard — along with landing-page feedback fixes and cleanup of local worktree ignore blocks. In sogetisetsu (7 commits), the daily report generator was improved: automated-commit lines now show who initiated them and note they do not count toward totals, pure-bot repos are retained showing only counts, status-change badges preserve actor casing, a --rerender flag was added, status changes were split into their own section, and a GitHub homepage button was added with the 30-day card refreshing every 2 hours. In opencode-go-model-picker (3 commits), agent-discovery and snapshot-summary scripts were added, along with documentation for vision verification and a role-overview column. The repo also published release v1.3.0, rolling up v1.2.0 and v1.3.0 work including the new discover-agents.mjs CLI for listing custom agents and flagging risky fallback chains, and snapshot-summary.mjs for compact model snapshot digests.",
+      "headline": "22 commits across 3 repos; opencode-go-model-picker v1.3.0 released",
+      "summary": "On 2026-10-04, sogeisetsu made 22 commits across three repositories with no pull requests, issues, or reviews. In meld-deepresearch (11 commits), work centered on evaluation documentation and landing-page fixes: adding live Q2 comparison results across three skills, establishing a deep research evaluation standard, incorporating landing-page feedback, and cleaning up local worktree ignore blocks and stray spaces in the zh README. In sogeisetsu/sogeisetsu (8 commits), the focus was on improving the daily report tooling: switching commit counting to commit-date basis with separate own/automated tracking, adding status-change badges with UTC+8 timestamps, preserving actor casing in status badges, adding a --rerender flag, introducing a GitHub homepage button, changing the 30-day card refresh to every 2 hours, and hardening AI output with fallback to the previous narrative on failure. In opencode-go-model-picker (3 commits), the user merged the feat/skill-remediation branch, documented vision verification and the Windows refresh path, and added agent-discovery and snapshot-summary scripts. The v1.3.0 release for opencode-go-model-picker was published, rolling up v1.2.0 and v1.3.0 work including the new discover-agents.mjs CLI for listing custom agents and flagging risky fallback chains, the snapshot-summary.mjs digest tool, and a role-overview column in the recommendation table.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v1.3.0",
-          "summary": "Rolls up v1.2.0 and v1.3.0. Adds discover-agents.mjs, a read-only CLI that lists custom agents and flags risky fallback chains (duplicate model IDs, chains outside 2–4 entries, unconfirmed non-Go fallback IDs, unverified vision lanes). Also adds snapshot-summary.mjs for a compact model snapshot digest (~97% shorter than raw), and a role-overview column to the recommendation table."
+          "summary": "Rolls up v1.2.0 and v1.3.0 work. Adds discover-agents.mjs (read-only CLI listing custom agents and flagging risky fallback chains) and snapshot-summary.mjs (compact model snapshot digest). Recommendation table gains a role-overview column."
         }
       ]
     },
     "zh": {
-      "headline": "3 个仓库共 21 次提交；opencode-go-model-picker 发布 v1.3.0",
-      "summary": "2026-10-04，sogeisetsu 在三个仓库共提交 21 次，无 PR、issue 或 review。meld-deepresearch（11 次提交）主要围绕评估文档——添加三项技能的 Q2 实时对比结果和深度研究评估标准——以及落地页反馈修复和本地 worktree 忽略块清理。sogeisetsu（7 次提交）改进了日报生成器：自动提交行补充了发起人并标注不计入总数，纯机器人提交的仓库仅显示次数，状态变更徽章保留 actor 原始大小写，新增 --rerender 参数，状态变更独立分节，并添加了 GitHub 主页按钮、30 天卡片改为每 2 小时刷新。opencode-go-model-picker（3 次提交）新增了 agent-discovery 和 snapshot-summary 脚本，并补充了视觉验证和角色概览列的文档。该仓库还发布了 v1.3.0，合并了 v1.2.0 和 v1.3.0 的工作，包括新增的 discover-agents.mjs CLI（列出自定义 agent 并标记风险回退链）和 snapshot-summary.mjs（紧凑模型快照摘要）。",
+      "headline": "3 个仓库共 22 次提交；opencode-go-model-picker 发布 v1.3.0",
+      "summary": "2026-10-04，sogeisetsu 在三个仓库共提交 22 次，无 PR、issue 或 review。meld-deepresearch（11 次提交）主要围绕评估文档与落地页修复：添加三项技能的 Q2 实测对比结果、建立深度研究评估标准、落实落地页反馈、清理本地 worktree ignore 块及中文 README 多余空格。sogeisetsu/sogeisetsu（8 次提交）聚焦日报工具改进：提交统计改为按 commit date 并区分本人/机器人、新增状态变更徽章与 UTC+8 时间、保留 actor 原始大小写、新增 --rerender 参数、添加 GitHub 主页按钮、30 天卡片改为每 2 小时刷新、AI 输出加固并在失败时保留上次叙述。opencode-go-model-picker（3 次提交）合并了 feat/skill-remediation 分支，记录了视觉验证与 Windows 刷新路径，并新增 agent-discovery 和 snapshot-summary 脚本。opencode-go-model-picker 发布了 v1.3.0，合并了 v1.2.0 与 v1.3.0 的工作，包括新增 discover-agents.mjs（只读 CLI，列出自定义 agent 并标记风险回退链）、snapshot-summary.mjs（模型快照摘要工具）以及推荐表格中的角色概览列。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v1.3.0",
-          "summary": "合并了 v1.2.0 和 v1.3.0 的工作。新增 discover-agents.mjs，一个只读 CLI，可列出自定义 agent 并标记风险回退链（重复模型 ID、链长不在 2–4 条、未确认的非 Go 回退 ID、未验证的视觉通道）。同时新增 snapshot-summary.mjs 用于紧凑模型快照摘要（比原始文件小约 97%），并在推荐表中添加了角色概览列。"
+          "summary": "合并了 v1.2.0 与 v1.3.0 的工作。新增 discover-agents.mjs（只读 CLI，列出自定义 agent 并标记风险回退链）和 snapshot-summary.mjs（模型快照摘要工具）。推荐表格新增角色概览列。"
         }
       ]
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "31eec2f518a03f72d9d7d17f48a4c59b633351eb86be51c0ea4dcf9bac709975"
+  "dataHash": "e0665eb9252b37295570dcda9d33aba35e513f60e14ddea5ee990989568d079a"
 }
