@@ -3,10 +3,10 @@
   "windowStart": "2026-10-04T00:00:00+08:00",
   "windowEnd": "2026-10-05T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-04T15:50:21.438Z",
+  "generatedAt": "2026-10-04T16:32:46.815Z",
   "empty": false,
   "totals": {
-    "commits": 40,
+    "commits": 41,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 23,
+      "count": 24,
       "own": true,
       "messages": [
+        {
+          "sha": "79f13bf13c8b289184019a27254990889377dbae",
+          "message": "fix(daily): 修复 test-render.mjs 断言收集器缺陷（抛异常用例不致失败）",
+          "ts": "2026-10-04T15:55:31Z"
+        },
         {
           "sha": "23089fc51493f032b2a6b3a71c54f608c32e4a52",
           "message": "fix(daily): 复审整改 — 修复深色模式可读性、headline 契约、补渲染回归、补上线产物",
@@ -133,7 +138,7 @@
           "ts": "2026-10-03T16:08:29Z"
         }
       ],
-      "automated": 19,
+      "automated": 20,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -242,7 +247,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 19,
+  "automatedCommits": 20,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -351,38 +356,38 @@
   "stateChanges": [],
   "ai": {
     "en": {
-      "headline": "40 commits across 3 repos",
-      "summary": "On 2026-10-04, sogeisetsu recorded **40 commits** across three repositories, with no PRs, issues, or reviews. In `sogeisetsu/sogeisetsu`, 23 own commits plus 19 automated commits by github-actions[bot] focused on hardening the daily-report pipeline: fixing dark-mode readability and the headline contract, rendering inline Markdown and bold in AI summaries, fixing Release-notes Markdown rendering, adding mock regression tests, and switching to deterministic truncation that lifted the daily-report success rate from 0% to 100%. Two AI fixes closed the reasoning path and repaired summary failures via model-parse fallback, JSON retry, and no-skip behavior. In `sogeisetsu/meld-deepresearch`, 15 own commits implemented the improvement plan (renderer, merge, validator, genres, docs), made access-blocked handling explicit, added validator hints and same-publisher warnings, allowed mid-run budget uplift, fixed the middle-path card centering and Chinese chapter background alternation, and prepared the 0.2.0 release. In `sogeisetsu/opencode-go-model-picker`, 2 own commits added `scripts/discover-agents.mjs` and `scripts/snapshot-summary.mjs` plus a role-overview column and vision-verification docs. Two releases shipped: `sogeisetsu/meld-deepresearch` v0.2.0 and `sogeisetsu/opencode-go-model-picker` v1.3.0.",
+      "headline": "41 commits across 3 repos, 2 releases, 20 automated",
+      "summary": "sogeisetsu logged **41 commits** on 2026-10-04 across three repositories, with no PRs, issues, or reviews. In `sogeisetsu/sogeisetsu`, 24 own commits plus 20 automated commits by `github-actions[bot]` focused on the daily-report pipeline: fixing the `test-render.mjs` assertion collector so throwing cases no longer fail, reworking dark-mode readability and the headline contract, rendering inline Markdown in AI summaries and Release notes, adding mock regression tests, and switching to deterministic truncation that lifted the daily success rate from 0% to 100%. An `ai` fix also disabled reasoning so `max_tokens` no longer consumed the CoT and left `content` empty. In `sogeisetsu/meld-deepresearch`, 15 own commits shipped the v0.2.0 release: explicit handling for access-blocked sources, validator hints that explain how to fix a failure, same-publisher origin warnings, mid-run budget uplift, genre templates in `SKILL.md`, chapter background alternation for the Chinese main, and footer/hero copy updates. In `sogeisetsu/opencode-go-model-picker`, 2 own commits added `scripts/discover-agents.mjs` and `scripts/snapshot-summary.mjs` and documented vision verification, the Windows refresh path, and a role-overview column. Two releases were published: `sogeisetsu/meld-deepresearch` v0.2.0 and `sogeisetsu/opencode-go-model-picker` v1.3.0.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.2.0",
-          "summary": "Hardens the research protocol and ships evaluation work comparing this skill against other deep-research skills. Blocked sources are now logged as observations with HTTP status, gaps become availability caveats, and claims backed only by unreachable sources are labelled `unknown`. The validator now returns actionable fix hints alongside the failure code and location."
+          "summary": "Hardens the research protocol and ships evaluation work from comparing this skill against other deep-research skills. Access-blocked sources are now logged as observations with HTTP status, gaps become availability caveats, and claims supported only by unreachable sources are labelled `unknown`. The validator now also returns hints on how to fix a failure, not just a code and location."
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v1.3.0",
-          "summary": "Rolls up v1.2.0 and v1.3.0 with better agent discovery and chain safety. Adds `scripts/discover-agents.mjs` (read-only, zero-dependency CLI flagging risky fallback chains) and `scripts/snapshot-summary.mjs` (~97% shorter digest of the cached model snapshot). The recommendation table gains a role-overview column."
+          "summary": "Rolls up v1.2.0 and v1.3.0 with better agent discovery and chain safety. Adds `scripts/discover-agents.mjs` (read-only, zero-dependency CLI that lists custom agents and flags risky fallback chains) and `scripts/snapshot-summary.mjs` (a compact digest of the cached model snapshot, ~97% shorter than the raw file). The recommendation table gains a role-overview column."
         }
       ]
     },
     "zh": {
-      "headline": "3 个仓库共 40 次提交；meld-deepresearch v0.2.0 与 opencode-go-model-picker v1.3.0 发布",
-      "summary": "2026-10-04，sogeisetsu 在三个仓库共提交 **40 次**，无 PR、issue 或 review。`sogeisetsu/sogeisetsu` 中 23 次本人提交，另有 19 次由 github-actions[bot] 自动提交，主要加固日报流水线：修复深色模式可读性与 headline 契约、AI 摘要支持内联 Markdown 与加粗、修复 Release notes 的 Markdown 渲染、补充 mock 回归测试，并用确定性截断将日报成功率从 0% 提升到 100%。两次 AI 修复关闭 reasoning 路径，并通过模型解析回退、JSON 重试与缺 AI 不再跳过解决摘要失败。`sogeisetsu/meld-deepresearch` 中 15 次本人提交实现改进计划（renderer、merge、validator、genres、docs），显式化访问受阻处理，新增 validator 提示与同源发布方告警，允许运行中预算上调，修复中间路径卡片居中与中文章节背景交替，并准备 0.2.0 发布。`sogeisetsu/opencode-go-model-picker` 中 2 次本人提交新增 `scripts/discover-agents.mjs` 与 `scripts/snapshot-summary.mjs`，并加入 role-overview 列与视觉验证文档。当日共发布两个版本：`sogeisetsu/meld-deepresearch` v0.2.0 与 `sogeisetsu/opencode-go-model-picker` v1.3.0。",
+      "headline": "3 个仓库共 41 次提交，2 个发布，20 次自动提交",
+      "summary": "sogeisetsu 在 2026-10-04 于三个仓库共提交 **41 次**，无 PR、issue 或 review。在 `sogeisetsu/sogeisetsu` 中，24 次本人提交，另有 20 次由 `github-actions[bot]` 自动提交，围绕日报流水线展开：修复 `test-render.mjs` 断言收集器使抛异常用例不再失败，整改深色模式可读性与 headline 契约，为 AI 摘要与 Release notes 渲染内联 Markdown，补充 mock 回归测试，并改用确定性截断使日报成功率从 0% 提升至 100%。另有一次 `ai` 修复关闭 reasoning，避免 `max_tokens` 计入 CoT 导致 `content` 恒为空。在 `sogeisetsu/meld-deepresearch` 中，15 次本人提交发布 v0.2.0：明确处理无法访问的来源、validator 给出修复提示、同出版方来源告警、运行中预算上调、`SKILL.md` 中列出 genre 模板、中文主页章节背景交替、页脚与 hero 文案更新。在 `sogeisetsu/opencode-go-model-picker` 中，2 次本人提交新增 `scripts/discover-agents.mjs` 与 `scripts/snapshot-summary.mjs`，并记录视觉验证、Windows 刷新路径与 role-overview 列。当日共发布两个版本：`sogeisetsu/meld-deepresearch` v0.2.0 与 `sogeisetsu/opencode-go-model-picker` v1.3.0。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.2.0",
-          "summary": "加固研究协议，并交付与其他深度研究技能对比得出的评估工作。受阻来源现按规则记录为带 HTTP 状态的观察项，缺口写入报告作为可用性说明，仅由不可达来源支撑的论断标记为 `unknown`。validator 除失败码与位置外，还返回可操作的修复提示。"
+          "summary": "加固研究协议，并发布与其他 deep-research skill 对比得出的评估工作。无法访问的来源现按规则处理：记录为带 HTTP 状态的观察，缺口写入可用性说明，仅由不可达来源支撑的结论标记为 `unknown`。validator 除返回错误码与位置外，还给出修复提示。"
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v1.3.0",
-          "summary": "合并 v1.2.0 与 v1.3.0，改进 agent 发现与链路安全性。新增 `scripts/discover-agents.mjs`（只读、零依赖 CLI，标记风险回退链）与 `scripts/snapshot-summary.mjs`（缓存模型快照的约 97% 精简摘要）。推荐表新增 role-overview 列。"
+          "summary": "合并 v1.2.0 与 v1.3.0，改进 agent 发现与链路安全。新增 `scripts/discover-agents.mjs`（只读、零依赖 CLI，列出自定义 agent 并标记风险回退链）与 `scripts/snapshot-summary.mjs`（缓存模型快照的紧凑摘要，比原始文件短约 97%）。推荐表新增 role-overview 列。"
         }
       ]
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "ab6f19609720e39cf2371fe8f6f736187a78fb857f5d1ce3ebce5cbdf9150616"
+  "dataHash": "ed37c4556743e2b76c9cb205797d2f43f7a76886b77c03c4387b8c68f34b704d"
 }
