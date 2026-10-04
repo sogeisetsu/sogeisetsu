@@ -149,6 +149,25 @@ function mdInlineToHtml(text) {
 }
 
 /**
+ * Render the AI-summary inline subset, and ONLY that: inline code (`code`) and
+ * bold (`**bold**`). Everything else — italic, links, block markers — is left
+ * literal. The string is HTML-escaped first, so raw HTML can never survive;
+ * backtick spans are stashed so bold never rewrites code contents. Regexes are
+ * bounded so a stray `**` or backtick cannot swallow the rest of the paragraph.
+ */
+function aiInlineToHtml(text) {
+  let s = esc(text);
+  const codes = [];
+  s = s.replace(/`([^`\n]+?)`/g, (_m, code) => {
+    codes.push(code);
+    return `\uE000${codes.length - 1}\uE001`;
+  });
+  s = s.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/\uE000(\d+)\uE001/g, (_m, i) => `<code>${codes[Number(i)] || ''}</code>`);
+  return s;
+}
+
+/**
  * Render a bounded BLOCK-level markdown subset for UNTRUSTED release notes:
  * ATX headings (`#`..`######`), unordered lists (`-`/`*`/`+`), ordered lists,
  * fenced code blocks, and paragraphs. Every line is escaped first (via
@@ -757,7 +776,7 @@ function aiSummaryBlock(ai) {
   const zhSummary = String(zh.summary == null || zh.summary === '' ? enSummary : zh.summary);
   const enParas = splitParagraphs(enSummary, 'en');
   const zhParas = splitParagraphs(zhSummary, 'zh');
-  const parasHtml = (paras) => paras.map((p) => `<p>${esc(p)}</p>`).join('');
+  const parasHtml = (paras) => paras.map((p) => `<p>${aiInlineToHtml(p)}</p>`).join('');
   const summaryHtml =
     enParas.join('\u0000') === zhParas.join('\u0000')
       ? `<div class="ai-summary">${parasHtml(enParas)}</div>`
@@ -1104,6 +1123,11 @@ html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
 .ai-summary.i18n[data-lang]{display:block}
 .ai-summary p{margin:0 0 .55em}
 .ai-summary p:last-child{margin-bottom:0}
+.ai-summary strong{color:var(--on-surface);font-weight:750}
+.ai-summary code{
+  font-family:var(--mono);font-size:.86em;background:rgba(0,0,0,.05);
+  padding:.12em .38em;border-radius:6px;overflow-wrap:anywhere;
+}
 .ai-unavailable{
   margin:0;display:flex;align-items:center;gap:10px;
   background:var(--surface-dim);border:1px dashed var(--outline);
