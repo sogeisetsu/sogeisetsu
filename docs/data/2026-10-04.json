@@ -3,7 +3,7 @@
   "windowStart": "2026-10-04T00:00:00+08:00",
   "windowEnd": "2026-10-05T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-04T14:59:07.301Z",
+  "generatedAt": "2026-10-04T14:59:57.517Z",
   "empty": false,
   "totals": {
     "commits": 33,
@@ -98,7 +98,7 @@
           "ts": "2026-10-03T16:08:29Z"
         }
       ],
-      "automated": 12,
+      "automated": 13,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -207,7 +207,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 12,
+  "automatedCommits": 13,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -317,37 +317,37 @@
   "ai": {
     "en": {
       "headline": "33 commits across 3 repos",
-      "summary": "On 2026-10-04, sogeisetsu pushed 33 commits across three repositories, with no pull requests, issues, or reviews. In sogeisetsu/sogeisetsu, 16 own commits plus 12 automated commits by github-actions[bot] focused on fixing AI daily-summary failures (deterministic truncation, disabling reasoning so max_tokens no longer consumed by CoT, model-parse fallback, JSON retry, and not skipping when AI is missing), adding AGENTS.md and scripts/daily/verify.mjs, and iterating on typography (Chomsky, Newsreader, 霞鹜文楷, 宋体, 黑体), favicon, per-sentence summary paragraphs, footer notes, and commit statistics that split own vs. automated and exclude merge commits. In sogeisetsu/meld-deepresearch, 15 own commits implemented the skill improvement plan (renderer, merge, validator, gaps, genres, docs), listed genre templates in SKILL.md with stop points, added a SenseNova capability gap analysis pinned to 5abde96, made access-blocked handling explicit with validator hints and same-publisher origin warnings, allowed mid-run budget uplift, fixed the middle-path card centering on desktop, applied chapter background alternation to the Chinese main page, localized footer readmes, added brand scroll-to-top, and prepared the 0.2.0 release.",
+      "summary": "On 2026-10-04, sogeisetsu pushed 33 commits across three repositories, with no pull requests, issues, or reviews. In sogeisetsu/sogeisetsu, 16 own commits plus 13 automated commits by github-actions[bot] focused on fixing the daily-report AI summary pipeline: deterministic truncation to eliminate length-related failures (raising the retry success rate from 0% to 100%), disabling reasoning so max_tokens no longer consumes the content field, a model-parse fallback with JSON retry and no-skip behavior when AI output is missing, plus a new AGENTS.md and scripts/daily/verify.mjs. The same repo also received a series of typography and stats changes: Chinese page titles switched to a serif/Hei style while English kept Chomsky, then moved to a newspaper serif (Newsreader + 霞鹜文楷) with a favicon, summaries rendered one sentence per paragraph with a footer note, commit statistics switched to commit-date counting with merge commits excluded, and automated-commit lines now show who triggered them and are excluded from totals.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.2.0",
-          "summary": "Hardens the research protocol and ships evaluation work from comparing this skill against other deep-research skills. Blocked sources are now logged as observations with HTTP status, gaps become availability caveats, and claims supported only by unreachable sources are labelled unknown. The validator now also tells you how to fix a failure."
+          "summary": "Hardens the research protocol and ships evaluation work from comparing this skill against other deep-research skills. Sources that cannot be opened are now handled by rule: a blocked page is logged as an observation with its HTTP status, the gap becomes an availability caveat in the report, and a claim whose only support is an unreachable source is labelled unknown. The validator now also tells you how to fix a failure, not just the code and location."
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v1.3.0",
-          "summary": "Rolls up v1.2.0 and v1.3.0 with better agent discovery and chain safety. Adds scripts/discover-agents.mjs (read-only, zero-dependency CLI flagging risky fallback chains) and scripts/snapshot-summary.mjs (compact digest of the cached model snapshot). The recommendation table gains a role-overview column."
+          "summary": "Rolls up v1.2.0 and v1.3.0 with better agent discovery and chain safety. Adds scripts/discover-agents.mjs, a read-only zero-dependency CLI that lists custom agents and flags risky fallback chains, and scripts/snapshot-summary.mjs, a compact digest of the cached model snapshot with --ids, --trait, and --json. The recommendation table now includes a role overview column."
         }
       ]
     },
     "zh": {
       "headline": "3 个仓库共 33 次提交；发布 meld-deepresearch v0.2.0 与 opencode-go-model-picker v1.3.0",
-      "summary": "2026-10-04，sogeisetsu 在三个仓库共提交 33 次，无 PR、issue 或 review。在 sogeisetsu/sogeisetsu，16 次本人提交，另有 12 次由 github-actions[bot] 自动提交，主要修复 AI 日报摘要失败（确定性截断、关闭 reasoning 使 max_tokens 不再被 CoT 占用、模型解析回退、JSON 重试、缺 AI 不再跳过），新增 AGENTS.md 与 scripts/daily/verify.mjs，并迭代排版（Chomsky、Newsreader、霞鹜文楷、宋体、黑体）、favicon、摘要每句一段、页脚说明，以及按 commit date 统计、区分本人/机器人并排除合并提交的提交统计。在 sogeisetsu/meld-deepresearch，15 次本人提交实现了 skill 改进计划（renderer、merge、validator、gaps、genres、docs），在 SKILL.md 中列出 genre 模板并标注停止点，新增固定到 5abde96 的 SenseNova 能力差距分析，明确 access-blocked 处理、validator 提示与同源 publisher 警告，允许运行中预算上调，修复桌面端 middle-path 卡片居中，将章节背景交替应用到中文主页，本地化页脚 readme，加入品牌回顶，并准备 0.2.0 发布。在 sogeisetsu/opencode-go-model-picker，2 次本人提交新增 agent-discovery 与 snapshot-summary 脚本，并记录 vision 验证、Windows 刷新路径与 role-overview 列。当日发布两个版本：meld-deepresearch v0.2.0 与 opencode-go-model-picker v1.3.0。",
+      "summary": "2026-10-04，sogeisetsu 在三个仓库共提交 33 次，无 PR、issue 或 review。在 sogeisetsu/sogeisetsu，16 次本人提交，另有 13 次由 github-actions[bot] 自动提交，主要修复日报 AI 摘要流水线：用确定性截断消除长度类失败（重日成功率 0%→100%）、关闭 reasoning 使 max_tokens 不再占用 content 字段、增加模型解析回退与 JSON 重试且缺 AI 时不再跳过，并新增 AGENTS.md 与 scripts/daily/verify.mjs。同仓库还有一系列排版与统计改动：中文页面标题改为衬线/黑体、英文保留 Chomsky，随后换成报纸衬线（Newsreader + 霞鹜文楷）并加 favicon，摘要改为每句一段并加页脚说明，提交统计改为按 commit date 计算并排除合并提交，自动提交行补充「由谁发起 + 不计入总数」。在 sogeisetsu/meld-deepresearch，15 次本人提交加固了研究 skill：SKILL.md 列出 genre 模板并标注停止点，改进计划落地（renderer、merge、validator、gaps、genres、docs），新增 SenseNova 能力差距分析（固定到 5abde96），明确 access-blocked 处理、增加 validator 提示与同源站点告警、允许运行中提升预算，站点方面修复居中、章节背景交替、按语言区分页脚 readme、品牌滚动回顶与 hero 文案，并准备 0.2.0 发布。在 sogeisetsu/opencode-go-model-picker，2 次本人提交新增 agent-discovery 与 snapshot-summary 脚本，并记录 vision 验证、Windows 刷新路径与 role-overview 列。当日发布两个版本：meld-deepresearch v0.2.0 与 opencode-go-model-picker v1.3.0。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.2.0",
-          "summary": "加固研究协议，并交付与其他 deep-research skill 对比后得出的评估工作。无法打开的来源现在按 HTTP 状态记录为观察项，缺口写入可用性说明，仅由不可达来源支持的论断标记为 unknown。validator 现在还会告诉你如何修复失败。"
+          "summary": "加固研究协议，并发布与其他 deep-research skill 对比得出的评估工作。无法打开的来源现在按规则处理：被拦截页面作为带 HTTP 状态的观察记录，缺口写入报告的可用性说明，唯一依据为不可达来源的论断标记为 unknown。validator 现在不仅给出错误码与位置，还告诉你如何修复。"
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v1.3.0",
-          "summary": "合并 v1.2.0 与 v1.3.0，改进 agent 发现与链安全。新增 scripts/discover-agents.mjs（只读、零依赖 CLI，标记风险回退链）与 scripts/snapshot-summary.mjs（缓存模型快照的精简摘要）。推荐表新增 role-overview 列。"
+          "summary": "合并 v1.2.0 与 v1.3.0，改进 agent 发现与链路安全。新增 scripts/discover-agents.mjs，只读零依赖 CLI，列出自定义 agent 并标记风险回退链；新增 scripts/snapshot-summary.mjs，输出缓存模型快照的精简摘要，支持 --ids、--trait 与 --json。推荐表新增 role overview 列。"
         }
       ]
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "8ce56c707c4ef26af6d0178215fa00e5ee555dc42f5aad2de3ecbd0f2eec3a08"
+  "dataHash": "9a2a738ee231941777a42abb366ca183decabc0311143b07c24266b45bb35843"
 }
