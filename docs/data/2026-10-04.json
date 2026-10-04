@@ -3,15 +3,99 @@
   "windowStart": "2026-10-04T00:00:00+08:00",
   "windowEnd": "2026-10-05T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-03T22:43:22.810Z",
+  "generatedAt": "2026-10-04T04:41:28.654Z",
   "empty": false,
   "totals": {
-    "commits": 26,
+    "commits": 30,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "count": 15,
+      "own": true,
+      "messages": [
+        {
+          "sha": "51330978be7ef4ad8100422c3320a4615177e65c",
+          "message": "fix(skill): list genre templates in SKILL.md and mark stop points (eval findings)",
+          "ts": "2026-10-04T00:52:53Z"
+        },
+        {
+          "sha": "d1e4ff92cf54f542537310439af42b8b0372b52f",
+          "message": "feat(skill): implement improvement plan (renderer, merge, validator, gaps, genres, docs)",
+          "ts": "2026-10-04T00:49:49Z"
+        },
+        {
+          "sha": "dcb71863fb2bf8594b1452a54668bf2ea03b4da3",
+          "message": "docs(eval): add SenseNova capability gap analysis (pinned 5abde96)",
+          "ts": "2026-10-04T00:39:13Z"
+        },
+        {
+          "sha": "0940247694846a6ecef32d572a18a8a80b3fc947",
+          "message": "chore: ignore local .worktrees directory",
+          "ts": "2026-10-04T00:35:31Z"
+        },
+        {
+          "sha": "935fb79dfc6f1b26917249e1191eeb314fc14e1c",
+          "message": "fix(site): keep the middle-path card centered on desktop",
+          "ts": "2026-10-03T20:34:16Z"
+        },
+        {
+          "sha": "8ae34d4708fde1a81cd2ecf144f658d3ec3dd23b",
+          "message": "chore(release): prepare 0.2.0",
+          "ts": "2026-10-03T19:23:58Z"
+        },
+        {
+          "sha": "4107e1446d6f5fda1cc6492a5332304a7cf08203",
+          "message": "fix(pages): apply the same chapter background alternation to the Chinese main",
+          "ts": "2026-10-03T19:15:38Z"
+        },
+        {
+          "sha": "e07584a25866a420a9f634e8465f43bdd496a53f",
+          "message": "fix(pages): footer readme per language, brand scroll-to-top, drop reveal outside pipeline, hero copy",
+          "ts": "2026-10-03T19:07:52Z"
+        },
+        {
+          "sha": "f6c48a3ca15c661dadaeb43f0ad5145f9c060386",
+          "message": "feat(skill): make access-blocked handling explicit, add validator hints, warn on same-publisher origins, allow mid-run budget uplift",
+          "ts": "2026-10-03T18:35:16Z"
+        },
+        {
+          "sha": "f77bf24283764683c5d22f8719dd73f311e05999",
+          "message": "chore: drop local worktree ignore blocks",
+          "ts": "2026-10-03T18:19:07Z"
+        },
+        {
+          "sha": "ab51ecae6061974480a1e89c86fd48bc9c6bce3e",
+          "message": "docs(eval): add live Q2 comparison results across three skills",
+          "ts": "2026-10-03T18:13:15Z"
+        },
+        {
+          "sha": "21733183ef512dfbd6fa43a144e307a4a390fcf1",
+          "message": "chore: ignore local worktree lanes",
+          "ts": "2026-10-03T17:56:19Z"
+        },
+        {
+          "sha": "1747454699b37d1d382373ed5831bf7b3ed4df72",
+          "message": "docs(eval): add deep research evaluation standard and three-skill comparison",
+          "ts": "2026-10-03T17:56:11Z"
+        },
+        {
+          "sha": "de1a1a44cb7626de9aceae02f0897b8ba91dac63",
+          "message": "fix(pages): land landing-page feedback and drop card reveals",
+          "ts": "2026-10-03T17:56:11Z"
+        },
+        {
+          "sha": "b628716d8359898c90acbba67d0b0b5a70c8ea43",
+          "message": "docs(zh): remove stray spaces around em dashes",
+          "ts": "2026-10-03T17:56:11Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
     {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 13,
@@ -83,74 +167,10 @@
           "ts": "2026-10-03T16:08:29Z"
         }
       ],
-      "automated": 2,
+      "automated": 4,
       "automatedBots": [
         "github-actions[bot]"
       ]
-    },
-    {
-      "repo": "sogeisetsu/meld-deepresearch",
-      "count": 11,
-      "own": true,
-      "messages": [
-        {
-          "sha": "935fb79dfc6f1b26917249e1191eeb314fc14e1c",
-          "message": "fix(site): keep the middle-path card centered on desktop",
-          "ts": "2026-10-03T20:34:16Z"
-        },
-        {
-          "sha": "8ae34d4708fde1a81cd2ecf144f658d3ec3dd23b",
-          "message": "chore(release): prepare 0.2.0",
-          "ts": "2026-10-03T19:23:58Z"
-        },
-        {
-          "sha": "4107e1446d6f5fda1cc6492a5332304a7cf08203",
-          "message": "fix(pages): apply the same chapter background alternation to the Chinese main",
-          "ts": "2026-10-03T19:15:38Z"
-        },
-        {
-          "sha": "e07584a25866a420a9f634e8465f43bdd496a53f",
-          "message": "fix(pages): footer readme per language, brand scroll-to-top, drop reveal outside pipeline, hero copy",
-          "ts": "2026-10-03T19:07:52Z"
-        },
-        {
-          "sha": "f6c48a3ca15c661dadaeb43f0ad5145f9c060386",
-          "message": "feat(skill): make access-blocked handling explicit, add validator hints, warn on same-publisher origins, allow mid-run budget uplift",
-          "ts": "2026-10-03T18:35:16Z"
-        },
-        {
-          "sha": "f77bf24283764683c5d22f8719dd73f311e05999",
-          "message": "chore: drop local worktree ignore blocks",
-          "ts": "2026-10-03T18:19:07Z"
-        },
-        {
-          "sha": "ab51ecae6061974480a1e89c86fd48bc9c6bce3e",
-          "message": "docs(eval): add live Q2 comparison results across three skills",
-          "ts": "2026-10-03T18:13:15Z"
-        },
-        {
-          "sha": "21733183ef512dfbd6fa43a144e307a4a390fcf1",
-          "message": "chore: ignore local worktree lanes",
-          "ts": "2026-10-03T17:56:19Z"
-        },
-        {
-          "sha": "1747454699b37d1d382373ed5831bf7b3ed4df72",
-          "message": "docs(eval): add deep research evaluation standard and three-skill comparison",
-          "ts": "2026-10-03T17:56:11Z"
-        },
-        {
-          "sha": "de1a1a44cb7626de9aceae02f0897b8ba91dac63",
-          "message": "fix(pages): land landing-page feedback and drop card reveals",
-          "ts": "2026-10-03T17:56:11Z"
-        },
-        {
-          "sha": "b628716d8359898c90acbba67d0b0b5a70c8ea43",
-          "message": "docs(zh): remove stray spaces around em dashes",
-          "ts": "2026-10-03T17:56:11Z"
-        }
-      ],
-      "automated": 0,
-      "automatedBots": []
     },
     {
       "repo": "sogeisetsu/opencode-go-model-picker",
@@ -172,7 +192,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 2,
+  "automatedCommits": 4,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -281,5 +301,5 @@
   "stateChanges": [],
   "ai": null,
   "aiProvider": null,
-  "dataHash": "3c162f09dc62bbfd18b84d4baea9fcea0648082679e67ff006c4ec414da4be1c"
+  "dataHash": "88e429ae7a4d5d19627baeaa4356bdf57e0563937775175146e07eba9c5f60f3"
 }
