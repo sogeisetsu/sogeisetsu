@@ -3,7 +3,7 @@
   "windowStart": "2026-10-03T00:00:00+08:00",
   "windowEnd": "2026-10-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-04T14:59:47.384Z",
+  "generatedAt": "2026-10-04T15:14:09.814Z",
   "empty": false,
   "totals": {
     "commits": 4,
@@ -201,13 +201,13 @@
   ],
   "ai": {
     "en": {
-      "headline": "4 commits on sogeisetsu/sogeisetsu; 3 issues opened on openchamber",
-      "summary": "On 2026-10-03, sogeisetsu made 4 own commits to sogeisetsu/sogeisetsu, plus 2 additional automated commits by github-actions[bot]. The commits introduced a daily GitHub activity report rendered on GitHub Pages with SenseTime AI, switched the report to a rolling 2-hour update cadence with more detailed summaries and display fixes, corrected the report's commit-counting wording and page issues, and added workflow_dispatch support so the daily-report workflow can be triggered with a specific date. No pull requests or reviews were recorded. On openchamber/openchamber, 3 issues were opened: #4337 (docs still pointing to a removed sidebar header button, later closed by btriapitsyn), #4345 (command palette 'Parallel run' sharing the checkbox-multiple icon with sidebar 'Select sessions'), and #4346 (SidebarHeader.test.tsx still passing after onOpenMultiRun/canOpenMultiRun were removed in d9fbf6b). openchamber-bot[bot] replied on #4337 and #4345, marking both as fix-ready with traced causes.",
+      "headline": "4 commits on sogeisetsu/sogeisetsu; 3 issues opened in openchamber",
+      "summary": "sogeisetsu made 4 own commits to sogeisetsu/sogeisetsu, plus 2 automated commits by github-actions[bot]. The commits introduced a daily GitHub activity report (Pages + SenseTime AI), switched the report to a 2-hour rolling update with a more detailed summary and display fixes, corrected the report's commit-count wording and page issues, and added workflow_dispatch date input to the report workflow. In openchamber/openchamber, three issues were opened: #4337 flagged that multi-run docs still point to a sidebar header button removed in d9fbf6b (moved to the composer); #4345 noted that the command palette 'Parallel run' shares the checkbox-multiple icon with the sidebar 'Select sessions'; and #4346 reported that SidebarHeader.test.tsx still passes after onOpenMultiRun/canOpenMultiRun were removed in d9fbf6b. openchamber-bot[bot] replied on #4337 and #4345 with fix-ready analyses tracing the causes. Issue #4337 was closed by btriapitsyn later that day. No pull requests, reviews, or releases were recorded.",
       "releaseNotes": []
     },
     "zh": {
       "headline": "sogeisetsu/sogeisetsu 4 次提交；openchamber 新开 3 个 issue",
-      "summary": "2026-10-03，sogeisetsu 在 sogeisetsu/sogeisetsu 完成 4 次本人提交，另有 2 次由 github-actions[bot] 自动提交。这些提交新增了基于 GitHub Pages 与商汤 AI 的每日 GitHub 活动日报，将日报改为每 2 小时滚动更新并补充更详细的摘要与若干显示修复，修正了日报的提交口径与页面问题，并为日报工作流增加了 workflow_dispatch 手动指定日期的支持。当日无 PR 与 review 记录。在 openchamber/openchamber 上共新开 3 个 issue：#4337（多运行文档仍指向 d9fbf6b 中已移除的侧边栏头部按钮，随后由 btriapitsyn 关闭）、#4345（命令面板的 'Parallel run' 与侧边栏 'Select sessions' 共用 checkbox-multiple 图标）、#4346（在 d9fbf6b 移除 onOpenMultiRun/canOpenMultiRun 后 SidebarHeader.test.tsx 仍通过）。openchamber-bot[bot] 在 #4337 与 #4345 上回复，将两者标记为 fix-ready 并给出原因追踪。",
+      "summary": "sogeisetsu 在 sogeisetsu/sogeisetsu 上完成 4 次本人提交，另有 2 次由 github-actions[bot] 自动提交。这些提交新增了每日 GitHub 活动日报（Pages + 商汤 AI），将日报改为每 2 小时滚动更新并让摘要更详细、修复若干显示问题，修正了日报提交口径与页面问题，并为日报工作流添加了 workflow_dispatch 的 date 输入。在 openchamber/openchamber 上共新开 3 个 issue：#4337 指出多运行文档仍指向 d9fbf6b 中被移除的侧边栏头部按钮（已迁移至 composer）；#4345 指出命令面板的 'Parallel run' 与侧边栏 'Select sessions' 共用 checkbox-multiple 图标；#4346 报告 SidebarHeader.test.tsx 在 d9fbf6b 移除 onOpenMultiRun/canOpenMultiRun 后仍能通过。openchamber-bot[bot] 在 #4337 和 #4345 上回复了 fix-ready 分析并追溯了原因。issue #4337 当天稍后由 btriapitsyn 关闭。当日无 PR、无 review、无 release。",
       "releaseNotes": []
     }
   },
