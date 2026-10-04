@@ -3,10 +3,10 @@
   "windowStart": "2026-10-04T00:00:00+08:00",
   "windowEnd": "2026-10-05T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-04T11:53:11.378Z",
+  "generatedAt": "2026-10-04T14:07:51.708Z",
   "empty": false,
   "totals": {
-    "commits": 30,
+    "commits": 31,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -98,9 +98,14 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 13,
+      "count": 14,
       "own": true,
       "messages": [
+        {
+          "sha": "b734e3243341c219733bb1170d00b0316470e0c6",
+          "message": "fix(ai): 修复日报 AI 摘要失败（模型解析回退 / JSON 重试 / 缺 AI 不再跳过）",
+          "ts": "2026-10-04T14:07:16Z"
+        },
         {
           "sha": "99475eb813ed5d9aba14693e0082fd38a53453f4",
           "message": "chore: 新增仓库 AGENTS.md 与 scripts/daily/verify.mjs",
@@ -167,7 +172,7 @@
           "ts": "2026-10-03T16:08:29Z"
         }
       ],
-      "automated": 6,
+      "automated": 8,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -192,7 +197,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 6,
+  "automatedCommits": 8,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -301,5 +306,5 @@
   "stateChanges": [],
   "ai": null,
   "aiProvider": null,
-  "dataHash": "6c797b55d6955201844d7c94d167bc6b46a36c7e639a3dc92c2a567facd50beb"
+  "dataHash": "ae1ce5251cba1636e11d3b6919b6a4cf048af9a63707f9f149280ec33654f3db"
 }
