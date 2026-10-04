@@ -46,7 +46,8 @@ const SECTION_CAP = 30; // 每个板块最多喂 30 条
 const COMMIT_MSG_CAP = 10; // 每个仓库最多喂 10 条 commit message
 const COMMIT_MSG_LEN = 200; // 每条 commit message 截断到 200 字符
 const RELEASE_NOTES_CAP = 800; // 每条 release notes 最多 800 字符
-const MAX_TOKENS = 8192; // chat max_tokens / responses max_output_tokens 共用（中英双摘要 + JSON 结构，4096 仍可能被截断导致解析失败）
+const MAX_TOKENS = 16384; // chat max_tokens / responses 共用；sensenova 的 max_tokens 计入 reasoning，故同时发 reasoning_effort=none（见下）
+const MAX_TOKENS_CAP = 65536; // 截断时自适应扩容上限（SenseNova API 上限 65536）
 const SUMMARY_MIN_SENTENCES = 2; // 提示词目标 4-8 句；校验放宽容差，避免把「9 句」这种好结果误拒
 const SUMMARY_MAX_SENTENCES = 12;
 const SUMMARY_MAX_CHARS = 1400; // summary 目标 ~900 字符，校验放宽留余量（模型常写到 ~1000+，避免误拒）
@@ -388,7 +389,8 @@ function extractContent(json, shape) {
  *   · 429/5xx → 等 ~2s 重试一次 → 仍失败换下一家
  *   · SenseNova chat 404/405 → 同 provider 换 responses 形态再试一次
  *   · JSON 提取/校验失败 → 逐次加严提醒，最多追加 3 次（共 4 次尝试）→ 换下一家
- *   · finish_reason=length / incomplete → 视为截断，同样走提醒重试路径
+ *   · 截断（finish_reason=length）→ 打印 usage/reasoning 诊断并翻倍 max_tokens 重试（上限 65536）
+ *   · chat 默认发 reasoning_effort=none 关闭思考（避免 CoT 吃光 max_tokens 导致 content 为空）；400 时去掉重试
  */
 async function attemptProvider(provider, system, user, data) {
   const base = String(provider.baseUrl || "").replace(/\/+$/, "");
@@ -398,6 +400,8 @@ async function attemptProvider(provider, system, user, data) {
   let retriedStatus = false; // 429/5xx 已重试过
   let jsonTries = 0; // 已因 JSON/校验失败追加提醒的次数（最多 JSON_REMINDERS.length 次）
   let triedResponses = false; // SenseNova 404/405 → responses 已切换过
+  let reasoningOff = true; // chat 形态默认发 reasoning_effort=none 关思考；400 时去掉重试
+  let maxTokens = MAX_TOKENS; // 截断时自适应翻倍（上限 MAX_TOKENS_CAP）
 
   for (let round = 0; round < MAX_ROUNDS; round += 1) {
     const url = `${base}/${shape === "responses" ? "responses" : "chat/completions"}`;
@@ -412,7 +416,7 @@ async function attemptProvider(provider, system, user, data) {
               { role: "system", content: system },
               { role: "user", content: prompt },
             ],
-            max_output_tokens: MAX_TOKENS,
+            max_output_tokens: maxTokens,
           }
         : {
             model: provider.model,
@@ -421,7 +425,8 @@ async function attemptProvider(provider, system, user, data) {
               { role: "user", content: prompt },
             ],
             temperature: 0.3,
-            max_tokens: MAX_TOKENS,
+            max_tokens: maxTokens,
+            ...(reasoningOff ? { reasoning_effort: "none" } : {}),
             ...(useJsonMode ? { response_format: { type: "json_object" } } : {}),
           };
 
@@ -471,6 +476,12 @@ async function attemptProvider(provider, system, user, data) {
       continue;
     }
 
+    // 400：先去掉可能不被支持的 reasoning_effort，再退让 response_format（都不放弃 provider）
+    if (res.status === 400 && shape === "chat" && reasoningOff) {
+      reasoningOff = false;
+      console.error(`${LOG} ${provider.name}: HTTP 400 且请求带了 reasoning_effort，去掉后重试`);
+      continue;
+    }
     // 带 response_format 收到 400：去掉 JSON 模式重试一次，并进程内记住该 provider 不支持（不放弃该 provider）
     if (res.status === 400 && useJsonMode) {
       jsonModeUnsupported.add(providerKey);
@@ -496,7 +507,21 @@ async function attemptProvider(provider, system, user, data) {
         (json?.incomplete_details != null || json?.status === "incomplete"));
     let checked;
     if (truncated) {
-      console.error(`${LOG} ${provider.name}: 输出被 max_tokens 截断`);
+      const finish = json?.choices?.[0]?.finish_reason ?? json?.status ?? "?";
+      const usage = json?.usage ? JSON.stringify(json.usage) : "n/a";
+      const reasoningLen =
+        typeof json?.choices?.[0]?.message?.reasoning === "string"
+          ? json.choices[0].message.reasoning.length
+          : 0;
+      console.error(
+        `${LOG} ${provider.name}: 输出被截断（finish_reason=${finish}, content_len=${content.length}, reasoning_len=${reasoningLen}, max_tokens=${maxTokens}, usage=${usage}）`
+      );
+      // CoT 吃光 max_tokens 时 content 为空：先尝试抬高预算，到顶仍截断才算失败
+      if (maxTokens < MAX_TOKENS_CAP) {
+        maxTokens = Math.min(maxTokens * 2, MAX_TOKENS_CAP);
+        console.error(`${LOG} ${provider.name}: 提高 max_tokens 至 ${maxTokens} 后重试`);
+        continue;
+      }
       checked = { ok: false, reason: "输出被 max_tokens 截断" };
     } else {
       const parsed = parseJsonPayload(content);
