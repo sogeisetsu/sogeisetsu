@@ -25,6 +25,7 @@ const { normalizeNotes } = await import(new URL("./lib/github.mjs", import.meta.
 let passed = 0;
 const cases = [];
 const check = (name, fn) => {
+  cases.push(name); // 计入总数，保证抛异常的用例也拉低通过率
   let results;
   try {
     results = fn();
@@ -34,7 +35,6 @@ const check = (name, fn) => {
   }
   const ok = results.every(([, v]) => v);
   if (ok) passed += 1;
-  cases.push(name);
   console.log(`${ok ? "PASS" : "FAIL"} ${name}  [${results.map(([k, v]) => `${k}=${v}`).join(", ")}]`);
 };
 
