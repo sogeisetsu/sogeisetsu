@@ -54,9 +54,10 @@ jobs:
           git add docs
           git diff --cached --quiet && exit 0
           git commit -m "chore: 更新每日活动日报"
+          # 生成物 docs/ 可丢弃：并发运行 rebase 撞车时，-X theirs 保留本次新生成的版本，避免冲突失败
           for i in 1 2 3; do
             git push && exit 0
-            git pull --rebase --autostash origin main
+            git pull --rebase --autostash -X theirs origin main
           done
           echo "推送失败：重试 3 次后仍未成功" >&2
           exit 1
