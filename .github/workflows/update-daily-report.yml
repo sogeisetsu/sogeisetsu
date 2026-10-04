@@ -10,6 +10,11 @@ on:
         description: "要生成的自然日（YYYY-MM-DD，留空=昨天，Asia/Shanghai）"
         required: false
         type: string
+      force:
+        description: "强制重取数据并重调 AI（忽略内容哈希；用于验证 AI 生成）"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -36,7 +41,7 @@ jobs:
           node-version: 20
 
       - name: 生成/刷新日报（昨天定稿 + 今天滚动）
-        run: node scripts/daily/index.mjs ${{ inputs.date && format('--date={0}', inputs.date) || '' }}
+        run: node scripts/daily/index.mjs ${{ inputs.date && format('--date={0}', inputs.date) || '' }} ${{ inputs.force && '--force' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}

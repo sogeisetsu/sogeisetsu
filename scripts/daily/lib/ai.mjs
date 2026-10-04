@@ -50,7 +50,8 @@ const MAX_TOKENS = 16384; // chat max_tokens / responses 共用；sensenova 的 
 const MAX_TOKENS_CAP = 65536; // 截断时自适应扩容上限（SenseNova API 上限 65536）
 const SUMMARY_MIN_SENTENCES = 2; // 提示词目标 4-8 句；校验放宽容差，避免把「9 句」这种好结果误拒
 const SUMMARY_MAX_SENTENCES = 12;
-const SUMMARY_MAX_CHARS = 1400; // summary 目标 ~900 字符，校验放宽留余量（模型常写到 ~1000+，避免误拒）
+const SUMMARY_MAX_CHARS = 1400; // summary 目标 ~900 字符；模型偶写到 ~1800，超出部分按句界截断而非拒绝
+const HEADLINE_MAX_CHARS = 80; // headline 硬上限；超出按分隔符/词界截断
 const RELEASE_NOTE_MAX_SENTENCES = 3;
 const RETRY_WAIT_MS = 2000; // 429/5xx 重试前等待 ~2s
 const MAX_ROUNDS = 12; // 单 provider 内部循环安全上限（json 重试×3 + rf-400 退让 + 429 重试 + 形态切换 + 截断重试）
@@ -79,12 +80,33 @@ const senseNovaModelCache = new Map();
 // 进程内记住不支持 response_format 的 provider（key: name+baseUrl），后续调用直接跳过
 const jsonModeUnsupported = new Set();
 
-// JSON 提取失败时逐次加严的提醒（第 1 次请求不带提醒，之后最多追加 3 次 → 共 4 次尝试）
+// 校验失败后的纠正提醒（第 1 次请求不带提醒，之后最多追加 MAX_CORRECTIONS 次 → 共 4 次尝试）：
+// JSON 类失败用通用 JSON 提醒；超长/句数类失败给出可执行的长度反馈。
+// 长度问题是重灾区：模型在重输入下的自然输出常达 1500-1900 字符，超过校验上限；只重复“输出 JSON”无法纠正，必须明确要求变短。
 const JSON_REMINDERS = [
   "Return ONLY valid JSON, no prose, no markdown fences.",
   "Output must start with { and end with }. No other text.",
   "Output the COMPLETE JSON object ending with }; do not cut it off.",
 ];
+const MAX_CORRECTIONS = 3;
+
+/** 根据上一轮校验失败原因，生成可执行的纠正提示（让模型能真正改对，而不是重复同一错误）。 */
+function buildRetryFeedback(reason, n) {
+  const r = String(reason || "");
+  if (/headline 超长/.test(r)) {
+    return "REJECTED: the headline was too long. Rewrite with a headline of AT MOST 72 characters (count them); keep only the single most important fact.";
+  }
+  if (/summary 超长/.test(r)) {
+    return "REJECTED: the summary was too long. Rewrite the summary with 4-6 sentences and UNDER 1100 characters (hard limit). Keep the concrete repository names, numbers and tags, but drop secondary detail.";
+  }
+  if (/句数/.test(r)) {
+    return "REJECTED: the summary sentence count was outside 4-8. Rewrite with 4-6 sentences.";
+  }
+  if (/releaseNotes/.test(r)) {
+    return "REJECTED: check releaseNotes — one entry per input release, repo+tag exactly matching, each summary at most 3 sentences.";
+  }
+  return JSON_REMINDERS[Math.min(n, JSON_REMINDERS.length - 1)];
+}
 
 /**
  * GET {baseUrl}/models，按优先级挑模型：
@@ -183,8 +205,8 @@ const SYSTEM_PROMPT = [
   "Reply with ONE strict JSON object only: no prose, no markdown, no code fences.",
   'Schema: {"en":{"headline":"...","summary":"...","releaseNotes":[{"repo":"...","tag":"...","summary":"..."}]},"zh":{...same shape...}}',
   "Rules:",
-  "- headline: at most 80 characters.",
-  "- summary: 4-8 sentences, at most about 900 characters. Name concrete specifics from the input — repository names, issue/PR numbers and titles, who replied, what a release changed — and describe what actually happened that day, in order. No filler, no repeating the headline, no generic 'a busy day'.",
+  "- headline: one line, at most 80 characters (count them; NEVER exceed 80).",
+  "- summary: 4-8 sentences and UNDER 1200 characters (hard limit — count characters; stay well below). Name concrete specifics from the input — repository names, issue/PR numbers and titles, who replied, what a release changed — and describe what actually happened that day, in order. No filler, no repeating the headline, no generic 'a busy day'.",
   "- releaseNotes: one entry ONLY for each release in the input, matching repo+tag exactly; each summary at most 3 sentences; use [] when there are no releases.",
   "- Commits: for the user's OWN commits (commits[].messages), summarize what they actually changed by synthesizing their commit messages — group and shorten them; do NOT list the messages verbatim.",
   "- Commits: `count` is the user's OWN commit count; `automated` is a SEPARATE, ADDITIONAL count of bot/automated commits — never a subset of `count`. Phrase them as additive, e.g. \"8 own commits plus 1 automated commit by github-actions[bot]\" / \"8 次本人提交，另有 1 次由 github-actions[bot] 自动提交\" — never \"8 commits, of which 1 was automated\" / \"8 次提交，其中 1 次为自动提交\" (never \"其中\"/\"of which\" overlap).",
@@ -252,9 +274,35 @@ function buildPrompts(data) {
 
 // ---------------------------------------------------------------- 解析与校验
 
+/** 从首个 `{` 起按括号配平扫出完整 JSON（正确处理字符串内的 { } 与转义），用于剔除 JSON 前后的散文。 */
+function balancedJsonSlice(text) {
+  const s = String(text ?? "");
+  const start = s.indexOf("{");
+  if (start === -1) return null;
+  let depth = 0;
+  let inStr = false;
+  let esc = false;
+  for (let i = start; i < s.length; i += 1) {
+    const ch = s[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (ch === "\\") esc = true;
+      else if (ch === '"') inStr = false;
+      continue;
+    }
+    if (ch === '"') inStr = true;
+    else if (ch === "{") depth += 1;
+    else if (ch === "}") {
+      depth -= 1;
+      if (depth === 0) return s.slice(start, i + 1);
+    }
+  }
+  return null; // 括号不配平（多为截断）
+}
+
 /**
- * 从返回文本里稳提取 JSON：剥 ```json 围栏 → 首个 `{` 到末个 `}` → JSON.parse。
- * 失败返回 null。
+ * 从返回文本里稳提取 JSON：剥 ```json 围栏 → 括号配平切片 / 首 { 到末 } → 去掉裸控制字符 → JSON.parse。
+ * 多个候选逐个尝试，失败返回 null。
  */
 function parseJsonPayload(text) {
   let t = String(text ?? "").trim();
@@ -263,13 +311,18 @@ function parseJsonPayload(text) {
   const first = t.indexOf("{");
   const last = t.lastIndexOf("}");
   const candidates = [];
+  const balanced = balancedJsonSlice(t);
+  if (balanced) candidates.push(balanced);
   if (first !== -1 && last > first) candidates.push(t.slice(first, last + 1));
   candidates.push(t); // 兜底：整段直接就是 JSON
-  for (const candidate of candidates) {
-    try {
-      return JSON.parse(candidate);
-    } catch {
-      // 继续尝试下一个候选
+  for (const raw of candidates) {
+    // 裸控制字符（字符串内未转义的换行/制表符）会让 JSON.parse 失败，去掉后再试一次
+    for (const candidate of [raw, raw.replace(/[\u0000-\u001F]+/g, " ")]) {
+      try {
+        return JSON.parse(candidate);
+      } catch {
+        // 继续尝试下一个候选
+      }
     }
   }
   return null;
@@ -284,6 +337,87 @@ function countSentences(text) {
   let n = cjk + latin;
   if (!/[.!?。！？]\s*$/.test(s)) n += 1; // 末尾没有句号的残句也计入
   return n;
+}
+
+/** 按句末标点切句（中英兼顾），保留标点、去掉空段。 */
+function splitSentences(text) {
+  const s = String(text).trim();
+  if (!s) return [];
+  const out = [];
+  let buf = "";
+  for (let i = 0; i < s.length; i += 1) {
+    const ch = s[i];
+    buf += ch;
+    const cjkEnd = ch === "。" || ch === "！" || ch === "？";
+    const latinEnd = (ch === "." || ch === "!" || ch === "?") && (i + 1 >= s.length || /\s/.test(s[i + 1]));
+    if (cjkEnd || latinEnd) {
+      if (buf.trim()) out.push(buf.trim());
+      buf = "";
+    }
+  }
+  if (buf.trim()) out.push(buf.trim());
+  return out;
+}
+
+/** 拼接句子：前句以中文句末标点结尾时不留空格（中文句间通常无空格），否则用空格。 */
+function joinSentences(sentences) {
+  let out = "";
+  for (let i = 0; i < sentences.length; i += 1) {
+    if (i === 0) { out = sentences[i]; continue; }
+    const prev = sentences[i - 1];
+    out += (/[。！？]$/.test(prev) ? "" : " ") + sentences[i];
+  }
+  return out;
+}
+
+/** 保留前 keepMax 句（用于 release notes 等）。 */
+function fitSentences(text, keepMax) {
+  const s = String(text).trim();
+  if (!s) return "";
+  const sentences = splitSentences(s);
+  if (sentences.length <= keepMax) return s;
+  return joinSentences(sentences.slice(0, keepMax)).trim();
+}
+
+/**
+ * headline 超长时优先在分隔符处断开，其次按词边界断开；保证不超过 maxChars。
+ */
+function fitHeadline(text, maxChars) {
+  const s = String(text).trim();
+  if (s.length <= maxChars) return s;
+  const seps = ["；", ";", " | ", "—", " - "];
+  let cut = -1;
+  for (const sep of seps) {
+    const i = s.indexOf(sep);
+    if (i > 0 && i <= maxChars && (cut === -1 || i < cut)) cut = i;
+  }
+  if (cut >= Math.max(20, Math.floor(maxChars * 0.3))) return s.slice(0, cut).trim();
+  const head = s.slice(0, maxChars);
+  const sp = head.lastIndexOf(" ");
+  return (sp >= Math.floor(maxChars * 0.6) ? head.slice(0, sp) : head).trim();
+}
+
+/**
+ * 把过长文本截断到 maxChars 内，尽量保留完整句子（句界优先），并保证句数落在 [keepMin, keepMax]。
+ * 用于强制模型无法稳定遵守的硬性长度上限：宁可截短，也不因超长整段失败。
+ */
+function fitText(text, maxChars, keepMin, keepMax) {
+  const s = String(text).trim();
+  if (!s) return "";
+  if (s.length <= maxChars && countSentences(s) <= keepMax) return s;
+  let sentences = splitSentences(s);
+  if (sentences.length === 0) return s.slice(0, maxChars).trim();
+  if (sentences.length > keepMax) sentences = sentences.slice(0, keepMax);
+  const kept = [];
+  for (const sent of sentences) {
+    const trial = joinSentences([...kept, sent]);
+    if (kept.length > 0 && trial.length > maxChars) break;
+    kept.push(sent);
+  }
+  const needMin = Math.min(keepMin, sentences.length);
+  const chosen = kept.length < needMin ? sentences.slice(0, needMin) : kept;
+  const joined = joinSentences(chosen);
+  return (joined.length > maxChars ? joined.slice(0, maxChars) : joined).trim();
 }
 
 /** 校验双语 JSON 结构；通过则返回规范化后的 { en, zh }，否则 { ok:false, reason }。 */
@@ -303,24 +437,21 @@ function validateNarrative(raw, data) {
     const sec = raw[lang];
     if (!sec || typeof sec !== "object") return { ok: false, reason: `缺少 ${lang} 段` };
 
-    const headline = String(sec.headline ?? "").trim();
-    const summary = String(sec.summary ?? "").trim();
+    // 硬性长度用代码强制（模型无法稳定遵守字符上限）：超长按句界/词界截断，而不是整段拒绝
+    const headline = fitHeadline(String(sec.headline ?? "").trim(), HEADLINE_MAX_CHARS);
+    const summary = fitText(
+      String(sec.summary ?? "").trim(),
+      SUMMARY_MAX_CHARS,
+      SUMMARY_MIN_SENTENCES,
+      SUMMARY_MAX_SENTENCES
+    );
     if (!headline) return { ok: false, reason: `${lang}.headline 为空` };
-    if (headline.length > 80) {
-      return { ok: false, reason: `${lang}.headline 超长 ${headline.length} > 80` };
-    }
     if (!summary) return { ok: false, reason: `${lang}.summary 为空` };
     const sentences = countSentences(summary);
-    if (sentences < SUMMARY_MIN_SENTENCES || sentences > SUMMARY_MAX_SENTENCES) {
+    if (sentences < SUMMARY_MIN_SENTENCES) {
       return {
         ok: false,
-        reason: `${lang}.summary 句数 ${sentences} 不在 ${SUMMARY_MIN_SENTENCES}-${SUMMARY_MAX_SENTENCES}`,
-      };
-    }
-    if (summary.length > SUMMARY_MAX_CHARS) {
-      return {
-        ok: false,
-        reason: `${lang}.summary 超长 ${summary.length} > ${SUMMARY_MAX_CHARS} 字符`,
+        reason: `${lang}.summary 句数 ${sentences} < ${SUMMARY_MIN_SENTENCES}`,
       };
     }
 
@@ -336,19 +467,12 @@ function validateNarrative(raw, data) {
       }
       const repo = String(note.repo ?? "").trim();
       const tag = String(note.tag ?? "").trim();
-      const text = String(note.summary ?? "").trim();
+      const text = fitSentences(String(note.summary ?? "").trim(), RELEASE_NOTE_MAX_SENTENCES);
       if (!releaseKeys.has(`${repo}@@${tag}`)) {
         return { ok: false, reason: `${lang}.releaseNotes 出现输入之外的 release: ${repo}@${tag}` };
       }
       if (!text) {
         return { ok: false, reason: `${lang}.releaseNotes ${repo}@${tag} summary 为空` };
-      }
-      const noteSentences = countSentences(text);
-      if (noteSentences > RELEASE_NOTE_MAX_SENTENCES) {
-        return {
-          ok: false,
-          reason: `${lang}.releaseNotes ${repo}@${tag} 句数 ${noteSentences} > ${RELEASE_NOTE_MAX_SENTENCES}`,
-        };
       }
       normNotes.push({ repo, tag, summary: text });
     }
@@ -398,7 +522,7 @@ async function attemptProvider(provider, system, user, data) {
   let shape = provider.shape === "responses" ? "responses" : "chat";
   let prompt = user;
   let retriedStatus = false; // 429/5xx 已重试过
-  let jsonTries = 0; // 已因 JSON/校验失败追加提醒的次数（最多 JSON_REMINDERS.length 次）
+  let corrections = 0; // 已因 JSON/校验失败追加纠正提示的次数（最多 MAX_CORRECTIONS 次）
   let triedResponses = false; // SenseNova 404/405 → responses 已切换过
   let reasoningOff = true; // chat 形态默认发 reasoning_effort=none 关思考；400 时去掉重试
   let maxTokens = MAX_TOKENS; // 截断时自适应翻倍（上限 MAX_TOKENS_CAP）
@@ -536,13 +660,13 @@ async function attemptProvider(provider, system, user, data) {
       `${LOG} ${provider.name}: 返回不合约束（${checked.reason}），原始返回前 400 字: ${String(content).slice(0, 400)}`
     );
 
-    if (jsonTries < JSON_REMINDERS.length) {
-      const reminder = JSON_REMINDERS[jsonTries];
-      jsonTries += 1;
-      prompt = `${user}\n${reminder}`;
+    if (corrections < MAX_CORRECTIONS) {
+      const feedback = buildRetryFeedback(checked.reason, corrections);
+      corrections += 1;
+      prompt = `${user}\n\n${feedback}`;
       console.error(
-        `${LOG} ${provider.name}: 返回不合约束（${checked.reason}），追加提醒后重试（第 ${jsonTries + 1}/${
-          JSON_REMINDERS.length + 1
+        `${LOG} ${provider.name}: 返回不合约束（${checked.reason}），追加纠正提示后重试（第 ${corrections + 1}/${
+          MAX_CORRECTIONS + 1
         } 次）`
       );
       continue;
