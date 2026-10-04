@@ -149,6 +149,83 @@ function mdInlineToHtml(text) {
 }
 
 /**
+ * Render a bounded BLOCK-level markdown subset for UNTRUSTED release notes:
+ * ATX headings (`#`..`######`), unordered lists (`-`/`*`/`+`), ordered lists,
+ * fenced code blocks, and paragraphs. Every line is escaped first (via
+ * mdInlineToHtml), so raw HTML never survives; only a whitelist of block
+ * markers is expanded. Output is clamped so a long release body stays compact.
+ */
+function mdBlockToHtml(text, maxChars = 1400) {
+  const raw = String(text == null ? '' : text).replace(/\r\n?/g, '\n').trim();
+  if (!raw) return '';
+  const src = raw.length > maxChars ? `${raw.slice(0, maxChars).trimEnd()} …` : raw;
+  const lines = src.split('\n');
+  const out = [];
+  let para = [];
+  let list = null; // { tag: 'ul'|'ol', items: string[] }
+  let fence = null; // string[] | null
+  const flushPara = () => {
+    if (para.length) {
+      out.push(`<p>${para.join('<br>')}</p>`);
+      para = [];
+    }
+  };
+  const flushList = () => {
+    if (list) {
+      out.push(`<${list.tag}>${list.items.map((i) => `<li>${i}</li>`).join('')}</${list.tag}>`);
+      list = null;
+    }
+  };
+  for (const line of lines) {
+    if (fence !== null) {
+      if (/^\s*```/.test(line)) {
+        out.push(`<pre><code>${fence.join('\n')}</code></pre>`);
+        fence = null;
+      } else {
+        fence.push(esc(line));
+      }
+      continue;
+    }
+    if (/^\s*```/.test(line)) {
+      flushPara();
+      flushList();
+      fence = [];
+      continue;
+    }
+    const heading = /^(#{1,6})\s+(.*)$/.exec(line);
+    if (heading) {
+      flushPara();
+      flushList();
+      const level = Math.min(2 + heading[1].length, 6); // # → h3 … ##### 及以上 → h6
+      out.push(`<h${level}>${mdInlineToHtml(heading[2].trim())}</h${level}>`);
+      continue;
+    }
+    const item = /^\s*(?:[-*+]|\d+[.)])\s+(.*)$/.exec(line);
+    if (item) {
+      flushPara();
+      const tag = /^\s*\d+[.)]/.test(line) ? 'ol' : 'ul';
+      if (!list || list.tag !== tag) {
+        flushList();
+        list = { tag, items: [] };
+      }
+      list.items.push(mdInlineToHtml(item[1].trim()));
+      continue;
+    }
+    if (!line.trim()) {
+      flushPara();
+      flushList();
+      continue;
+    }
+    flushList();
+    para.push(mdInlineToHtml(line.trim()));
+  }
+  if (fence !== null) out.push(`<pre><code>${fence.join('\n')}</code></pre>`);
+  flushPara();
+  flushList();
+  return out.join('');
+}
+
+/**
  * Break an instant into Asia/Shanghai (UTC+8) wall-clock parts.
  */
 function utc8(ms) {
@@ -575,7 +652,7 @@ function releasesSection(items, ai) {
           ? `<p class="ai-note"><span class="ai-tag">AI</span> ${i18n(en, zh)}</p>`
           : '';
       const notes = String(it.notes || '').trim()
-        ? `<p class="release-notes">${mdInlineToHtml(it.notes)}</p>`
+        ? `<div class="release-notes">${mdBlockToHtml(it.notes)}</div>`
         : '';
       const title = String(it.name || '').trim() ? it.name : it.tag || UNTITLED();
       return (
@@ -969,8 +1046,24 @@ html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
 }
 .release-notes{
   margin:12px 0 0;font-size:.9rem;color:var(--on-surface-variant);
-  white-space:pre-wrap;overflow-wrap:anywhere;
-  display:-webkit-box;-webkit-line-clamp:8;-webkit-box-orient:vertical;overflow:hidden;
+  overflow-wrap:anywhere;
+  display:-webkit-box;-webkit-line-clamp:12;-webkit-box-orient:vertical;overflow:hidden;
+}
+.release-notes>*{margin:.5em 0}
+.release-notes h3,.release-notes h4,.release-notes h5,.release-notes h6{
+  margin:.75em 0 .3em;font-size:.95rem;font-weight:750;color:var(--on-surface);line-height:1.35;
+}
+.release-notes h3:first-child,.release-notes h4:first-child,.release-notes h5:first-child,.release-notes h6:first-child{margin-top:0}
+.release-notes ul,.release-notes ol{margin:.4em 0;padding-left:1.35em}
+.release-notes li{margin:.22em 0}
+.release-notes pre{
+  margin:.5em 0;padding:10px 12px;border-radius:10px;overflow-x:auto;
+  background:var(--surface-variant, rgba(0,0,0,.05));font-family:var(--mono);font-size:.8rem;
+}
+.release-notes pre code{background:none;padding:0}
+.release-notes code{
+  font-family:var(--mono);font-size:.84em;background:rgba(0,0,0,.05);
+  padding:.12em .38em;border-radius:6px;
 }
 .ai-note{
   margin:12px 0 0;padding:10px 13px;border-radius:12px;font-size:.88rem;

@@ -56,7 +56,7 @@ const RELEASES_PER_PAGE = 30; // 每仓库 Release 只取一页
 const RELEASE_SCAN_MAX = 100; // 扫描 Release 的仓库数硬上限（防失控）
 const SEARCH_PER_PAGE = 50; // Search 每个查询取一页
 const TARGET_MAX = 25; // “我发起的条目”检索上限（回复 / 状态变更两段共用）
-const NOTES_MAX = 800; // release notes 折叠空白后截断长度
+const NOTES_MAX = 1400; // release notes 规范化后截断长度（保留换行以渲染 Markdown 结构）
 const EXCERPT_MAX = 200; // 回复摘录折叠空白后截断长度
 const COMMIT_SCAN_REPOS_MAX = 30; // 提交历史扫描的仓库数上限（PushEvent 仓库优先）
 const COMMIT_PAGES_MAX = 2; // 每仓 /commits 分页上限（per_page=100）
@@ -76,10 +76,25 @@ const tsOf = (value) => {
 /** 毫秒 → ISO UTC 字符串。 */
 const isoOf = (ms) => new Date(ms).toISOString();
 
-/** 折叠全部空白并截断（用于 notes / excerpt）。 */
+/** 折叠全部空白并截断（用于 excerpt 等单行文本）。 */
 function collapse(text, max) {
   const s = String(text ?? "").replace(/\s+/g, " ").trim();
   return s.length > max ? `${s.slice(0, max - 1)}…` : s;
+}
+
+/**
+ * 规范化 release notes：保留换行与行首结构（Markdown 标题/列表），
+ * 只去掉行尾空白、连续空行与零宽字符；行内多余空格折叠但绝不允许把换行并成一行。
+ * 这样前端才能正确渲染 `## 标题`、`- 列表` 等结构。
+ */
+function normalizeNotes(text, max) {
+  let s = String(text ?? "").replace(/\r\n?/g, "\n").replace(/[\u200B-\u200D\uFEFF]/g, "");
+  s = s
+    .split("\n")
+    .map((line) => line.replace(/[ \t]+/g, " ").replace(/[ \t]+$/, ""))
+    .join("\n");
+  s = s.replace(/\n{3,}/g, "\n\n").trim();
+  return s.length > max ? `${s.slice(0, max - 1).trimEnd()}…` : s;
 }
 
 function warn(section, message) {
@@ -452,7 +467,7 @@ async function fetchReleases(token, username, repos, win) {
         name: rel.name || "",
         url: rel.html_url || `https://github.com/${full}/releases/tag/${tag}`,
         publishedAt: rel.published_at,
-        notes: collapse(rel.body, NOTES_MAX),
+        notes: normalizeNotes(rel.body, NOTES_MAX),
       });
     }
   }
@@ -771,7 +786,7 @@ const byTsDesc = (a, b) => tsOf(b.ts) - tsOf(a.ts);
  *     reviews:[{repo,number,title,url,ts,own}],
  *     issues:[{repo,number,title,url,action,ts,own,state?}],   // state: open|closed|merged，窗口末时刻；
  *                                                              // 由他人的状态变更或自身动作推导，可缺省
- *     releases:[{repo,tag,name,url,publishedAt,notes}],
+ *     releases:[{repo,tag,name,url,publishedAt,notes}],   // notes: 规范化 Markdown（保留换行，≤1400 字符）
  *     stars:[{repo,delta,total}],            // 展示用：仅 delta 为数字且非 0 的仓库
  *     starInventory:[{repo,total}],          // 全量自有仓库星标清单（供次日 delta 基准，不过滤）
  *     replies:[{repo,number,title,url,author,excerpt,kind,ts,own}],   // 仅公开仓库
