@@ -1103,6 +1103,17 @@ html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
   background:var(--primary-container);color:var(--on-primary-container);
 }
 .ai-tag{font-size:.66rem;font-weight:800;letter-spacing:.1em;margin-right:8px;opacity:.85}
+/* Inline code inside the release AI note: the note sits on the purple
+   --primary-container, so the global rgba(0,0,0,.05) chip vanishes. Give it a
+   light chip that stands out on that purple in both themes. */
+.ai-note code{
+  font-family:var(--mono);font-size:.86em;background:rgba(255,255,255,.6);
+  color:var(--on-primary-container);padding:.12em .38em;border-radius:6px;
+  overflow-wrap:anywhere;
+}
+@media (prefers-color-scheme:dark){
+  .ai-note code{background:rgba(255,255,255,.16)}
+}
 
 /* ---- replies ---- */
 .reply-head{display:flex;flex-wrap:wrap;align-items:center;gap:9px}
