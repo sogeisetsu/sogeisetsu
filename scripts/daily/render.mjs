@@ -155,7 +155,7 @@ function mdInlineToHtml(text) {
  * backtick spans are stashed so bold never rewrites code contents. Regexes are
  * bounded so a stray `**` or backtick cannot swallow the rest of the paragraph.
  */
-function aiInlineToHtml(text) {
+export function aiInlineToHtml(text) {
   let s = esc(text);
   const codes = [];
   s = s.replace(/`([^`\n]+?)`/g, (_m, code) => {
@@ -174,7 +174,7 @@ function aiInlineToHtml(text) {
  * mdInlineToHtml), so raw HTML never survives; only a whitelist of block
  * markers is expanded. Output is clamped so a long release body stays compact.
  */
-function mdBlockToHtml(text, maxChars = 1400) {
+export function mdBlockToHtml(text, maxChars = 1400) {
   const raw = String(text == null ? '' : text).replace(/\r\n?/g, '\n').trim();
   if (!raw) return '';
   const src = raw.length > maxChars ? `${raw.slice(0, maxChars).trimEnd()} …` : raw;
@@ -339,7 +339,7 @@ function i18n(en, zh) {
  * Like `i18n`, but renders each side through `aiInlineToHtml` so the AI-summary
  * inline subset (`code`, **bold**) survives. Used for the release AI note.
  */
-function i18nInline(en, zh) {
+export function i18nInline(en, zh) {
   const a = en == null ? '' : String(en);
   const b = zh == null || zh === '' ? a : String(zh);
   if (a === b) return aiInlineToHtml(a);
@@ -357,7 +357,7 @@ const UNTITLED = () => i18n('(untitled)', '(无标题)');
  * uppercase letter / digit / quote / bracket follows, so `v1.3.0`, `file.mjs`
  * and `e.g.` stay intact. Newlines are hard breaks; blank input yields [].
  */
-function splitParagraphs(text, lang) {
+export function splitParagraphs(text, lang) {
   const src = String(text == null ? '' : text).replace(/\r\n?/g, '\n');
   if (!src.trim()) return [];
   const out = [];
@@ -1151,7 +1151,11 @@ html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
 .ai-summary strong{color:var(--on-surface);font-weight:750}
 .ai-summary code{
   font-family:var(--mono);font-size:.86em;background:rgb(254,247,255);
+  color:var(--on-surface);
   padding:.12em .38em;border-radius:6px;overflow-wrap:anywhere;
+}
+@media (prefers-color-scheme:dark){
+  .ai-summary code{background:rgba(255,255,255,.12);color:var(--on-surface)}
 }
 .ai-unavailable{
   margin:0;display:flex;align-items:center;gap:10px;

@@ -87,7 +87,7 @@ function collapse(text, max) {
  * 只去掉行尾空白、连续空行与零宽字符；行内多余空格折叠但绝不允许把换行并成一行。
  * 这样前端才能正确渲染 `## 标题`、`- 列表` 等结构。
  */
-function normalizeNotes(text, max) {
+export function normalizeNotes(text, max) {
   let s = String(text ?? "").replace(/\r\n?/g, "\n").replace(/[\u200B-\u200D\uFEFF]/g, "");
   s = s
     .split("\n")

@@ -39,6 +39,7 @@ for (const t of syntaxTargets) {
   if (!run(`node --check ${t}`, ["--check", path.join(DIR, t)])) failed += 1;
 }
 if (!run("test-ai.mjs（AI 适配层回归）", [path.join(DIR, "test-ai.mjs")])) failed += 1;
+if (!run("test-render.mjs（渲染/规范化回归）", [path.join(DIR, "test-render.mjs")])) failed += 1;
 if (!run("verify.mjs（docs 不变式）", [path.join(DIR, "verify.mjs"), "--quiet"])) failed += 1;
 
 console.log(failed === 0 ? "\npreflight OK" : `\npreflight FAILED（${failed} 项）`);
