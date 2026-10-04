@@ -335,6 +335,20 @@ function i18n(en, zh) {
   );
 }
 
+/**
+ * Like `i18n`, but renders each side through `aiInlineToHtml` so the AI-summary
+ * inline subset (`code`, **bold**) survives. Used for the release AI note.
+ */
+function i18nInline(en, zh) {
+  const a = en == null ? '' : String(en);
+  const b = zh == null || zh === '' ? a : String(zh);
+  if (a === b) return aiInlineToHtml(a);
+  return (
+    `<span class="i18n" data-lang="en">${aiInlineToHtml(a)}</span>` +
+    `<span class="i18n" data-lang="zh">${aiInlineToHtml(b)}</span>`
+  );
+}
+
 const UNTITLED = () => i18n('(untitled)', '(无标题)');
 
 /**
@@ -668,7 +682,7 @@ function releasesSection(items, ai) {
       const zh = zhNotes.get(k);
       const aiNote =
         (en && String(en).trim()) || (zh && String(zh).trim())
-          ? `<p class="ai-note"><span class="ai-tag">AI</span> ${i18n(en, zh)}</p>`
+          ? `<p class="ai-note"><span class="ai-tag">AI</span> ${i18nInline(en, zh)}</p>`
           : '';
       const notes = String(it.notes || '').trim()
         ? `<div class="release-notes">${mdBlockToHtml(it.notes)}</div>`
@@ -1125,7 +1139,7 @@ html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
 .ai-summary p:last-child{margin-bottom:0}
 .ai-summary strong{color:var(--on-surface);font-weight:750}
 .ai-summary code{
-  font-family:var(--mono);font-size:.86em;background:rgba(0,0,0,.05);
+  font-family:var(--mono);font-size:.86em;background:rgb(254,247,255);
   padding:.12em .38em;border-radius:6px;overflow-wrap:anywhere;
 }
 .ai-unavailable{
