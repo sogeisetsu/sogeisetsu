@@ -147,9 +147,13 @@ async function processDate(date) {
 
   const hash = contentHash(data);
   const existing = readJsonIfExists(path.join(DATA_DIR, `${date}.json`));
-  if (!DRY_RUN && !FORCE && existing && existing.dataHash === hash) {
+  const missingAi = !data.empty && !NO_AI && !(existing && existing.ai);
+  if (!DRY_RUN && !FORCE && existing && existing.dataHash === hash && !missingAi) {
     console.log(`[daily-report] ${date} 内容无变化，跳过 AI 与写入`);
     return { date, changed: false };
+  }
+  if (!DRY_RUN && !FORCE && existing && existing.dataHash === hash && missingAi) {
+    console.log(`[daily-report] ${date} 内容无变化但缺少 AI 叙述，重试生成`);
   }
 
   let ai = null;

@@ -46,15 +46,29 @@ const SECTION_CAP = 30; // 每个板块最多喂 30 条
 const COMMIT_MSG_CAP = 10; // 每个仓库最多喂 10 条 commit message
 const COMMIT_MSG_LEN = 200; // 每条 commit message 截断到 200 字符
 const RELEASE_NOTES_CAP = 800; // 每条 release notes 最多 800 字符
-const MAX_TOKENS = 4096; // chat max_tokens / responses max_output_tokens 共用（中英双摘要 + JSON 结构，2000 会被截断导致解析失败）
+const MAX_TOKENS = 8192; // chat max_tokens / responses max_output_tokens 共用（中英双摘要 + JSON 结构，4096 仍可能被截断导致解析失败）
 const SUMMARY_MIN_SENTENCES = 2; // 提示词目标 4-8 句；校验放宽容差，避免把「9 句」这种好结果误拒
 const SUMMARY_MAX_SENTENCES = 12;
 const SUMMARY_MAX_CHARS = 1400; // summary 目标 ~900 字符，校验放宽留余量（模型常写到 ~1000+，避免误拒）
 const RELEASE_NOTE_MAX_SENTENCES = 3;
 const RETRY_WAIT_MS = 2000; // 429/5xx 重试前等待 ~2s
-const MAX_ROUNDS = 8; // 单 provider 内部循环安全上限（json 重试×2 + rf-400 退让 + 429 重试 + 形态切换）
+const MAX_ROUNDS = 12; // 单 provider 内部循环安全上限（json 重试×3 + rf-400 退让 + 429 重试 + 形态切换 + 截断重试）
+const DEFAULT_SENSENOVA_MODEL = "sensenova-6.8-flash-lite"; // /models 解析失败时的兜底模型（绝不因此跳过 provider）
+const MODELS_TIMEOUT_MS = 10000; // GET /models 超时
+const CHAT_TIMEOUT_MS = 90000; // chat/responses POST 超时
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/** 带超时的 fetch：AbortController + setTimeout，finally 里清定时器，避免句柄泄漏。 */
+async function fetchWithTimeout(url, opts, ms) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(url, { ...opts, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 // ---------------------------------------------------------------- SenseNova 模型解析
 
@@ -64,53 +78,70 @@ const senseNovaModelCache = new Map();
 // 进程内记住不支持 response_format 的 provider（key: name+baseUrl），后续调用直接跳过
 const jsonModeUnsupported = new Set();
 
-// JSON 提取失败时逐次加严的提醒（第 1 次请求不带提醒，之后最多追加 2 次 → 共 3 次尝试）
+// JSON 提取失败时逐次加严的提醒（第 1 次请求不带提醒，之后最多追加 3 次 → 共 4 次尝试）
 const JSON_REMINDERS = [
   "Return ONLY valid JSON, no prose, no markdown fences.",
   "Output must start with { and end with }. No other text.",
+  "Output the COMPLETE JSON object ending with }; do not cut it off.",
 ];
 
 /**
  * GET {baseUrl}/models，按优先级挑模型：
  *   /6\.8.*flash.*lite/i → /flash.*lite/i → /flash/i → 第一个 id
- * 解析失败返回 null。
+ * 抛错 / 非 2xx / 空 id 都会重试（最多 3 次，退避 500ms → 1500ms）；
+ * 全部失败时回退 DEFAULT_SENSENOVA_MODEL（绝不返回 null，避免整家 provider 被跳过）。
+ * 只有真正解析成功才写缓存。
  */
 export async function resolveSenseNovaModel(apiKey, baseUrl = SENSENOVA_BASE) {
   const base = String(baseUrl || SENSENOVA_BASE).replace(/\/+$/, "");
   if (senseNovaModelCache.has(base)) return senseNovaModelCache.get(base);
 
-  try {
-    const res = await fetch(`${base}/models`, {
-      headers: { accept: "application/json", authorization: `Bearer ${apiKey}` },
-    });
-    if (!res.ok) {
-      console.error(`${LOG} sensenova: GET /models 失败 HTTP ${res.status}`);
-      return null;
+  const backoffMs = [0, 500, 1500]; // 第 1 次立即，第 2/3 次分别退避 500ms / 1500ms
+  const maxAttempts = 3;
+  let lastError = "";
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    if (backoffMs[attempt - 1] > 0) await sleep(backoffMs[attempt - 1]);
+    try {
+      const res = await fetchWithTimeout(
+        `${base}/models`,
+        { headers: { accept: "application/json", authorization: `Bearer ${apiKey}` } },
+        MODELS_TIMEOUT_MS
+      );
+      if (!res.ok) {
+        lastError = `HTTP ${res.status}`;
+        console.error(`${LOG} sensenova: GET /models 失败 ${lastError}（第 ${attempt}/${maxAttempts} 次）`);
+        continue;
+      }
+      const json = await res.json().catch(() => null);
+      // 兼容 data: [ { id } ] 与 models: [ "id" ] 两种返回形态
+      const raw = Array.isArray(json?.data)
+        ? json.data
+        : Array.isArray(json?.models)
+          ? json.models
+          : [];
+      const ids = raw
+        .map((m) => (typeof m === "string" ? m : m && m.id))
+        .filter((id) => typeof id === "string" && id.length > 0);
+      if (ids.length === 0) {
+        lastError = "/models 未返回任何模型 id";
+        console.error(`${LOG} sensenova: ${lastError}（第 ${attempt}/${maxAttempts} 次）`);
+        continue;
+      }
+      const pick = (re) => ids.find((id) => re.test(id));
+      const model =
+        pick(/6\.8.*flash.*lite/i) || pick(/flash.*lite/i) || pick(/flash/i) || ids[0];
+      console.error(`${LOG} sensenova: 已解析模型 ${model}`);
+      senseNovaModelCache.set(base, model);
+      return model;
+    } catch (err) {
+      lastError = err && err.message ? err.message : String(err);
+      console.error(`${LOG} sensenova: GET /models 异常 ${lastError}（第 ${attempt}/${maxAttempts} 次）`);
     }
-    const json = await res.json().catch(() => null);
-    // 兼容 data: [ { id } ] 与 models: [ "id" ] 两种返回形态
-    const raw = Array.isArray(json?.data)
-      ? json.data
-      : Array.isArray(json?.models)
-        ? json.models
-        : [];
-    const ids = raw
-      .map((m) => (typeof m === "string" ? m : m && m.id))
-      .filter((id) => typeof id === "string" && id.length > 0);
-    if (ids.length === 0) {
-      console.error(`${LOG} sensenova: /models 未返回任何模型 id`);
-      return null;
-    }
-    const pick = (re) => ids.find((id) => re.test(id));
-    const model =
-      pick(/6\.8.*flash.*lite/i) || pick(/flash.*lite/i) || pick(/flash/i) || ids[0];
-    console.error(`${LOG} sensenova: 已解析模型 ${model}`);
-    senseNovaModelCache.set(base, model);
-    return model;
-  } catch (err) {
-    console.error(`${LOG} sensenova: GET /models 异常 ${err && err.message}`);
-    return null;
   }
+  console.error(
+    `${LOG} sensenova: GET /models 重试 ${maxAttempts} 次仍失败（${lastError}），回退默认模型 ${DEFAULT_SENSENOVA_MODEL}（不跳过 provider）`
+  );
+  return DEFAULT_SENSENOVA_MODEL;
 }
 
 // ---------------------------------------------------------------- provider 列表
@@ -356,7 +387,8 @@ function extractContent(json, shape) {
  *     并在进程内记住该 provider 不支持（后续调用直接跳过），绝不因此放弃该 provider
  *   · 429/5xx → 等 ~2s 重试一次 → 仍失败换下一家
  *   · SenseNova chat 404/405 → 同 provider 换 responses 形态再试一次
- *   · JSON 提取/校验失败 → 逐次加严提醒，最多追加 2 次（共 3 次尝试）→ 换下一家
+ *   · JSON 提取/校验失败 → 逐次加严提醒，最多追加 3 次（共 4 次尝试）→ 换下一家
+ *   · finish_reason=length / incomplete → 视为截断，同样走提醒重试路径
  */
 async function attemptProvider(provider, system, user, data) {
   const base = String(provider.baseUrl || "").replace(/\/+$/, "");
@@ -388,21 +420,25 @@ async function attemptProvider(provider, system, user, data) {
               { role: "system", content: system },
               { role: "user", content: prompt },
             ],
-            temperature: 0.4,
+            temperature: 0.3,
             max_tokens: MAX_TOKENS,
             ...(useJsonMode ? { response_format: { type: "json_object" } } : {}),
           };
 
     let res;
     try {
-      res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${provider.apiKey}`,
+      res = await fetchWithTimeout(
+        url,
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            authorization: `Bearer ${provider.apiKey}`,
+          },
+          body: JSON.stringify(body),
         },
-        body: JSON.stringify(body),
-      });
+        CHAT_TIMEOUT_MS
+      );
     } catch (err) {
       return { ok: false, reason: `网络异常 ${err && err.message}` };
     }
@@ -453,11 +489,27 @@ async function attemptProvider(provider, system, user, data) {
     if (!json) return { ok: false, reason: "响应体不是 JSON" };
 
     const content = extractContent(json, shape);
-    const parsed = parseJsonPayload(content);
-    const checked = parsed
-      ? validateNarrative(parsed, data)
-      : { ok: false, reason: "无法从返回文本中提取 JSON" };
+    // 截断检测：chat 看 finish_reason=length；responses 看 incomplete_details / status=incomplete
+    const truncated =
+      (shape === "chat" && json?.choices?.[0]?.finish_reason === "length") ||
+      (shape === "responses" &&
+        (json?.incomplete_details != null || json?.status === "incomplete"));
+    let checked;
+    if (truncated) {
+      console.error(`${LOG} ${provider.name}: 输出被 max_tokens 截断`);
+      checked = { ok: false, reason: "输出被 max_tokens 截断" };
+    } else {
+      const parsed = parseJsonPayload(content);
+      checked = parsed
+        ? validateNarrative(parsed, data)
+        : { ok: false, reason: "无法从返回文本中提取 JSON" };
+    }
     if (checked.ok) return { ok: true, value: checked.value };
+
+    // 失败时打印原始返回片段，便于事后诊断（prose / 截断 / 结构不符）
+    console.error(
+      `${LOG} ${provider.name}: 返回不合约束（${checked.reason}），原始返回前 400 字: ${String(content).slice(0, 400)}`
+    );
 
     if (jsonTries < JSON_REMINDERS.length) {
       const reminder = JSON_REMINDERS[jsonTries];
