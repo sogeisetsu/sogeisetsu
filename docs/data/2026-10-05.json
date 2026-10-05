@@ -3,10 +3,10 @@
   "windowStart": "2026-10-05T00:00:00+08:00",
   "windowEnd": "2026-10-06T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-05T09:54:48.011Z",
+  "generatedAt": "2026-10-05T10:15:17.063Z",
   "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 1,
     "prs": 0,
     "issues": 3,
     "reviews": 0
@@ -14,16 +14,22 @@
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 0,
+      "count": 1,
       "own": true,
-      "messages": [],
-      "automated": 8,
+      "messages": [
+        {
+          "sha": "e97fe1739847dc99670909b2b816f7e616ea8d2a",
+          "message": "fix(daily): Commits 角标 0 不再被兜底成 1，徽章排版统一，AI 摘要强制内联代码",
+          "ts": "2026-10-05T10:10:03Z"
+        }
+      ],
+      "automated": 9,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 8,
+  "automatedCommits": 9,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -145,16 +151,16 @@
   "stateChanges": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu opens 2 issues and comments on 1 on OpenCode v2 compatibility",
-      "summary": "On 2026-10-05, sogeisetsu was active across two repositories, filing and commenting on issues related to OpenCode v2 compatibility. In OpenSenseNova/SenseNova-Skills, they opened issue #180, \"OpenCode V2 compatibility: SKILL.md frontmatter and runtime assumptions\", at 09:45 UTC. In iOfficeAI/OfficeCLI, they opened issue #458, \"OpenCode v2 integration: fix skills install path + add mcp target\", at 09:27 UTC, and shortly after at 09:28 UTC commented on issue #254, \"OpenCode detection & skill install path point to ~/.opencode, but OpenCode uses ~/.config/opencode\". The day's totals were **3 issues** with 0 commits, 0 pull requests, and 0 reviews. In sogeisetsu/sogeisetsu there were 8 automated commits by github-actions[bot], with no own commits. No releases, stars, replies, or state changes were recorded.",
+      "headline": "1 own commit plus 9 automated; 3 issues opened or commented on",
+      "summary": "On 2026-10-05, `sogeisetsu` logged **1 own commit** in `sogeisetsu/sogeisetsu`, plus 9 automated commits by `github-actions[bot]`. The single own commit was a daily-report fix: the `Commits` badge no longer falls back from 0 to 1, badge layout is unified, and AI summaries are forced to use inline code. No pull requests, reviews, or releases were recorded. On the issues side, `sogeisetsu` opened or commented on 3 items: opened `OpenSenseNova/SenseNova-Skills` issue #180 titled \"OpenCode V2 compatibility: SKILL.md frontmatter and runtime assumptions\"; opened `iOfficeAI/OfficeCLI` issue #458 titled \"OpenCode v2 integration: fix skills install path + add mcp target\"; and commented on `iOfficeAI/OfficeCLI` issue #254 titled \"OpenCode detection & skill install path point to ~/.opencode, but OpenCode uses ~/.config/opencode\".",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 新开 2 个 issue 并对 1 个 OpenCode v2 兼容性 issue 发表评论",
-      "summary": "2026-10-05 当天，sogeisetsu 在两个仓库中围绕 OpenCode v2 兼容性问题展开活动。在 OpenSenseNova/SenseNova-Skills 中，于 09:45 UTC 新开 issue #180《OpenCode V2 compatibility: SKILL.md frontmatter and runtime assumptions》。在 iOfficeAI/OfficeCLI 中，于 09:27 UTC 新开 issue #458《OpenCode v2 integration: fix skills install path + add mcp target》，随后于 09:28 UTC 在 issue #254《OpenCode detection & skill install path point to ~/.opencode, but OpenCode uses ~/.config/opencode》下发表评论。当日总计 **3 个 issue**，0 次提交、0 个 PR、0 次 review。sogeisetsu/sogeisetsu 仓库中有 8 次由 github-actions[bot] 自动提交，本人提交为 0。当日无 release、star、回复或状态变更。",
+      "headline": "1 次本人提交，另有 9 次自动提交；新开或评论 3 个 issue",
+      "summary": "2026-10-05，`sogeisetsu` 在 `sogeisetsu/sogeisetsu` 中完成 **1 次本人提交**，另有 9 次由 `github-actions[bot]` 自动提交。该次本人提交为日报修复：`Commits` 角标不再从 0 兜底为 1，徽章排版统一，AI 摘要强制使用内联代码。当日无 PR、无 review、无 release。Issue 方面共涉及 3 项：新开 `OpenSenseNova/SenseNova-Skills` 的 #180 \"OpenCode V2 compatibility: SKILL.md frontmatter and runtime assumptions\"；新开 `iOfficeAI/OfficeCLI` 的 #458 \"OpenCode v2 integration: fix skills install path + add mcp target\"；并在 `iOfficeAI/OfficeCLI` 的 #254 \"OpenCode detection & skill install path point to ~/.opencode, but OpenCode uses ~/.config/opencode\" 上留言。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "17cb0a2939eb67ccda0e28cbc59d3c0dff2f12b96da7c1f7813e6dfc56dd80b5"
+  "dataHash": "aa7f15108d686a49c56c0439f3647e2e1bcaf79dc73ba9ecf22c78ce45ba3088"
 }
