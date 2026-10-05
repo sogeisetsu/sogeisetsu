@@ -3,10 +3,10 @@
   "windowStart": "2026-10-05T00:00:00+08:00",
   "windowEnd": "2026-10-06T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-05T15:58:42.933Z",
+  "generatedAt": "2026-10-05T19:05:58.366Z",
   "empty": false,
   "totals": {
-    "commits": 33,
+    "commits": 34,
     "prs": 0,
     "issues": 3,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/meld-deepresearch",
-      "count": 32,
+      "count": 33,
       "own": true,
       "messages": [
+        {
+          "sha": "b2cfdd13db1a01025bfbab665523687105edc0bd",
+          "message": "docs(page): fix the landing page per review; correct the port wording",
+          "ts": "2026-10-05T15:59:33Z"
+        },
         {
           "sha": "bac84db7fd464332e38d659993fe81aeaf09c8d9",
           "message": "docs(install): state that the two install one-liners are alternatives",
@@ -192,13 +197,13 @@
           "ts": "2026-10-05T10:10:03Z"
         }
       ],
-      "automated": 11,
+      "automated": 12,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 11,
+  "automatedCommits": 12,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -320,16 +325,16 @@
   "stateChanges": [],
   "ai": {
     "en": {
-      "headline": "33 commits across two repos, 3 issues on OpenCode v2 compatibility",
-      "summary": "sogeisetsu pushed 32 own commits to `sogeisetsu/meld-deepresearch` plus 1 own commit to `sogeisetsu/sogeisetsu`, with 11 additional automated commits by `github-actions[bot]` on the latter. In `sogeisetsu/meld-deepresearch`, the work centered on v0.3.0 documentation sync (landing page, `AGENTS`, `FILE_TREE`, `CHANGELOG`, `PLAN`, README pair) and install guidance clarifying the two one-liners are alternatives, plus a `feat(gate)` change that weaves counter-evidence instead of labelling it, a `feat(read_table)` salvage of `docx_to_md`, and a `chore` marking `test/` as retired in `.gitignore`. The `sogeisetsu/sogeisetsu` commit fixed the daily report so a `0` commit badge is no longer coerced to `1`, unified badge layout, and forced inline code in AI summaries. On issues, sogeisetsu opened `OpenSenseNova/SenseNova-Skills` #180 on OpenCode V2 compatibility for `SKILL.md` frontmatter and runtime assumptions, opened `iOfficeAI/OfficeCLI` #458 on OpenCode v2 integration (skills install path plus `mcp` target), and commented on `iOfficeAI/OfficeCLI` #254 about the mismatch between `~/.opencode` and `~/.config/opencode`. No pull requests, reviews, or releases were recorded for the day.",
+      "headline": "34 commits across two repos; 3 issues filed on OpenCode v2 compatibility",
+      "summary": "On 2026-10-05, the user pushed **34 commits** across two repositories, with no pull requests, reviews, or releases. In `sogeisetsu/meld-deepresearch`, 33 own commits reworked documentation and a small feature: the landing page was corrected per review and synced with v0.3.0 and the three skills, install docs clarified that the two one-liners are alternatives, `AGENTS`, `FILE_TREE`, `CHANGELOG`, and `PLAN` were synced with the change set, the README pair was restructured with install added and three stale eval files dropped, `claude-deep-research-skill` was recorded as MIT rather than unlicensed, `content_review` was updated to state that `--clean` accepts the readability pass, example-1 round 6 (repair attempt 1) was recorded in eval notes, and `test/` was marked retired in `.gitignore`. A single feature commit wove counter-evidence into the gate instead of labelling it. In `sogeisetsu/sogeisetsu`, 1 own commit fixed the daily report so a 0 commit badge is no longer coerced to 1, unified badge layout, and forced inline code in AI summaries; 12 additional automated commits were created by `github-actions[bot]`.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "两个仓库共 33 次提交，围绕 OpenCode v2 兼容性提出 3 个 issue",
-      "summary": "sogeisetsu 在 `sogeisetsu/meld-deepresearch` 提交了 32 次本人提交，在 `sogeisetsu/sogeisetsu` 提交了 1 次本人提交，后者另有 11 次由 `github-actions[bot]` 自动提交。`sogeisetsu/meld-deepresearch` 的工作主要围绕 v0.3.0 的文档同步（落地页、`AGENTS`、`FILE_TREE`、`CHANGELOG`、`PLAN`、README 对）以及安装说明澄清两条 one-liner 互为替代，同时包含 `feat(gate)` 将反证编织进流程而非仅打标签、`feat(read_table)` 抢救 `docx_to_md`，以及 `chore` 在 `.gitignore` 中标记 `test/` 退役。`sogeisetsu/sogeisetsu` 的提交修复了日报中提交数角标为 `0` 时被兜底成 `1` 的问题，统一了徽章排版，并强制 AI 摘要使用内联代码。Issue 方面，sogeisetsu 新开了 `OpenSenseNova/SenseNova-Skills` #180，讨论 OpenCode V2 下 `SKILL.md` frontmatter 与运行时假设的兼容性；新开了 `iOfficeAI/OfficeCLI` #458，涉及 OpenCode v2 集成中的 skills 安装路径与 `mcp` target；并在 `iOfficeAI/OfficeCLI` #254 上留言，指出 `~/.opencode` 与 `~/.config/opencode` 的路径不一致。当日无 PR、无 review、无 release。",
+      "headline": "两个仓库共 34 次提交；就 OpenCode v2 兼容性新开 3 个 issue",
+      "summary": "2026-10-05 当天，用户在两个仓库共提交 **34 次**，无 PR、无 review、无 release。在 `sogeisetsu/meld-deepresearch` 中，33 次本人提交主要围绕文档与一处小功能：按 review 修正 landing page 并与 v0.3.0 及三个 skills 同步，install 文档说明两条 one-liner 是二选一，`AGENTS`、`FILE_TREE`、`CHANGELOG`、`PLAN` 与本次变更集同步，README 对重排并新增 install、删除三个过期 eval 文件，`claude-deep-research-skill` 记录为 MIT 而非 unlicensed，`content_review` 中说明 `--clean` 接受 readability pass，eval 记录 example-1 round 6（repair attempt 1）细节，`.gitignore` 中标记 `test/` 已退役；另有一次功能提交将 counter-evidence 编织进 gate 而非仅打标签。在 `sogeisetsu/sogeisetsu` 中，1 次本人提交修复 daily 报告：Commits 角标 0 不再被兜底成 1，徽章排版统一，AI 摘要强制内联代码；另有 12 次由 `github-actions[bot]` 自动提交。issue 方面，用户新开 `OpenSenseNova/SenseNova-Skills#180`，讨论 OpenCode V2 下 `SKILL.md` frontmatter 与运行时假设的兼容性；新开 `iOfficeAI/OfficeCLI#458`，修复 OpenCode v2 集成中的 skills 安装路径并新增 `mcp` target；并在 `iOfficeAI/OfficeCLI#254` 上留言，指出 OpenCode 检测与 skill 安装路径指向 `~/.opencode`，而 OpenCode 实际使用 `~/.config/opencode`。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "7bb29ff524bbd3ff85b7e453b8a14693a196333483924787ec04c865e15c59e4"
+  "dataHash": "06a81ec3aac937436c2971510512740d614b85af4515048f3cb2663664f29e7d"
 }
