@@ -7,9 +7,9 @@ _Updated automatically: 2026-10-05_
 
 <details><summary>🔨 Owned repos</summary>
 
+- 📝 Pushed 114 commits to `sogeisetsu/meld-deepresearch`
 - 📝 Pushed 68 commits to `sogeisetsu/opencode-go-model-picker`
-- 📝 Pushed 57 commits to `sogeisetsu/meld-deepresearch`
-- 📝 Pushed 33 commits to `sogeisetsu/sogeisetsu`
+- 📝 Pushed 34 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 8 commits to `sogeisetsu/asset-inventory`
 - 🚀 [feat: v1.7.0 - seven languages, Material docs site, rendered examples](https://github.com/sogeisetsu/asset-inventory/pull/8) · merged
 - 🚀 [chore: bump to 1.6.1](https://github.com/sogeisetsu/asset-inventory/pull/7) · merged
@@ -22,6 +22,9 @@ _Updated automatically: 2026-10-05_
 
 <details><summary>🌐 Contributed to</summary>
 
+- 🐛 Opened issue [OpenCode V2 compatibility: SKILL.md frontmatter and runtime assumptions](https://github.com/OpenSenseNova/SenseNova-Skills/issues/180) in `OpenSenseNova/SenseNova-Skills`
+- 💬 Commented on [iOfficeAI/OfficeCLI#254](https://github.com/iOfficeAI/OfficeCLI/issues/254): OpenCode detection & skill install path point to ~/.opencode, but OpenCode uses ~/.config/opencode
+- 🐛 Opened issue [OpenCode v2 integration: fix skills install path + add mcp target](https://github.com/iOfficeAI/OfficeCLI/issues/458) in `iOfficeAI/OfficeCLI`
 - 🐛 Opened issue [\[test\] SidebarHeader.test.tsx still passes onOpenMultiRun/canOpenMultiRun removed in d9fbf6b](https://github.com/openchamber/openchamber/issues/4346) in `openchamber/openchamber`
 - 🐛 Opened issue [\[UI\] Command palette 'Parallel run' shares the checkbox-multiple icon with sidebar 'Select sessions'](https://github.com/openchamber/openchamber/issues/4345) in `openchamber/openchamber`
 - 🐛 Opened issue [\[Docs\] Multi-run docs still point to a sidebar header button that was removed in d9fbf6b \(moved to the composer\)](https://github.com/openchamber/openchamber/issues/4337) in `openchamber/openchamber`
@@ -29,9 +32,6 @@ _Updated automatically: 2026-10-05_
 - ⭐ Starred `Weizhena/Deep-Research-skills`
 - ⭐ Starred `wshuyi/deep-research`
 - 💬 Commented on [antongulin/opencode-skill-creator#38](https://github.com/antongulin/opencode-skill-creator/issues/38): Feature request: OpenCode V2 compatibility — plugin fails to load with PluginModule.LoadError \(V1 plugin API\)
-- 🐛 Opened issue [build: dist rebuilds inline @opencode-ai/plugin + zod, swamping small PR diffs](https://github.com/antongulin/opencode-skill-creator/issues/43) in `antongulin/opencode-skill-creator`
-- 💬 Commented on [antongulin/opencode-skill-creator#42](https://github.com/antongulin/opencode-skill-creator/pull/42): fix: harden eval robustness in parsing, aggregation, and install
-- 💬 Commented on [antongulin/opencode-skill-creator#42](https://github.com/antongulin/opencode-skill-creator/pull/42): fix: harden eval robustness in parsing, aggregation, and install
 
 </details>
 <!--END:activity-->
