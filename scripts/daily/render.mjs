@@ -522,10 +522,16 @@ function section(iconName, titleEn, titleZh, pillHtml, body) {
   );
 }
 
-/** Count pill: prefer the authoritative total, fall back to the row count. */
+/**
+ * Count pill: use the authoritative total whenever it is a real number —
+ * INCLUDING a legitimate 0 — and fall back to the row count only when the
+ * total is missing or not a number. (0 is a valid total: e.g. a commits
+ * section rendered only for automated commits must still read 0.)
+ */
 function pill(total, fallback) {
-  const primary = Number(total) || 0;
-  const value = primary > 0 ? primary : Number(fallback) || 0;
+  const hasTotal =
+    total !== null && total !== undefined && total !== '' && Number.isFinite(Number(total));
+  const value = hasTotal ? Number(total) : Number(fallback) || 0;
   return `<span class="pill">${esc(value)}</span>`;
 }
 
@@ -1032,7 +1038,7 @@ html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
 .row-block{display:block}
 .row-lead{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
 .row-name{font-family:var(--mono);font-size:.88rem;font-weight:650;overflow-wrap:anywhere}
-.row-head{display:flex;flex-wrap:wrap;align-items:center;gap:9px;min-width:0}
+.row-head{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
 .row-title,.reply-title,.release-title{font-weight:650;color:var(--on-surface)}
 .row-meta{margin-top:7px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.8rem;color:var(--on-surface-variant)}
 .row-count{display:inline-flex;align-items:baseline;gap:7px;white-space:nowrap;font-variant-numeric:tabular-nums}

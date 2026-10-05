@@ -166,7 +166,7 @@ html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
 .row-block{display:block}
 .row-lead{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
 .row-name{font-family:var(--mono);font-size:.88rem;font-weight:650;overflow-wrap:anywhere}
-.row-head{display:flex;flex-wrap:wrap;align-items:center;gap:9px;min-width:0}
+.row-head{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
 .row-title,.reply-title,.release-title{font-weight:650;color:var(--on-surface)}
 .row-meta{margin-top:7px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.8rem;color:var(--on-surface-variant)}
 .row-count{display:inline-flex;align-items:baseline;gap:7px;white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -237,6 +237,17 @@ html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
   background:var(--primary-container);color:var(--on-primary-container);
 }
 .ai-tag{font-size:.66rem;font-weight:800;letter-spacing:.1em;margin-right:8px;opacity:.85}
+/* Inline code inside the release AI note: the note sits on the purple
+   --primary-container, so the global rgba(0,0,0,.05) chip vanishes. Give it a
+   light chip that stands out on that purple in both themes. */
+.ai-note code{
+  font-family:var(--mono);font-size:.86em;background:rgba(255,255,255,.6);
+  color:var(--on-primary-container);padding:.12em .38em;border-radius:6px;
+  overflow-wrap:anywhere;
+}
+@media (prefers-color-scheme:dark){
+  .ai-note code{background:rgba(255,255,255,.16)}
+}
 
 /* ---- replies ---- */
 .reply-head{display:flex;flex-wrap:wrap;align-items:center;gap:9px}
@@ -273,8 +284,12 @@ html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
 .ai-summary p:last-child{margin-bottom:0}
 .ai-summary strong{color:var(--on-surface);font-weight:750}
 .ai-summary code{
-  font-family:var(--mono);font-size:.86em;background:rgba(0,0,0,.05);
+  font-family:var(--mono);font-size:.86em;background:rgb(254,247,255);
+  color:var(--on-surface);
   padding:.12em .38em;border-radius:6px;overflow-wrap:anywhere;
+}
+@media (prefers-color-scheme:dark){
+  .ai-summary code{background:rgba(255,255,255,.12);color:var(--on-surface)}
 }
 .ai-unavailable{
   margin:0;display:flex;align-items:center;gap:10px;

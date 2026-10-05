@@ -15,9 +15,8 @@
  * 输出：每个用例一行 PASS/FAIL；结尾 N/M；有失败退出码 1。
  */
 
-const { aiInlineToHtml, mdBlockToHtml, i18nInline, splitParagraphs } = await import(
-  new URL("./render.mjs", import.meta.url).href
-);
+const { aiInlineToHtml, mdBlockToHtml, i18nInline, splitParagraphs, renderReportPage } =
+  await import(new URL("./render.mjs", import.meta.url).href);
 const { normalizeNotes } = await import(new URL("./lib/github.mjs", import.meta.url).href);
 
 // ---------------------------------------------------------------- 断言收集
@@ -178,6 +177,44 @@ check("splitParagraphs en: keeps v1.3.0 / e.g. intact, keeps terminators", () =>
 check("splitParagraphs zh: splits after 。！？", () => {
   const paras = splitParagraphs("第一句。第二句！第三句？", "zh");
   return [["threeParas", paras.length === 3]];
+});
+
+// ---------------------------------------------------------------- renderReportPage
+
+check("renderReportPage: commits 角标取 totals=0，不用条目行数兜底", () => {
+  const html = renderReportPage({
+    data: {
+      date: "2026-10-05",
+      username: "sogeisetsu",
+      generatedAt: "2026-10-05T09:54:00.000Z",
+      empty: false,
+      totals: { commits: 0, prs: 0, issues: 0, reviews: 0 },
+      commits: [
+        {
+          repo: "sogeisetsu/sogeisetsu",
+          count: 0,
+          own: true,
+          messages: [],
+          automated: 8,
+          automatedBots: ["github-actions[bot]"],
+        },
+      ],
+      pullRequests: [],
+      reviews: [],
+      issues: [],
+      stateChanges: [],
+      releases: [],
+      stars: [],
+      replies: [],
+    },
+    ai: null,
+  });
+  const m = /<h2 class="sec-title">[\s\S]*?Commits[\s\S]*?<\/h2><span class="pill">(\d+)<\/span>/.exec(html);
+  return [
+    ["sectionRendered", m !== null],
+    ["pillIsZero", m !== null && m[1] === "0"],
+    ["notRowCount", m !== null && m[1] !== "1"],
+  ];
 });
 
 // ---------------------------------------------------------------- 汇总

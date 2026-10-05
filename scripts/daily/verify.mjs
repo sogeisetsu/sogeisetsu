@@ -338,6 +338,27 @@ function main() {
         : `Σ automated=0 但报告含「不计入总提交数」`
     );
 
+    // 卡片角标必须与 totals 口径一致：0 也要显示 0，不得回退成条目行数
+    const totals = data.totals && typeof data.totals === "object" ? data.totals : {};
+    const pillPairs = [
+      ["Commits", "commits"],
+      ["Pull requests", "prs"],
+      ["Issues", "issues"],
+      ["Reviews", "reviews"],
+    ];
+    const pillBad = [];
+    for (const m of html.matchAll(
+      /<h2 class="sec-title">([\s\S]*?)<\/h2><span class="pill">(\d+)<\/span>/g
+    )) {
+      const hit = pillPairs.find(([token]) => m[1].includes(token));
+      if (!hit) continue; // Status changes / Releases / Stars / Replies 不绑定 totals
+      const expected = String(Number(totals[hit[1]]) || 0);
+      if (m[2] !== expected) {
+        pillBad.push(`${hit[0]} 角标=${m[2]} 但 totals.${hit[1]}=${expected}`);
+      }
+    }
+    check(`${label}: 卡片角标与 totals 一致`, pillBad.length === 0, pillBad.join("; "));
+
     if (data.ai && data.empty !== true) {
       for (const lang of ["en", "zh"]) {
         const re = new RegExp(`<div class="ai-summary i18n" data-lang="${lang}">([\\s\\S]*?)</div>`);
