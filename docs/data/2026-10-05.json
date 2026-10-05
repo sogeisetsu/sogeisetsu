@@ -3,15 +3,184 @@
   "windowStart": "2026-10-05T00:00:00+08:00",
   "windowEnd": "2026-10-06T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-05T13:28:47.868Z",
+  "generatedAt": "2026-10-05T15:58:42.933Z",
   "empty": false,
   "totals": {
-    "commits": 1,
+    "commits": 33,
     "prs": 0,
     "issues": 3,
     "reviews": 0
   },
   "commits": [
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "count": 32,
+      "own": true,
+      "messages": [
+        {
+          "sha": "bac84db7fd464332e38d659993fe81aeaf09c8d9",
+          "message": "docs(install): state that the two install one-liners are alternatives",
+          "ts": "2026-10-05T15:45:24Z"
+        },
+        {
+          "sha": "837505581751e2ce9bb7eec1b081bf5c7861ff6c",
+          "message": "docs(pages): sync the landing page with v0.3.0 and the three skills",
+          "ts": "2026-10-05T15:39:14Z"
+        },
+        {
+          "sha": "bf1ab0a23455031a1f97e5a3576513b476907fbf",
+          "message": "docs(index): sync AGENTS, FILE_TREE, CHANGELOG and PLAN with the change set",
+          "ts": "2026-10-05T15:36:40Z"
+        },
+        {
+          "sha": "dbdeee107f483c7a6729bb3d7da0ffa9c593da0a",
+          "message": "feat(gate): weave counter-evidence instead of labelling it",
+          "ts": "2026-10-05T15:33:52Z"
+        },
+        {
+          "sha": "27ea611ae440c63cff6207b1b64ea5d98f85a354",
+          "message": "docs(readme): restructure README pair, add install, drop three stale eval files",
+          "ts": "2026-10-05T15:29:28Z"
+        },
+        {
+          "sha": "d0e1c488d3ffe943f77a0470fba1a714d5a3cb00",
+          "message": "docs(notice): record claude-deep-research-skill as MIT, not unlicensed",
+          "ts": "2026-10-05T15:20:25Z"
+        },
+        {
+          "sha": "cd23cab046bb2e6f6f1b610b9a3380bbb92fb674",
+          "message": "docs(script): state in content_review that --clean accepts the readability pass",
+          "ts": "2026-10-05T14:27:29Z"
+        },
+        {
+          "sha": "e24c436ab5b9e758963d381bb8d8cc1441355f21",
+          "message": "docs(eval): record example-1 round 6 (repair attempt 1) details",
+          "ts": "2026-10-05T14:23:06Z"
+        },
+        {
+          "sha": "d244831a408b7ceb778be09f89026ea1392bbc7b",
+          "message": "chore: mark test/ as retired in .gitignore",
+          "ts": "2026-10-05T14:13:47Z"
+        },
+        {
+          "sha": "fdaa1c140179e708ed72ac152367d6b24538f02e",
+          "message": "feat(read_table): salvage docx_to_md, document the test/ retirement verdicts",
+          "ts": "2026-10-05T14:12:15Z"
+        },
+        {
+          "sha": "74b9bf4db03b29f8fe9ccfa7530c3ac9e2874755",
+          "message": "docs(skill): consolidate report-template around the reader-facing shape rules",
+          "ts": "2026-10-05T14:05:38Z"
+        },
+        {
+          "sha": "e720d929ee0aa1022f4cca7b0446dda01a650b6e",
+          "message": "docs(eval): example 1 round 7 PASS - repair attempt 2 of 2 on the new delivery form",
+          "ts": "2026-10-05T14:04:06Z"
+        },
+        {
+          "sha": "f601e397d34e113a9cab942067d53f431a338a5a",
+          "message": "feat(delivery): report shape per blind feedback - definitions, real TOC, no apparatus, no failure narration",
+          "ts": "2026-10-05T13:36:20Z"
+        },
+        {
+          "sha": "01fcc549df8732f7c1e1980ea7c39bba3684236c",
+          "message": "docs(eval): record example-1 round-5 FAIL on E, the fix, and example-2 round-5",
+          "ts": "2026-10-05T13:04:36Z"
+        },
+        {
+          "sha": "4b5cf24177d9ae50236d70b744b15a5f8a7e405e",
+          "message": "feat(delivery): cited copy to .work, weave discipline chapters, block apparatus leaks",
+          "ts": "2026-10-05T12:47:03Z"
+        },
+        {
+          "sha": "f4b179aeacb2e32d385106b808fcdf160ce98e7b",
+          "message": "docs(eval): log the scale-redesign baseline freeze and T1 round-4 PASS",
+          "ts": "2026-10-05T11:41:26Z"
+        },
+        {
+          "sha": "cd820e6f5eb2f84067cc014b3d4fac31a1aa6902",
+          "message": "docs(zh): sync the published Chinese README with the three-skill layout",
+          "ts": "2026-10-05T11:40:38Z"
+        },
+        {
+          "sha": "dbb4550f0ca3fd4db20ccb761645fa2da80b78db",
+          "message": "docs(changelog): record the scale-redesign additions and changes",
+          "ts": "2026-10-05T11:39:10Z"
+        },
+        {
+          "sha": "5459902758560221d72ddc7ee1d20f8162a27f77",
+          "message": "docs(skill): clarify that citing an observation cannot trip the jargon gate",
+          "ts": "2026-10-05T11:37:23Z"
+        },
+        {
+          "sha": "cf2f1c8fbca905e5545128457951ef61e9241a54",
+          "message": "docs(eval): example 1 round-4 blind eval - PASS on first attempt",
+          "ts": "2026-10-05T11:36:56Z"
+        },
+        {
+          "sha": "1ab18aa881762a7b17955b9eba45746656f212f6",
+          "message": "feat(gates): soft budgets + extension, evidence-rule rewrite, layered CI",
+          "ts": "2026-10-05T10:08:37Z"
+        },
+        {
+          "sha": "945b1278a5970053dfb25907a09ef707eca2be7e",
+          "message": "feat(core): slim SKILL.md, dual-file render, readability pass, README rewrite",
+          "ts": "2026-10-05T10:08:21Z"
+        },
+        {
+          "sha": "97f3db25a92cd0c98d7cb00b2c30b11288008736",
+          "message": "feat(skills): add meld-da and meld-search-academic capability skills",
+          "ts": "2026-10-05T10:08:09Z"
+        },
+        {
+          "sha": "cab83d8d15f5fa73d402b560d652b640fc81c660",
+          "message": "chore(eval): freeze baseline medians from example1 record as baseline-f05bcbc.json",
+          "ts": "2026-10-05T08:53:36Z"
+        },
+        {
+          "sha": "f05bcbc58c8f787178f7be3918c1380c04c43dbd",
+          "message": "docs(eval): final frozen-skill verdicts - T1 r3 PASS, T2 r4 PASS on 0958af1",
+          "ts": "2026-10-04T18:52:06Z"
+        },
+        {
+          "sha": "8a12508f22366063e07feff5037954b670ea6f12",
+          "message": "fix(skill): business-register guidance for concise formal reports (T2 E axis)",
+          "ts": "2026-10-04T17:47:03Z"
+        },
+        {
+          "sha": "b6422ad5f1c5e0e297ed6ccdb004217854d02e34",
+          "message": "docs(eval): T1 round 2 PASS on current skill (main 86b472d)",
+          "ts": "2026-10-04T17:38:38Z"
+        },
+        {
+          "sha": "e8ae26948daf9b6f8e269068b39aad154a75e0ea",
+          "message": "feat(skill): stdlib-only local table reader + protocol 2a + CI selftest",
+          "ts": "2026-10-04T17:09:17Z"
+        },
+        {
+          "sha": "5cd94132d65a4876209c468552bb84c194961f09",
+          "message": "docs(eval): score the G axis from process artifacts on both examples (A-E,G verdict complete)",
+          "ts": "2026-10-04T16:57:22Z"
+        },
+        {
+          "sha": "5b1ab222016dbb29af4d792394a090061e4d856c",
+          "message": "docs(eval): record independent verification (gates, links, CI-equivalence, merge clean)",
+          "ts": "2026-10-04T16:53:51Z"
+        },
+        {
+          "sha": "a828fd8509dc81d52d59449f4f39dd3366de8f22",
+          "message": "eval(sensenova-live): T2 round-2 PASS (structure fix verified); finalize records",
+          "ts": "2026-10-04T16:51:25Z"
+        },
+        {
+          "sha": "639f40841c26dc2ab866f292a01153e40e5ff031",
+          "message": "fix(skill): honor a requested report structure and register (T2 axis-E gap)",
+          "ts": "2026-10-04T16:04:44Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
     {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 1,
@@ -23,13 +192,13 @@
           "ts": "2026-10-05T10:10:03Z"
         }
       ],
-      "automated": 10,
+      "automated": 11,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 10,
+  "automatedCommits": 11,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -151,16 +320,16 @@
   "stateChanges": [],
   "ai": {
     "en": {
-      "headline": "1 own commit plus 10 automated; 3 issues across SenseNova-Skills and OfficeCLI",
-      "summary": "On 2026-10-05, `sogeisetsu` made **1 own commit** in `sogeisetsu/sogeisetsu`, plus 10 automated commits by `github-actions[bot]`. The commit fixed the daily badge so a 0 commit count is no longer coerced to 1, unified badge layout, and forced inline code in AI summaries. No pull requests or reviews were filed. Three issues were touched: opened `OpenSenseNova/SenseNova-Skills` #180 on OpenCode V2 compatibility for `SKILL.md` frontmatter and runtime assumptions; commented on `iOfficeAI/OfficeCLI` #254 about OpenCode detection and skill install path pointing to `~/.opencode` while OpenCode uses `~/.config/opencode`; and opened `iOfficeAI/OfficeCLI` #458 to fix the skills install path and add an `mcp` target for OpenCode v2 integration. No releases, stars, replies, or state changes were recorded.",
+      "headline": "33 commits across two repos, 3 issues on OpenCode v2 compatibility",
+      "summary": "sogeisetsu pushed 32 own commits to `sogeisetsu/meld-deepresearch` plus 1 own commit to `sogeisetsu/sogeisetsu`, with 11 additional automated commits by `github-actions[bot]` on the latter. In `sogeisetsu/meld-deepresearch`, the work centered on v0.3.0 documentation sync (landing page, `AGENTS`, `FILE_TREE`, `CHANGELOG`, `PLAN`, README pair) and install guidance clarifying the two one-liners are alternatives, plus a `feat(gate)` change that weaves counter-evidence instead of labelling it, a `feat(read_table)` salvage of `docx_to_md`, and a `chore` marking `test/` as retired in `.gitignore`. The `sogeisetsu/sogeisetsu` commit fixed the daily report so a `0` commit badge is no longer coerced to `1`, unified badge layout, and forced inline code in AI summaries. On issues, sogeisetsu opened `OpenSenseNova/SenseNova-Skills` #180 on OpenCode V2 compatibility for `SKILL.md` frontmatter and runtime assumptions, opened `iOfficeAI/OfficeCLI` #458 on OpenCode v2 integration (skills install path plus `mcp` target), and commented on `iOfficeAI/OfficeCLI` #254 about the mismatch between `~/.opencode` and `~/.config/opencode`. No pull requests, reviews, or releases were recorded for the day.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "1 次本人提交加 10 次自动提交；3 个 issue 涉及 SenseNova-Skills 与 OfficeCLI",
-      "summary": "2026-10-05，`sogeisetsu` 在 `sogeisetsu/sogeisetsu` 完成 **1 次本人提交**，另有 10 次由 `github-actions[bot]` 自动提交。该提交修复了 daily 徽章在提交数为 0 时被兜底成 1 的问题，统一了徽章排版，并强制 AI 摘要使用内联代码。当日无 PR 与 review。共涉及 3 个 issue：新开 `OpenSenseNova/SenseNova-Skills` #180，讨论 OpenCode V2 下 `SKILL.md` frontmatter 与运行时假设的兼容性；在 `iOfficeAI/OfficeCLI` #254 留言，指出 OpenCode 检测与技能安装路径指向 `~/.opencode`，而 OpenCode 实际使用 `~/.config/opencode`；新开 `iOfficeAI/OfficeCLI` #458，修复技能安装路径并为 OpenCode v2 集成添加 `mcp` target。当日无 release、star、reply 或状态变更。",
+      "headline": "两个仓库共 33 次提交，围绕 OpenCode v2 兼容性提出 3 个 issue",
+      "summary": "sogeisetsu 在 `sogeisetsu/meld-deepresearch` 提交了 32 次本人提交，在 `sogeisetsu/sogeisetsu` 提交了 1 次本人提交，后者另有 11 次由 `github-actions[bot]` 自动提交。`sogeisetsu/meld-deepresearch` 的工作主要围绕 v0.3.0 的文档同步（落地页、`AGENTS`、`FILE_TREE`、`CHANGELOG`、`PLAN`、README 对）以及安装说明澄清两条 one-liner 互为替代，同时包含 `feat(gate)` 将反证编织进流程而非仅打标签、`feat(read_table)` 抢救 `docx_to_md`，以及 `chore` 在 `.gitignore` 中标记 `test/` 退役。`sogeisetsu/sogeisetsu` 的提交修复了日报中提交数角标为 `0` 时被兜底成 `1` 的问题，统一了徽章排版，并强制 AI 摘要使用内联代码。Issue 方面，sogeisetsu 新开了 `OpenSenseNova/SenseNova-Skills` #180，讨论 OpenCode V2 下 `SKILL.md` frontmatter 与运行时假设的兼容性；新开了 `iOfficeAI/OfficeCLI` #458，涉及 OpenCode v2 集成中的 skills 安装路径与 `mcp` target；并在 `iOfficeAI/OfficeCLI` #254 上留言，指出 `~/.opencode` 与 `~/.config/opencode` 的路径不一致。当日无 PR、无 review、无 release。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "e8a8b273586ba9641909db0d89c5ff5844a0000f558d753568746bac6aa1e624"
+  "dataHash": "7bb29ff524bbd3ff85b7e453b8a14693a196333483924787ec04c865e15c59e4"
 }
