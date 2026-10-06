@@ -22,6 +22,7 @@ _Updated automatically: 2026-10-06_
 
 <details><summary>🌐 Contributed to</summary>
 
+- 🐛 Opened issue [\[Feature\]: 让 harness 可扩展（支持 OpenCode/Pi 等），并考虑以 MCP 形式对外暴露](https://github.com/OpenSenseNova/SenseNova-Skills-DeepResearch/issues/11) in `OpenSenseNova/SenseNova-Skills-DeepResearch`
 - 🐛 Opened issue [OpenCode V2 compatibility: SKILL.md frontmatter and runtime assumptions](https://github.com/OpenSenseNova/SenseNova-Skills/issues/180) in `OpenSenseNova/SenseNova-Skills`
 - 💬 Commented on [iOfficeAI/OfficeCLI#254](https://github.com/iOfficeAI/OfficeCLI/issues/254): OpenCode detection & skill install path point to ~/.opencode, but OpenCode uses ~/.config/opencode
 - 🐛 Opened issue [OpenCode v2 integration: fix skills install path + add mcp target](https://github.com/iOfficeAI/OfficeCLI/issues/458) in `iOfficeAI/OfficeCLI`
@@ -31,7 +32,6 @@ _Updated automatically: 2026-10-06_
 - ⭐ Starred `OpenSenseNova/SenseNova-Skills`
 - ⭐ Starred `Weizhena/Deep-Research-skills`
 - ⭐ Starred `wshuyi/deep-research`
-- 💬 Commented on [antongulin/opencode-skill-creator#38](https://github.com/antongulin/opencode-skill-creator/issues/38): Feature request: OpenCode V2 compatibility — plugin fails to load with PluginModule.LoadError \(V1 plugin API\)
 
 </details>
 <!--END:activity-->
