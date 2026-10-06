@@ -3,12 +3,12 @@
   "windowStart": "2026-10-06T00:00:00+08:00",
   "windowEnd": "2026-10-07T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-06T08:39:15.436Z",
+  "generatedAt": "2026-10-06T16:32:28.441Z",
   "empty": false,
   "totals": {
     "commits": 3,
     "prs": 0,
-    "issues": 0,
+    "issues": 1,
     "reviews": 0
   },
   "commits": [
@@ -41,16 +41,27 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 4,
+      "automated": 6,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 4,
+  "automatedCommits": 6,
   "pullRequests": [],
   "reviews": [],
-  "issues": [],
+  "issues": [
+    {
+      "repo": "OpenSenseNova/SenseNova-Skills-DeepResearch",
+      "number": 11,
+      "title": "[Feature]: 让 harness 可扩展（支持 OpenCode/Pi 等），并考虑以 MCP 形式对外暴露",
+      "url": "https://github.com/OpenSenseNova/SenseNova-Skills-DeepResearch/issues/11",
+      "action": "opened",
+      "ts": "2026-10-06T14:18:04.000Z",
+      "own": false,
+      "state": "open"
+    }
+  ],
   "releases": [
     {
       "repo": "sogeisetsu/meld-deepresearch",
@@ -171,28 +182,28 @@
   ],
   "ai": {
     "en": {
-      "headline": "3 own commits and 4 automated commits across 2 repos",
-      "summary": "On 2026-10-06, `sogeisetsu` made **3 own commits** in `sogeisetsu/meld-deepresearch`, plus 4 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The three own commits in `sogeisetsu/meld-deepresearch` covered a release chore for `v0.3.1`, a docs update adding high-intent search terms to skill descriptions, and a CI fix making the academic degrade test dependency-aware (draw gate 3). No pull requests, reviews, or issues were opened or closed by the user that day. In `iOfficeAI/OfficeCLI`, `goworm` commented on and then closed issue #458 (\"OpenCode v2 integration: fix skills install path + add mcp target\"), noting the skills-side fix had already landed in 1.0.140 via #254 and that `officecli skills opencode` writes to `~/.config/opencode/skills/`. One release was published: `v0.3.0` of `sogeisetsu/meld-deepresearch`, which split the single research skill into a family of three cooperating skills (`meld-deepresearch`, `meld-da`, and a third), added a cleaner reading copy, and introduced three hard delivery gates.",
+      "headline": "3 own commits, 6 bot commits, 1 issue opened, v0.3.0 released",
+      "summary": "On 2026-10-06, `sogeisetsu` made **3 own commits** in `sogeisetsu/meld-deepresearch`, plus 6 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The own commits covered a release chore for `v0.3.1`, docs updates adding high-intent search terms to skill descriptions, and a CI fix making the academic degrade test dependency-aware with a draw gate at 3. No pull requests or reviews were filed. One issue was opened: `OpenSenseNova/SenseNova-Skills-DeepResearch` issue `#11`, titled \"[Feature]: 让 harness 可扩展（支持 OpenCode/Pi 等），并考虑以 MCP 形式对外暴露\". In `iOfficeAI/OfficeCLI` issue `#458` (\"OpenCode v2 integration: fix skills install path + add mcp target\"), `goworm` commented on the skills install path fix and then closed the issue. The `sogeisetsu/meld-deepresearch` `v0.3.0` release was published, turning the single research skill into a family of three cooperating skills with a cleaner deliverable and stricter delivery gate.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.3.0",
-          "summary": "v0.3.0 turns the single research skill into a family of three cooperating skills: the core `meld-deepresearch` (Python stdlib only), `meld-da` for Excel/spreadsheet data analysis adapted from SenseNova-Skills' `sn-da-excel-workflow` (MIT), and a third skill. It also delivers a cleaner reading copy and three hard delivery gates, as the full diff from v0.2.0."
+          "summary": "v0.3.0 turns the single research skill into a small family: the core `meld-deepresearch` skill plus two optional capability skills it hands work off to, with a cleaner deliverable and a stricter delivery gate. It is the full diff from v0.2.0."
         }
       ]
     },
     "zh": {
-      "headline": "2 个仓库共 3 次本人提交与 4 次自动提交",
-      "summary": "2026-10-06，`sogeisetsu` 在 `sogeisetsu/meld-deepresearch` 完成 **3 次本人提交**，另有 4 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。`sogeisetsu/meld-deepresearch` 的 3 次本人提交分别涉及 `v0.3.1` 的发布 chore、为技能描述补充高意图搜索词的文档更新，以及让学术降级测试具备依赖感知能力的 CI 修复（draw gate 3）。当日用户未新开或关闭任何 PR、review 或 issue。在 `iOfficeAI/OfficeCLI` 中，`goworm` 评论并关闭了 issue #458（\"OpenCode v2 integration: fix skills install path + add mcp target\"），指出 skills 侧修复已在 1.0.140 通过 #254 落地，`officecli skills opencode` 会写入 `~/.config/opencode/skills/`。当日发布 1 个 release：`sogeisetsu/meld-deepresearch` 的 `v0.3.0`，将单一研究技能拆分为三个协作技能（`meld-deepresearch`、`meld-da` 及第三个），提供更干净的阅读副本，并引入三道硬性交付门禁。",
+      "headline": "3 次本人提交，6 次机器人提交，新开 1 个 issue，发布 v0.3.0",
+      "summary": "2026-10-06，`sogeisetsu` 在 `sogeisetsu/meld-deepresearch` 中完成 **3 次本人提交**，另有 6 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 中自动提交。本人提交涵盖 `v0.3.1` 的发布整理、为技能描述补充高意图搜索词的文档更新，以及让学术降级测试依赖感知并在 3 处设置平局门槛的 CI 修复。当天没有提交 PR 或代码评审。新开 1 个 issue：`OpenSenseNova/SenseNova-Skills-DeepResearch` 的 `#11`，标题为\"[Feature]: 让 harness 可扩展（支持 OpenCode/Pi 等），并考虑以 MCP 形式对外暴露\"。在 `iOfficeAI/OfficeCLI` 的 issue `#458`（\"OpenCode v2 integration: fix skills install path + add mcp target\"）中，`goworm` 就技能安装路径修复进行了评论，随后关闭了该 issue。`sogeisetsu/meld-deepresearch` 发布了 `v0.3.0`，将单一研究技能扩展为三个协作技能，并带来更清晰的交付物与更严格的交付门槛。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.3.0",
-          "summary": "v0.3.0 将单一研究技能扩展为三个协作技能：核心 `meld-deepresearch`（仅用 Python 标准库）、用于 Excel/表格数据分析的 `meld-da`（改编自 SenseNova-Skills 的 `sn-da-excel-workflow`，MIT 许可），以及第三个技能。同时提供更干净的阅读副本和三道硬性交付门禁，为相对 v0.2.0 的完整差异。"
+          "summary": "v0.3.0 将单一研究技能扩展为一个小家族：核心 `meld-deepresearch` 技能加上两个可选的能力技能，并带来更清晰的交付物与更严格的交付门槛。这是相对 v0.2.0 的完整差异。"
         }
       ]
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "4820b7b67a0882d3f5e9351a4225bb696a7a509347bd4509a87223810fdc75d3"
+  "dataHash": "d4857c32d0575ad8cc49888332e7ee14e3ed990552f07e4567132c694cb36e8c"
 }
