@@ -3,7 +3,7 @@
   "windowStart": "2026-10-06T00:00:00+08:00",
   "windowEnd": "2026-10-07T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-06T01:10:02.724Z",
+  "generatedAt": "2026-10-06T08:39:15.436Z",
   "empty": false,
   "totals": {
     "commits": 3,
@@ -41,13 +41,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 2,
+      "automated": 4,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 2,
+  "automatedCommits": 4,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -144,32 +144,55 @@
       "total": 0
     }
   ],
-  "replies": [],
-  "stateChanges": [],
+  "replies": [
+    {
+      "repo": "iOfficeAI/OfficeCLI",
+      "number": 458,
+      "title": "OpenCode v2 integration: fix skills install path + add mcp target",
+      "url": "https://github.com/iOfficeAI/OfficeCLI/issues/458",
+      "author": "goworm",
+      "excerpt": "Skills side: this was already fixed in 1.0.140 (#254) — `officecli skills opencode` / `skills install <skill> opencode` write to `~/.config/opencode/skills/`, and auto-detect looks at `~/.config/open…",
+      "kind": "issue_comment",
+      "ts": "2026-10-06T06:02:10.000Z",
+      "own": false
+    }
+  ],
+  "stateChanges": [
+    {
+      "repo": "iOfficeAI/OfficeCLI",
+      "number": 458,
+      "title": "OpenCode v2 integration: fix skills install path + add mcp target",
+      "url": "https://github.com/iOfficeAI/OfficeCLI/issues/458",
+      "action": "closed",
+      "actor": "goworm",
+      "ts": "2026-10-06T06:02:12.000Z",
+      "own": false
+    }
+  ],
   "ai": {
     "en": {
-      "headline": "sogeisetsu ships v0.3.1 of meld-deepresearch with CI and skill-doc fixes",
-      "summary": "On 2026-10-06, `sogeisetsu` made **3 own commits** in `sogeisetsu/meld-deepresearch`, plus 2 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The three own commits covered a release chore tagging `v0.3.1`, a docs update adding high-intent search terms to skill descriptions, and a CI fix making the academic degrade test dependency-aware and drawing gate 3. No pull requests, issues, or reviews were opened or closed that day. One release was published: `v0.3.0` of `sogeisetsu/meld-deepresearch`, which expanded the single research skill into a family of three cooperating skills (`meld-deepresearch`, `meld-da`, and a third skill), added a cleaner reading copy, and introduced three hard delivery gates. The release notes describe `meld-da` as an Excel/spreadsheet data-analysis workflow adapted from SenseNova-Skills' `sn-da-excel-workflow` (MIT) with optional Python packages that degrade to a zero-dependency reader. Grand totals for the day: 3 commits, 0 PRs, 0 issues, 0 reviews.",
+      "headline": "3 own commits and 4 automated commits across 2 repos",
+      "summary": "On 2026-10-06, `sogeisetsu` made **3 own commits** in `sogeisetsu/meld-deepresearch`, plus 4 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The three own commits in `sogeisetsu/meld-deepresearch` covered a release chore for `v0.3.1`, a docs update adding high-intent search terms to skill descriptions, and a CI fix making the academic degrade test dependency-aware (draw gate 3). No pull requests, reviews, or issues were opened or closed by the user that day. In `iOfficeAI/OfficeCLI`, `goworm` commented on and then closed issue #458 (\"OpenCode v2 integration: fix skills install path + add mcp target\"), noting the skills-side fix had already landed in 1.0.140 via #254 and that `officecli skills opencode` writes to `~/.config/opencode/skills/`. One release was published: `v0.3.0` of `sogeisetsu/meld-deepresearch`, which split the single research skill into a family of three cooperating skills (`meld-deepresearch`, `meld-da`, and a third), added a cleaner reading copy, and introduced three hard delivery gates.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.3.0",
-          "summary": "Turns the single research skill into a family of three cooperating skills (`meld-deepresearch`, `meld-da`, and a third) with a cleaner reading copy and three hard delivery gates. `meld-da` is an Excel/spreadsheet data-analysis workflow adapted from SenseNova-Skills' `sn-da-excel-workflow` (MIT), with optional Python packages that degrade to a zero-dependency reader. Full diff from `v0.2.0`."
+          "summary": "v0.3.0 turns the single research skill into a family of three cooperating skills: the core `meld-deepresearch` (Python stdlib only), `meld-da` for Excel/spreadsheet data analysis adapted from SenseNova-Skills' `sn-da-excel-workflow` (MIT), and a third skill. It also delivers a cleaner reading copy and three hard delivery gates, as the full diff from v0.2.0."
         }
       ]
     },
     "zh": {
-      "headline": "sogeisetsu 发布 meld-deepresearch v0.3.1，修复 CI 与技能文档",
-      "summary": "2026-10-06，`sogeisetsu` 在 `sogeisetsu/meld-deepresearch` 完成 **3 次本人提交**，另有 2 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。三次本人提交分别涵盖：打 `v0.3.1` 标签的发布杂务、为技能描述补充高意图搜索词的文档更新，以及让学术降级测试依赖感知并绘制 gate 3 的 CI 修复。当日没有新开或关闭任何 PR、issue 或 review。共发布 1 个 release：`sogeisetsu/meld-deepresearch` 的 `v0.3.0`，将单一研究技能扩展为三个协作技能（`meld-deepresearch`、`meld-da` 及第三个技能），提供更干净的阅读副本，并引入三道硬性交付关卡。release notes 说明 `meld-da` 是从 SenseNova-Skills 的 `sn-da-excel-workflow`（MIT）改编而来的 Excel/表格数据分析工作流，其 Python 依赖为可选，缺失时降级为零依赖读取器。当日总计：3 次提交、0 个 PR、0 个 issue、0 次 review。",
+      "headline": "2 个仓库共 3 次本人提交与 4 次自动提交",
+      "summary": "2026-10-06，`sogeisetsu` 在 `sogeisetsu/meld-deepresearch` 完成 **3 次本人提交**，另有 4 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。`sogeisetsu/meld-deepresearch` 的 3 次本人提交分别涉及 `v0.3.1` 的发布 chore、为技能描述补充高意图搜索词的文档更新，以及让学术降级测试具备依赖感知能力的 CI 修复（draw gate 3）。当日用户未新开或关闭任何 PR、review 或 issue。在 `iOfficeAI/OfficeCLI` 中，`goworm` 评论并关闭了 issue #458（\"OpenCode v2 integration: fix skills install path + add mcp target\"），指出 skills 侧修复已在 1.0.140 通过 #254 落地，`officecli skills opencode` 会写入 `~/.config/opencode/skills/`。当日发布 1 个 release：`sogeisetsu/meld-deepresearch` 的 `v0.3.0`，将单一研究技能拆分为三个协作技能（`meld-deepresearch`、`meld-da` 及第三个），提供更干净的阅读副本，并引入三道硬性交付门禁。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.3.0",
-          "summary": "将单一研究技能扩展为三个协作技能（`meld-deepresearch`、`meld-da` 及第三个），提供更干净的阅读副本并引入三道硬性交付关卡。`meld-da` 是从 SenseNova-Skills 的 `sn-da-excel-workflow`（MIT）改编的 Excel/表格数据分析工作流，Python 依赖可选，缺失时降级为零依赖读取器。为 `v0.2.0` 以来的完整差异。"
+          "summary": "v0.3.0 将单一研究技能扩展为三个协作技能：核心 `meld-deepresearch`（仅用 Python 标准库）、用于 Excel/表格数据分析的 `meld-da`（改编自 SenseNova-Skills 的 `sn-da-excel-workflow`，MIT 许可），以及第三个技能。同时提供更干净的阅读副本和三道硬性交付门禁，为相对 v0.2.0 的完整差异。"
         }
       ]
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "f4ba4191ac93d13dfc2ed0b8025daf51449a97e76075e9b564796b859e7fab10"
+  "dataHash": "4820b7b67a0882d3f5e9351a4225bb696a7a509347bd4509a87223810fdc75d3"
 }
