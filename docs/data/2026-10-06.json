@@ -3,7 +3,7 @@
   "windowStart": "2026-10-06T00:00:00+08:00",
   "windowEnd": "2026-10-07T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-05T19:06:10.270Z",
+  "generatedAt": "2026-10-06T01:10:02.724Z",
   "empty": false,
   "totals": {
     "commits": 3,
@@ -35,9 +35,19 @@
       ],
       "automated": 0,
       "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 0,
+      "own": true,
+      "messages": [],
+      "automated": 2,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
     }
   ],
-  "automatedCommits": 0,
+  "automatedCommits": 2,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -138,28 +148,28 @@
   "stateChanges": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu ships meld-deepresearch v0.3.1 with CI and skill-doc fixes",
-      "summary": "On 2026-10-06, `sogeisetsu` made **3 commits** to `sogeisetsu/meld-deepresearch`, with no pull requests, issues, or reviews recorded. The commits cut across three areas: a release chore tagging `v0.3.1`, a docs update adding high-intent search terms to the skill descriptions, and a CI fix making the academic degrade test dependency-aware and drawing gate 3. No automated commits were recorded. The day also saw the publication of release `v0.3.0` for `sogeisetsu/meld-deepresearch`, which expanded the single research skill into a family of three cooperating skills (`meld-deepresearch`, `meld-da`, and a third), added a cleaner reading copy, and introduced three hard delivery gates as the full diff from `v0.2.0`. No stars, replies, or state changes were logged.",
+      "headline": "sogeisetsu ships v0.3.1 of meld-deepresearch with CI and skill-doc fixes",
+      "summary": "On 2026-10-06, `sogeisetsu` made **3 own commits** in `sogeisetsu/meld-deepresearch`, plus 2 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The three own commits covered a release chore tagging `v0.3.1`, a docs update adding high-intent search terms to skill descriptions, and a CI fix making the academic degrade test dependency-aware and drawing gate 3. No pull requests, issues, or reviews were opened or closed that day. One release was published: `v0.3.0` of `sogeisetsu/meld-deepresearch`, which expanded the single research skill into a family of three cooperating skills (`meld-deepresearch`, `meld-da`, and a third skill), added a cleaner reading copy, and introduced three hard delivery gates. The release notes describe `meld-da` as an Excel/spreadsheet data-analysis workflow adapted from SenseNova-Skills' `sn-da-excel-workflow` (MIT) with optional Python packages that degrade to a zero-dependency reader. Grand totals for the day: 3 commits, 0 PRs, 0 issues, 0 reviews.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.3.0",
-          "summary": "Turns the single research skill into a family of three cooperating skills: the core `meld-deepresearch` loop, an optional `meld-da` Excel/spreadsheet workflow adapted from `sn-da-excel-workflow`, and a third skill, with a cleaner deliverable and three hard delivery gates. This is the full diff from `v0.2.0`."
+          "summary": "Turns the single research skill into a family of three cooperating skills (`meld-deepresearch`, `meld-da`, and a third) with a cleaner reading copy and three hard delivery gates. `meld-da` is an Excel/spreadsheet data-analysis workflow adapted from SenseNova-Skills' `sn-da-excel-workflow` (MIT), with optional Python packages that degrade to a zero-dependency reader. Full diff from `v0.2.0`."
         }
       ]
     },
     "zh": {
       "headline": "sogeisetsu 发布 meld-deepresearch v0.3.1，修复 CI 与技能文档",
-      "summary": "2026-10-06，`sogeisetsu` 在 `sogeisetsu/meld-deepresearch` 上提交了 **3 次**，当天没有 PR、issue 或 review 记录。这三次提交覆盖三个方向：一次发布 chore 标记 `v0.3.1`，一次文档更新为技能描述补充高意图搜索词，一次 CI 修复让学术降级测试具备依赖感知并绘制 gate 3。当天没有自动提交。同日还发布了 `sogeisetsu/meld-deepresearch` 的 `v0.3.0`，将单一研究技能扩展为三个协作技能（`meld-deepresearch`、`meld-da` 及第三个技能），提供更干净的阅读副本，并引入三道硬性交付关卡，为相对 `v0.2.0` 的完整差异。当天没有 star、回复或状态变更记录。",
+      "summary": "2026-10-06，`sogeisetsu` 在 `sogeisetsu/meld-deepresearch` 完成 **3 次本人提交**，另有 2 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。三次本人提交分别涵盖：打 `v0.3.1` 标签的发布杂务、为技能描述补充高意图搜索词的文档更新，以及让学术降级测试依赖感知并绘制 gate 3 的 CI 修复。当日没有新开或关闭任何 PR、issue 或 review。共发布 1 个 release：`sogeisetsu/meld-deepresearch` 的 `v0.3.0`，将单一研究技能扩展为三个协作技能（`meld-deepresearch`、`meld-da` 及第三个技能），提供更干净的阅读副本，并引入三道硬性交付关卡。release notes 说明 `meld-da` 是从 SenseNova-Skills 的 `sn-da-excel-workflow`（MIT）改编而来的 Excel/表格数据分析工作流，其 Python 依赖为可选，缺失时降级为零依赖读取器。当日总计：3 次提交、0 个 PR、0 个 issue、0 次 review。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.3.0",
-          "summary": "将单一研究技能扩展为三个协作技能：核心 `meld-deepresearch` 循环、可选的 `meld-da` Excel/表格工作流（改编自 `sn-da-excel-workflow`）以及第三个技能，同时提供更干净的交付物与三道硬性交付关卡。这是相对 `v0.2.0` 的完整差异。"
+          "summary": "将单一研究技能扩展为三个协作技能（`meld-deepresearch`、`meld-da` 及第三个），提供更干净的阅读副本并引入三道硬性交付关卡。`meld-da` 是从 SenseNova-Skills 的 `sn-da-excel-workflow`（MIT）改编的 Excel/表格数据分析工作流，Python 依赖可选，缺失时降级为零依赖读取器。为 `v0.2.0` 以来的完整差异。"
         }
       ]
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "84500498167f1c3d5bfe3c94256e2656efc3ba42d0ad5d93bf9c2cd51721eb60"
+  "dataHash": "f4ba4191ac93d13dfc2ed0b8025daf51449a97e76075e9b564796b859e7fab10"
 }
