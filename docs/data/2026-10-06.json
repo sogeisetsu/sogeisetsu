@@ -3,7 +3,7 @@
   "windowStart": "2026-10-06T00:00:00+08:00",
   "windowEnd": "2026-10-07T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-07T14:03:42.799Z",
+  "generatedAt": "2026-10-07T15:30:51.647Z",
   "empty": false,
   "totals": {
     "commits": 3,
@@ -189,24 +189,24 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "3 own commits, 6 automated, 1 issue opened, v0.3.0 released",
-      "summary": "On 2026-10-06, `sogeisetsu` logged **3 own commits** in `sogeisetsu/meld-deepresearch` plus 6 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The own commits cut the `v0.3.1` release, added high-intent search terms to skill descriptions, and made the academic degrade test dependency-aware while drawing gate 3. No pull requests or reviews were filed. One issue was opened: `OpenSenseNova/SenseNova-Skills-DeepResearch` #11, asking to make the harness extensible (supporting OpenCode/Pi) and consider exposing it via MCP. In `iOfficeAI/OfficeCLI` #458, `goworm` replied about the OpenCode v2 skills install path fix and then closed the issue. `sogeisetsu/meld-deepresearch` shipped tag `v0.3.0`, restructuring the single research skill into a family of three cooperating skills with a cleaner deliverable and three hard gates. `sogeisetsu/opencode-go-model-picker` gained 1 star.",
+      "headline": "3 own commits plus 6 automated; v0.3.0 shipped, issue #11 opened",
+      "summary": "On 2026-10-06 the user made **3 own commits** in `sogeisetsu/meld-deepresearch`, plus 6 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The own commits covered a release chore for `v0.3.1`, docs updates adding high-intent search terms to skill descriptions, and a CI fix making the academic degrade test dependency-aware and drawing gate 3. The `v0.3.0` release of `sogeisetsu/meld-deepresearch` was published, turning the single research skill into a family of three cooperating skills (`meld-deepresearch`, `meld-da`, and a third) with a cleaner reading copy and three hard gates. The user opened issue #11 in `OpenSenseNova/SenseNova-Skills-DeepResearch`, titled \"[Feature]: 让 harness 可扩展（支持 OpenCode/Pi 等），并考虑以 MCP 形式对外暴露\". In `iOfficeAI/OfficeCLI` issue #458, `goworm` replied and then closed the issue, noting the skills install path fix landed in 1.0.140. No pull requests, reviews, or discussions were recorded. `sogeisetsu/opencode-go-model-picker` gained 1 star.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.3.0",
-          "summary": "Turns the single research skill into a family: the core `meld-deepresearch` skill plus optional `meld-da` (Excel/spreadsheet data analysis, adapted from `sn-da-excel-workflow`) and a third skill, with a cleaner deliverable and three hard delivery gates. Full diff from v0.2.0."
+          "summary": "v0.3.0 turns the single research skill into a family of three cooperating skills: the core `meld-deepresearch` evidence/citation loop, an optional `meld-da` Excel/spreadsheet data-analysis workflow adapted from SenseNova-Skills' `sn-da-excel-workflow`, and a third skill. It also delivers a cleaner reading copy and three hard gates, as the full diff from v0.2.0."
         }
       ]
     },
     "zh": {
-      "headline": "3 次本人提交、6 次自动提交、新开 1 个 issue、发布 v0.3.0",
-      "summary": "2026-10-06，`sogeisetsu` 在 `sogeisetsu/meld-deepresearch` 完成 **3 次本人提交**，另有 6 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。本人提交包括切出 `v0.3.1` 版本、为 skill 描述补充高意图搜索词，以及让学术降级测试依赖感知并绘制 gate 3。当日无 PR 与 review。新开 1 个 issue：`OpenSenseNova/SenseNova-Skills-DeepResearch` #11，建议让 harness 可扩展（支持 OpenCode/Pi 等）并考虑以 MCP 形式对外暴露。在 `iOfficeAI/OfficeCLI` #458 中，`goworm` 回复了 OpenCode v2 skills 安装路径修复情况，随后关闭了该 issue。`sogeisetsu/meld-deepresearch` 发布标签 `v0.3.0`，将单一研究 skill 拆分为三个协作 skill，交付物更简洁并引入三道硬性交付门。`sogeisetsu/opencode-go-model-picker` 新增 1 颗星。",
+      "headline": "3 次本人提交加 6 次自动提交；v0.3.0 发布，新开 issue #11",
+      "summary": "2026-10-06 当天，用户在 `sogeisetsu/meld-deepresearch` 完成 **3 次本人提交**，另有 6 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。本人提交内容包括 `v0.3.1` 的发布 chore、为技能描述补充高意图搜索词的文档更新，以及让学术降级测试依赖感知并绘制 gate 3 的 CI 修复。`sogeisetsu/meld-deepresearch` 的 `v0.3.0` 版本发布，将单一研究技能扩展为三个协作技能（`meld-deepresearch`、`meld-da` 及第三个），并带来更干净的阅读副本与三道硬门槛。用户在 `OpenSenseNova/SenseNova-Skills-DeepResearch` 新开 issue #11，标题为“[Feature]: 让 harness 可扩展（支持 OpenCode/Pi 等），并考虑以 MCP 形式对外暴露”。在 `iOfficeAI/OfficeCLI` 的 issue #458 中，`goworm` 回复后关闭了该 issue，指出技能安装路径修复已在 1.0.140 中落地。当天无 PR、评审或讨论记录。`sogeisetsu/opencode-go-model-picker` 新增 1 个 star。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.3.0",
-          "summary": "将单一研究 skill 扩展为 skill 家族：核心 `meld-deepresearch` 加上可选的 `meld-da`（Excel/表格数据分析，改编自 `sn-da-excel-workflow`）以及第三个 skill，交付物更简洁并引入三道硬性交付门。为相对 v0.2.0 的完整差异。"
+          "summary": "v0.3.0 将单一研究技能扩展为三个协作技能：核心的 `meld-deepresearch` 证据/引用循环、可选的 `meld-da` Excel/表格数据分析工作流（改编自 SenseNova-Skills 的 `sn-da-excel-workflow`），以及第三个技能。同时提供更干净的阅读副本与三道硬门槛，为相对 v0.2.0 的完整差异。"
         }
       ]
     }
