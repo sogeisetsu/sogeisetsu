@@ -27,9 +27,10 @@ node scripts/daily/verify.mjs                 # 不变式自检
 ## 发布流程
 1. 生成 / 重渲染（见上）。
 2. `node scripts/daily/verify.mjs` 全绿。
-3. `git add scripts/daily docs` → 提交（中文信息用 `git commit -F <msgfile>`，不要用 `-m` 传中文）→ `git pull --rebase --autostash origin main` → `git push`。
-4. `gh api repos/sogeisetsu/sogeisetsu/pages/builds/latest` 确认 `status: built`。
-5. 用 openchamber_web 打开线上页（带 `?v=<短哈希>` 击穿缓存）截图确认。
+3. `git add scripts/daily docs` → 提交（中文信息用 `git commit -F <msgfile>`，不要用 `-m` 传中文）→ `git pull --rebase --autostash origin main` → `git push`。（代码修改按口径段的分支规则走分支）
+4. push 后**手动触发日报 Action，不要等 2 小时 cron**：`gh workflow run update-daily-report.yml --ref main` → `gh run watch <run-id> --exit-status` 等完成；CI 会把生成物提交推回 main，本地记得 `git pull --rebase --autostash`。
+5. `gh api repos/sogeisetsu/sogeisetsu/pages/builds/latest` 确认 `status: built`。
+6. 用 openchamber_web 打开线上页（带 `?v=<短哈希>` 击穿缓存）截图确认。
 
 ## 与 Action 产物冲突（重要）
 两个 workflow 每 2 小时会自动提交 `docs/` 与 `README.md`，手动 `git pull --rebase` 常在生成物上报 CONFLICT。
