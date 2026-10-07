@@ -22,6 +22,7 @@ _Updated automatically: 2026-10-07_
 
 <details><summary>🌐 Contributed to</summary>
 
+- 💬 Commented on [anomalyco/opencode#50878](https://github.com/anomalyco/opencode/issues/50878): In OpenCode, after removing ~\\.local\\share\\opencode\\auth.json, the model still returns usable and is not removed from the model list
 - 🐛 Opened issue [\[Feature\]: 让 harness 可扩展（支持 OpenCode/Pi 等），并考虑以 MCP 形式对外暴露](https://github.com/OpenSenseNova/SenseNova-Skills-DeepResearch/issues/11) in `OpenSenseNova/SenseNova-Skills-DeepResearch`
 - 🐛 Opened issue [OpenCode V2 compatibility: SKILL.md frontmatter and runtime assumptions](https://github.com/OpenSenseNova/SenseNova-Skills/issues/180) in `OpenSenseNova/SenseNova-Skills`
 - 💬 Commented on [iOfficeAI/OfficeCLI#254](https://github.com/iOfficeAI/OfficeCLI/issues/254): OpenCode detection & skill install path point to ~/.opencode, but OpenCode uses ~/.config/opencode
@@ -31,7 +32,6 @@ _Updated automatically: 2026-10-07_
 - 🐛 Opened issue [\[Docs\] Multi-run docs still point to a sidebar header button that was removed in d9fbf6b \(moved to the composer\)](https://github.com/openchamber/openchamber/issues/4337) in `openchamber/openchamber`
 - ⭐ Starred `OpenSenseNova/SenseNova-Skills`
 - ⭐ Starred `Weizhena/Deep-Research-skills`
-- ⭐ Starred `wshuyi/deep-research`
 
 </details>
 <!--END:activity-->
