@@ -3,7 +3,7 @@
   "windowStart": "2026-10-07T00:00:00+08:00",
   "windowEnd": "2026-10-08T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-07T15:31:10.360Z",
+  "generatedAt": "2026-10-07T19:46:22.415Z",
   "empty": false,
   "totals": {
     "commits": 8,
@@ -67,13 +67,13 @@
           "ts": "2026-10-07T13:51:59Z"
         }
       ],
-      "automated": 8,
+      "automated": 9,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 8,
+  "automatedCommits": 9,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -240,27 +240,27 @@
   "ai": {
     "en": {
       "headline": "sogeisetsu ships meld-deepresearch v0.4.0 with a thin CLI and lighter skill",
-      "summary": "On 2026-10-07, `sogeisetsu` recorded **8 own commits** across two repositories, plus 8 additional automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/meld-deepresearch`, 5 commits delivered the v0.4.0 release: a new `meld.py` thin CLI that wraps the six gate scripts behind `--outdir`, a lighter skill with `--fix` and two downgraded gate codes, README restructuring to the Standard Readme spec, and numbered gates in the flow diagrams. In `sogeisetsu/sogeisetsu`, 3 commits added a manual daily-report Action trigger step to the release flow, a new `AGENTS.md` rule requiring code changes to go through branches, and Discussions collection/display for started, commented, and others' replies. The user opened or commented on 3 issues: opened `alvinunreal/oh-my-opencode-slim` #1475 about `reflect --sessions` querying legacy V1 tables and returning 0 sessions on OpenCode V2, then commented on it; and commented on `anomalyco/opencode` #50878 about `~/.local/share/opencode/auth.json` removal not clearing the model list. The user started discussion `openchamber/openchamber` #4502 on storing relay identity keys encrypted at rest, which drew 2 replies from `btriapitsyn` defending the current 0600 file permissions and noting no OpenChamber version has ever written `settings.json`. One release was published: `sogeisetsu/meld-deepresearch` v0.4.0.",
+      "summary": "On 2026-10-07, **8** own commits landed across two repos, plus 9 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/meld-deepresearch`, 5 commits shipped `v0.4.0`: a new `meld.py` thin CLI that wraps all six gate scripts behind one `--outdir`, a lighter skill with `--fix` support and two downgraded gate codes, README restructuring to the Standard Readme spec, and numbered gates in the flow diagrams. In `sogeisetsu/sogeisetsu`, 3 commits added a manual daily-report Action trigger step to the release flow, a new `AGENTS.md` rule requiring code changes to go through branches, and Discussions collection/display (started, commented, and others' replies). No pull requests or reviews were filed. The user opened or commented on 3 issues: opened `alvinunreal/oh-my-opencode-slim` #1475 about `reflect --sessions` querying legacy V1 tables and returning 0 sessions on OpenCode V2, then commented on it; and commented on `anomalyco/opencode` #50878 about the model remaining usable after deleting `~/.local/share/opencode/auth.json`. The user also started discussion `openchamber/openchamber` #4502 on storing relay identity keys encrypted at rest, which drew 2 replies from `btriapitsyn` defending the current 0600-permission storage model.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.4.0",
-          "summary": "Introduces `meld.py` as a single thin CLI wrapping all six gate scripts behind `--outdir`, with `prepare`, `render`, and `review [--clean]` subcommands. Lightens the skill by cutting prose, adding `--fix`, and downgrading two gate codes, and restructures both READMEs to the Standard Readme spec with numbered gates in the flow diagrams."
+          "summary": "v0.4.0 spans everything since v0.3.0 (including the v0.3.1 patch that added real search terms to skill descriptions). The headline change is `skills/meld-deepresearch/scripts/meld.py`, a thin CLI that wraps all six gate scripts behind one `--outdir` with `prepare`, `render`, `review [--clean]`, and other subcommands. The skill is also lighter to read, safer to re-run, and harder to misuse."
         }
       ]
     },
     "zh": {
-      "headline": "sogeisetsu 发布 meld-deepresearch v0.4.0，新增精简 CLI 与轻量 skill",
-      "summary": "2026-10-07，`sogeisetsu` 在两个仓库中共提交 **8 次本人提交**，另有 8 次由 `github-actions[bot]` 自动提交，全部位于 `sogeisetsu/sogeisetsu`。在 `sogeisetsu/meld-deepresearch` 中，5 次提交完成 v0.4.0 发布：新增 `meld.py` 精简 CLI，将六个 gate 脚本统一封装在 `--outdir` 之下；精简 skill 文案、新增 `--fix` 并将两个 gate 代码降级；两份 README 按 Standard Readme 规范重构，流程图中的 gate 编号统一。在 `sogeisetsu/sogeisetsu` 中，3 次提交为发布流程增加手动触发日报 Action 步骤，在 `AGENTS.md` 中新增「代码修改必须走分支」约束，并新增 Discussions 采集与展示（发起/评论/他人回复）。用户新开或评论了 3 个 issue：新开 `alvinunreal/oh-my-opencode-slim` #1475，反映 `reflect --sessions` 查询旧 V1 表导致 OpenCode V2 下返回 0 个 session，随后在该 issue 中评论；并评论了 `anomalyco/opencode` #50878，关于删除 `~/.local/share/opencode/auth.json` 后模型仍可用且未从列表移除。用户发起了讨论 `openchamber/openchamber` #4502，主题是将 relay identity keys 加密存储并排除在 `settings.json` 备份之外，收到 `btriapitsyn` 的 2 条回复，对方以 0600 文件权限和 ssh key、OpenCode `auth.json` 的存储方式作类比，并指出 OpenChamber 从未写入过 `settings.json`。当日发布 1 个 release：`sogeisetsu/meld-deepresearch` v0.4.0。",
+      "headline": "sogeisetsu 发布 meld-deepresearch v0.4.0，引入轻量 CLI 与精简 skill",
+      "summary": "2026-10-07 当天，**8** 次本人提交分布在两个仓库，另有 9 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。在 `sogeisetsu/meld-deepresearch` 中，5 次提交完成了 `v0.4.0`：新增 `meld.py` 轻量 CLI，将六个 gate 脚本统一封装在 `--outdir` 之下；skill 精简并新增 `--fix` 支持，两个 gate 代码降级；两个 README 按 Standard Readme 规范重构；流程图中的 gate 编号补齐。在 `sogeisetsu/sogeisetsu` 中，3 次提交为发布流程增加了手动触发日报 Action 的步骤，在 `AGENTS.md` 中新增「代码修改必须走分支」约束，并新增 Discussions 采集与展示（发起、评论、他人回复）。当天未提交任何 PR 或 review。用户新开或评论了 3 个 issue：新开 `alvinunreal/oh-my-opencode-slim` #1475，反映 `reflect --sessions` 查询旧版 V1 表导致 OpenCode V2 下返回 0 个 session，随后在该 issue 中评论；并评论了 `anomalyco/opencode` #50878，关于删除 `~/.local/share/opencode/auth.json` 后模型仍可用且未从模型列表移除。用户还发起了讨论 `openchamber/openchamber` #4502，讨论将 relay 身份密钥静态加密存储，`btriapitsyn` 回复了 2 条，为当前 0600 权限的存储方式辩护。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/meld-deepresearch",
           "tag": "v0.4.0",
-          "summary": "新增 `meld.py` 精简 CLI，将六个 gate 脚本统一封装在 `--outdir` 之下，提供 `prepare`、`render`、`review [--clean]` 子命令。精简 skill 文案、新增 `--fix` 并将两个 gate 代码降级，两份 README 按 Standard Readme 规范重构，流程图中的 gate 编号统一。"
+          "summary": "v0.4.0 涵盖自 v0.3.0 以来的全部变更（含 v0.3.1 补丁，为 skill 描述补充真实搜索词）。核心变化是 `skills/meld-deepresearch/scripts/meld.py`，一个轻量 CLI，将六个 gate 脚本统一封装在 `--outdir` 之下，提供 `prepare`、`render`、`review [--clean]` 等子命令。skill 同时变得更易阅读、更安全地重跑、更难被误用。"
         }
       ]
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "f1e098a8b4fe85e2f0a7be05df29de88297a9be7abc67b9c80e4e7dc4014f2e0"
+  "dataHash": "ec70bc80e7d2c527fbe69c13327a0907aa2af603fd9ce0a7092be37e380b08e4"
 }
