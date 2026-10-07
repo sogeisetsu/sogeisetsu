@@ -3,12 +3,12 @@
   "windowStart": "2026-10-07T00:00:00+08:00",
   "windowEnd": "2026-10-08T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-07T04:43:37.647Z",
-  "empty": true,
+  "generatedAt": "2026-10-07T12:48:02.194Z",
+  "empty": false,
   "totals": {
     "commits": 0,
     "prs": 0,
-    "issues": 0,
+    "issues": 1,
     "reviews": 0
   },
   "commits": [
@@ -17,16 +17,26 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 3,
+      "automated": 5,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 3,
+  "automatedCommits": 5,
   "pullRequests": [],
   "reviews": [],
-  "issues": [],
+  "issues": [
+    {
+      "repo": "anomalyco/opencode",
+      "number": 50878,
+      "title": "In OpenCode, after removing ~\\.local\\share\\opencode\\auth.json, the model still returns usable and is not removed from the model list",
+      "url": "https://github.com/anomalyco/opencode/issues/50878",
+      "action": "commented",
+      "ts": "2026-10-07T09:23:45.000Z",
+      "own": false
+    }
+  ],
   "releases": [],
   "stars": [],
   "starInventory": [
@@ -113,7 +123,18 @@
   ],
   "replies": [],
   "stateChanges": [],
-  "ai": null,
-  "aiProvider": null,
-  "dataHash": "2774ba8a77a3b37077efc32de0ae8763c3d2737acc3a225d50cb42f337642516"
+  "ai": {
+    "en": {
+      "headline": "One issue comment on opencode; 5 automated commits by github-actions[bot]",
+      "summary": "On 2026-10-07, `sogeisetsu` recorded **1** issue interaction and no pull requests, reviews, or own commits. The single issue activity was a comment on `anomalyco/opencode` issue #50878, titled \"In OpenCode, after removing `~/.local/share/opencode/auth.json`, the model still returns usable and is not removed from the model list\", posted at 2026-10-07T09:23:45Z. No releases were published. In `sogeisetsu/sogeisetsu`, there were 0 own commits plus 5 automated commits by `github-actions[bot]`; no commit messages were provided, so their contents are not described. No stars, replies, or state changes were recorded for the day.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "在 opencode 上评论 1 个 issue；github-actions[bot] 自动提交 5 次",
+      "summary": "2026-10-07 当天，`sogeisetsu` 共有 **1** 次 issue 互动，无 PR、无 review、无本人提交。唯一的 issue 活动是在 `anomalyco/opencode` 的 #50878 上留言，标题为 \"In OpenCode, after removing `~/.local/share/opencode/auth.json`, the model still returns usable and is not removed from the model list\"，时间为 2026-10-07T09:23:45Z。当天没有发布任何 release。在 `sogeisetsu/sogeisetsu` 仓库中，本人提交 0 次，另有 5 次由 `github-actions[bot]` 自动提交；由于未提供提交信息，不描述其具体内容。当天没有记录到 star、回复或状态变更。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "sensenova",
+  "dataHash": "9a2131a358c49a2d3849c7cb7997960565df1f3c11d32d781bad5353cc7db19c"
 }
