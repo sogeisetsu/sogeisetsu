@@ -492,6 +492,9 @@ const ICONS = {
     '<path d="M12 3.4l2.7 5.5 6 .9-4.4 4.2 1 6-5.3-2.8L6.7 20l1-6-4.4-4.2 6-.9L12 3.4Z"/>',
   reply:
     '<path d="M20.5 11.6a8 8 0 0 1-8.7 8 8.9 8.9 0 0 1-3.5-.7L3.5 20.5l1.6-5A8 8 0 0 1 12 3.6a8 8 0 0 1 8.5 8Z"/>',
+  discussion:
+    '<path d="M20.5 11.6a8 8 0 0 1-8.7 8 8.9 8.9 0 0 1-3.5-.7L3.5 20.5l1.6-5A8 8 0 0 1 12 3.6a8 8 0 0 1 8.5 8Z"/>' +
+    '<path d="M8.5 9.5h7M8.5 13h4.5"/>',
   spark:
     '<path d="M12 3l1.7 5.6L19 10.3l-5.3 1.7L12 17.6l-1.7-5.6L5 10.3l5.3-1.7L12 3Z"/>' +
     '<path d="M18.5 15.5l.8 2.4 2.4.8-2.4.8-.8 2.4-.8-2.4-2.4-.8 2.4-.8.8-2.4Z" fill="currentColor" stroke="none"/>',
@@ -670,6 +673,39 @@ function stateChangesSection(items) {
   return section('issue', 'Status changes', '状态变更', pill(items.length, items.length), `<ul class="list">${rows}</ul>`);
 }
 
+function discussionActionBadge(action) {
+  const a = String(action == null ? '' : action).toLowerCase();
+  const m =
+    a === 'commented'
+      ? { en: 'Commented', zh: '评论', cls: 'badge-closed' }
+      : { en: 'Started', zh: '发起', cls: 'badge-opened' };
+  const inner =
+    `<span class="i18n" data-lang="en"><span class="badge-action">${m.en}</span></span>` +
+    `<span class="i18n" data-lang="zh"><span class="badge-action">${m.zh}</span></span>`;
+  return `<span class="badge ${m.cls}">${inner}</span>`;
+}
+
+function discussionsSection(items) {
+  const rows = items
+    .map((it) => {
+      const title = String(it.title || '').trim() ? it.title : UNTITLED();
+      const cat = String(it.category || '').trim();
+      const catChip = cat ? `<span class="chip chip-kind">${esc(cat)}</span>` : '';
+      const n = num(it.comments);
+      const count = i18n(`${n} comment${n === 1 ? '' : 's'}`, `${n} 条评论`);
+      return (
+        `<li class="row row-block">` +
+        `<div class="row-head">${discussionActionBadge(it.action)}${catChip}` +
+        `${extLink(it.url, title, 'row-title')}</div>` +
+        `<div class="row-meta">${repoSpan(it.repo)}${SEP}` +
+        `<span class="num">#${esc(it.number)}</span>${SEP}<span>${count}</span>${timeHtml(it.ts)}</div>` +
+        `</li>`
+      );
+    })
+    .join('');
+  return section('discussion', 'Discussions', '讨论', pill(items.length, items.length), `<ul class="list">${rows}</ul>`);
+}
+
 function releasesSection(items, ai) {
   const keyOf = (repo, tag) => `${String(repo || '')}\u0000${String(tag || '')}`;
   const enNotes = new Map();
@@ -733,6 +769,7 @@ function repliesSection(items) {
     const k = String(kind == null ? '' : kind).toLowerCase();
     if (k === 'review') return { en: 'Review', zh: '评审' };
     if (k === 'comment' || k === 'issue_comment') return { en: 'Comment', zh: '评论' };
+    if (k === 'discussion_comment') return { en: 'Discussion', zh: '讨论' };
     if (k) return { en: kind, zh: kind };
     return null;
   };
@@ -1250,6 +1287,7 @@ export function renderReportPage({ data, ai } = {}) {
   const reviews = A(d.reviews).filter(Boolean);
   const issues = A(d.issues).filter(Boolean);
   const stateChanges = A(d.stateChanges).filter(Boolean);
+  const discussions = A(d.discussions).filter(Boolean);
   const releases = A(d.releases).filter(Boolean);
   const stars = A(d.stars).filter(Boolean);
   const replies = A(d.replies).filter(Boolean);
@@ -1290,7 +1328,7 @@ export function renderReportPage({ data, ai } = {}) {
   // body
   const anyItems =
     commits.length || pullRequests.length || reviews.length || issues.length ||
-    stateChanges.length || releases.length || stars.length || replies.length;
+    stateChanges.length || discussions.length || releases.length || stars.length || replies.length;
 
   if (empty) {
     parts.push(emptyState());
@@ -1301,6 +1339,7 @@ export function renderReportPage({ data, ai } = {}) {
     if (reviews.length) parts.push(reviewsSection(reviews, totals));
     if (issues.length) parts.push(issuesSection(issues, totals));
     if (stateChanges.length) parts.push(stateChangesSection(stateChanges));
+    if (discussions.length) parts.push(discussionsSection(discussions));
     if (releases.length) parts.push(releasesSection(releases, ai));
     if (stars.length) parts.push(starsSection(stars));
     if (replies.length) parts.push(repliesSection(replies));

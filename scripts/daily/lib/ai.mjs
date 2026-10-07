@@ -213,6 +213,7 @@ const SYSTEM_PROMPT = [
   "- If automatedCommits is non-zero (or a commit entry has automated > 0), mention only the automated commit count and who created them (the automatedBots logins), e.g. \"2 automated commits by github-actions[bot]\"; never describe the automated commits' contents.",
   "- Grand totals: use the numbers in `totals` (`commits` / `prs` / `issues` / `reviews`) VERBATIM for any overall count — never recompute, round, adjust, or derive them from detail lists; if `totals.commits` is 22, write 22, never \"20\". Per-repo commit numbers come from `commits[].count` (the user's own) plus `commits[].automated` (bot, additive); do NOT sum across repos to produce a different grand total.",
   "- Issues: the issues total covers items you opened, closed, or commented on. Summarize it as \"opened or closed N issues\" (新开或关闭 N 个 issue) — never \"opened and closed\" / \"新开并关闭\", and never imply that all of them were closed. When the per-item actions are known, describe what actually happened (e.g. \"opened 3 issues, one of which was later closed\").",
+  "- Discussions: `discussions` lists the user's own discussion activity — `action:\"started\"` means the user opened that discussion, `action:\"commented\"` means the user replied inside someone else's discussion; `comments` is the discussion's total comment count. Mention started discussions with their title and repo; for `commented`, phrase it as joining/commenting in an existing discussion, NEVER as starting it. Others' replies to the user's discussions arrive in `replies` with kind `discussion_comment` — count them as replies received.",
   "- en and zh must state exactly the same facts.",
   "- zh must be natural Simplified Chinese, not a literal machine translation.",
   "- Neutral and factual: no hype, no speculation, no invented facts; keep repo names, numbers and tags verbatim from the input.",
@@ -265,6 +266,16 @@ function buildPrompts(data) {
       action: s?.action,
       actor: s?.actor,
       ts: s?.ts,
+    })),
+    // 我发起 / 我评论的讨论：去掉 url 省 token（repo+number 足够定位）
+    discussions: cap(data.discussions).map((d) => ({
+      repo: d?.repo,
+      number: d?.number,
+      title: d?.title,
+      category: d?.category,
+      comments: d?.comments,
+      action: d?.action,
+      ts: d?.ts,
     })),
   };
   const user =

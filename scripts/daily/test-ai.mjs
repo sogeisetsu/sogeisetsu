@@ -31,6 +31,17 @@ const data = {
   totals: { commits: 1, prs: 0, issues: 0, reviews: 0 },
   commits: [{ repo: "a/b", count: 1, own: true, automated: 0, automatedBots: [], messages: [{ message: "init" }] }],
   pullRequests: [], reviews: [], issues: [], releases: [], stars: [], replies: [],
+  discussions: [
+    {
+      repo: "openchamber/openchamber",
+      number: 4502,
+      title: "Store relay keys",
+      category: "Ideas",
+      comments: 3,
+      action: "started",
+      ts: "2026-10-03T09:27:02.000Z",
+    },
+  ],
   empty: false,
 };
 
@@ -94,6 +105,11 @@ const cases = [
     script: [chatResp(JSON.stringify(jsonWith({ enSummary: "Only one very long sentence that should be rejected." }))), chatResp(JSON.stringify(validNarrative()))],
     expect: { ok: true, calls: 2, userPrompt: "sentence count" },
   },
+  {
+    name: "discussions-in-payload-and-prompt",
+    script: [chatResp(JSON.stringify(validNarrative()))],
+    expect: { ok: true, calls: 1, systemPrompt: "Discussions:", userPrompt: '"action":"started"' },
+  },
 ];
 
 // ---------------------------------------------------------------- 执行
@@ -110,6 +126,10 @@ for (const c of cases) {
   if (c.expect.userPrompt) {
     const u = requests.at(-1)?.body?.messages?.[1]?.content || "";
     checks.push(["userPrompt", u.includes(c.expect.userPrompt)]);
+  }
+  if (c.expect.systemPrompt) {
+    const s = requests.at(-1)?.body?.messages?.[0]?.content || "";
+    checks.push(["systemPrompt", s.includes(c.expect.systemPrompt)]);
   }
   if (c.expect.secondMaxTokens !== undefined) checks.push(["secondMaxTokens", requests[1]?.body?.max_tokens === c.expect.secondMaxTokens]);
   if (c.expect.secondNoReasoning) checks.push(["secondNoReasoning", !("reasoning_effort" in (requests[1]?.body || {}))]);

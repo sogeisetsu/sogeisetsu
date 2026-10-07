@@ -16,6 +16,10 @@
  *                                          以及他人在我 PR / Issue 下的回复（逐仓校验公开后才收录）
  *   6. REST /repos/:o/:r/issues/:n/events —— 他人对我条目的 closed / merged / reopened
  *                                          （stateChanges 段，不计入 totals）
+ *   7. GraphQL search(type: DISCUSSION)   —— 我发起 / 我评论的 Discussions（discussions 段，
+ *                                          action: started|commented），他人在我发起的讨论下的
+ *                                          窗口内回复并入 replies（kind=discussion_comment）；
+ *                                          仅公开仓库，不计入 totals / empty
  *
  * 窗口定义：date 当天 00:00:00+08:00 ≤ ts < 次日 00:00:00+08:00（Asia/Shanghai 固定 UTC+8，无夏令时）。
  *
@@ -61,6 +65,8 @@ const EXCERPT_MAX = 200; // 回复摘录折叠空白后截断长度
 const COMMIT_SCAN_REPOS_MAX = 30; // 提交历史扫描的仓库数上限（PushEvent 仓库优先）
 const COMMIT_PAGES_MAX = 2; // 每仓 /commits 分页上限（per_page=100）
 const COMMIT_MSG_MAX = 160; // 提交标题（message 首行）折叠空白后的截断长度
+const DISCUSSION_SEARCH_MAX = 50; // Discussion search 每个别名取的节点上限（GraphQL first ≤100）
+const DISCUSSION_COMMENTS_MAX = 100; // 每条讨论拉取的评论节点上限（连接尾部=最新，comments(last: N)）
 
 // ---------------------------------------------------------------- 小工具
 
@@ -759,6 +765,149 @@ function applyEndStates(issues, pullRequests, stateChanges) {
 
 const byTsDesc = (a, b) => tsOf(b.ts) - tsOf(a.ts);
 
+// ---------------------------------------------------------------- 7.5 Discussions
+
+/**
+ * 我参与的 Discussions：一个 GraphQL 请求、两个 search 别名（节点内嵌评论）。
+ *   started   — author:<me> created:<UTC日期范围>：窗口内我发起的讨论（action:"started"）
+ *   commented — commenter:<me> updated:>=<前一天>：我评论过的讨论，取我窗口内的评论时间
+ *               （action:"commented"；已按“发起”收录的同一讨论不重复收录）
+ * 同时把他人在我发起的讨论下的窗口内评论转成 replies 条目（kind=discussion_comment）——
+ * 与 issue/PR 回复的既有语义一致：只收“别人在我发起的条目下说的话”。
+ *
+ * 口径与降级：仅公开仓库（repository.isPrivate 直接过滤，不发额外请求）；
+ * created:/updated: 是 UTC 日期，查询范围放宽一天后由 inWindow 按 +08 窗口精滤；
+ * 无 token 或任何失败 → 警告 + 空，绝不抛错（与 GraphQL 星标段同一契约）；
+ * 评论节点按连接尾部取最后 DISCUSSION_COMMENTS_MAX 条（最新在内），超长讨论可能截断（可接受降级）。
+ *
+ * @param {string|null} token GitHub token（null → 直接空）
+ * @param {string} username GitHub 用户名
+ * @param {object} win computeWindow() 结果
+ * @returns {Promise<{list: object[], replies: object[]}>}
+ *   list:    [{repo,number,title,url,category,comments,action,ts,own}]（action: started|commented，ts 倒序）
+ *   replies: [{repo,number,title,url,author,excerpt,kind:"discussion_comment",ts,own}]（ts 倒序）
+ */
+async function fetchDiscussions(token, username, win) {
+  const empty = { list: [], replies: [] };
+  if (!token) return empty;
+
+  // +08 窗口 = UTC [前一日 16:00, 当日 16:00)：查询日期下界放宽到前一天，本地再精滤
+  const from = dayBefore(win.date);
+  const query = `
+    query ($qs: String!, $qc: String!) {
+      started: search(query: $qs, type: DISCUSSION, first: ${DISCUSSION_SEARCH_MAX}) {
+        nodes { ...D }
+      }
+      commented: search(query: $qc, type: DISCUSSION, first: ${DISCUSSION_SEARCH_MAX}) {
+        nodes { ...D }
+      }
+    }
+    fragment D on Discussion {
+      number
+      title
+      url
+      createdAt
+      category { name }
+      repository { nameWithOwner isPrivate }
+      comments(last: ${DISCUSSION_COMMENTS_MAX}) {
+        totalCount
+        nodes { author { login } createdAt body }
+      }
+    }`;
+  const variables = {
+    qs: `author:${username} created:${from}..${win.date}`,
+    qc: `commenter:${username} updated:>=${from}`,
+  };
+
+  let body;
+  try {
+    const res = await httpFetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: apiHeaders(token, { "content-type": "application/json" }),
+      body: JSON.stringify({ query, variables }),
+    });
+    const text = await res.text();
+    if (res.status >= 400) {
+      warn("discussions", `GraphQL HTTP ${res.status}: ${text.slice(0, 300)}`);
+      return empty;
+    }
+    body = JSON.parse(text);
+  } catch (err) {
+    warn("discussions", `请求失败: ${err.message}`);
+    return empty;
+  }
+  if (Array.isArray(body.errors) && body.errors.length > 0) {
+    // 部分数据仍可用：有 data 就继续，没有则降级为空
+    warn("discussions", `errors: ${JSON.stringify(body.errors).slice(0, 300)}`);
+    if (!body.data) return empty;
+  }
+
+  const nodesOf = (alias) =>
+    (((body.data || {})[alias] || {}).nodes || []).filter(
+      (n) => n && n.number != null && n.repository && n.repository.nameWithOwner
+    );
+
+  const list = new Map(); // repo#number → 条目（发起优先，评论去重）
+  const replies = [];
+  const entryOf = (node, repo, action, tsMs) => ({
+    repo,
+    number: node.number,
+    title: String(node.title || ""),
+    url: node.url || `https://github.com/${repo}/discussions/${node.number}`,
+    category: String((node.category && node.category.name) || ""),
+    comments: num(node.comments && node.comments.totalCount),
+    action,
+    ts: isoOf(tsMs),
+    own: isOwnRepoName(repo, username),
+  });
+
+  // --- started：我发起的讨论 + 他人的窗口内回复（并入 replies）---
+  for (const node of nodesOf("started")) {
+    const repo = node.repository.nameWithOwner;
+    if (node.repository.isPrivate) continue; // 公开口径：私有仓库讨论整条跳过
+    const created = tsOf(node.createdAt);
+    if (!inWindow(created, win)) continue; // search 日期是 UTC 天，本地精滤 +08 窗口
+    list.set(`${repo}#${node.number}`, entryOf(node, repo, "started", created));
+    for (const c of (node.comments && node.comments.nodes) || []) {
+      const author = (c && c.author && c.author.login) || "";
+      if (isOwnLogin(author, username)) continue; // 只要别人说的
+      const ms = tsOf(c && c.createdAt);
+      if (!inWindow(ms, win)) continue;
+      replies.push({
+        repo,
+        number: node.number,
+        title: String(node.title || ""),
+        url: node.url || `https://github.com/${repo}/discussions/${node.number}`,
+        author,
+        excerpt: collapse(c.body, EXCERPT_MAX),
+        kind: "discussion_comment",
+        ts: isoOf(ms),
+        own: isOwnRepoName(repo, username),
+      });
+    }
+  }
+
+  // --- commented：我评论过的别人讨论（取我窗口内最新一条评论的时间）---
+  for (const node of nodesOf("commented")) {
+    const repo = node.repository.nameWithOwner;
+    if (node.repository.isPrivate) continue;
+    const key = `${repo}#${node.number}`;
+    if (list.has(key)) continue; // 已按“发起”收录（自己讨论下自己回复不重复计）
+    let myTs = 0;
+    for (const c of (node.comments && node.comments.nodes) || []) {
+      if (!isOwnLogin(c && c.author && c.author.login, username)) continue;
+      const ms = tsOf(c && c.createdAt);
+      if (inWindow(ms, win) && ms > myTs) myTs = ms;
+    }
+    if (!myTs) continue; // updated 命中但我的评论不在窗口内
+    list.set(key, entryOf(node, repo, "commented", myTs));
+  }
+
+  const listArr = [...list.values()].sort(byTsDesc);
+  replies.sort(byTsDesc);
+  return { list: listArr, replies };
+}
+
 /**
  * 采集指定日（Asia/Shanghai）的 GitHub 活动数据。
  *
@@ -789,9 +938,15 @@ const byTsDesc = (a, b) => tsOf(b.ts) - tsOf(a.ts);
  *     releases:[{repo,tag,name,url,publishedAt,notes}],   // notes: 规范化 Markdown（保留换行，≤1400 字符）
  *     stars:[{repo,delta,total}],            // 展示用：仅 delta 为数字且非 0 的仓库
  *     starInventory:[{repo,total}],          // 全量自有仓库星标清单（供次日 delta 基准，不过滤）
- *     replies:[{repo,number,title,url,author,excerpt,kind,ts,own}],   // 仅公开仓库
- *     stateChanges:[{repo,number,title,url,action,actor,ts,own}] }    // action: closed|merged|reopened
+ *     replies:[{repo,number,title,url,author,excerpt,kind,ts,own}],   // 仅公开仓库；kind 含
+ *                                                                     // issue_comment/review_comment/
+ *                                                                     // discussion_comment
+ *     stateChanges:[{repo,number,title,url,action,actor,ts,own}],     // action: closed|merged|reopened
  *                                                                     // 他人操作，actor 恒非本人；不计入 totals
+ *     discussions:[{repo,number,title,url,category,comments,action,ts,own}] }
+ *                                                                     // action: started|commented（我的动作，
+ *                                                                     // ts 为动作时间）；comments=评论总数；
+ *                                                                     // 仅公开仓库；不计入 totals / empty
  */
 export async function collectDailyData({ token, username, date, previousData }) {
   const win = computeWindow(date);
@@ -825,7 +980,18 @@ export async function collectDailyData({ token, username, date, previousData }) 
   // --- 7. 他人对我 Issue/PR 的状态变更（closed / merged / reopened，不计入 totals）---
   const stateChanges = await fetchStateChanges(token, username, win, targets, repoVisibility);
 
-  // --- 8. 端点状态回填：以窗口结束时刻为准，原地写入 issues / pullRequests 的 state ---
+  // --- 8. Discussions：我发起 / 我评论的讨论；他人对我讨论的回复并入 replies（不进 totals）---
+  const { list: discussions, replies: discussionReplies } = await fetchDiscussions(
+    token,
+    username,
+    win
+  );
+  if (discussionReplies.length) {
+    replies.push(...discussionReplies);
+    replies.sort(byTsDesc);
+  }
+
+  // --- 9. 端点状态回填：以窗口结束时刻为准，原地写入 issues / pullRequests 的 state ---
   applyEndStates(issues, pullRequests, stateChanges);
 
   // --- 合计：只由实际展示的公开数据求和，保证 totals 与各段恒等 ---
@@ -857,6 +1023,7 @@ export async function collectDailyData({ token, username, date, previousData }) 
     starInventory,
     replies,
     stateChanges,
+    discussions,
   };
 }
 

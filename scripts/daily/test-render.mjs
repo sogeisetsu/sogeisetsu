@@ -217,6 +217,79 @@ check("renderReportPage: commits 角标取 totals=0，不用条目行数兜底",
   ];
 });
 
+// ---------------------------------------------------------------- discussions
+
+check("renderReportPage: discussions 分区 + 动作徽章 + 评论数双语 + 回复 kind 标签", () => {
+  const html = renderReportPage({
+    data: {
+      date: "2026-10-07",
+      username: "sogeisetsu",
+      generatedAt: "2026-10-07T12:00:00.000Z",
+      empty: false,
+      totals: { commits: 1, prs: 0, issues: 0, reviews: 0 },
+      commits: [
+        { repo: "sogeisetsu/sogeisetsu", count: 1, own: true, messages: [{ message: "docs: update" }], automated: 0, automatedBots: [] },
+      ],
+      pullRequests: [],
+      reviews: [],
+      issues: [],
+      stateChanges: [],
+      discussions: [
+        {
+          repo: "openchamber/openchamber",
+          number: 4502,
+          title: "Store relay keys <and> secrets",
+          url: "https://github.com/openchamber/openchamber/discussions/4502",
+          category: "Ideas",
+          comments: 3,
+          action: "started",
+          ts: "2026-10-07T09:27:02.000Z",
+          own: false,
+        },
+        {
+          repo: "sogeisetsu/sogeisetsu",
+          number: 7,
+          title: "joined thread",
+          url: "https://github.com/sogeisetsu/sogeisetsu/discussions/7",
+          category: "Q&A",
+          comments: 5,
+          action: "commented",
+          ts: "2026-10-07T10:00:00.000Z",
+          own: true,
+        },
+      ],
+      releases: [],
+      stars: [],
+      replies: [
+        {
+          repo: "openchamber/openchamber",
+          number: 4502,
+          title: "Store relay keys <and> secrets",
+          url: "https://github.com/openchamber/openchamber/discussions/4502",
+          author: "someone",
+          excerpt: "nice idea",
+          kind: "discussion_comment",
+          ts: "2026-10-07T11:00:00.000Z",
+          own: false,
+        },
+      ],
+    },
+    ai: null,
+  });
+  const pillM = /<h2 class="sec-title">[\s\S]*?Discussions[\s\S]*?<\/h2><span class="pill">(\d+)<\/span>/.exec(html);
+  return [
+    ["sectionRendered", pillM !== null],
+    ["pillIsTwo", pillM !== null && pillM[1] === "2"],
+    ["startedBadge", html.includes("Started") && html.includes("发起")],
+    ["commentedBadge", html.includes("Commented") && html.includes("评论")],
+    ["categoryChip", html.includes('chip-kind">Ideas<')],
+    ["countEnZh", html.includes("3 comments") && html.includes("3 条评论")],
+    ["titleEscaped", html.includes("Store relay keys &lt;and&gt; secrets") && !html.includes("keys <and>")],
+    ["replyKindLabel", html.includes('data-lang="en">Discussion</span>')],
+    ["noTotalsPollution", !html.includes('stat-label">Discussions') && !html.includes('stat-label">讨论<')],
+  ];
+});
+
 // ---------------------------------------------------------------- 汇总
 
 console.log(`\n${passed}/${cases.length} cases passed`);

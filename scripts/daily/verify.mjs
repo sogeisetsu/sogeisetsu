@@ -198,6 +198,42 @@ function main() {
     if (typeof j.dataHash !== "string" || j.dataHash === "") bad.push("dataHash 缺失");
     check(`${label}: schema`, bad.length === 0, bad.join("; "));
 
+    // Discussions（可选段：新增字段，历史数据允许缺失；存在则校验结构与窗口）
+    if (j.discussions !== undefined) {
+      const badD = [];
+      if (!Array.isArray(j.discussions)) {
+        badD.push("discussions 非数组");
+      } else {
+        const ws = Date.parse(j.windowStart ?? "");
+        const we = Date.parse(j.windowEnd ?? "");
+        j.discussions.forEach((d, i) => {
+          if (!d || typeof d !== "object") {
+            badD.push(`discussions[${i}] 非对象`);
+            return;
+          }
+          if (typeof d.repo !== "string" || !d.repo.includes("/")) {
+            badD.push(`discussions[${i}].repo=${JSON.stringify(d.repo)}`);
+          }
+          if (!Number.isFinite(Number(d.number)) || Number(d.number) <= 0) {
+            badD.push(`discussions[${i}].number=${JSON.stringify(d.number)}`);
+          }
+          if (d.action !== "started" && d.action !== "commented") {
+            badD.push(`discussions[${i}].action=${JSON.stringify(d.action)}`);
+          }
+          if (typeof d.url !== "string" || !/github\.com\/[^/]+\/[^/]+\/discussions\/\d+/.test(d.url)) {
+            badD.push(`discussions[${i}].url=${JSON.stringify(d.url)}`);
+          }
+          const ms = Date.parse(d.ts ?? "");
+          if (Number.isFinite(ws) && Number.isFinite(we)) {
+            if (!Number.isFinite(ms) || ms < ws || ms >= we) {
+              badD.push(`discussions[${i}].ts=${JSON.stringify(d.ts)} 不在窗口 [${j.windowStart}, ${j.windowEnd}) 内`);
+            }
+          }
+        });
+      }
+      check(`${label}: discussions 结构`, badD.length === 0, badD.join("; "));
+    }
+
     // totals 与明细求和一致
     const totalsReady =
       j.totals && typeof j.totals === "object" &&
@@ -358,6 +394,16 @@ function main() {
       }
     }
     check(`${label}: 卡片角标与 totals 一致`, pillBad.length === 0, pillBad.join("; "));
+
+    // 有讨论数据时，报告正文必须渲染 Discussions 分区（双语标题都在 HTML 里）
+    if (Array.isArray(data.discussions) && data.discussions.length > 0) {
+      const hasSection = html.includes(">Discussions<") || html.includes("Discussions");
+      check(
+        `${label}: 讨论数据已渲染`,
+        hasSection,
+        `discussions=${data.discussions.length} 条但报告缺少 Discussions 分区`
+      );
+    }
 
     if (data.ai && data.empty !== true) {
       for (const lang of ["en", "zh"]) {
