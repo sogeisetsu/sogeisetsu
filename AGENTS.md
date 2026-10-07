@@ -49,4 +49,5 @@ git push
 - 提交按 **commit date** 统计；本人与机器人（`[bot]`）**分开且相加**（`count` 与 `automated` 互不相交）；**不含合并提交**（parents>1）。
 - `totals` 只由展示数据求和；页面数字与 AI 摘要数字都以此为准。
 - Discussions：我发起（`started`）/ 我评论（`commented`）+ 他人回复并入 replies（`kind=discussion_comment`）；仅公开仓库；不进 `totals` / `empty`（与 releases / stars 一致）。
+- 代码修改必须走分支：新建分支 → 提交 → 合并回 `main` → push；不要直接在 `main` 上修改。
 - 不擅自新增依赖；改 CI / 改权限前先确认。
