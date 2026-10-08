@@ -3,10 +3,10 @@
   "windowStart": "2026-10-08T00:00:00+08:00",
   "windowEnd": "2026-10-09T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-08T10:50:31.979Z",
+  "generatedAt": "2026-10-08T12:50:29.584Z",
   "empty": false,
   "totals": {
-    "commits": 4,
+    "commits": 7,
     "prs": 0,
     "issues": 3,
     "reviews": 0
@@ -14,9 +14,24 @@
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 4,
+      "count": 7,
       "own": true,
       "messages": [
+        {
+          "sha": "b519fbfef8cb5fe96ee62e72ad9125ab8ba1bd87",
+          "message": "style(flow): 流程图换成 Excalifont 手写体（fontFamily 5 -> 1）",
+          "ts": "2026-10-08T12:48:15Z"
+        },
+        {
+          "sha": "c79befa287a0e6b8066d39f3f0bb55a1d59e8f92",
+          "message": "docs(watchdog): 加一张运行链路图（Excalidraw）",
+          "ts": "2026-10-08T12:41:19Z"
+        },
+        {
+          "sha": "26d5471534abb02270b29cadeb99b3bd667ed4fe",
+          "message": "feat(watchdog): 兜底范围扩到第二个 workflow（30 天活动卡片），两条时间线各算各的",
+          "ts": "2026-10-08T12:21:14Z"
+        },
         {
           "sha": "d80a074a4c0c309c4f6edfb78408c7f82775dd3a",
           "message": "feat(watchdog): 失败不再吞错，抛异常让 Invocations 成功率当告警",
@@ -38,13 +53,13 @@
           "ts": "2026-10-08T07:47:03Z"
         }
       ],
-      "automated": 8,
+      "automated": 9,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 8,
+  "automatedCommits": 9,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -178,16 +193,16 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "Watchdog hardening in sogeisetsu plus a bug report on openchamber",
-      "summary": "On 2026-10-08, sogeisetsu made 4 own commits in sogeisetsu/sogeisetsu, plus 8 automated commits by github-actions[bot]. The own commits hardened the watchdog so failures no longer swallow errors and instead throw so Invocations success rate can serve as an alert, added a BOM-stripping fallback for tokens with a note on the secret pitfall, introduced a Cloudflare Worker watchdog as a fallback for the daily report schedule, and adjusted the daily cron to avoid the top of the hour with an added push trigger on this repo. No pull requests, reviews, or releases were recorded. On the issues side, sogeisetsu opened issue #4537 in openchamber/openchamber titled \"[Bug] OpenCode Go quota shows Provider not configured while the Providers page shows an API key for it\" and then commented on it twice more, bringing the day's issue activity to 3 actions on that single issue. A reply was received from openchamber-bot[bot] on #4537, noting the fix-ready status and confirming the two surfaces resolve OpenCode Go credentials differently on current main.",
+      "headline": "Watchdog hardening and a quota bug report in openchamber",
+      "summary": "sogeisetsu made **7 own commits** in `sogeisetsu/sogeisetsu`, plus 9 automated commits by `github-actions[bot]`. The work focused on the watchdog feature: expanding the fallback scope to a second workflow (the 30-day activity card) so each timeline is counted independently, making failures throw instead of being swallowed so that Invocations success rate can serve as an alert, and adding a BOM-stripping fallback for tokens along with a note on the secret pitfall. Two operational changes were added: a new Cloudflare Worker watchdog daily-report schedule and a cron tweak that avoids the top of the hour and adds a push trigger on this repo as a fallback. Two documentation/style commits swapped the flowchart font to Excalifont handwriting (fontFamily 5 -> 1) and added an Excalidraw runtime-path diagram for the watchdog. On the issue side, 3 issue actions were recorded, all on `openchamber/openchamber` issue #4537 about OpenCode Go quota showing \"Provider not configured\" while the Providers page shows an API key: the user opened the issue and then left two follow-up comments. `openchamber-bot[bot]` replied once, marking it `fix-ready` and confirming the two surfaces resolve OpenCode Go credentials differently on current main. No pull requests, reviews, releases, stars, or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 加固 watchdog，并在 openchamber 提交 bug 报告",
-      "summary": "2026-10-08 当天，sogeisetsu 在 `sogeisetsu/sogeisetsu` 中提交了 **4 次本人提交**，另有 8 次由 `github-actions[bot]` 自动提交。本人提交围绕 watchdog 加固：让失败不再吞错、改为抛异常以便用 Invocations 成功率作为告警；为 token 增加去 BOM 兜底并补充 secret 踩坑记录；新增 Cloudflare Worker watchdog 作为日报调度的兜底；调整 daily cron 避开整点，并加入本仓 push 兜底触发。当天没有 PR、review 或 release。Issue 方面，sogeisetsu 在 `openchamber/openchamber` 新开了 #4537《[Bug] OpenCode Go quota shows \"Provider not configured\" while the Providers page shows an API key for it》，随后又在该 issue 上评论了两次，当天在该 issue 上共有 3 次操作。`openchamber-bot[bot]` 在 #4537 上回复，标记为 `fix-ready`，并确认当前 main 上两个界面解析 OpenCode Go 凭据的方式不一致。",
+      "headline": "Watchdog 加固与 openchamber 配额 Bug 反馈",
+      "summary": "sogeisetsu 在 `sogeisetsu/sogeisetsu` 提交了 **7 次本人提交**，另有 9 次由 `github-actions[bot]` 自动提交。改动集中在 watchdog 功能：把兜底范围扩展到第二个 workflow（30 天活动卡片），两条时间线各自独立计数；失败不再吞错而是抛异常，让 Invocations 成功率充当告警；并为 token 增加去 BOM 兜底，同时补上 secret 踩坑记录。运维侧新增两项：Cloudflare Worker watchdog 兜底日报调度，以及 cron 避开整点并加上本仓 push 兜底触发。另有两次文档/样式提交，把流程图字体换成 Excalifont 手写体（fontFamily 5 -> 1），并为 watchdog 补了一张 Excalidraw 运行链路图。Issue 侧共 3 条动作，全部发生在 `openchamber/openchamber` 的 #4537（OpenCode Go 配额显示 \"Provider not configured\" 而 Providers 页却显示已配置 API key）：用户先开了该 issue，随后又留下两条跟进评论。`openchamber-bot[bot]` 回复了一次，标记为 `fix-ready`，确认两个界面在当前 main 上解析 OpenCode Go 凭据的方式不同。当日无 PR、review、release、star 或 discussion 记录。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "5a143dc96306cd77281b5bda7ae684810d9b623de1e54f00943b18c7d0c8f78f"
+  "dataHash": "037ae24a68357d4de63d3ace4942e9939d50f29e488f1afa65d176f50e539122"
 }
