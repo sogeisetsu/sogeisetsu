@@ -8,7 +8,7 @@
       "type": "text",
       "x": 60,
       "y": 16,
-      "width": 518.4,
+      "width": 763.1999999999999,
       "height": 30,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -21,21 +21,21 @@
       "groupIds": [],
       "frameId": null,
       "roundness": null,
-      "seed": 324122568,
+      "seed": 354121341,
       "version": 1,
-      "versionNonce": 375901714,
+      "versionNonce": 1196580629,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
-      "text": "往 main 推一次提交之后，这个仓库会发生什么",
+      "text": "往 main 推一次提交之后，会发生什么 —— 以及为什么不会无限循环",
       "fontSize": 24,
       "fontFamily": 1,
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "往 main 推一次提交之后，这个仓库会发生什么",
+      "originalText": "往 main 推一次提交之后，会发生什么 —— 以及为什么不会无限循环",
       "lineHeight": 1.25,
       "autoResize": true
     },
@@ -59,9 +59,9 @@
       "roundness": {
         "type": 3
       },
-      "seed": 711710450,
+      "seed": 2062509414,
       "version": 1,
-      "versionNonce": 845212917,
+      "versionNonce": 1524856609,
       "isDeleted": false,
       "boundElements": [
         {
@@ -69,7 +69,7 @@
           "id": "srcA__text"
         }
       ],
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false
     },
@@ -91,12 +91,12 @@
       "groupIds": [],
       "frameId": null,
       "roundness": null,
-      "seed": 265879457,
+      "seed": 878725387,
       "version": 1,
-      "versionNonce": 2096289008,
+      "versionNonce": 128757152,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "text": "① 你或我改代码（走分支 → 合并）\n例：scripts/daily/**、ops/cloudflare-cron/**\n→ push main",
@@ -129,9 +129,9 @@
       "roundness": {
         "type": 3
       },
-      "seed": 303750738,
+      "seed": 1327395163,
       "version": 1,
-      "versionNonce": 870811341,
+      "versionNonce": 1720334113,
       "isDeleted": false,
       "boundElements": [
         {
@@ -139,7 +139,7 @@
           "id": "srcB__text"
         }
       ],
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false
     },
@@ -161,12 +161,12 @@
       "groupIds": [],
       "frameId": null,
       "roundness": null,
-      "seed": 249628646,
+      "seed": 2128397215,
       "version": 1,
-      "versionNonce": 1874981976,
+      "versionNonce": 885297808,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "text": "② 日报 workflow 自己提交\n只动 docs/（index.html + data/ + report/）",
@@ -199,9 +199,9 @@
       "roundness": {
         "type": 3
       },
-      "seed": 998615956,
+      "seed": 1658325588,
       "version": 1,
-      "versionNonce": 2034200158,
+      "versionNonce": 1826948606,
       "isDeleted": false,
       "boundElements": [
         {
@@ -209,7 +209,7 @@
           "id": "srcC__text"
         }
       ],
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false
     },
@@ -231,12 +231,12 @@
       "groupIds": [],
       "frameId": null,
       "roundness": null,
-      "seed": 1822744692,
+      "seed": 2109743880,
       "version": 1,
-      "versionNonce": 1143153815,
+      "versionNonce": 1984556556,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "text": "③ 活动卡片 workflow 自己提交\nREADME.md + assets/30-day-activity.svg",
@@ -269,9 +269,9 @@
       "roundness": {
         "type": 3
       },
-      "seed": 2129276592,
+      "seed": 1242759352,
       "version": 1,
-      "versionNonce": 1900493752,
+      "versionNonce": 1085273893,
       "isDeleted": false,
       "boundElements": [
         {
@@ -279,7 +279,7 @@
           "id": "merge__text"
         }
       ],
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false
     },
@@ -301,12 +301,12 @@
       "groupIds": [],
       "frameId": null,
       "roundness": null,
-      "seed": 302799084,
+      "seed": 1427457109,
       "version": 1,
-      "versionNonce": 774385680,
+      "versionNonce": 1331088314,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "text": "push 到 main",
@@ -339,9 +339,9 @@
       "roundness": {
         "type": 3
       },
-      "seed": 970551770,
+      "seed": 782800980,
       "version": 1,
-      "versionNonce": 1755062686,
+      "versionNonce": 2032437948,
       "isDeleted": false,
       "boundElements": [
         {
@@ -349,7 +349,7 @@
           "id": "c1__text"
         }
       ],
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false
     },
@@ -371,12 +371,12 @@
       "groupIds": [],
       "frameId": null,
       "roundness": null,
-      "seed": 1890451118,
+      "seed": 2122106675,
       "version": 1,
-      "versionNonce": 1613336964,
+      "versionNonce": 625204652,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "text": "① update-daily-report.yml\npaths 白名单：scripts/daily/** 或它自己\n命中才跑；docs/ 的自动提交不命中 → 不跑",
@@ -409,9 +409,9 @@
       "roundness": {
         "type": 3
       },
-      "seed": 1569420317,
+      "seed": 1033776225,
       "version": 1,
-      "versionNonce": 759247871,
+      "versionNonce": 26111095,
       "isDeleted": false,
       "boundElements": [
         {
@@ -419,7 +419,7 @@
           "id": "c2__text"
         }
       ],
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false
     },
@@ -428,7 +428,7 @@
       "type": "text",
       "x": 601,
       "y": 543.75,
-      "width": 159.60000000000005,
+      "width": 266,
       "height": 52.5,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -441,21 +441,21 @@
       "groupIds": [],
       "frameId": null,
       "roundness": null,
-      "seed": 806764158,
+      "seed": 713514300,
       "version": 1,
-      "versionNonce": 749533979,
+      "versionNonce": 1213057867,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
-      "text": "② GitHub Pages\nSource: main / docs\nmain 一更新就重建站点",
+      "text": "② GitHub Pages\nSource: main / docs\nmain 一更新就重建站点（只读，不回写）",
       "fontSize": 14,
       "fontFamily": 1,
       "textAlign": "left",
       "verticalAlign": "middle",
       "containerId": "c2",
-      "originalText": "② GitHub Pages\nSource: main / docs\nmain 一更新就重建站点",
+      "originalText": "② GitHub Pages\nSource: main / docs\nmain 一更新就重建站点（只读，不回写）",
       "lineHeight": 1.25,
       "autoResize": false
     },
@@ -479,9 +479,9 @@
       "roundness": {
         "type": 3
       },
-      "seed": 1660969719,
+      "seed": 1765416671,
       "version": 1,
-      "versionNonce": 976955523,
+      "versionNonce": 951308558,
       "isDeleted": false,
       "boundElements": [
         {
@@ -489,7 +489,7 @@
           "id": "c3__text"
         }
       ],
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false
     },
@@ -498,7 +498,7 @@
       "type": "text",
       "x": 1087,
       "y": 543.75,
-      "width": 313.6,
+      "width": 182.00000000000006,
       "height": 52.5,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -511,21 +511,21 @@
       "groupIds": [],
       "frameId": null,
       "roundness": null,
-      "seed": 130456515,
+      "seed": 1245290510,
       "version": 1,
-      "versionNonce": 1389810517,
+      "versionNonce": 675666917,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
-      "text": "③ update-activity.yml\n没有 push 触发器\n任何 push 都不触发它（只有 cron + 补触发）",
+      "text": "③ update-activity.yml\n没有 push 触发器\n任何 push 都不触发它",
       "fontSize": 14,
       "fontFamily": 1,
       "textAlign": "left",
       "verticalAlign": "middle",
       "containerId": "c3",
-      "originalText": "③ update-activity.yml\n没有 push 触发器\n任何 push 都不触发它（只有 cron + 补触发）",
+      "originalText": "③ update-activity.yml\n没有 push 触发器\n任何 push 都不触发它",
       "lineHeight": 1.25,
       "autoResize": false
     },
@@ -549,9 +549,9 @@
       "roundness": {
         "type": 3
       },
-      "seed": 1831567201,
+      "seed": 999191783,
       "version": 1,
-      "versionNonce": 443822812,
+      "versionNonce": 1938486455,
       "isDeleted": false,
       "boundElements": [
         {
@@ -559,7 +559,7 @@
           "id": "c4__text"
         }
       ],
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false
     },
@@ -581,12 +581,12 @@
       "groupIds": [],
       "frameId": null,
       "roundness": null,
-      "seed": 1790500295,
+      "seed": 10728963,
       "version": 1,
-      "versionNonce": 168458234,
+      "versionNonce": 818919823,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "text": "④ Cloudflare Workers Builds\npaths 白名单：ops/cloudflare-cron/**\n命中就跑构建 → npx wrangler deploy",
@@ -605,7 +605,7 @@
       "x": 100,
       "y": 790,
       "width": 440,
-      "height": 190,
+      "height": 170,
       "angle": 0,
       "strokeColor": "#6741d9",
       "backgroundColor": "#d0bfff",
@@ -619,9 +619,9 @@
       "roundness": {
         "type": 3
       },
-      "seed": 1099452677,
+      "seed": 2141904757,
       "version": 1,
-      "versionNonce": 4519209,
+      "versionNonce": 921668100,
       "isDeleted": false,
       "boundElements": [
         {
@@ -629,7 +629,7 @@
           "id": "runDaily__text"
         }
       ],
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false
     },
@@ -637,7 +637,7 @@
       "id": "runDaily__text",
       "type": "text",
       "x": 114,
-      "y": 858.75,
+      "y": 848.75,
       "width": 327.5999999999999,
       "height": 52.5,
       "angle": 0,
@@ -651,31 +651,31 @@
       "groupIds": [],
       "frameId": null,
       "roundness": null,
-      "seed": 652771330,
+      "seed": 1063119816,
       "version": 1,
-      "versionNonce": 2139727229,
+      "versionNonce": 1578394071,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
-      "text": "命中时跑：Update daily report\nindex.mjs → 抓数据 → AI 摘要 → 写 docs/\n→ 又 commit + push main，回到上面",
+      "text": "命中时跑：Update daily report\nindex.mjs → 抓数据 → AI 摘要 → 写 docs/\n→ 又 commit + push main（想回到上面）",
       "fontSize": 14,
       "fontFamily": 1,
       "textAlign": "left",
       "verticalAlign": "middle",
       "containerId": "runDaily",
-      "originalText": "命中时跑：Update daily report\nindex.mjs → 抓数据 → AI 摘要 → 写 docs/\n→ 又 commit + push main，回到上面",
+      "originalText": "命中时跑：Update daily report\nindex.mjs → 抓数据 → AI 摘要 → 写 docs/\n→ 又 commit + push main（想回到上面）",
       "lineHeight": 1.25,
       "autoResize": false
     },
     {
-      "id": "noteLoop",
+      "id": "gates",
       "type": "rectangle",
       "x": 587,
       "y": 790,
       "width": 880,
-      "height": 190,
+      "height": 170,
       "angle": 0,
       "strokeColor": "#e67700",
       "backgroundColor": "#fff3bf",
@@ -689,25 +689,25 @@
       "roundness": {
         "type": 3
       },
-      "seed": 993999130,
+      "seed": 941585883,
       "version": 1,
-      "versionNonce": 1608470808,
+      "versionNonce": 1518798054,
       "isDeleted": false,
       "boundElements": [
         {
           "type": "text",
-          "id": "noteLoop__text"
+          "id": "gates__text"
         }
       ],
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false
     },
     {
-      "id": "noteLoop__text",
+      "id": "gates__text",
       "type": "text",
       "x": 601,
-      "y": 841.25,
+      "y": 831.25,
       "width": 461.99999999999966,
       "height": 87.5,
       "angle": 0,
@@ -721,21 +721,21 @@
       "groupIds": [],
       "frameId": null,
       "roundness": null,
-      "seed": 1587476061,
-      "version": 3,
-      "versionNonce": 1695839536,
+      "seed": 224668368,
+      "version": 1,
+      "versionNonce": 745760676,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791468252035,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
-      "text": "为什么不会无限循环 —— 四道闸门\n① 自动提交只动 docs/，不命中任何白名单 → 不再触发自己\n② GITHUB_TOKEN 推的提交不触发任何 workflow（GitHub 防递归）\n③ Cloudflare 那条不产生提交 → 它没有回头的边\n④ 就算重复跑一次：dataHash 跳过 → 不产生提交，也不往下传",
+      "text": "回不去 —— 四道闸门\n① 只动 docs/ → 不命中日报 push 触发器的白名单\n② GITHUB_TOKEN 推的提交不触发任何 workflow（GitHub 防递归）\n③ Cloudflare 那条不产生提交 → 没有回头的边\n④ 就算重复跑：dataHash 跳过 → 不产生提交",
       "fontSize": 14,
       "fontFamily": 1,
       "textAlign": "left",
       "verticalAlign": "middle",
-      "containerId": "noteLoop",
-      "originalText": "为什么不会无限循环 —— 四道闸门\n① 自动提交只动 docs/，不命中任何白名单 → 不再触发自己\n② GITHUB_TOKEN 推的提交不触发任何 workflow（GitHub 防递归）\n③ Cloudflare 那条不产生提交 → 它没有回头的边\n④ 就算重复跑一次：dataHash 跳过 → 不产生提交，也不往下传",
+      "containerId": "gates",
+      "originalText": "回不去 —— 四道闸门\n① 只动 docs/ → 不命中日报 push 触发器的白名单\n② GITHUB_TOKEN 推的提交不触发任何 workflow（GitHub 防递归）\n③ Cloudflare 那条不产生提交 → 没有回头的边\n④ 就算重复跑：dataHash 跳过 → 不产生提交",
       "lineHeight": 1.25,
       "autoResize": false
     },
@@ -745,7 +745,7 @@
       "x": 1560,
       "y": 790,
       "width": 440,
-      "height": 190,
+      "height": 170,
       "angle": 0,
       "strokeColor": "#1971c2",
       "backgroundColor": "#a5d8ff",
@@ -759,9 +759,9 @@
       "roundness": {
         "type": 3
       },
-      "seed": 1493443745,
+      "seed": 2053554529,
       "version": 1,
-      "versionNonce": 221305485,
+      "versionNonce": 1570235429,
       "isDeleted": false,
       "boundElements": [
         {
@@ -769,7 +769,7 @@
           "id": "cfRun__text"
         }
       ],
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false
     },
@@ -777,7 +777,7 @@
       "id": "cfRun__text",
       "type": "text",
       "x": 1574,
-      "y": 850,
+      "y": 840,
       "width": 352.79999999999984,
       "height": 70,
       "angle": 0,
@@ -791,21 +791,351 @@
       "groupIds": [],
       "frameId": null,
       "roundness": null,
-      "seed": 1564046050,
+      "seed": 719698984,
       "version": 1,
-      "versionNonce": 522883155,
+      "versionNonce": 136354868,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
-      "text": "构建环境里发生什么\n拉仓库 → 在 root directory 下执行\nnpx wrangler deploy\n→ Worker 出新版本；cron 与 GITHUB_TOKEN 不变",
+      "text": "构建环境里发生什么\n拉仓库 → 在 root directory 下\n执行 npx wrangler deploy\n→ Worker 出新版本；cron 与 GITHUB_TOKEN 不变",
       "fontSize": 14,
       "fontFamily": 1,
       "textAlign": "left",
       "verticalAlign": "middle",
       "containerId": "cfRun",
-      "originalText": "构建环境里发生什么\n拉仓库 → 在 root directory 下执行\nnpx wrangler deploy\n→ Worker 出新版本；cron 与 GITHUB_TOKEN 不变",
+      "originalText": "构建环境里发生什么\n拉仓库 → 在 root directory 下\n执行 npx wrangler deploy\n→ Worker 出新版本；cron 与 GITHUB_TOKEN 不变",
+      "lineHeight": 1.25,
+      "autoResize": false
+    },
+    {
+      "id": "aLoopTry",
+      "type": "arrow",
+      "x": 100,
+      "y": 875,
+      "width": 740,
+      "height": 550,
+      "angle": 0,
+      "strokeColor": "#868e96",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 2
+      },
+      "seed": 1843376414,
+      "version": 1,
+      "versionNonce": 1138724681,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1791468737527,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -60,
+          0
+        ],
+        [
+          -60,
+          -550
+        ],
+        [
+          680,
+          -550
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": null,
+      "endBinding": null,
+      "startArrowhead": null,
+      "endArrowhead": "arrow"
+    },
+    {
+      "id": "xLoop1",
+      "type": "line",
+      "x": 260,
+      "y": 285,
+      "width": 80,
+      "height": 80,
+      "angle": 0,
+      "strokeColor": "#c92a2a",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 8,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 2
+      },
+      "seed": 36642347,
+      "version": 1,
+      "versionNonce": 178418195,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1791468737527,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          80,
+          80
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": null,
+      "endBinding": null,
+      "startArrowhead": null,
+      "endArrowhead": null
+    },
+    {
+      "id": "xLoop2",
+      "type": "line",
+      "x": 340,
+      "y": 285,
+      "width": 80,
+      "height": 80,
+      "angle": 0,
+      "strokeColor": "#c92a2a",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 8,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 2
+      },
+      "seed": 420840474,
+      "version": 1,
+      "versionNonce": 258548988,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1791468737527,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -80,
+          80
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": null,
+      "endBinding": null,
+      "startArrowhead": null,
+      "endArrowhead": null
+    },
+    {
+      "id": "lblX",
+      "type": "text",
+      "x": 110,
+      "y": 385,
+      "width": 279,
+      "height": 18.75,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 937229406,
+      "version": 1,
+      "versionNonce": 1231359032,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1791468737527,
+      "link": null,
+      "locked": false,
+      "text": "✗ 这条回环走不通：被下面四道闸门挡住",
+      "fontSize": 15,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "✗ 这条回环走不通：被下面四道闸门挡住",
+      "lineHeight": 1.25,
+      "autoResize": true
+    },
+    {
+      "id": "lblLoop",
+      "type": "text",
+      "x": 55,
+      "y": 700,
+      "width": 148.40000000000003,
+      "height": 17.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 1522956667,
+      "version": 1,
+      "versionNonce": 2118963026,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1791468737527,
+      "link": null,
+      "locked": false,
+      "text": "自动提交又 push 一次",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "自动提交又 push 一次",
+      "lineHeight": 1.25,
+      "autoResize": true
+    },
+    {
+      "id": "checkMark",
+      "type": "line",
+      "x": 120,
+      "y": 1075,
+      "width": 66,
+      "height": 57,
+      "angle": 0,
+      "strokeColor": "#2f9e44",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 8,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 2
+      },
+      "seed": 439492475,
+      "version": 1,
+      "versionNonce": 243735314,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1791468737527,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          22,
+          27
+        ],
+        [
+          66,
+          -30
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": null,
+      "endBinding": null,
+      "startArrowhead": null,
+      "endArrowhead": null
+    },
+    {
+      "id": "concl",
+      "type": "rectangle",
+      "x": 100,
+      "y": 1030,
+      "width": 1900,
+      "height": 120,
+      "angle": 0,
+      "strokeColor": "#2f9e44",
+      "backgroundColor": "#d3f9d8",
+      "fillStyle": "solid",
+      "strokeWidth": 3,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 3
+      },
+      "seed": 1663651971,
+      "version": 1,
+      "versionNonce": 174456205,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "concl__text"
+        }
+      ],
+      "updated": 1791468737527,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "concl__text",
+      "type": "text",
+      "x": 694.7999999999998,
+      "y": 1070,
+      "width": 710.4000000000003,
+      "height": 40,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 1846805028,
+      "version": 1,
+      "versionNonce": 2073347195,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1791468737527,
+      "link": null,
+      "locked": false,
+      "text": "结论：不会无限循环，也不会超级无敌大循环\n日报那条的回环被挡死（红 ✗），Cloudflare 那条根本没有回头的边 —— 两条链都在终点停住",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "concl",
+      "originalText": "结论：不会无限循环，也不会超级无敌大循环\n日报那条的回环被挡死（红 ✗），Cloudflare 那条根本没有回头的边 —— 两条链都在终点停住",
       "lineHeight": 1.25,
       "autoResize": false
     },
@@ -829,12 +1159,12 @@
       "roundness": {
         "type": 2
       },
-      "seed": 5166010,
+      "seed": 1675121566,
       "version": 1,
-      "versionNonce": 571966479,
+      "versionNonce": 1779988548,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "points": [
@@ -873,12 +1203,12 @@
       "roundness": {
         "type": 2
       },
-      "seed": 845070035,
+      "seed": 539814126,
       "version": 1,
-      "versionNonce": 344973395,
+      "versionNonce": 146049272,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "points": [
@@ -917,12 +1247,12 @@
       "roundness": {
         "type": 2
       },
-      "seed": 895412370,
+      "seed": 585317383,
       "version": 1,
-      "versionNonce": 849253277,
+      "versionNonce": 1566724700,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "points": [
@@ -961,12 +1291,12 @@
       "roundness": {
         "type": 2
       },
-      "seed": 15717190,
+      "seed": 1998185505,
       "version": 1,
-      "versionNonce": 656127455,
+      "versionNonce": 692194015,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "points": [
@@ -1005,12 +1335,12 @@
       "roundness": {
         "type": 2
       },
-      "seed": 1976122158,
+      "seed": 1293694965,
       "version": 1,
-      "versionNonce": 651235968,
+      "versionNonce": 305034320,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "points": [
@@ -1049,12 +1379,12 @@
       "roundness": {
         "type": 2
       },
-      "seed": 496656150,
+      "seed": 879745104,
       "version": 1,
-      "versionNonce": 1408082359,
+      "versionNonce": 542749436,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "points": [
@@ -1093,12 +1423,12 @@
       "roundness": {
         "type": 2
       },
-      "seed": 1495171105,
+      "seed": 373414135,
       "version": 1,
-      "versionNonce": 1700289241,
+      "versionNonce": 463388460,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "points": [
@@ -1137,12 +1467,12 @@
       "roundness": {
         "type": 2
       },
-      "seed": 590798055,
+      "seed": 923821456,
       "version": 1,
-      "versionNonce": 1231883038,
+      "versionNonce": 714666285,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "points": [
@@ -1181,12 +1511,12 @@
       "roundness": {
         "type": 2
       },
-      "seed": 1505767759,
+      "seed": 1212956455,
       "version": 1,
-      "versionNonce": 638838356,
+      "versionNonce": 1745203279,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1791467402957,
+      "updated": 1791468737527,
       "link": null,
       "locked": false,
       "points": [
@@ -1204,164 +1534,6 @@
       "endBinding": null,
       "startArrowhead": null,
       "endArrowhead": "arrow"
-    },
-    {
-      "id": "aLoop",
-      "type": "arrow",
-      "x": 100,
-      "y": 885,
-      "width": 740,
-      "height": 560,
-      "angle": 0,
-      "strokeColor": "#e8590c",
-      "backgroundColor": "transparent",
-      "fillStyle": "solid",
-      "strokeWidth": 2,
-      "strokeStyle": "dashed",
-      "roughness": 1,
-      "opacity": 100,
-      "groupIds": [],
-      "frameId": null,
-      "roundness": {
-        "type": 2
-      },
-      "seed": 1395651347,
-      "version": 1,
-      "versionNonce": 99333012,
-      "isDeleted": false,
-      "boundElements": null,
-      "updated": 1791467402957,
-      "link": null,
-      "locked": false,
-      "points": [
-        [
-          0,
-          0
-        ],
-        [
-          -60,
-          0
-        ],
-        [
-          -60,
-          -560
-        ],
-        [
-          680,
-          -560
-        ]
-      ],
-      "lastCommittedPoint": null,
-      "startBinding": null,
-      "endBinding": null,
-      "startArrowhead": null,
-      "endArrowhead": "arrow"
-    },
-    {
-      "id": "lblLoop",
-      "type": "text",
-      "x": 55,
-      "y": 700,
-      "width": 148.40000000000003,
-      "height": 17.5,
-      "angle": 0,
-      "strokeColor": "#1e1e1e",
-      "backgroundColor": "transparent",
-      "fillStyle": "solid",
-      "strokeWidth": 2,
-      "strokeStyle": "solid",
-      "roughness": 1,
-      "opacity": 100,
-      "groupIds": [],
-      "frameId": null,
-      "roundness": null,
-      "seed": 1368759211,
-      "version": 1,
-      "versionNonce": 1297084534,
-      "isDeleted": false,
-      "boundElements": null,
-      "updated": 1791467402957,
-      "link": null,
-      "locked": false,
-      "text": "自动提交再 push 一次",
-      "fontSize": 14,
-      "fontFamily": 1,
-      "textAlign": "left",
-      "verticalAlign": "top",
-      "containerId": null,
-      "originalText": "自动提交再 push 一次",
-      "lineHeight": 1.25,
-      "autoResize": true
-    },
-    {
-      "id": "noLoopBanner",
-      "type": "rectangle",
-      "x": 100,
-      "y": 1010,
-      "width": 1900,
-      "height": 110,
-      "angle": 0,
-      "strokeColor": "#2f9e44",
-      "backgroundColor": "#d3f9d8",
-      "fillStyle": "solid",
-      "strokeWidth": 3,
-      "strokeStyle": "solid",
-      "roughness": 1,
-      "opacity": 100,
-      "groupIds": [],
-      "frameId": null,
-      "roundness": {
-        "type": 3
-      },
-      "seed": 1283174934,
-      "version": 1,
-      "versionNonce": 993985955,
-      "isDeleted": false,
-      "boundElements": [
-        {
-          "type": "text",
-          "id": "noLoopBanner__text"
-        }
-      ],
-      "updated": 1791468252035,
-      "link": null,
-      "locked": false
-    },
-    {
-      "id": "noLoopBanner__text",
-      "type": "text",
-      "x": 749.0000000000002,
-      "y": 1047.5,
-      "width": 601.9999999999995,
-      "height": 35,
-      "angle": 0,
-      "strokeColor": "#1e1e1e",
-      "backgroundColor": "transparent",
-      "fillStyle": "solid",
-      "strokeWidth": 2,
-      "strokeStyle": "solid",
-      "roughness": 1,
-      "opacity": 100,
-      "groupIds": [],
-      "frameId": null,
-      "roundness": null,
-      "seed": 1259408166,
-      "version": 1,
-      "versionNonce": 329152261,
-      "isDeleted": false,
-      "boundElements": null,
-      "updated": 1791468252035,
-      "link": null,
-      "locked": false,
-      "text": "不会无限循环，也不会超级无敌大循环：这条链上每一段都是终止的\n（Cloudflare 不产生提交 · bot 提交不触发 workflow · 重复跑会被 dataHash 跳过）",
-      "fontSize": 14,
-      "fontFamily": 1,
-      "textAlign": "center",
-      "verticalAlign": "middle",
-      "containerId": "noLoopBanner",
-      "originalText": "不会无限循环，也不会超级无敌大循环：这条链上每一段都是终止的\n（Cloudflare 不产生提交 · bot 提交不触发 workflow · 重复跑会被 dataHash 跳过）",
-      "lineHeight": 1.25,
-      "autoResize": false
     }
   ],
   "appState": {
@@ -1370,7 +1542,7 @@
     "scrollX": 0,
     "scrollY": 0,
     "zoom": {
-      "value": 0.8
+      "value": 0.7
     }
   },
   "files": {}
