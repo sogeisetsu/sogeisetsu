@@ -58,6 +58,37 @@ GitHub Actions 的 `schedule` 是 best-effort：本仓两个 workflow 单日各 
 失败会抛异常，这次 invocation 记为失败，成功率直接掉；相反"成功率 100%"才算正常。日志细节
 在 Settings → Trigger Events（Workers Logs 已开）。
 
+## 自动部署（Workers Builds，2026-10-08 起）
+
+这个 Worker 已接入 Cloudflare 的 Git 集成：**改 `ops/cloudflare-cron/**` 并推到 `main` 会自动构建 + 部署**，不用再在本地跑 `wrangler deploy`。
+
+| 设置 | 值 |
+| --- | --- |
+| Git 仓库 | `sogeisetsu/sogeisetsu`（Cloudflare GitHub App 的范围只给了这一个仓库） |
+| Production branch | `main` |
+| Root directory | `ops/cloudflare-cron` |
+| Build command | 空（没有构建步骤） |
+| Deploy command | `npx wrangler deploy` |
+| Include paths | `ops/cloudflare-cron/**` |
+| Preview builds | 关闭（只有 cron 的 Worker，预览版本没有意义，还费构建额度） |
+
+两个要点：
+
+- **Include paths 不能留成默认的 `*`**：本仓每 2 小时就有一次 `docs/` 的日报自动提交，白名单不配等于每 2 小时白构建一次。只动其他路径的提交会被跳过（先排 exclude、再比 include）。
+- 构建用的变量和 secret 与环境变量是两套：`GITHUB_TOKEN` 是 Worker 的运行时 secret，不随 Git 构建走，也不会因此暴露。
+
+Dashboard 里 watch paths 这类字段的 UI 有时不落盘（点了改、刷新又回去），遇到这种就用它自己的 API 改，可靠得多：
+
+```bash
+# 取 trigger_uuid
+GET  /accounts/<acct>/builds/workers/<worker_tag>/triggers
+# 改配置
+PATCH /accounts/<acct>/builds/triggers/<trigger_uuid>   {"path_includes":["ops/cloudflare-cron/**"]}
+# 手动跑一次构建 / 看构建历史
+POST /accounts/<acct>/builds/triggers/<trigger_uuid>/builds   {"branch":"main"}
+GET  /accounts/<acct>/builds/workers/<worker_tag>/builds
+```
+
 ## 踩过的坑
 
 ### secret 里混进 BOM → GitHub 401 Bad credentials
