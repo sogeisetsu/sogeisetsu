@@ -22,6 +22,9 @@ _Updated automatically: 2026-10-08_
 
 <details><summary>🌐 Contributed to</summary>
 
+- 💬 Commented on [openchamber/openchamber#4537](https://github.com/openchamber/openchamber/issues/4537): \[Bug\] OpenCode Go quota shows "Provider not configured" while the Providers page shows an API key for it
+- 💬 Commented on [openchamber/openchamber#4537](https://github.com/openchamber/openchamber/issues/4537): \[Bug\] OpenCode Go quota shows "Provider not configured" while the Providers page shows an API key for it
+- 🐛 Opened issue [\[Bug\] OpenCode Go quota shows "Provider not configured" while the Providers page shows an API key for it](https://github.com/openchamber/openchamber/issues/4537) in `openchamber/openchamber`
 - 💬 Commented on [alvinunreal/oh-my-opencode-slim#1475](https://github.com/alvinunreal/oh-my-opencode-slim/issues/1475): \[Bug\]: reflect --sessions Session Discovery queries legacy V1 tables, returns 0 sessions on OpenCode V2
 - 🐛 Opened issue [\[Bug\]: reflect --sessions Session Discovery queries legacy V1 tables, returns 0 sessions on OpenCode V2](https://github.com/alvinunreal/oh-my-opencode-slim/issues/1475) in `alvinunreal/oh-my-opencode-slim`
 - 💬 Commented on [anomalyco/opencode#50878](https://github.com/anomalyco/opencode/issues/50878): In OpenCode, after removing ~\\.local\\share\\opencode\\auth.json, the model still returns usable and is not removed from the model list
@@ -29,9 +32,6 @@ _Updated automatically: 2026-10-08_
 - 🐛 Opened issue [OpenCode V2 compatibility: SKILL.md frontmatter and runtime assumptions](https://github.com/OpenSenseNova/SenseNova-Skills/issues/180) in `OpenSenseNova/SenseNova-Skills`
 - 💬 Commented on [iOfficeAI/OfficeCLI#254](https://github.com/iOfficeAI/OfficeCLI/issues/254): OpenCode detection & skill install path point to ~/.opencode, but OpenCode uses ~/.config/opencode
 - 🐛 Opened issue [OpenCode v2 integration: fix skills install path + add mcp target](https://github.com/iOfficeAI/OfficeCLI/issues/458) in `iOfficeAI/OfficeCLI`
-- 🐛 Opened issue [\[test\] SidebarHeader.test.tsx still passes onOpenMultiRun/canOpenMultiRun removed in d9fbf6b](https://github.com/openchamber/openchamber/issues/4346) in `openchamber/openchamber`
-- 🐛 Opened issue [\[UI\] Command palette 'Parallel run' shares the checkbox-multiple icon with sidebar 'Select sessions'](https://github.com/openchamber/openchamber/issues/4345) in `openchamber/openchamber`
-- 🐛 Opened issue [\[Docs\] Multi-run docs still point to a sidebar header button that was removed in d9fbf6b \(moved to the composer\)](https://github.com/openchamber/openchamber/issues/4337) in `openchamber/openchamber`
 
 </details>
 <!--END:activity-->
