@@ -15,6 +15,10 @@
  *
  * 日志：Cloudflare Dashboard → 该 Worker → Settings → Trigger Events → View events
  *       （console.log / console.error 都会出现在这里，最近 100 次）
+ *
+ * 失败可见性：任何 API 调用失败都不吞错，打完日志直接抛异常 —— 这次 invocation 会被
+ *       Cloudflare 记为失败，dashboard 的 Invocations 成功率会掉，等于自带告警；
+ *       避免出现「成功率 100% 但每次都在 401」这种只有翻日志才看得见的状态。
  */
 
 const OWNER = "sogeisetsu";
@@ -81,8 +85,11 @@ async function checkAndFill(token, nowMs) {
     `?per_page=20&created=${encodeURIComponent(`>=${since}`)}`;
   const res = await ghFetch(listPath, token);
   if (!res.ok) {
-    console.error(`查询 runs 失败 HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`);
-    return { action: "error-list", slot, status: res.status };
+    const detail = (await res.text()).slice(0, 300);
+    console.error(`查询 runs 失败 HTTP ${res.status}: ${detail}`);
+    // 不吞错：抛出去让 Cloudflare 把这次 invocation 记成失败（Invocations 成功率会掉），
+    // 这样即使没人看日志，dashboard 上也能一眼看出问题。
+    throw new Error(`查询 runs 失败 HTTP ${res.status}: ${detail}`);
   }
   const body = await res.json();
   const runs = Array.isArray(body.workflow_runs) ? body.workflow_runs : [];
@@ -108,8 +115,9 @@ async function checkAndFill(token, nowMs) {
     console.log(`时点 ${new Date(slot).toISOString()} 没有 run，已补一次 workflow_dispatch`);
     return { action: "dispatched", slot };
   }
-  console.error(`dispatch 失败 HTTP ${postRes.status}: ${(await postRes.text()).slice(0, 300)}`);
-  return { action: "error-dispatch", slot, status: postRes.status };
+  const detail = (await postRes.text()).slice(0, 300);
+  console.error(`dispatch 失败 HTTP ${postRes.status}: ${detail}`);
+  throw new Error(`dispatch 失败 HTTP ${postRes.status}: ${detail}`);
 }
 
 export default {
@@ -120,15 +128,16 @@ export default {
     const token = String(env.GITHUB_TOKEN ?? "").trim();
     if (!token) {
       console.error("缺少 GITHUB_TOKEN secret，无法补触发");
-      return;
+      throw new Error("缺少 GITHUB_TOKEN secret");
     }
     const nowMs = controller?.scheduledTime ?? Date.now();
     console.log(`tick @ ${new Date(nowMs).toISOString()}`);
     await checkAndFill(token, nowMs);
   },
 
-  // 只是个占位：这个 Worker 不需要被 HTTP 访问。
-  // 想手动跑一次 scheduled handler，可以访问 /cdn-cgi/handler/scheduled。
+  // 只是个占位：这个 Worker 只需要 cron，不需要对外 URL。
+  // （wrangler.toml 里 workers_dev = false，所以 /cdn-cgi/handler/scheduled 也访问不到；
+  //  想手动跑一次 scheduled，用 Dashboard 或临时打开 workers.dev。）
   async fetch() {
     return new Response("sogeisetsu daily-report watchdog: scheduled-only\n", {
       status: 200,

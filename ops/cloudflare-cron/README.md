@@ -41,6 +41,10 @@ GitHub 正常投递时它什么都不做，因此不产生重复 run。
 挑一个被 GitHub 丢掉的时点看：`slot + GRACE_MINUTES` 之后 worker 日志出现
 `没有 run，已补一次 workflow_dispatch`，同时 Actions 里出现一个 `event=workflow_dispatch` 的 run。
 
+日常盯一个数就够：Settings → Triggers 的 **Invocations 成功率**。worker 不吞错——API 调用
+失败会抛异常，这次 invocation 记为失败，成功率直接掉；相反"成功率 100%"才算正常。日志细节
+在 Settings → Trigger Events（Workers Logs 已开）。
+
 ## 踩过的坑
 
 ### secret 里混进 BOM → GitHub 401 Bad credentials

@@ -18,3 +18,8 @@ workers_dev = false
 crons = ["*/10 * * * *"]
 
 # 密钥不进这个文件：npx wrangler secret put GITHUB_TOKEN
+
+# 打开 Workers Logs（Invocation 的 console 输出，免费额度 200k 事件/天、保留 3 天）。
+# 今天就是因为这个关着，401 只能靠 wrangler tail 才看见。
+[observability]
+enabled = true
