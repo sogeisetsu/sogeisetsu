@@ -41,6 +41,24 @@ GitHub 正常投递时它什么都不做，因此不产生重复 run。
 挑一个被 GitHub 丢掉的时点看：`slot + GRACE_MINUTES` 之后 worker 日志出现
 `没有 run，已补一次 workflow_dispatch`，同时 Actions 里出现一个 `event=workflow_dispatch` 的 run。
 
+## 踩过的坑
+
+### secret 里混进 BOM → GitHub 401 Bad credentials
+
+在 Windows PowerShell 5.1 里用管道塞 secret（`... | wrangler secret put GITHUB_TOKEN`），
+`$OutputEncoding` 若被设成 UTF-8，会把 `\uFEFF` 写在值开头。Cloudflare 原样存下，
+Worker 拼进 `Authorization` 头就成了非 ASCII，GitHub 回 `401 Bad credentials`。
+
+- `worker.mjs` 已用 `String(env.GITHUB_TOKEN).trim()` 兜底（JS 的 `trim` 会去掉 U+FEFF）。
+- 想彻底避免：先 `$OutputEncoding = New-Object System.Text.ASCIIEncoding` 再管道，或者在 Dashboard 里手填。
+- 排错时可以看 Worker → Settings → Triggers 的 **Invocations**（成功率），或 `wrangler tail`。
+
+### `wrangler tail` 会在日志里打出 token
+
+当发出去的 header 含非 ASCII 时，Cloudflare 会警告并把**整个 header 值**写进日志——
+也就是把你的 token 明文打进 tail 输出，连带落进终端记录。用 tail 排查 secret 类问题时要留意，
+真出了事就吊销重发那个 token。
+
 ## 可调参数（`worker.mjs` 顶部）
 
 | 常量 | 默认 | 含义 |

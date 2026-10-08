@@ -6,6 +6,12 @@ name = "sogeisetsu-daily-watchdog"
 main = "worker.mjs"
 compatibility_date = "2026-10-01"
 
+# 这个 Worker 只需要 cron 触发，不需要对外 URL。
+# 关掉 workers.dev 路由后，部署不再要求账号先注册 workers.dev 子域。
+# 代价：不能再用 /cdn-cgi/handler/scheduled 手动跑一次，看日志请用 Dashboard 的
+# Settings → Trigger Events（或 Workers Logs）。
+workers_dev = false
+
 # 每 10 分钟 tick 一次（UTC）；该不该补触发由 worker.mjs 内部按 workflow 的 :17 时点判断。
 # 别把它写成块注释：`*` + `/` 会提前闭合。
 [triggers]

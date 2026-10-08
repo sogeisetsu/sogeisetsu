@@ -114,7 +114,10 @@ async function checkAndFill(token, nowMs) {
 
 export default {
   async scheduled(controller, env, ctx) {
-    const token = env.GITHUB_TOKEN;
+    // trim() 兼作防御：secret 若被带 BOM / 首尾空白的管道写进来（Windows 下很常见），
+    // 原样拼进 Authorization 头会变成非 ASCII，GitHub 直接 401 Bad credentials。
+    // JS 的 trim 会把 U+FEFF 一起去掉。
+    const token = String(env.GITHUB_TOKEN ?? "").trim();
     if (!token) {
       console.error("缺少 GITHUB_TOKEN secret，无法补触发");
       return;
