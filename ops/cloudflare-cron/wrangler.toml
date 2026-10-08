@@ -1,0 +1,14 @@
+# Cloudflare Worker 部署清单（wrangler CLI 读这个文件，Dashboard 不读）
+# 部署：npx wrangler deploy
+# 注意：用 wrangler 管理的 Worker，cron trigger 应当只在配置文件里管，
+#       所以 [triggers] 必须在这里，否则部署出来的 Worker 没有定时器。
+name = "sogeisetsu-daily-watchdog"
+main = "worker.mjs"
+compatibility_date = "2026-10-01"
+
+# 每 10 分钟 tick 一次（UTC）；该不该补触发由 worker.mjs 内部按 workflow 的 :17 时点判断。
+# 别把它写成块注释：`*` + `/` 会提前闭合。
+[triggers]
+crons = ["*/10 * * * *"]
+
+# 密钥不进这个文件：npx wrangler secret put GITHUB_TOKEN

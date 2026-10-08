@@ -1,0 +1,3 @@
+# wrangler 本地状态与 dry-run 产物，不进仓库
+.wrangler/
+.wrangler-dryrun/
