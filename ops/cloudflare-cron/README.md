@@ -1,5 +1,7 @@
 # 定时任务 watchdog（Cloudflare Worker）
 
+> 运行链路图（可编辑）：[`flow.excalidraw`](./flow.excalidraw) —— 在 OpenChamber 的 Files 视图里点开就是 Excalidraw 画布。
+
 GitHub Actions 的 `schedule` 是 best-effort：本仓两个 workflow 单日各 12 个时点，实测只跑 3~4 个，
 且丢掉的时点**不产生任何 run**，所以既没有失败告警也没有页面提示。
 
