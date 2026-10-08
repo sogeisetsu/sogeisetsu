@@ -1,9 +1,19 @@
 name: Update daily report
 
 on:
+  # 兜底：本仓的生成脚本 / 本 workflow 推送到 main 后立刻重跑，不必等下一次 cron。
+  # paths 白名单天然防自触发——自动提交只碰 docs/，不在白名单里。
+  push:
+    branches: [main]
+    paths:
+      - "scripts/daily/**"
+      - ".github/workflows/update-daily-report.yml"
   schedule:
-    # 每 2 小时（UTC）：每次定稿「昨天」+ 滚动刷新「今天」
-    - cron: "0 */2 * * *"
+    # 每 2 小时（UTC）：每次定稿「昨天」+ 滚动刷新「今天」。
+    # 故意避开整点：:00 是 GitHub schedule 投递最拥堵的时刻（官方文档明说会被延迟、
+    # 拥堵严重时直接丢弃），实测本仓曾被延迟 +1 ~ +47 分钟，2026-10-08 更连丢 3 趟。
+    # 与 update-activity.yml 的 :30 也错开。
+    - cron: "17 */2 * * *"
   workflow_dispatch:
     inputs:
       date:
