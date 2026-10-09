@@ -3,12 +3,12 @@
   "windowStart": "2026-10-09T00:00:00+08:00",
   "windowEnd": "2026-10-10T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-09T09:14:46.197Z",
+  "generatedAt": "2026-10-09T10:51:03.093Z",
   "empty": false,
   "totals": {
     "commits": 0,
     "prs": 0,
-    "issues": 1,
+    "issues": 2,
     "reviews": 0
   },
   "commits": [
@@ -17,16 +17,25 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 17,
+      "automated": 18,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 17,
+  "automatedCommits": 18,
   "pullRequests": [],
   "reviews": [],
   "issues": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4601,
+      "title": "[Bug] Switching model in the composer keeps the previous thinking level instead of the model's own default",
+      "url": "https://github.com/openchamber/openchamber/issues/4601",
+      "action": "commented",
+      "ts": "2026-10-09T09:31:21.000Z",
+      "own": false
+    },
     {
       "repo": "openchamber/openchamber",
       "number": 4601,
@@ -122,7 +131,19 @@
       "total": 0
     }
   ],
-  "replies": [],
+  "replies": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4601,
+      "title": "[Bug] Switching model in the composer keeps the previous thinking level instead of the model's own default",
+      "url": "https://github.com/openchamber/openchamber/issues/4601",
+      "author": "openchamber-bot[bot]",
+      "excerpt": "**For the maintainer:** `fix-ready` — cause traced Your analysis is right: `defaultVariant` is one global profile setting, and the composer applies it to every model that offers that variant id. What…",
+      "kind": "issue_comment",
+      "ts": "2026-10-09T09:19:17.000Z",
+      "own": false
+    }
+  ],
   "stateChanges": [],
   "discussions": [
     {
@@ -150,16 +171,16 @@
   ],
   "ai": {
     "en": {
-      "headline": "sogeisetsu opens a bug report and two idea discussions on openchamber",
-      "summary": "On 2026-10-09, the day's activity centered on the `openchamber/openchamber` repository, where the user opened **1 issue** and started 2 discussions. The issue, `#4601` titled `[Bug] Switching model in the composer keeps the previous thinking level instead of the model's own default`, was filed at 08:59 UTC and remains open. Two idea discussions were also started at 08:59 UTC: `#4600` titled `[Idea] Let an extension expose something the agent can call, or document the file workflow` in the `Extensions` category, and `#4599` titled `[Idea] Give agents a supported way to read and change OpenChamber settings (tool, CLI, or MCP)` in the `Ideas` category; both currently have 0 comments. No pull requests, reviews, or releases were recorded. In `sogeisetsu/sogeisetsu`, there were 0 own commits plus 17 automated commits by `github-actions[bot]`. No replies, stars, or state changes were logged.",
+      "headline": "Two ideas and a bug report opened in openchamber/openchamber",
+      "summary": "On 2026-10-09, `sogeisetsu` opened two idea discussions in `openchamber/openchamber`: #4599 \"[Idea] Give agents a supported way to read and change OpenChamber settings (tool, CLI, or MCP)\" under Ideas, and #4600 \"[Idea] Let an extension expose something the agent can call, or document the file workflow\" under Extensions. Both discussions were started at 08:59 UTC and had 0 comments at report time. The user also opened issue #4601 in `openchamber/openchamber`, titled \"[Bug] Switching model in the composer keeps the previous thinking level instead of the model's own default\", at 08:59 UTC, and later commented on the same issue at 09:31 UTC. In between, `openchamber-bot[bot]` replied at 09:19 UTC with a `fix-ready` note tracing the cause to `defaultVariant` being a single global profile setting applied to every model offering that variant id. The user made **0 own commits** across the day, with 18 additional automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. No pull requests, reviews, or releases were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 在 openchamber 提交一个 bug 报告并发起两个想法讨论",
-      "summary": "2026-10-09 当天的活动集中在 `openchamber/openchamber` 仓库，用户共 **新开 1 个 issue** 并发起 2 个讨论。该 issue 为 `#4601`，标题为 `[Bug] Switching model in the composer keeps the previous thinking level instead of the model's own default`，于 08:59 UTC 提交，目前仍处于 open 状态。同时于 08:59 UTC 发起的两个想法讨论分别是 `#4600`，标题为 `[Idea] Let an extension expose something the agent can call, or document the file workflow`，属于 `Extensions` 分类；以及 `#4599`，标题为 `[Idea] Give agents a supported way to read and change OpenChamber settings (tool, CLI, or MCP)`，属于 `Ideas` 分类；两者目前评论数均为 0。当天没有记录到任何 pull request、review 或 release。在 `sogeisetsu/sogeisetsu` 仓库中，本人提交为 0 次，另有 17 次由 `github-actions[bot]` 自动提交。当天没有收到回复、star 或状态变更。",
+      "headline": "在 openchamber/openchamber 新开两个 idea 讨论和一个 bug issue",
+      "summary": "2026-10-09 当天，`sogeisetsu` 在 `openchamber/openchamber` 发起了两个 idea 讨论：#4599「[Idea] Give agents a supported way to read and change OpenChamber settings (tool, CLI, or MCP)」归入 Ideas 分类，以及 #4600「[Idea] Let an extension expose something the agent can call, or document the file workflow」归入 Extensions 分类。两个讨论均在 08:59 UTC 创建，报告时评论数均为 0。用户还在 `openchamber/openchamber` 于 08:59 UTC 新开 issue #4601，标题为「[Bug] Switching model in the composer keeps the previous thinking level instead of the model's own default」，并于 09:31 UTC 在同一 issue 下追加评论。期间 `openchamber-bot[bot]` 在 09:19 UTC 回复了一条 `fix-ready` 说明，将原因追溯到 `defaultVariant` 作为单一全局 profile 设置被应用到所有提供该 variant id 的模型。用户当天本人提交数为 **0**，另有 18 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。当天无 PR、无 review、无 release。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "2b2eaa6f519dd7a01f73e7d08887ae78cdcf9b1246b34a9ee0d9e60e79596ab5"
+  "dataHash": "fee2e2bb56151b135595f5b60d5288bdcccf30fe51d3cb878d805c66c3271827"
 }
