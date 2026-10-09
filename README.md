@@ -22,6 +22,7 @@ _Updated automatically: 2026-10-09_
 
 <details><summary>🌐 Contributed to</summary>
 
+- 🐛 Opened issue [\[Bug\] Switching model in the composer keeps the previous thinking level instead of the model's own default](https://github.com/openchamber/openchamber/issues/4601) in `openchamber/openchamber`
 - 💬 Commented on [openchamber/openchamber#4537](https://github.com/openchamber/openchamber/issues/4537): \[Bug\] OpenCode Go quota shows "Provider not configured" while the Providers page shows an API key for it
 - 💬 Commented on [openchamber/openchamber#4537](https://github.com/openchamber/openchamber/issues/4537): \[Bug\] OpenCode Go quota shows "Provider not configured" while the Providers page shows an API key for it
 - 🐛 Opened issue [\[Bug\] OpenCode Go quota shows "Provider not configured" while the Providers page shows an API key for it](https://github.com/openchamber/openchamber/issues/4537) in `openchamber/openchamber`
@@ -31,7 +32,6 @@ _Updated automatically: 2026-10-09_
 - 🐛 Opened issue [\[Feature\]: 让 harness 可扩展（支持 OpenCode/Pi 等），并考虑以 MCP 形式对外暴露](https://github.com/OpenSenseNova/SenseNova-Skills-DeepResearch/issues/11) in `OpenSenseNova/SenseNova-Skills-DeepResearch`
 - 🐛 Opened issue [OpenCode V2 compatibility: SKILL.md frontmatter and runtime assumptions](https://github.com/OpenSenseNova/SenseNova-Skills/issues/180) in `OpenSenseNova/SenseNova-Skills`
 - 💬 Commented on [iOfficeAI/OfficeCLI#254](https://github.com/iOfficeAI/OfficeCLI/issues/254): OpenCode detection & skill install path point to ~/.opencode, but OpenCode uses ~/.config/opencode
-- 🐛 Opened issue [OpenCode v2 integration: fix skills install path + add mcp target](https://github.com/iOfficeAI/OfficeCLI/issues/458) in `iOfficeAI/OfficeCLI`
 
 </details>
 <!--END:activity-->
