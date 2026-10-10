@@ -3,12 +3,12 @@
   "windowStart": "2026-10-10T00:00:00+08:00",
   "windowEnd": "2026-10-11T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-10T06:50:56.564Z",
+  "generatedAt": "2026-10-10T08:51:06.819Z",
   "empty": false,
   "totals": {
     "commits": 0,
     "prs": 0,
-    "issues": 1,
+    "issues": 2,
     "reviews": 0
   },
   "commits": [
@@ -17,16 +17,25 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 12,
+      "automated": 14,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 12,
+  "automatedCommits": 14,
   "pullRequests": [],
   "reviews": [],
   "issues": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4664,
+      "title": "[Bug] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity",
+      "url": "https://github.com/openchamber/openchamber/issues/4664",
+      "action": "commented",
+      "ts": "2026-10-10T07:01:25.000Z",
+      "own": false
+    },
     {
       "repo": "openchamber/openchamber",
       "number": 4664,
@@ -122,21 +131,33 @@
       "total": 0
     }
   ],
-  "replies": [],
+  "replies": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4664,
+      "title": "[Bug] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity",
+      "url": "https://github.com/openchamber/openchamber/issues/4664",
+      "author": "openchamber-bot[bot]",
+      "excerpt": "**For the maintainer:** `fix-ready` — cause traced The mechanism is confirmed on current `main`, in two pieces. 1. Grouping (`packages/ui/src/components/chat/lib/turns/projectTurnRecords.ts:244-246`)…",
+      "kind": "issue_comment",
+      "ts": "2026-10-10T06:56:04.000Z",
+      "own": false
+    }
+  ],
   "stateChanges": [],
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu opens one bug report in openchamber/openchamber",
-      "summary": "On 2026-10-10, user `sogeisetsu` recorded **1 issue** activity and no pull requests, reviews, or releases. The single issue was opened in `openchamber/openchamber` as #4664, titled \"[Bug] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity\", and remains in the `open` state. No own commits were made; there were 12 automated commits in `sogeisetsu/sogeisetsu` by `github-actions[bot]`. No pull requests, reviews, releases, stars, replies, state changes, or discussions were recorded for the day.",
+      "headline": "Bug report on skipped-role turn merging in openchamber",
+      "summary": "On 2026-10-10, the user opened issue `#4664` in `openchamber/openchamber`, titled \"[Bug] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity\", and later added a follow-up comment on the same issue. The issue remains open. A reply was received from `openchamber-bot[bot]`, which marked the report as `fix-ready` and traced the cause to two pieces on current `main`, including grouping logic in `packages/ui/src/components/chat/lib/turns/projectTurnRecords.ts:244-246`. No pull requests, reviews, releases, stars, or discussions were recorded. The user made **0 own commits**, with 14 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 在 openchamber/openchamber 提交一个 bug 报告",
-      "summary": "2026-10-10 当天，用户 `sogeisetsu` 共有 **1 个 issue** 活动，没有 PR、review 或 release。该 issue 在 `openchamber/openchamber` 中作为 #4664 新开，标题为 \"[Bug] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity\"，当前状态为 `open`。本人没有提交任何 commit；`sogeisetsu/sogeisetsu` 仓库中有 12 次由 `github-actions[bot]` 完成的自动提交。当天没有 PR、review、release、star、回复、状态变更或讨论记录。",
+      "headline": "openchamber 中关于跳过角色导致回合合并的 Bug 报告",
+      "summary": "2026-10-10，用户在 `openchamber/openchamber` 中开设了 issue `#4664`，标题为“[Bug] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity”，随后在同一 issue 上追加了评论。该 issue 目前仍处于 open 状态。`openchamber-bot[bot]` 回复了该 issue，将其标记为 `fix-ready`，并指出原因已定位到当前 `main` 分支上的两处代码，其中包括 `packages/ui/src/components/chat/lib/turns/projectTurnRecords.ts:244-246` 的分组逻辑。当日没有 pull request、review、release、star 或 discussion 记录。用户本人提交数为 **0**，另有 14 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 中自动提交。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "1fc970b9a543f48db68120c33dbbc5cc6028a39d155b359ed0f2353f0ad3fbea"
+  "dataHash": "db2156fd3e2a2f44426dfd666f1cd0dcba593270f6a3a86eec41557c8aeb0958"
 }
