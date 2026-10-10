@@ -22,6 +22,7 @@ _Updated automatically: 2026-10-10_
 
 <details><summary>🌐 Contributed to</summary>
 
+- 💬 Commented on [openchamber/openchamber#4664](https://github.com/openchamber/openchamber/issues/4664): \[Bug\] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity
 - 🐛 Opened issue [\[Bug\] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity](https://github.com/openchamber/openchamber/issues/4664) in `openchamber/openchamber`
 - 💬 Commented on [openchamber/openchamber#4601](https://github.com/openchamber/openchamber/issues/4601): \[Bug\] Switching model in the composer keeps the previous thinking level instead of the model's own default
 - 🐛 Opened issue [\[Bug\] Switching model in the composer keeps the previous thinking level instead of the model's own default](https://github.com/openchamber/openchamber/issues/4601) in `openchamber/openchamber`
@@ -31,7 +32,6 @@ _Updated automatically: 2026-10-10_
 - 💬 Commented on [alvinunreal/oh-my-opencode-slim#1475](https://github.com/alvinunreal/oh-my-opencode-slim/issues/1475): \[Bug\]: reflect --sessions Session Discovery queries legacy V1 tables, returns 0 sessions on OpenCode V2
 - 🐛 Opened issue [\[Bug\]: reflect --sessions Session Discovery queries legacy V1 tables, returns 0 sessions on OpenCode V2](https://github.com/alvinunreal/oh-my-opencode-slim/issues/1475) in `alvinunreal/oh-my-opencode-slim`
 - 💬 Commented on [anomalyco/opencode#50878](https://github.com/anomalyco/opencode/issues/50878): In OpenCode, after removing ~\\.local\\share\\opencode\\auth.json, the model still returns usable and is not removed from the model list
-- 🐛 Opened issue [\[Feature\]: 让 harness 可扩展（支持 OpenCode/Pi 等），并考虑以 MCP 形式对外暴露](https://github.com/OpenSenseNova/SenseNova-Skills-DeepResearch/issues/11) in `OpenSenseNova/SenseNova-Skills-DeepResearch`
 
 </details>
 <!--END:activity-->
