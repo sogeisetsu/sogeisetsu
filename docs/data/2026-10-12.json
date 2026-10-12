@@ -3,7 +3,7 @@
   "windowStart": "2026-10-12T00:00:00+08:00",
   "windowEnd": "2026-10-13T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-12T15:36:26.290Z",
+  "generatedAt": "2026-10-12T16:51:31.467Z",
   "empty": false,
   "totals": {
     "commits": 0,
@@ -17,13 +17,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 17,
+      "automated": 18,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 17,
+  "automatedCommits": 18,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -136,7 +136,18 @@
   ],
   "stateChanges": [],
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "dataHash": "cc349b541595d0c924064fb22e2fd8209d63b854ee3124a7b73b3edf635b0f17"
+  "ai": {
+    "en": {
+      "headline": "No own commits; 1 issue comment and 1 reply received",
+      "summary": "On 2026-10-12 the user `sogeisetsu` recorded **0 own commits** across the tracked repositories, with no pull requests, reviews, or releases. In `sogeisetsu/sogeisetsu` there were 18 automated commits by `github-actions[bot]`, reported separately from the user's own activity. The user commented on issue `#4664` in `openchamber/openchamber`, titled \"[Bug] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity\". The user also received one reply on issue `#51263` in `anomalyco/opencode`, titled \"websearch: tinyfish provider returns HTTP 400 (missing Mcp-Session-Id) on every search\", where `terry-an-investor` confirmed the failure on `v2.0.27` on macOS arm64 and noted the failure is key-presence-dependent rather than universal. No discussions were started or joined, and no stars were added.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "本人无提交；1 条 issue 评论，收到 1 条回复",
+      "summary": "2026-10-12 用户 `sogeisetsu` 在跟踪的仓库中共有 **0 次本人提交**，无 PR、无 review、无 release。`sogeisetsu/sogeisetsu` 中有 18 次由 `github-actions[bot]` 自动提交，与本人活动分开统计。用户在 `openchamber/openchamber` 的 issue `#4664`（标题：\"[Bug] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity\"）中留下了评论。此外，用户在 `anomalyco/opencode` 的 issue `#51263`（标题：\"websearch: tinyfish provider returns HTTP 400 (missing Mcp-Session-Id) on every search\"）上收到 1 条回复，`terry-an-investor` 在 `v2.0.27` 的 macOS arm64 环境下确认了该问题，并指出失败与 key 是否存在有关，并非普遍性故障。当日未开启或参与任何 discussion，也未新增 star。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "sensenova",
+  "dataHash": "19aa7c16925e4ca65a72fcb329b0c599050c78823bacb546992917ba71e6ff17"
 }
