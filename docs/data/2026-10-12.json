@@ -3,7 +3,7 @@
   "windowStart": "2026-10-12T00:00:00+08:00",
   "windowEnd": "2026-10-13T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-12T06:05:45.234Z",
+  "generatedAt": "2026-10-12T06:51:26.966Z",
   "empty": false,
   "totals": {
     "commits": 0,
@@ -17,13 +17,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 11,
+      "automated": 12,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 11,
+  "automatedCommits": 12,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -121,21 +121,33 @@
       "total": 0
     }
   ],
-  "replies": [],
+  "replies": [
+    {
+      "repo": "anomalyco/opencode",
+      "number": 51263,
+      "title": "websearch: tinyfish provider returns HTTP 400 (missing Mcp-Session-Id) on every search",
+      "url": "https://github.com/anomalyco/opencode/issues/51263",
+      "author": "terry-an-investor",
+      "excerpt": "Confirming this on **v2.0.27** (the current `@opencode/cli` dist-tag) on macOS arm64 — and adding one detail that narrows the cause: **the failure is key-presence-dependent, not universal.** The Tiny…",
+      "kind": "issue_comment",
+      "ts": "2026-10-12T06:47:29.000Z",
+      "own": false
+    }
+  ],
   "stateChanges": [],
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "No own commits; 11 automated commits and 1 issue comment",
-      "summary": "On 2026-10-12, `sogeisetsu` recorded **0 own commits** across all repositories. In `sogeisetsu/sogeisetsu`, there were 11 automated commits by `github-actions[bot]`, with no own commit messages to summarize. No pull requests, reviews, releases, stars, state changes, or discussions were recorded. The only activity was a comment on issue `#4664` in `openchamber/openchamber`, titled \"[Bug] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity\". The issue was not opened by the user. Totals for the day: 0 commits, 0 PRs, 1 issue, 0 reviews.",
+      "headline": "One issue comment on openchamber; 12 automated commits by github-actions[bot]",
+      "summary": "On 2026-10-12 the user had **0 own commits** across all repositories, with 12 automated commits in `sogeisetsu/sogeisetsu` created by `github-actions[bot]`. No pull requests, reviews, or releases were recorded. The user commented on issue `#4664` in `openchamber/openchamber`, titled \"[Bug] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity\", which was not opened by the user. Separately, the user received one reply on issue `#51263` in `anomalyco/opencode`, titled \"websearch: tinyfish provider returns HTTP 400 (missing Mcp-Session-Id) on every search\", where `terry-an-investor` confirmed the failure on `v2.0.27` on macOS arm64 and noted the failure is key-presence-dependent rather than universal. No discussions were started or joined, and no stars were added.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "本人无提交；11 次自动提交与 1 条 issue 评论",
-      "summary": "2026-10-12，`sogeisetsu` 在所有仓库中共有 **0 次本人提交**。在 `sogeisetsu/sogeisetsu` 中，有 11 次由 `github-actions[bot]` 自动提交，无本人提交信息可归纳。当日无合并请求、代码评审、发布、星标、状态变更或讨论活动。唯一的活动是在 `openchamber/openchamber` 的 issue `#4664` 上发表评论，该 issue 标题为“[Bug] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity”，并非由本人新开。当日总计：0 次提交、0 个 PR、1 个 issue、0 次评审。",
+      "headline": "在 openchamber 评论一个 issue；github-actions[bot] 自动提交 12 次",
+      "summary": "2026-10-12 当天，用户本人提交数为 **0**，`sogeisetsu/sogeisetsu` 仓库中有 12 次由 `github-actions[bot]` 自动提交的提交。当日没有 PR、代码评审或发布记录。用户在 `openchamber/openchamber` 的 issue `#4664`（标题为“[Bug] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity”）中留下了评论，该 issue 并非由用户本人创建。此外，用户在 `anomalyco/opencode` 的 issue `#51263`（标题为“websearch: tinyfish provider returns HTTP 400 (missing Mcp-Session-Id) on every search”）上收到一条回复，`terry-an-investor` 在 macOS arm64 的 `v2.0.27` 上确认了该问题，并指出失败与密钥是否存在有关，而非普遍性故障。当日没有发起或参与任何讨论，也没有新增 star。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "dce841d3e4523e6630f2263ad04ef1938cd621d36d6761d65f7dfa1507b8ce81"
+  "dataHash": "325cb807a9d1d984df2ba7ba11236dc855fe473b41580960cfd315d44fe14e8d"
 }
