@@ -862,8 +862,8 @@ function emptyState() {
     `<div class="empty-art">${icon('moon')}</div>` +
     `<h2 class="empty-title">${i18n('A quiet day', '安静的一天')}</h2>` +
     `<p class="empty-sub">${i18n(
-      'No public commits, pull requests, issues, reviews, releases, stars or replies were recorded in this window.',
-      '该时间窗口内没有记录到公开的提交、PR、Issue、评审、发布、标星或回复。'
+      'No public commits, pull requests, issues, reviews, discussions, releases, stars or replies were recorded in this window.',
+      '该时间窗口内没有记录到公开的提交、PR、Issue、评审、讨论、发布、标星或回复。'
     )}</p>` +
     `</section>`
   );
@@ -1273,6 +1273,36 @@ ${body}
 
 // ---------------------------------------------------------------- report page
 
+/**
+ * 这一天是否有任何「可见段」可渲染。
+ *
+ * 判定口径 = 报告会实际渲染的所有分区，而不只是 totals 的四项：
+ *   commits / pullRequests / reviews / issues（totals 组成部分）
+ *   + stateChanges / discussions / releases / stars / replies（不计入 totals 的附加段）
+ *
+ * 不要用 data.empty 代替它：empty 是 totals 口径（仅 commits/prs/issues/reviews），
+ * 按设计不含 discussions 等附加段；若用 empty 决定「整页是否渲染」，
+ * 就会出现「只发了 discussion 的一天被渲染成安静的一天」。渲染层与 index 归档
+ * 都用本函数决定空状态，empty 仍原样保留给 totals 语义与校验。
+ */
+export function hasVisibleActivity(data) {
+  const d = data && typeof data === 'object' ? data : {};
+  // commits 要按「用户本人提交数」判定：混合日会把只有机器人提交的仓库也放进 commits[]（count=0），
+  // 单看数组长度会把「纯机器人跑了一天」误当成有活动。
+  const hasUserCommits = A(d.commits).some((c) => Number(c && c.count) > 0);
+  return (
+    hasUserCommits ||
+    A(d.pullRequests).length > 0 ||
+    A(d.reviews).length > 0 ||
+    A(d.issues).length > 0 ||
+    A(d.stateChanges).length > 0 ||
+    A(d.discussions).length > 0 ||
+    A(d.releases).length > 0 ||
+    A(d.stars).length > 0 ||
+    A(d.replies).length > 0
+  );
+}
+
 export function renderReportPage({ data, ai } = {}) {
   const d = data && typeof data === 'object' ? data : {};
   const totals = d.totals && typeof d.totals === 'object' ? d.totals : {};
@@ -1292,7 +1322,6 @@ export function renderReportPage({ data, ai } = {}) {
   const stars = A(d.stars).filter(Boolean);
   const replies = A(d.replies).filter(Boolean);
 
-  const empty = d.empty === true;
   const dateLabel = fmtDate(date);
 
   const parts = [];
@@ -1322,17 +1351,12 @@ export function renderReportPage({ data, ai } = {}) {
       `</header>`
   );
 
-  // AI summary（空白天由空状态卡承担，不再单独渲染 AI 卡）
-  if (!empty) parts.push(aiSummaryBlock(ai));
-
-  // body
-  const anyItems =
-    commits.length || pullRequests.length || reviews.length || issues.length ||
-    stateChanges.length || discussions.length || releases.length || stars.length || replies.length;
-
-  if (empty) {
+  // body：空状态由「有没有可见段」决定，而不是 totals 口径的 empty
+  // （用 empty 会把「只发了 discussion / release / star / 回复」的一天误判成安静的一天）
+  if (!hasVisibleActivity(d)) {
     parts.push(emptyState());
   } else {
+    parts.push(aiSummaryBlock(ai));
     parts.push(statsStrip(totals));
     if (commits.length) parts.push(commitsSection(commits, totals));
     if (pullRequests.length) parts.push(prSection(pullRequests, totals));
@@ -1343,7 +1367,6 @@ export function renderReportPage({ data, ai } = {}) {
     if (releases.length) parts.push(releasesSection(releases, ai));
     if (stars.length) parts.push(starsSection(stars));
     if (replies.length) parts.push(repliesSection(replies));
-    if (!anyItems) parts.push(emptyState());
   }
 
   parts.push(footerBlock(generatedAt));
@@ -1371,7 +1394,7 @@ export function renderIndexPage({ days, generatedAt, username } = {}) {
         String(entry.headline_en || '').trim() !== '' ||
         String(entry.headline_zh || '').trim() !== '';
       const head =
-        entry.empty === true
+        entry.hasActivity !== true
           ? `<span class="day-head day-head-empty">${i18n('A quiet day', '安静的一天')}</span>`
           : hasHead
             ? `<span class="day-head">${i18n(entry.headline_en, entry.headline_zh)}</span>`
@@ -1431,6 +1454,13 @@ export function renderMarkdown({ data, ai } = {}) {
     out.push('');
   }
 
+  // 空白天：与 HTML 一致，直接给一句「无公开活动」，不再渲染 AI 段
+  if (!hasVisibleActivity(d)) {
+    out.push('No public GitHub activity in this window.');
+    out.push('');
+    return `${out.join('\n').replace(/\n+$/, '')}\n`;
+  }
+
   // AI summary
   out.push('## AI summary');
   out.push('');
@@ -1453,12 +1483,6 @@ export function renderMarkdown({ data, ai } = {}) {
   } else {
     out.push('_AI summary temporarily unavailable._');
     out.push('');
-  }
-
-  if (d.empty === true) {
-    out.push('No public GitHub activity in this window.');
-    out.push('');
-    return `${out.join('\n').replace(/\n+$/, '')}\n`;
   }
 
   // totals
@@ -1517,6 +1541,26 @@ export function renderMarkdown({ data, ai } = {}) {
       const action = String(it.action || '').toLowerCase();
       const label = action ? `**${mdInline(action[0].toUpperCase() + action.slice(1))}** ` : '';
       out.push(`- ${label}${mdLink(it.title || '(untitled)', it.url)} — \`${mdInline(it.repo)}#${mdInline(it.number)}\``);
+    }
+    out.push('');
+  }
+
+  // discussions
+  const discussions = A(d.discussions).filter(Boolean);
+  if (discussions.length) {
+    out.push('## Discussions');
+    out.push('');
+    for (const it of discussions) {
+      const action = String(it.action || '').toLowerCase();
+      const label = action ? `**${mdInline(action[0].toUpperCase() + action.slice(1))}** ` : '';
+      const cat = String(it.category || '').trim();
+      const n = num(it.comments);
+      const meta = [cat, `${n} comment${n === 1 ? '' : 's'}`].filter(Boolean);
+      out.push(
+        `- ${label}${mdLink(it.title || '(untitled)', it.url)}` +
+          ` — \`${mdInline(it.repo)}#${mdInline(it.number)}\`` +
+          (meta.length ? ` _(${meta.map((m) => mdInline(m)).join(' · ')})_` : '')
+      );
     }
     out.push('');
   }

@@ -31,7 +31,7 @@ import { fileURLToPath } from "node:url";
 
 import { collectDailyData } from "./lib/github.mjs";
 import { defaultProviders, generateNarrative } from "./lib/ai.mjs";
-import { renderIndexPage, renderMarkdown, renderReportPage } from "./render.mjs";
+import { renderIndexPage, renderMarkdown, renderReportPage, hasVisibleActivity } from "./render.mjs";
 
 // ---------------------------------------------------------------- 常量与参数
 
@@ -109,7 +109,9 @@ function listDays() {
         url: `./report/${d}.html${j?.dataHash ? `?v=${String(j.dataHash).slice(0, 10)}` : ""}`,
         headline_en: j?.ai?.en?.headline ?? null,
         headline_zh: j?.ai?.zh?.headline ?? null,
-        empty: j?.empty === true,
+        // 归档行的「安静的一天」用可见段口径（讨论/发布/标星/回复也算活动），
+        // 不能用 data.empty（totals 口径）——否则只发 discussion 的一天会被标成安静的一天。
+        hasActivity: hasVisibleActivity(j),
       };
     });
 }
@@ -125,7 +127,7 @@ function listDateStrings() {
 }
 
 function sectionCount(data) {
-  return ["commits", "pullRequests", "reviews", "issues", "releases", "stars", "replies"]
+  return ["commits", "pullRequests", "reviews", "issues", "discussions", "releases", "stars", "replies"]
     .map((k) => `${k}=${Array.isArray(data[k]) ? data[k].length : 0}`)
     .join(" ");
 }
@@ -147,7 +149,7 @@ async function processDate(date) {
 
   const hash = contentHash(data);
   const existing = readJsonIfExists(path.join(DATA_DIR, `${date}.json`));
-  const missingAi = !data.empty && !NO_AI && !(existing && existing.ai);
+  const missingAi = hasVisibleActivity(data) && !NO_AI && !(existing && existing.ai);
   if (!DRY_RUN && !FORCE && existing && existing.dataHash === hash && !missingAi) {
     console.log(`[daily-report] ${date} 内容无变化，跳过 AI 与写入`);
     return { date, changed: false };
@@ -158,9 +160,10 @@ async function processDate(date) {
 
   let ai = null;
   let aiProvider = null;
-  if (data.empty) {
-    // 空白天：不调用 AI、不写假叙述；页面由渲染层空状态卡承担
-    console.log("[daily-report] 当天无公开活动，跳过 AI（页面显示空状态）");
+  if (!hasVisibleActivity(data)) {
+    // 空白天（连 discussion / release / star / 回复都没有）：不调用 AI、不写假叙述；
+    // 页面由渲染层空状态卡承担。注意这里必须用可见段口径，不能只看 totals 的 empty。
+    console.log("[daily-report] 当天无任何可展示活动，跳过 AI（页面显示空状态）");
   } else if (NO_AI) {
     console.log("[daily-report] 跳过 AI（--no-ai）");
   } else {

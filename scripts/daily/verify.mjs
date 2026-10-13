@@ -27,6 +27,8 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { hasVisibleActivity } from "./render.mjs";
+
 // ---------------------------------------------------------------- 常量与参数
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -114,6 +116,17 @@ function readData(date) {
 
 const sumOf = (list, key) =>
   (Array.isArray(list) ? list : []).reduce((s, x) => s + (Number(x && x[key]) || 0), 0);
+
+/** 可见段摘要（用于 FAIL 详情）。 */
+function sectionSummary(data) {
+  const arr = (x) => (Array.isArray(x) ? x : []);
+  return [
+    "commits", "pullRequests", "reviews", "issues",
+    "stateChanges", "discussions", "releases", "stars", "replies",
+  ]
+    .map((k) => `${k}=${arr(data[k]).length}`)
+    .join(" ");
+}
 
 // ---------------------------------------------------------------- C：head + 字体
 
@@ -366,13 +379,16 @@ function main() {
 
     const automated = sumOf(data.commits, "automated");
     const hasNote = html.includes("不计入总提交数");
-    check(
-      `${label}: 自动提交说明`,
-      automated > 0 ? hasNote : !hasNote,
-      automated > 0
-        ? `Σ automated=${automated} 但报告缺少「不计入总提交数」`
-        : `Σ automated=0 但报告含「不计入总提交数」`
-    );
+    // 只有「可见日」才会渲染 Commits 分区与自动提交说明；空白天用空状态卡、按设计不提自动提交
+    if (hasVisibleActivity(data)) {
+      check(
+        `${label}: 自动提交说明`,
+        automated > 0 ? hasNote : !hasNote,
+        automated > 0
+          ? `Σ automated=${automated} 但报告缺少「不计入总提交数」`
+          : `Σ automated=0 但报告含「不计入总提交数」`
+      );
+    }
 
     // 卡片角标必须与 totals 口径一致：0 也要显示 0，不得回退成条目行数
     const totals = data.totals && typeof data.totals === "object" ? data.totals : {};
@@ -397,15 +413,27 @@ function main() {
 
     // 有讨论数据时，报告正文必须渲染 Discussions 分区（双语标题都在 HTML 里）
     if (Array.isArray(data.discussions) && data.discussions.length > 0) {
-      const hasSection = html.includes(">Discussions<") || html.includes("Discussions");
       check(
         `${label}: 讨论数据已渲染`,
-        hasSection,
+        html.includes(">Discussions<"),
         `discussions=${data.discussions.length} 条但报告缺少 Discussions 分区`
       );
     }
 
-    if (data.ai && data.empty !== true) {
+    // 空状态卡与内容分区互斥：有可展示活动就不得出现「安静的一天」，反之必须出现。
+    // 口径 = 可见段（含 discussions/releases/stars/replies/stateChanges），不是 totals 的 empty。
+    const visible = hasVisibleActivity(data);
+    const hasEmptyCard = html.includes('class="card empty-card"');
+    const hasSection = /<h2 class="sec-title">/.test(html);
+    check(
+      `${label}: 空状态与可见段互斥`,
+      visible ? !hasEmptyCard && hasSection : hasEmptyCard && !hasSection,
+      visible
+        ? `有可展示活动（${sectionSummary(data)}）却渲染成空状态`
+        : `无任何可展示活动却未渲染空状态`
+    );
+
+    if (data.ai && hasVisibleActivity(data)) {
       for (const lang of ["en", "zh"]) {
         const re = new RegExp(`<div class="ai-summary i18n" data-lang="${lang}">([\\s\\S]*?)</div>`);
         const block = re.exec(html);
