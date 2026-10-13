@@ -12,6 +12,8 @@
  *   · HTTP 400（带 reasoning_effort）→ 去掉该参数重试
  *   · HTTP 429 → 等待后重试
  *   · 只返回 1 句 summary → 追加“句数”纠正提示后重试
+ *   · empty:true（totals 全 0）但 discussion 非空 → 仍会调用 provider
+ *     （锁住「可见性判断只在调用方，generateNarrative 不按 empty 自行拦截」）
  *
  * 用法：node scripts/daily/test-ai.mjs
  * 输出：每个用例一行 PASS/FAIL，结尾 N/M；有失败时退出码 1。
@@ -110,6 +112,19 @@ const cases = [
     script: [chatResp(JSON.stringify(validNarrative()))],
     expect: { ok: true, calls: 1, systemPrompt: "Discussions:", userPrompt: '"action":"started"' },
   },
+  {
+    // 回归护栏：totals 全 0（empty:true）的 discussion-only 日不得被 generateNarrative 内部挡掉。
+    // 可见性判断是调用方（index.mjs）的职责；这里必须真的打到 provider（calls=1 且拿到叙述）。
+    name: "empty-true-but-discussions-still-calls-provider",
+    data: {
+      ...data,
+      empty: true,
+      totals: { commits: 0, prs: 0, issues: 0, reviews: 0 },
+      commits: [],
+    },
+    script: [chatResp(JSON.stringify(validNarrative()))],
+    expect: { ok: true, calls: 1 },
+  },
 ];
 
 // ---------------------------------------------------------------- 执行
@@ -120,7 +135,7 @@ let passed = 0;
 for (const c of cases) {
   requests.length = 0;
   queue = [...c.script];
-  const res = await generateNarrative({ data, providers: [provider] });
+  const res = await generateNarrative({ data: c.data || data, providers: [provider] });
   const checks = [["ok", !!res === c.expect.ok]];
   if (c.expect.calls !== undefined) checks.push(["calls", requests.length === c.expect.calls]);
   if (c.expect.userPrompt) {
