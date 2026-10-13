@@ -23,7 +23,7 @@
  *   }
  *
  * 导出：
- *   generateNarrative({ data, providers })   // data.empty === true → 直接 null，不打 API
+ *   generateNarrative({ data, providers })   // 是否有内容值得叙述由调用方判断；本函数不按 empty 自行拦截
  *   defaultProviders(env = process.env)      // 同步返回 provider 列表（没 key 的跳过）
  *   resolveSenseNovaModel(apiKey, baseUrl?)  // GET {baseUrl}/models 挑模型，进程内缓存
  *
@@ -719,15 +719,16 @@ async function normalizeProvider(raw) {
 
 /**
  * 生成每日叙事。成功返回 { en, zh, provider }；以下情况返回 null：
- *   data.empty === true（不打 API，省 token）／没有可用 provider／全部 provider 失败。
+ *   没有可用 provider／全部 provider 失败。
+ *
+ * 注意：本函数不判断「今天是否值得生成」——那是调用方（index.mjs）的职责，
+ * 口径是 hasVisibleActivity（含 discussion/release/star/回复等附加段），
+ * 与 totals 口径的 data.empty 并不等价。历史上在这里按 data.empty 二次拦截，
+ * 导致「只发了 discussion 的一天」永远拿不到叙述，并让上游每轮空转重试。
  */
 export async function generateNarrative({ data, providers }) {
   if (data == null) {
     console.error(`${LOG} data 为空，跳过`);
-    return null;
-  }
-  if (data.empty === true) {
-    console.error(`${LOG} data.empty === true，跳过调用（省 token）`);
     return null;
   }
   const list = Array.isArray(providers) ? providers : [];

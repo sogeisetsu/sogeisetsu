@@ -1394,7 +1394,7 @@ export function renderIndexPage({ days, generatedAt, username } = {}) {
         String(entry.headline_en || '').trim() !== '' ||
         String(entry.headline_zh || '').trim() !== '';
       const head =
-        entry.hasActivity !== true
+        entry.hasActivity === false
           ? `<span class="day-head day-head-empty">${i18n('A quiet day', '安静的一天')}</span>`
           : hasHead
             ? `<span class="day-head">${i18n(entry.headline_en, entry.headline_zh)}</span>`

@@ -10,12 +10,14 @@
  *   · i18nInline         — en/zh 两侧各走内联渲染
  *   · normalizeNotes     — 保留换行/行首结构、折叠行内空格、截断到上限、去零宽字符
  *   · splitParagraphs    — 英文句末切分不与 v1.3.0 / e.g. 撞车；保留结尾标点
+ *   · renderReportPage   — 分区/角标/双语/转义；空状态与可见段口径
+ *   · hasVisibleActivity — 可见段判定（discussion/release/star/回复/状态变更/纯机器人提交等边界）
  *
  * 用法：node scripts/daily/test-render.mjs
  * 输出：每个用例一行 PASS/FAIL；结尾 N/M；有失败退出码 1。
  */
 
-const { aiInlineToHtml, mdBlockToHtml, i18nInline, splitParagraphs, renderReportPage } =
+const { aiInlineToHtml, mdBlockToHtml, i18nInline, splitParagraphs, renderReportPage, hasVisibleActivity } =
   await import(new URL("./render.mjs", import.meta.url).href);
 const { normalizeNotes } = await import(new URL("./lib/github.mjs", import.meta.url).href);
 
@@ -182,12 +184,15 @@ check("splitParagraphs zh: splits after 。！？", () => {
 // ---------------------------------------------------------------- renderReportPage
 
 check("renderReportPage: commits 角标取 totals=0，不用条目行数兜底", () => {
+  // fixture = 「纯机器人提交 + 一条 discussion」的一天：totals 全 0、empty=true。
+  // 可见性由 discussions 提供（commits 只有 count=0 的机器人条目，单独不算活动）；
+  // Commits 分区仍会渲染，用来验证开关角标取 totals.commits(0) 而非条目行数(1)。
   const html = renderReportPage({
     data: {
       date: "2026-10-05",
       username: "sogeisetsu",
       generatedAt: "2026-10-05T09:54:00.000Z",
-      empty: false,
+      empty: true,
       totals: { commits: 0, prs: 0, issues: 0, reviews: 0 },
       commits: [
         {
@@ -203,6 +208,19 @@ check("renderReportPage: commits 角标取 totals=0，不用条目行数兜底",
       reviews: [],
       issues: [],
       stateChanges: [],
+      discussions: [
+        {
+          repo: "openchamber/openchamber",
+          number: 4901,
+          title: "an idea",
+          url: "https://github.com/openchamber/openchamber/discussions/4901",
+          category: "Ideas",
+          comments: 0,
+          action: "started",
+          ts: "2026-10-05T09:00:00.000Z",
+          own: false,
+        },
+      ],
       releases: [],
       stars: [],
       replies: [],
@@ -287,6 +305,70 @@ check("renderReportPage: discussions 分区 + 动作徽章 + 评论数双语 + �
     ["titleEscaped", html.includes("Store relay keys &lt;and&gt; secrets") && !html.includes("keys <and>")],
     ["replyKindLabel", html.includes('data-lang="en">Discussion</span>')],
     ["noTotalsPollution", !html.includes('stat-label">Discussions') && !html.includes('stat-label">讨论<')],
+  ];
+});
+
+// ---------------------------------------------------------------- hasVisibleActivity
+
+check("hasVisibleActivity: 可见段判定与边界", () => {
+  const base = {
+    commits: [],
+    pullRequests: [],
+    reviews: [],
+    issues: [],
+    stateChanges: [],
+    discussions: [],
+    releases: [],
+    stars: [],
+    replies: [],
+  };
+  const autoOnly = { ...base, commits: [{ repo: "a/b", count: 0, automated: 8 }] };
+  const one = (key, item) => ({ ...base, [key]: [item] });
+  return [
+    ["emptyObjFalse", hasVisibleActivity({}) === false],
+    ["allEmptyFalse", hasVisibleActivity(base) === false],
+    ["undefinedFalse", hasVisibleActivity(undefined) === false],
+    ["autoOnlyFalse", hasVisibleActivity(autoOnly) === false],
+    ["nullCommitEntryFalse", hasVisibleActivity({ ...base, commits: [null] }) === false],
+    ["userCommitTrue", hasVisibleActivity({ ...base, commits: [{ repo: "a/b", count: 1 }] }) === true],
+    ["autoPlusDiscussionTrue", hasVisibleActivity({ ...autoOnly, discussions: [{ number: 1 }] }) === true],
+    ["discussionOnlyTrue", hasVisibleActivity(one("discussions", { number: 1 })) === true],
+    ["issueOnlyTrue", hasVisibleActivity(one("issues", { number: 2 })) === true],
+    ["prOnlyTrue", hasVisibleActivity(one("pullRequests", { number: 3 })) === true],
+    ["reviewOnlyTrue", hasVisibleActivity(one("reviews", { number: 4 })) === true],
+    ["releaseOnlyTrue", hasVisibleActivity(one("releases", { tag: "v1" })) === true],
+    ["starOnlyTrue", hasVisibleActivity(one("stars", { repo: "a/b", delta: 1, total: 2 })) === true],
+    ["replyOnlyTrue", hasVisibleActivity(one("replies", { author: "x" })) === true],
+    ["stateChangeOnlyTrue", hasVisibleActivity(one("stateChanges", { action: "closed" })) === true],
+  ];
+});
+
+check("renderReportPage: 空状态与可见段互斥（discussion-only 不再安静）", () => {
+  const htmlFor = (data) => renderReportPage({ data, ai: null });
+  const discussionOnly = {
+    date: "2026-10-13",
+    username: "sogeisetsu",
+    generatedAt: "2026-10-13T12:00:00.000Z",
+    empty: true,
+    totals: { commits: 0, prs: 0, issues: 0, reviews: 0 },
+    commits: [],
+    pullRequests: [],
+    reviews: [],
+    issues: [],
+    stateChanges: [],
+    discussions: [{ repo: "o/r", number: 1, title: "d", url: "https://github.com/o/r/discussions/1", category: "Ideas", comments: 0, action: "started", ts: "2026-10-13T01:00:00.000Z", own: false }],
+    releases: [],
+    stars: [],
+    replies: [],
+  };
+  const autoOnly = { ...discussionOnly, discussions: [], commits: [{ repo: "a/b", count: 0, automated: 3 }] };
+  const dHtml = htmlFor(discussionOnly);
+  const aHtml = htmlFor(autoOnly);
+  return [
+    ["discNoEmptyCard", !dHtml.includes('class="card empty-card"')],
+    ["discHasSection", dHtml.includes(">Discussions<")],
+    ["autoEmptyCard", aHtml.includes('class="card empty-card"')],
+    ["autoNoSection", !aHtml.includes(">Discussions<") && !/<h2 class="sec-title">/.test(aHtml)],
   ];
 });
 
