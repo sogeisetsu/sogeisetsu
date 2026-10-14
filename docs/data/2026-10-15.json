@@ -3,15 +3,36 @@
   "windowStart": "2026-10-15T00:00:00+08:00",
   "windowEnd": "2026-10-16T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-14T19:17:34.504Z",
+  "generatedAt": "2026-10-14T19:25:46.459Z",
   "empty": false,
   "totals": {
-    "commits": 2,
+    "commits": 3,
     "prs": 0,
-    "issues": 1,
+    "issues": 2,
     "reviews": 0
   },
   "commits": [
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "b4e570cf16de1bf095886358a4a33418003c0eb4",
+          "message": "docs(agents): 口径段补提交归属别名说明",
+          "ts": "2026-10-14T19:20:33Z"
+        },
+        {
+          "sha": "cb173356f46ec3cab0a23888a494908e35bc7d5c",
+          "message": "fix(daily): 提交归属支持别名，兼容非 GitHub 账号邮箱的提交",
+          "ts": "2026-10-14T19:16:44Z"
+        }
+      ],
+      "automated": 4,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    },
     {
       "repo": "sogeisetsu/asset-inventory",
       "count": 1,
@@ -25,28 +46,22 @@
       ],
       "automated": 0,
       "automatedBots": []
-    },
-    {
-      "repo": "sogeisetsu/sogeisetsu",
-      "count": 1,
-      "own": true,
-      "messages": [
-        {
-          "sha": "cb173356f46ec3cab0a23888a494908e35bc7d5c",
-          "message": "fix(daily): 提交归属支持别名，兼容非 GitHub 账号邮箱的提交",
-          "ts": "2026-10-14T19:16:44Z"
-        }
-      ],
-      "automated": 3,
-      "automatedBots": [
-        "github-actions[bot]"
-      ]
     }
   ],
-  "automatedCommits": 3,
+  "automatedCommits": 4,
   "pullRequests": [],
   "reviews": [],
   "issues": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4346,
+      "title": "[test] SidebarHeader.test.tsx still passes onOpenMultiRun/canOpenMultiRun removed in d9fbf6b",
+      "url": "https://github.com/openchamber/openchamber/issues/4346",
+      "action": "closed",
+      "ts": "2026-10-14T19:22:33.000Z",
+      "own": false,
+      "state": "closed"
+    },
     {
       "repo": "openchamber/openchamber",
       "number": 4920,
@@ -177,16 +192,16 @@
   ],
   "ai": {
     "en": {
-      "headline": "2 commits, 1 issue opened, 1 discussion comment",
-      "summary": "On 2026-10-15, `sogeisetsu` made **2 own commits** across two repositories, plus 3 automated commits by `github-actions[bot]`. In `sogeisetsu/asset-inventory`, one own commit tagged the release as `v1.15.5` (`chore(release): v1.15.5`). In `sogeisetsu/sogeisetsu`, one own commit fixed daily-report commit attribution to support aliases and non-GitHub-account email addresses (`fix(daily): 提交归属支持别名，兼容非 GitHub 账号邮箱的提交`); the same repo also saw 3 automated commits from `github-actions[bot]`. No pull requests or reviews were recorded. One issue was opened: `openchamber/openchamber` #4920, titled \"[Bug] Context panel breakdown bar divides whole-session estimates by the last message's input, so 其他 is always 0%\", which remains open. The user also joined an existing discussion, `openchamber/openchamber` #4821 \"[Idea] Add session aggregate stats to the Context Usage Panel\" (Ideas, 1 comment), by commenting rather than starting it. No releases, stars, or replies were recorded, and no section hit its collection cap.",
+      "headline": "3 commits, 2 issues, 1 discussion reply across two repos",
+      "summary": "On 2026-10-15, sogeisetsu made **3 own commits** plus 4 automated commits by `github-actions[bot]` across two repositories. In `sogeisetsu/sogeisetsu`, 2 own commits updated the daily report attribution logic to support aliases and documented the alias mapping in the agents docs. In `sogeisetsu/asset-inventory`, 1 own commit tagged the `v1.15.5` release. On the issues side, 2 items were opened or closed in `openchamber/openchamber`: issue `#4920` was opened reporting that the context panel breakdown bar divides whole-session estimates by the last message's input so `其他` is always 0%, and issue `#4346` was closed noting that `SidebarHeader.test.tsx` still passes after `onOpenMultiRun`/`canOpenMultiRun` were removed in `d9fbf6b`. The user also joined an existing discussion in `openchamber/openchamber`, replying in discussion `#4821` titled \"[Idea] Add session aggregate stats to the Context Usage Panel\". No pull requests, reviews, or releases were recorded, and no section hit its collection cap.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "2 次提交、1 个新 issue、1 条讨论回复",
-      "summary": "2026-10-15，`sogeisetsu` 在两个仓库中完成 **2 次本人提交**，另有 3 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/asset-inventory` 中，1 次本人提交将版本标记为 `v1.15.5`（`chore(release): v1.15.5`）。在 `sogeisetsu/sogeisetsu` 中，1 次本人提交修复了日报提交归属逻辑，使其支持别名并兼容非 GitHub 账号邮箱的提交（`fix(daily): 提交归属支持别名，兼容非 GitHub 账号邮箱的提交`）；同一仓库还有 3 次由 `github-actions[bot]` 自动提交。当日没有 PR 或 review 记录。新开 1 个 issue：`openchamber/openchamber` #4920，标题为 \"[Bug] Context panel breakdown bar divides whole-session estimates by the last message's input, so 其他 is always 0%\"，目前仍处于 open 状态。此外，用户在已有讨论 `openchamber/openchamber` #4821 \"[Idea] Add session aggregate stats to the Context Usage Panel\"（Ideas，1 条评论）中进行了评论，而非发起新讨论。当日没有 release、star 或回复记录，且没有任何分区触及采集上限。",
+      "headline": "3 次提交、2 个 issue、1 条讨论回复，涉及两个仓库",
+      "summary": "2026-10-15，sogeisetsu 在两个仓库中完成 **3 次本人提交**，另有 4 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/sogeisetsu` 中，2 次本人提交为日报归属逻辑增加别名支持，并在 agents 文档中补充了别名映射说明。在 `sogeisetsu/asset-inventory` 中，1 次本人提交打上了 `v1.15.5` 发布标签。issue 方面，在 `openchamber/openchamber` 中新开或关闭了 2 个：新开了 `#4920`，指出上下文面板的 breakdown bar 用最后一条消息的输入量去除整场估算值，导致 `其他` 始终为 0%；关闭了 `#4346`，说明 `SidebarHeader.test.tsx` 在 `d9fbf6b` 移除 `onOpenMultiRun`/`canOpenMultiRun` 后仍然通过。用户还在 `openchamber/openchamber` 的既有讨论 `#4821`（标题为 \"[Idea] Add session aggregate stats to the Context Usage Panel\"）中参与回复。当日无 PR、无 review、无 release，且没有任何分节触及采集上限。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "2aac28176161747f13465d032b857a4f93cd50d28ae8ce1a6eff22f70021d69b"
+  "dataHash": "31a0fd2cee74aec463099866d4256e69a4306b5a09f63f0f602f97f678c7d74a"
 }
