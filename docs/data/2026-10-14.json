@@ -3,30 +3,47 @@
   "windowStart": "2026-10-14T00:00:00+08:00",
   "windowEnd": "2026-10-15T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-14T10:51:29.936Z",
-  "empty": true,
+  "generatedAt": "2026-10-14T12:18:53.025Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 1,
     "prs": 0,
-    "issues": 0,
+    "issues": 1,
     "reviews": 0
   },
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 0,
+      "count": 1,
       "own": true,
-      "messages": [],
-      "automated": 15,
+      "messages": [
+        {
+          "sha": "eda9b7a868674636736570a276291d54f8f5da62",
+          "message": "feat(daily): 采集命中上限时在日报与 AI 摘要标注截断",
+          "ts": "2026-10-14T12:17:29Z"
+        }
+      ],
+      "automated": 16,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 15,
+  "automatedCommits": 16,
   "pullRequests": [],
   "reviews": [],
-  "issues": [],
+  "issues": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4896,
+      "title": "[Bug] An agent-linked issue or PR cannot be unlinked - no removal affordance in the UI",
+      "url": "https://github.com/openchamber/openchamber/issues/4896",
+      "action": "opened",
+      "ts": "2026-10-14T11:30:37.000Z",
+      "own": false,
+      "state": "open"
+    }
+  ],
   "releases": [],
   "stars": [],
   "starInventory": [
@@ -111,10 +128,63 @@
       "total": 0
     }
   ],
-  "replies": [],
+  "replies": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4896,
+      "title": "[Bug] An agent-linked issue or PR cannot be unlinked - no removal affordance in the UI",
+      "url": "https://github.com/openchamber/openchamber/issues/4896",
+      "author": "openchamber-bot[bot]",
+      "excerpt": "**For the maintainer:** `fix-ready` — cause traced; your analysis is right, and the repo already carries two fossils of the missing affordance. The gap is exactly where you found it, plus two new det…",
+      "kind": "issue_comment",
+      "ts": "2026-10-14T11:37:37.000Z",
+      "own": false
+    }
+  ],
   "stateChanges": [],
-  "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "dataHash": "8154be0466aa9f60d7b6fa5bfa2d5acb0b369444c713ff7d4788d65a4b3da5f3"
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4893,
+      "title": "Picked attachments are dropped for text-only models - fall back to a path reference",
+      "url": "https://github.com/openchamber/openchamber/discussions/4893",
+      "category": "Ideas",
+      "comments": 0,
+      "action": "started",
+      "ts": "2026-10-14T11:03:58.000Z",
+      "own": false
+    }
+  ],
+  "ai": {
+    "en": {
+      "headline": "1 own commit, 16 automated, 1 issue opened, 1 discussion started",
+      "summary": "On 2026-10-14, sogeisetsu made **1 own commit** in `sogeisetsu/sogeisetsu` plus 16 automated commits by `github-actions[bot]`. The own commit added truncation labeling to the daily report and AI summary when collection hit caps. No pull requests, reviews, or releases were recorded. One issue was opened: `openchamber/openchamber` #4896, \"[Bug] An agent-linked issue or PR cannot be unlinked - no removal affordance in the UI\", which `openchamber-bot[bot]` replied to with a maintainer note. One discussion was started in `openchamber/openchamber` #4893, \"Picked attachments are dropped for text-only models - fall back to a path reference\", in the Ideas category with 0 comments. No state changes were recorded and no section was truncated.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "1 次本人提交、16 次自动提交、新开 1 个 issue、发起 1 个讨论",
+      "summary": "2026-10-14，sogeisetsu 在 `sogeisetsu/sogeisetsu` 完成 **1 次本人提交**，另有 16 次由 `github-actions[bot]` 自动提交。本人提交为日报与 AI 摘要在采集命中上限时增加截断标注。当日无 PR、无 review、无 release。新开 1 个 issue：`openchamber/openchamber` #4896「[Bug] An agent-linked issue or PR cannot be unlinked - no removal affordance in the UI」，`openchamber-bot[bot]` 随后回复了面向维护者的说明。在 `openchamber/openchamber` #4893 发起 1 个 Ideas 类讨论「Picked attachments are dropped for text-only models - fall back to a path reference」，目前 0 条评论。无状态变更，各分区均未触发截断。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "sensenova",
+  "dataHash": "9b47b6cf40be4ed3dcd2c4bfc7954de7a13022cf529dc8dabb9235f62e9ad7e2"
 }
