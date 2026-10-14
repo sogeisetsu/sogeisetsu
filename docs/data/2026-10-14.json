@@ -3,7 +3,7 @@
   "windowStart": "2026-10-14T00:00:00+08:00",
   "windowEnd": "2026-10-15T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-14T13:47:38.268Z",
+  "generatedAt": "2026-10-14T14:51:31.562Z",
   "empty": false,
   "totals": {
     "commits": 4,
@@ -47,13 +47,13 @@
           "ts": "2026-10-14T12:17:29Z"
         }
       ],
-      "automated": 18,
+      "automated": 20,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 18,
+  "automatedCommits": 20,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -218,7 +218,18 @@
       "own": false
     }
   ],
-  "ai": null,
-  "aiProvider": null,
-  "dataHash": "75e32a2a11624ee8ed7f8f37378e4b01d666aae2d6f8d7aad51948a7ebfc3286"
+  "ai": {
+    "en": {
+      "headline": "sogeisetsu: 4 commits, 2 bug reports, 1 discussion on OpenChamber",
+      "summary": "On 2026-10-14, **4** own commits landed across two repos. In `sogeisetsu/myBlog`, 3 commits added OpenChamber capture samples (`desktop-1440x900.jpg`, `panel-region-1to1.png`, `mobile-390x844.jpg`). In `sogeisetsu/sogeisetsu`, 1 own commit added truncation labeling to the daily report and AI summary when the collection cap is hit, plus 20 automated commits by `github-actions[bot]`. Two bug reports were opened on `openchamber/openchamber`: `#4899` on browser captures exporting at CSS pixel size (1x) on 200% displays, and `#4896` on the missing UI affordance to unlink an agent-linked issue or PR. `openchamber-bot[bot]` replied to both, marking each as `fix-ready` with the cause traced. A discussion was started in `openchamber/openchamber` as `#4893`, \"Picked attachments are dropped for text-only models - fall back to a path reference\". No pull requests, reviews, or releases were recorded.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "sogeisetsu：4 次提交、2 个 bug 报告、1 个 OpenChamber 讨论",
+      "summary": "2026-10-14 当天，**4** 次本人提交分布在两个仓库。在 `sogeisetsu/myBlog` 中，3 次提交添加了 OpenChamber 截图样本（`desktop-1440x900.jpg`、`panel-region-1to1.png`、`mobile-390x844.jpg`）。在 `sogeisetsu/sogeisetsu` 中，1 次本人提交为日报与 AI 摘要在采集命中上限时增加截断标注，另有 20 次由 `github-actions[bot]` 自动提交。在 `openchamber/openchamber` 上开了两个 bug：`#4899` 关于浏览器截图在 200% 显示下按 CSS 像素（1x）导出、分辨率只有屏幕一半，以及 `#4896` 关于 UI 缺少解除 agent 关联 issue 或 PR 的入口。`openchamber-bot[bot]` 对两者都回复，均标记为 `fix-ready` 并定位了原因。在 `openchamber/openchamber` 发起了讨论 `#4893`，标题为 \"Picked attachments are dropped for text-only models - fall back to a path reference\"。当天没有 PR、review 或 release。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "sensenova",
+  "dataHash": "80ece807ed677c71b71fb7f2567099433cc08e8c4f60df09b2c03a54fad63fdb"
 }
