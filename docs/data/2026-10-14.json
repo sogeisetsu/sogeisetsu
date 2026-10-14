@@ -3,15 +3,39 @@
   "windowStart": "2026-10-14T00:00:00+08:00",
   "windowEnd": "2026-10-15T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-14T12:18:53.025Z",
+  "generatedAt": "2026-10-14T13:47:38.268Z",
   "empty": false,
   "totals": {
-    "commits": 1,
+    "commits": 4,
     "prs": 0,
-    "issues": 1,
+    "issues": 2,
     "reviews": 0
   },
   "commits": [
+    {
+      "repo": "sogeisetsu/myBlog",
+      "count": 3,
+      "own": true,
+      "messages": [
+        {
+          "sha": "999309c069bee7d695690626c4ec7ac28b7ea6a8",
+          "message": "Add OpenChamber capture sample: desktop-1440x900.jpg",
+          "ts": "2026-10-14T12:28:31Z"
+        },
+        {
+          "sha": "53e0e51f9b9eae2dfa759150bf03f30ff0a1defa",
+          "message": "Add OpenChamber capture sample: panel-region-1to1.png",
+          "ts": "2026-10-14T12:28:26Z"
+        },
+        {
+          "sha": "12219227878777f37653c4173c33c97e01f396ec",
+          "message": "Add OpenChamber capture sample: mobile-390x844.jpg",
+          "ts": "2026-10-14T12:28:23Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
     {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 1,
@@ -23,16 +47,26 @@
           "ts": "2026-10-14T12:17:29Z"
         }
       ],
-      "automated": 16,
+      "automated": 18,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 16,
+  "automatedCommits": 18,
   "pullRequests": [],
   "reviews": [],
   "issues": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4899,
+      "title": "[Bug] Browser captures export at CSS pixel size (1x), so they are half the screen's resolution on a 200% display",
+      "url": "https://github.com/openchamber/openchamber/issues/4899",
+      "action": "opened",
+      "ts": "2026-10-14T13:46:11.000Z",
+      "own": false,
+      "state": "open"
+    },
     {
       "repo": "openchamber/openchamber",
       "number": 4896,
@@ -131,6 +165,17 @@
   "replies": [
     {
       "repo": "openchamber/openchamber",
+      "number": 4899,
+      "title": "[Bug] Browser captures export at CSS pixel size (1x), so they are half the screen's resolution on a 200% display",
+      "url": "https://github.com/openchamber/openchamber/issues/4899",
+      "author": "openchamber-bot[bot]",
+      "excerpt": "**For the maintainer:** `fix-ready` — cause traced Your analysis is right, and the cause is in OpenChamber's capture serialization, not JPEG quality. The whole pipeline carries the capture through at…",
+      "kind": "issue_comment",
+      "ts": "2026-10-14T12:39:50.000Z",
+      "own": false
+    },
+    {
+      "repo": "openchamber/openchamber",
       "number": 4896,
       "title": "[Bug] An agent-linked issue or PR cannot be unlinked - no removal affordance in the UI",
       "url": "https://github.com/openchamber/openchamber/issues/4896",
@@ -173,18 +218,7 @@
       "own": false
     }
   ],
-  "ai": {
-    "en": {
-      "headline": "1 own commit, 16 automated, 1 issue opened, 1 discussion started",
-      "summary": "On 2026-10-14, sogeisetsu made **1 own commit** in `sogeisetsu/sogeisetsu` plus 16 automated commits by `github-actions[bot]`. The own commit added truncation labeling to the daily report and AI summary when collection hit caps. No pull requests, reviews, or releases were recorded. One issue was opened: `openchamber/openchamber` #4896, \"[Bug] An agent-linked issue or PR cannot be unlinked - no removal affordance in the UI\", which `openchamber-bot[bot]` replied to with a maintainer note. One discussion was started in `openchamber/openchamber` #4893, \"Picked attachments are dropped for text-only models - fall back to a path reference\", in the Ideas category with 0 comments. No state changes were recorded and no section was truncated.",
-      "releaseNotes": []
-    },
-    "zh": {
-      "headline": "1 次本人提交、16 次自动提交、新开 1 个 issue、发起 1 个讨论",
-      "summary": "2026-10-14，sogeisetsu 在 `sogeisetsu/sogeisetsu` 完成 **1 次本人提交**，另有 16 次由 `github-actions[bot]` 自动提交。本人提交为日报与 AI 摘要在采集命中上限时增加截断标注。当日无 PR、无 review、无 release。新开 1 个 issue：`openchamber/openchamber` #4896「[Bug] An agent-linked issue or PR cannot be unlinked - no removal affordance in the UI」，`openchamber-bot[bot]` 随后回复了面向维护者的说明。在 `openchamber/openchamber` #4893 发起 1 个 Ideas 类讨论「Picked attachments are dropped for text-only models - fall back to a path reference」，目前 0 条评论。无状态变更，各分区均未触发截断。",
-      "releaseNotes": []
-    }
-  },
-  "aiProvider": "sensenova",
-  "dataHash": "9b47b6cf40be4ed3dcd2c4bfc7954de7a13022cf529dc8dabb9235f62e9ad7e2"
+  "ai": null,
+  "aiProvider": null,
+  "dataHash": "75e32a2a11624ee8ed7f8f37378e4b01d666aae2d6f8d7aad51948a7ebfc3286"
 }
