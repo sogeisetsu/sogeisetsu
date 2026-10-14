@@ -67,6 +67,8 @@ const COMMIT_PAGES_MAX = 2; // 每仓 /commits 分页上限（per_page=100）
 const COMMIT_MSG_MAX = 160; // 提交标题（message 首行）折叠空白后的截断长度
 const DISCUSSION_SEARCH_MAX = 50; // Discussion search 每个别名取的节点上限（GraphQL first ≤100）
 const DISCUSSION_COMMENTS_MAX = 100; // 每条讨论拉取的评论节点上限（连接尾部=最新，comments(last: N)）
+const REPLIES_PAGE_SIZE = 30; // /issues|pulls/:n/comments 单页大小（显式传 per_page，与截断判定一致）
+const STATE_EVENTS_PAGE_SIZE = 100; // /issues/:n/events 单页大小（截断判定用）
 
 // ---------------------------------------------------------------- 小工具
 
@@ -202,30 +204,47 @@ const isOwnRepoName = (nameWithOwner, username) =>
 
 // ---------------------------------------------------------------- 1. 公共事件（动作级）
 
-/** 抓取公共事件：跟随 Link rel="next"，上限 5 页 / 300 条；失败返回已取部分（可能为空）。 */
+/**
+ * 抓取公共事件：跟随 Link rel="next"，上限 5 页 / 300 条；失败返回已取部分（可能为空）。
+ * 返回 { events, truncated }：truncated=true 表示“因撞上页数/条数上限而停”，
+ * 窗口内事件可能没抓全；读到窗口起点之前而正常停不算截断。
+ */
 async function fetchPublicEvents(token, username, win) {
   const all = [];
   let hasNext = true;
-  for (let page = 1; page <= EVENT_MAX_PAGES && all.length < EVENT_MAX && hasNext; page += 1) {
+  let truncated = false;
+  for (let page = 1; page <= EVENT_MAX_PAGES && hasNext; page += 1) {
+    if (all.length >= EVENT_MAX) {
+      if (hasNext) truncated = true; // 已达事件总条数上限且仍有下一页
+      break;
+    }
     const url =
       `https://api.github.com/users/${encodeURIComponent(username)}` +
       `/events/public?per_page=${EVENT_PER_PAGE}&page=${page}`;
     const got = await restGet(url, token, "events");
-    if (!got) return all; // 失败即止，保留已取部分
+    if (!got) return { events: all.slice(0, EVENT_MAX), truncated }; // 失败即止，保留已取部分
     const chunk = got.data;
     if (!Array.isArray(chunk)) {
       warn("events", `响应不是数组 (${url})`);
-      return all;
+      return { events: all.slice(0, EVENT_MAX), truncated };
     }
     all.push(...chunk);
-    if (chunk.length === 0) break;
+    if (chunk.length === 0) {
+      hasNext = false;
+      break;
+    }
     // 跟随 Link header；没有 Link 时按“满页即还有下一页”推断
     hasNext = /rel="next"/.test(got.link) ? true : chunk.length === EVENT_PER_PAGE;
     // 事件按时间倒序：本页最后一条已早于窗口起点，后面不可能再有窗口内事件
     const oldest = tsOf(chunk[chunk.length - 1].created_at);
-    if (oldest && oldest < win.startMs) break;
+    if (oldest && oldest < win.startMs) {
+      hasNext = false; // 正常读到窗口起点之前，不是截断
+      break;
+    }
   }
-  return all.slice(0, EVENT_MAX);
+  // 循环因页数用尽而退出且仍有下一页 → 窗口内事件可能被丢
+  if (hasNext) truncated = true;
+  return { events: all.slice(0, EVENT_MAX), truncated };
 }
 
 /**
@@ -595,6 +614,8 @@ async function isPublicRepo(owner, repoName, token, cache) {
 /**
  * Search API 定位“我发起且窗口内更新过”的 Issue / PR —— 回复与状态变更两段共用的目标列表：
  * 三个查询（全部 / type:pr / type:issue）合并去重后截断到 TARGET_MAX 条；某查询失败只跳过它。
+ * 返回 { targets, truncated }：truncated=true 表示某查询返回满一页（可能还有后续），
+ * 或去重后总数超过 TARGET_MAX 被 slice 砍掉 —— 两种情况都意味着“只覆盖了部分条目”。
  */
 async function searchAuthoredTargets(token, username, win) {
   const queries = [
@@ -603,6 +624,7 @@ async function searchAuthoredTargets(token, username, win) {
     `author:${username} updated:>=${win.date} type:issue`,
   ];
   const hits = new Map(); // key: repository_url#number 去重
+  let truncated = false;
   for (const q of queries) {
     const url =
       `https://api.github.com/search/issues?q=${encodeURIComponent(q)}` +
@@ -611,12 +633,15 @@ async function searchAuthoredTargets(token, username, win) {
     if (!got) continue; // 无 token 常被限流：restGet 已警告，跳过本查询
     const items = got.data && got.data.items;
     if (!Array.isArray(items)) continue;
+    if (items.length >= SEARCH_PER_PAGE) truncated = true; // 命中页大小，可能还有后续
     for (const item of items) {
       const key = `${item.repository_url || ""}#${item.number || 0}`;
       if (!hits.has(key)) hits.set(key, item);
     }
   }
-  return [...hits.values()].slice(0, TARGET_MAX);
+  const all = [...hits.values()];
+  if (all.length > TARGET_MAX) truncated = true; // 去重后超过上限，被 slice 砍掉
+  return { targets: all.slice(0, TARGET_MAX), truncated };
 }
 
 /**
@@ -626,6 +651,7 @@ async function searchAuthoredTargets(token, username, win) {
  */
 async function fetchReplies(token, username, win, targets, repoVisibility) {
   const replies = [];
+  let truncated = false; // 任一 target 的评论超过一页（有下一页）→ 该段被截
 
   for (const t of targets) {
     const m = /\/repos\/([^/]+)\/([^/]+)$/.exec(String(t.repository_url || ""));
@@ -646,9 +672,12 @@ async function fetchReplies(token, username, win, targets, repoVisibility) {
       : [[`issues/${t.number}/comments`, "issue_comment"]];
 
     for (const [suffix, kind] of endpoints) {
-      const url = `${base}/${suffix}?since=${encodeURIComponent(win.startISO)}`;
+      const url =
+        `${base}/${suffix}?since=${encodeURIComponent(win.startISO)}` +
+        `&per_page=${REPLIES_PAGE_SIZE}`;
       const got = await restGet(url, token, "replies");
       if (!got || !Array.isArray(got.data)) continue;
+      if (/rel="next"/.test(got.link || "")) truncated = true; // 还有下一页，本页被截
       for (const c of got.data) {
         const author = (c.user && c.user.login) || "";
         if (isOwnLogin(author, username)) continue; // 只要别人说的
@@ -669,7 +698,7 @@ async function fetchReplies(token, username, win, targets, repoVisibility) {
     }
   }
   replies.sort((a, b) => tsOf(b.ts) - tsOf(a.ts));
-  return replies;
+  return { replies, truncated };
 }
 
 // ---------------------------------------------------------------- 6. 他人状态变更
@@ -683,6 +712,7 @@ async function fetchReplies(token, username, win, targets, repoVisibility) {
 async function fetchStateChanges(token, username, win, targets, repoVisibility) {
   const changes = [];
   const seen = new Set(); // repo+number+action+ts 去重
+  let truncated = false; // 任一 target 的事件超过一页（有下一页）→ 该段被截
   for (const t of targets) {
     const m = /\/repos\/([^/]+)\/([^/]+)$/.exec(String(t.repository_url || ""));
     if (!m) continue;
@@ -694,9 +724,10 @@ async function fetchStateChanges(token, username, win, targets, repoVisibility) 
     const isPr = Boolean(t.pull_request);
     const url =
       `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repoName)}` +
-      `/issues/${t.number}/events?per_page=100`;
+      `/issues/${t.number}/events?per_page=${STATE_EVENTS_PAGE_SIZE}`;
     const got = await restGet(url, token, "state");
     if (!got || !Array.isArray(got.data)) continue;
+    if (/rel="next"/.test(got.link || "")) truncated = true; // 还有下一页，本页被截
     for (const ev of got.data) {
       const type = String(ev.event || "");
       let action = null;
@@ -730,7 +761,7 @@ async function fetchStateChanges(token, username, win, targets, repoVisibility) 
     }
   }
   changes.sort((a, b) => tsOf(b.ts) - tsOf(a.ts));
-  return changes;
+  return { changes, truncated };
 }
 
 /**
@@ -943,6 +974,8 @@ async function fetchDiscussions(token, username, win) {
  *                                                                     // discussion_comment
  *     stateChanges:[{repo,number,title,url,action,actor,ts,own}],     // action: closed|merged|reopened
  *                                                                     // 他人操作，actor 恒非本人；不计入 totals
+ *     truncated:{events,targets,replies,stateChanges},  // 每项 {cap:number,hits:boolean}；hits=true 表示
+ *                                                        // 该段因人工上限只采集/展示了部分数据（恒存在）
  *     discussions:[{repo,number,title,url,category,comments,action,ts,own}] }
  *                                                                     // action: started|commented（我的动作，
  *                                                                     // ts 为动作时间）；comments=评论总数；
@@ -952,7 +985,11 @@ export async function collectDailyData({ token, username, date, previousData }) 
   const win = computeWindow(date);
 
   // --- 1. 公共事件（窗口过滤；事件流本身就是公开数据）---
-  const rawEvents = await fetchPublicEvents(token, username, win);
+  const { events: rawEvents, truncated: eventsTruncated } = await fetchPublicEvents(
+    token,
+    username,
+    win
+  );
   const { pullRequests, reviews, issues } = mapEvents(rawEvents, username, win);
   pullRequests.sort(byTsDesc);
   reviews.sort(byTsDesc);
@@ -973,12 +1010,24 @@ export async function collectDailyData({ token, username, date, previousData }) 
   const stars = buildStars(ownRepos, starCounts, previousData);
 
   // --- 6. 我发起的条目（Search 定位，回复与状态变更共用同一目标列表与公开性缓存）---
-  const targets = await searchAuthoredTargets(token, username, win);
+  const { targets, truncated: targetsTruncated } = await searchAuthoredTargets(token, username, win);
   const repoVisibility = new Map(); // 仓库公开性缓存（每仓只查一次，两段共用）
-  const replies = await fetchReplies(token, username, win, targets, repoVisibility);
+  const { replies, truncated: repliesTruncated } = await fetchReplies(
+    token,
+    username,
+    win,
+    targets,
+    repoVisibility
+  );
 
   // --- 7. 他人对我 Issue/PR 的状态变更（closed / merged / reopened，不计入 totals）---
-  const stateChanges = await fetchStateChanges(token, username, win, targets, repoVisibility);
+  const { changes: stateChanges, truncated: stateChangesTruncated } = await fetchStateChanges(
+    token,
+    username,
+    win,
+    targets,
+    repoVisibility
+  );
 
   // --- 8. Discussions：我发起 / 我评论的讨论；他人对我讨论的回复并入 replies（不进 totals）---
   const { list: discussions, replies: discussionReplies } = await fetchDiscussions(
@@ -1023,6 +1072,13 @@ export async function collectDailyData({ token, username, date, previousData }) 
     starInventory,
     replies,
     stateChanges,
+    // 截断提示：各段是否因人工上限只采集/展示了部分数据（恒存在；hits=true 才需在页面与 AI 摘要里说明）
+    truncated: {
+      events: { cap: EVENT_MAX, hits: eventsTruncated },
+      targets: { cap: TARGET_MAX, hits: targetsTruncated },
+      replies: { cap: REPLIES_PAGE_SIZE, hits: repliesTruncated },
+      stateChanges: { cap: STATE_EVENTS_PAGE_SIZE, hits: stateChangesTruncated },
+    },
     discussions,
   };
 }

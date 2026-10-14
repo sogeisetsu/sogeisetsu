@@ -294,6 +294,28 @@ function main() {
       }
     });
     check(`${label}: automated 字段`, autoBad.length === 0, autoBad.join("; "));
+
+    // 截断提示字段（新字段：历史数据允许缺失；存在则校验结构）
+    if (j.truncated !== undefined) {
+      const badT = [];
+      if (j.truncated === null || typeof j.truncated !== "object" || Array.isArray(j.truncated)) {
+        badT.push("truncated 非对象");
+      } else {
+        for (const k of ["events", "targets", "replies", "stateChanges"]) {
+          const s = j.truncated[k];
+          if (s === undefined) badT.push(`truncated.${k} 缺失`);
+          else if (s === null || typeof s !== "object" || Array.isArray(s)) {
+            badT.push(`truncated.${k} 非对象`);
+          } else {
+            if (typeof s.cap !== "number" || !Number.isFinite(s.cap)) {
+              badT.push(`truncated.${k}.cap 非数字`);
+            }
+            if (typeof s.hits !== "boolean") badT.push(`truncated.${k}.hits 非布尔`);
+          }
+        }
+      }
+      check(`${label}: truncated 结构`, badT.length === 0, badT.join("; "));
+    }
   }
 
   // ---------------- B 交叉一致 ----------------
@@ -444,6 +466,25 @@ function main() {
           block ? `${lang} 块内没有 <p>` : `${lang} 的 ai-summary 块缺失`
         );
       }
+    }
+
+    // 截断提示：data 声明某段 hits=true 且该段有渲染 → 报告必须出现截断提示。
+    // targets 命中会级联影响 replies / stateChanges（两者只覆盖前 N 个 target）。
+    if (data.truncated && typeof data.truncated === "object") {
+      const tr = data.truncated;
+      const hit = (k) => Boolean(tr[k] && tr[k].hits === true);
+      const targetsHit = hit("targets");
+      const len = (k) => (Array.isArray(data[k]) ? data[k].length : 0);
+      const needEvents = hit("events") && (len("issues") > 0 || len("pullRequests") > 0);
+      const needReplies = (hit("replies") || targetsHit) && len("replies") > 0;
+      const needState = (hit("stateChanges") || targetsHit) && len("stateChanges") > 0;
+      const need = needEvents || needReplies || needState;
+      const has = html.includes('class="trunc-notice"');
+      check(
+        `${label}: 截断提示`,
+        !need || has,
+        need && !has ? `命中上限（${sectionSummary(data)}）但报告缺少截断提示` : ""
+      );
     }
   }
 

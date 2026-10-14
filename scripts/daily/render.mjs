@@ -538,6 +538,29 @@ function pill(total, fallback) {
   return `<span class="pill">${esc(value)}</span>`;
 }
 
+/**
+ * Notice for a section whose collection hit an artificial cap (so items may be
+ * missing). `key` is the data-section name; `cascadeFromTargets` also flags a
+ * section whose per-item scan only covered the first N authored targets.
+ * Returns '' when nothing was truncated, so callers can append unconditionally.
+ */
+function truncationNotice(t, key, cascadeFromTargets) {
+  const sec = t && typeof t === 'object' && t[key] && typeof t[key] === 'object' ? t[key] : null;
+  const ownHit = Boolean(sec && sec.hits === true);
+  const cascadeHit = Boolean(cascadeFromTargets && t && t.targets && t.targets.hits === true);
+  if (!ownHit && !cascadeHit) return '';
+  const cap = ownHit && Number.isFinite(Number(sec.cap)) ? Number(sec.cap) : null;
+  const en =
+    cap != null
+      ? `Some items may be missing — a collection limit (${cap}) was reached.`
+      : 'Some items may be missing — a collection limit was reached.';
+  const zh =
+    cap != null
+      ? `可能有遗漏——采集触及上限（${cap}）。`
+      : '可能有遗漏——采集触及上限。';
+  return `<p class="trunc-notice">${i18n(en, zh)}</p>`;
+}
+
 function commitsSection(items, totals) {
   const rows = items
     .map((it) => {
@@ -589,7 +612,7 @@ function commitsSection(items, totals) {
   return section('commit', 'Commits', '提交', pill(totals.commits, items.length), `<ul class="list">${rows}</ul>`);
 }
 
-function prSection(items, totals) {
+function prSection(items, totals, notice) {
   const rows = items
     .map((it) => {
       const title = String(it.title || '').trim() ? it.title : UNTITLED();
@@ -601,7 +624,13 @@ function prSection(items, totals) {
       );
     })
     .join('');
-  return section('pr', 'Pull requests', 'PR', pill(totals.prs, items.length), `<ul class="list">${rows}</ul>`);
+  return section(
+    'pr',
+    'Pull requests',
+    'PR',
+    pill(totals.prs, items.length),
+    `<ul class="list">${rows}</ul>${notice || ''}`
+  );
 }
 
 function reviewsSection(items, totals) {
@@ -619,7 +648,7 @@ function reviewsSection(items, totals) {
   return section('review', 'Reviews', '评审', pill(totals.reviews, items.length), `<ul class="list">${rows}</ul>`);
 }
 
-function issuesSection(items, totals) {
+function issuesSection(items, totals, notice) {
   const rows = items
     .map((it) => {
       const title = String(it.title || '').trim() ? it.title : UNTITLED();
@@ -631,7 +660,13 @@ function issuesSection(items, totals) {
       );
     })
     .join('');
-  return section('issue', 'Issues', 'Issue', pill(totals.issues, items.length), `<ul class="list">${rows}</ul>`);
+  return section(
+    'issue',
+    'Issues',
+    'Issue',
+    pill(totals.issues, items.length),
+    `<ul class="list">${rows}</ul>${notice || ''}`
+  );
 }
 
 function stateChangeBadge(action, actor) {
@@ -658,7 +693,7 @@ function stateChangeBadge(action, actor) {
   return `<span class="badge ${m.cls}">${inner}</span>`;
 }
 
-function stateChangesSection(items) {
+function stateChangesSection(items, notice) {
   const rows = items
     .map((it) => {
       const title = String(it.title || '').trim() ? it.title : UNTITLED();
@@ -670,7 +705,13 @@ function stateChangesSection(items) {
       );
     })
     .join('');
-  return section('issue', 'Status changes', '状态变更', pill(items.length, items.length), `<ul class="list">${rows}</ul>`);
+  return section(
+    'issue',
+    'Status changes',
+    '状态变更',
+    pill(items.length, items.length),
+    `<ul class="list">${rows}</ul>${notice || ''}`
+  );
 }
 
 function discussionActionBadge(action) {
@@ -764,7 +805,7 @@ function starsSection(items) {
   return section('star', 'Stars', '标星', pill(items.length, items.length), `<ul class="list">${rows}</ul>`);
 }
 
-function repliesSection(items) {
+function repliesSection(items, notice) {
   const kindLabel = (kind) => {
     const k = String(kind == null ? '' : kind).toLowerCase();
     if (k === 'review') return { en: 'Review', zh: '评审' };
@@ -793,7 +834,13 @@ function repliesSection(items) {
       );
     })
     .join('');
-  return section('reply', 'Replies', '回复', pill(items.length, items.length), `<ul class="list">${rows}</ul>`);
+  return section(
+    'reply',
+    'Replies',
+    '回复',
+    pill(items.length, items.length),
+    `<ul class="list">${rows}</ul>${notice || ''}`
+  );
 }
 
 function statsStrip(totals) {
@@ -1113,6 +1160,13 @@ html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
 .badge .badge-action{text-transform:uppercase}
 .badge .badge-who{text-transform:none;letter-spacing:normal}
 
+/* ---- truncation notice ---- */
+.trunc-notice{
+  margin:12px 0 0;padding:9px 12px;border-radius:11px;font-size:.78rem;
+  background:var(--surface-dim);color:var(--on-surface-variant);
+  border:1px dashed var(--outline-variant);
+}
+
 /* ---- releases ---- */
 .release-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .release-tag{
@@ -1321,6 +1375,7 @@ export function renderReportPage({ data, ai } = {}) {
   const releases = A(d.releases).filter(Boolean);
   const stars = A(d.stars).filter(Boolean);
   const replies = A(d.replies).filter(Boolean);
+  const t = d.truncated && typeof d.truncated === 'object' ? d.truncated : {};
 
   const dateLabel = fmtDate(date);
 
@@ -1359,14 +1414,14 @@ export function renderReportPage({ data, ai } = {}) {
     parts.push(aiSummaryBlock(ai));
     parts.push(statsStrip(totals));
     if (commits.length) parts.push(commitsSection(commits, totals));
-    if (pullRequests.length) parts.push(prSection(pullRequests, totals));
+    if (pullRequests.length) parts.push(prSection(pullRequests, totals, truncationNotice(t, 'events', false)));
     if (reviews.length) parts.push(reviewsSection(reviews, totals));
-    if (issues.length) parts.push(issuesSection(issues, totals));
-    if (stateChanges.length) parts.push(stateChangesSection(stateChanges));
+    if (issues.length) parts.push(issuesSection(issues, totals, truncationNotice(t, 'events', false)));
+    if (stateChanges.length) parts.push(stateChangesSection(stateChanges, truncationNotice(t, 'stateChanges', true)));
     if (discussions.length) parts.push(discussionsSection(discussions));
     if (releases.length) parts.push(releasesSection(releases, ai));
     if (stars.length) parts.push(starsSection(stars));
-    if (replies.length) parts.push(repliesSection(replies));
+    if (replies.length) parts.push(repliesSection(replies, truncationNotice(t, 'replies', true)));
   }
 
   parts.push(footerBlock(generatedAt));
@@ -1439,7 +1494,20 @@ export function renderMarkdown({ data, ai } = {}) {
   const d = data && typeof data === 'object' ? data : {};
   const totals = d.totals && typeof d.totals === 'object' ? d.totals : {};
   const date = d.date || d.windowEnd || '';
+  const t = d.truncated && typeof d.truncated === 'object' ? d.truncated : {};
   const out = [];
+
+  // 截断提示行：该段命中上限（或级联自 targets）才返回非 null
+  const truncLine = (key, cascade) => {
+    const sec = t[key];
+    const own = Boolean(sec && sec.hits === true);
+    const casc = Boolean(cascade && t.targets && t.targets.hits === true);
+    if (!own && !casc) return null;
+    const cap = own && Number.isFinite(Number(sec.cap)) ? Number(sec.cap) : null;
+    return cap != null
+      ? `_Partial view — a collection limit (${cap}) was reached; some items may be missing._`
+      : '_Partial view — a collection limit was reached; some items may be missing._';
+  };
 
   out.push(`# GitHub activity — ${mdInline(date) || 'daily report'}`);
   out.push('');
@@ -1518,6 +1586,8 @@ export function renderMarkdown({ data, ai } = {}) {
       const label = action ? `**${mdInline(action[0].toUpperCase() + action.slice(1))}** ` : '';
       out.push(`- ${label}${mdLink(p.title || '(untitled)', p.url)} — \`${mdInline(p.repo)}#${mdInline(p.number)}\``);
     }
+    const trunc = truncLine('events', false);
+    if (trunc) out.push(trunc);
     out.push('');
   }
 
@@ -1542,6 +1612,8 @@ export function renderMarkdown({ data, ai } = {}) {
       const label = action ? `**${mdInline(action[0].toUpperCase() + action.slice(1))}** ` : '';
       out.push(`- ${label}${mdLink(it.title || '(untitled)', it.url)} — \`${mdInline(it.repo)}#${mdInline(it.number)}\``);
     }
+    const trunc = truncLine('events', false);
+    if (trunc) out.push(trunc);
     out.push('');
   }
 
@@ -1618,6 +1690,8 @@ export function renderMarkdown({ data, ai } = {}) {
           ` — \`${mdInline(r.repo)}#${mdInline(r.number)}\`${kindSuffix}${excerpt}`
       );
     }
+    const trunc = truncLine('replies', true);
+    if (trunc) out.push(trunc);
     out.push('');
   }
 
