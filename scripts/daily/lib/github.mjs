@@ -8,7 +8,8 @@
  *   1. REST /users/:u/events/public      —— 窗口内动作级事件（PR / Issue / 评审 / 自己的评论），
  *                                          以及 PushEvent（用于发现要扫描提交历史的仓库）
  *   2. REST /repos/:o/:r/commits         —— 按提交日期归属：某仓窗口内的提交历史，
- *                                          拆成用户本人 vs 机器人（[bot]）两类
+ *                                          拆成用户本人（含别名，见 COMMIT_AUTHOR_ALIASES）
+ *                                          vs 机器人（[bot]）两类
  *   3. REST /users/:u/repos + releases    —— 自有仓库的 Release（published_at 落在窗口内）
  *   4. GraphQL repository.stargazerCount —— 自有仓库星标总数：全量存入 starInventory 作次日基准，
  *                                          展示的 stars 只列 delta 非 0 的变化项
@@ -65,6 +66,11 @@ const EXCERPT_MAX = 200; // 回复摘录折叠空白后截断长度
 const COMMIT_SCAN_REPOS_MAX = 30; // 提交历史扫描的仓库数上限（PushEvent 仓库优先）
 const COMMIT_PAGES_MAX = 2; // 每仓 /commits 分页上限（per_page=100）
 const COMMIT_MSG_MAX = 160; // 提交标题（message 首行）折叠空白后的截断长度
+// 提交归属别名：同一人可能用非 GitHub 账号邮箱提交（如本地配置的 suyue@localhost），
+// 此时 REST /commits 的 author.login 为 null、commit.author.name 也不是 GitHub 登录名，
+// 于是既匹配不上 username、也过不了 isBot，被当成“其他人类提交”丢弃。
+// 这里列出的身份与 username 一并视为“本人”（大小写不敏感），仅用于提交归属判定。
+const COMMIT_AUTHOR_ALIASES = ["suyue"];
 const DISCUSSION_SEARCH_MAX = 50; // Discussion search 每个别名取的节点上限（GraphQL first ≤100）
 const DISCUSSION_COMMENTS_MAX = 100; // 每条讨论拉取的评论节点上限（连接尾部=最新，comments(last: N)）
 const REPLIES_PAGE_SIZE = 30; // /issues|pulls/:n/comments 单页大小（显式传 per_page，与截断判定一致）
@@ -360,13 +366,15 @@ async function fetchRepoCommits(token, owner, repoName, win) {
  * 既不算用户本人提交、也不算机器人提交，不产生 messages）：
  *   机器人（login / commit.author.name 以 [bot] 结尾，或 author.type === "Bot"）
  *     → automated += 1，身份 login || name 进 bots 集合；
- *   用户本人（login 或 commit.author.name 等于 username，忽略大小写）
+ *   用户本人（login 或 commit.author.name 等于 username 或某别名 COMMIT_AUTHOR_ALIASES，忽略大小写）
  *     → count += 1，messages.push({sha, message 首行, ts})；
  *   其他人类提交 → 忽略。
  * ts = committer.date || author.date，必须落在窗口内（防御）；全局按 sha 去重。
  * count>0 或 automated>0 的仓库才进表；messages 按 ts 倒序，automatedBots 去重后排序。
  */
 async function buildCommits(rawEvents, token, username, win, ownRepos) {
+  // 本人身份集合（username + 别名，大小写不敏感）：提交归属判定用（见 COMMIT_AUTHOR_ALIASES）
+  const me = new Set([username, ...COMMIT_AUTHOR_ALIASES].map((s) => String(s).toLowerCase()));
   // --- 扫描仓库集：(a) PushEvent 仓库优先，再补 (b) 窗口内推送过的自有仓库 ---
   const seenRepos = new Set();
   const queue = [];
@@ -399,9 +407,7 @@ async function buildCommits(rawEvents, token, username, win, ownRepos) {
       const committerName = c.commit?.committer?.name || ""; // 规格要求采集（当前判定规则未用到）
       const isBot =
         /\[bot\]$/i.test(login) || /\[bot\]$/i.test(name) || c.author?.type === "Bot";
-      const isUser =
-        login.toLowerCase() === username.toLowerCase() ||
-        name.toLowerCase() === username.toLowerCase();
+      const isUser = me.has(login.toLowerCase()) || me.has(name.toLowerCase());
       const ts = c.commit?.committer?.date || c.commit?.author?.date || "";
       if (!inWindow(tsOf(ts), win)) continue; // 防御：提交时间必须落在窗口内
       const sha = String(c.sha ?? "");
