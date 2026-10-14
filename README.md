@@ -8,20 +8,22 @@ _Updated automatically: 2026-10-14_
 <details><summary>🔨 Owned repos</summary>
 
 - 📝 Pushed 125 commits to `sogeisetsu/meld-deepresearch`
-- 📝 Pushed 48 commits to `sogeisetsu/sogeisetsu`
+- 📝 Pushed 49 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 24 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 8 commits to `sogeisetsu/asset-inventory`
+- 📝 Pushed 1 commit to `sogeisetsu/myBlog`
 - 🚀 [feat: v1.7.0 - seven languages, Material docs site, rendered examples](https://github.com/sogeisetsu/asset-inventory/pull/8) · merged
 - 🚀 [chore: bump to 1.6.1](https://github.com/sogeisetsu/asset-inventory/pull/7) · merged
 - 🚀 [fix: v1.6.1 - correct skill provenance and agent model chains](https://github.com/sogeisetsu/asset-inventory/pull/6) · merged
 - 🚀 [feat: v1.6.0 — fix MCP enumeration + update.ps1 bugs, docs detail pages](https://github.com/sogeisetsu/asset-inventory/pull/5) · merged
 - 🚀 [fix: v1.5.0 — deliver ja glossary, close checker gap, drop duplicate example](https://github.com/sogeisetsu/asset-inventory/pull/4) · merged
-- 🚀 [feat: v1.4.0 — automate doc checks, fix language promise, trim SKILL.md](https://github.com/sogeisetsu/asset-inventory/pull/3) · merged
 
 </details>
 
 <details><summary>🌐 Contributed to</summary>
 
+- 🐛 Opened issue [\[Bug\] Browser captures export at CSS pixel size \(1x\), so they are half the screen's resolution on a 200% display](https://github.com/openchamber/openchamber/issues/4899) in `openchamber/openchamber`
+- 🐛 Opened issue [\[Bug\] An agent-linked issue or PR cannot be unlinked - no removal affordance in the UI](https://github.com/openchamber/openchamber/issues/4896) in `openchamber/openchamber`
 - 💬 Commented on [openchamber/openchamber#4664](https://github.com/openchamber/openchamber/issues/4664): \[Bug\] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity
 - 💬 Commented on [openchamber/openchamber#4664](https://github.com/openchamber/openchamber/issues/4664): \[Bug\] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity
 - 🐛 Opened issue [\[Bug\] A skipped-role notice between two replies merges them into one turn, hiding the earlier finished answer inside Activity](https://github.com/openchamber/openchamber/issues/4664) in `openchamber/openchamber`
@@ -30,8 +32,6 @@ _Updated automatically: 2026-10-14_
 - 💬 Commented on [openchamber/openchamber#4537](https://github.com/openchamber/openchamber/issues/4537): \[Bug\] OpenCode Go quota shows "Provider not configured" while the Providers page shows an API key for it
 - 💬 Commented on [openchamber/openchamber#4537](https://github.com/openchamber/openchamber/issues/4537): \[Bug\] OpenCode Go quota shows "Provider not configured" while the Providers page shows an API key for it
 - 🐛 Opened issue [\[Bug\] OpenCode Go quota shows "Provider not configured" while the Providers page shows an API key for it](https://github.com/openchamber/openchamber/issues/4537) in `openchamber/openchamber`
-- 💬 Commented on [alvinunreal/oh-my-opencode-slim#1475](https://github.com/alvinunreal/oh-my-opencode-slim/issues/1475): \[Bug\]: reflect --sessions Session Discovery queries legacy V1 tables, returns 0 sessions on OpenCode V2
-- 🐛 Opened issue [\[Bug\]: reflect --sessions Session Discovery queries legacy V1 tables, returns 0 sessions on OpenCode V2](https://github.com/alvinunreal/oh-my-opencode-slim/issues/1475) in `alvinunreal/oh-my-opencode-slim`
 
 </details>
 <!--END:activity-->
