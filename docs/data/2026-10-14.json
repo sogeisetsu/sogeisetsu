@@ -3,15 +3,49 @@
   "windowStart": "2026-10-14T00:00:00+08:00",
   "windowEnd": "2026-10-15T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-14T16:51:39.113Z",
+  "generatedAt": "2026-10-14T19:17:17.852Z",
   "empty": false,
   "totals": {
-    "commits": 4,
+    "commits": 9,
     "prs": 0,
     "issues": 2,
     "reviews": 0
   },
   "commits": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "count": 5,
+      "own": true,
+      "messages": [
+        {
+          "sha": "1f2af1023ce289af556365b485e90b87e690a772",
+          "message": "fix(skill,docs): remove /asset-inventory slash command refs from skill and contributor docs",
+          "ts": "2026-10-14T15:20:03Z"
+        },
+        {
+          "sha": "aa4d7fde131f3deb013255d846dbc0ad2542a0ca",
+          "message": "fix(readmes,guides): remove /asset-inventory from quick-start fences, guides, and fix JA localization",
+          "ts": "2026-10-14T15:02:10Z"
+        },
+        {
+          "sha": "26458ff979bc9eccfc636942bb4670a8df6326c2",
+          "message": "fix(samples,readmes): apply remaining skill invocation fact corrections",
+          "ts": "2026-10-14T14:48:42Z"
+        },
+        {
+          "sha": "9031069999a58a43fa9182107d6556053122b615",
+          "message": "chore(release): v1.15.4",
+          "ts": "2026-10-14T13:38:52Z"
+        },
+        {
+          "sha": "1e221cb31baa763e17e4d9433bd53f130034e085",
+          "message": "fix(skill): correct skill invocation facts in rule and all samples",
+          "ts": "2026-10-14T13:34:05Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
     {
       "repo": "sogeisetsu/myBlog",
       "count": 3,
@@ -220,16 +254,16 @@
   ],
   "ai": {
     "en": {
-      "headline": "4 commits, 2 bug reports, and 1 discussion in openchamber",
-      "summary": "On 2026-10-14, sogeisetsu made **4 own commits** across two repositories, with no pull requests, reviews, or releases. In `sogeisetsu/myBlog`, 3 commits added OpenChamber capture samples at three viewport sizes: `desktop-1440x900.jpg`, `panel-region-1to1.png`, and `mobile-390x844.jpg`. In `sogeisetsu/sogeisetsu`, 1 own commit added truncation labeling to the daily report and AI summary when the collection cap is hit, plus 21 automated commits by `github-actions[bot]`. Two issues were opened on `openchamber/openchamber`: #4899 about browser captures exporting at CSS pixel size (1x) on a 200% display, and #4896 about agent-linked issues or PRs lacking an unlink affordance in the UI. `openchamber-bot[bot]` replied to both issues, marking each as `fix-ready` with a traced cause. A discussion was also started in `openchamber/openchamber` (#4893) titled \"Picked attachments are dropped for text-only models - fall back to a path reference\" in the Ideas category.",
+      "headline": "sogeisetsu: 9 commits, 2 bugs filed, 1 discussion started",
+      "summary": "On 2026-10-14, `sogeisetsu` made **9 own commits** across three repositories, plus 21 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/asset-inventory`, 5 commits removed `/asset-inventory` slash-command references from skill, contributor docs, READMEs, guides, and samples, corrected skill invocation facts in the rule and all samples, and cut the `v1.15.4` release. In `sogeisetsu/myBlog`, 3 commits added OpenChamber capture samples: `desktop-1440x900.jpg`, `panel-region-1to1.png`, and `mobile-390x844.jpg`. In `sogeisetsu/sogeisetsu`, 1 own commit added truncation labeling to the daily report and AI summary when collection hits the cap. Two issues were opened in `openchamber/openchamber`: #4899 on browser captures exporting at CSS pixel size (1x) on a 200% display, and #4896 on the missing UI affordance to unlink an agent-linked issue or PR. `openchamber-bot[bot]` replied to both, marking each as `fix-ready` with the cause traced. A discussion was also started in `openchamber/openchamber` (#4893) titled \"Picked attachments are dropped for text-only models - fall back to a path reference\". No pull requests, reviews, or releases were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "4 次提交、2 个 bug 报告和 1 个讨论",
-      "summary": "2026-10-14，sogeisetsu 在两个仓库中完成了 **4 次本人提交**，无 PR、无 review、无 release。在 `sogeisetsu/myBlog` 中，3 次提交添加了三种视口尺寸的 OpenChamber 截图样本：`desktop-1440x900.jpg`、`panel-region-1to1.png` 和 `mobile-390x844.jpg`。在 `sogeisetsu/sogeisetsu` 中，1 次本人提交为日报和 AI 摘要添加了采集命中上限时的截断标注，另有 21 次由 `github-actions[bot]` 自动提交。在 `openchamber/openchamber` 上开开了两个 issue：#4899 关于浏览器截图以 CSS 像素尺寸（1x）导出、在 200% 显示下分辨率减半的问题，以及 #4896 关于 agent 关联的 issue 或 PR 在 UI 中缺少解除关联入口的问题。`openchamber-bot[bot]` 对两个 issue 均进行了回复，将两者标记为 `fix-ready` 并追踪了根因。此外还在 `openchamber/openchamber` 发起了一个讨论（#4893），标题为\"Picked attachments are dropped for text-only models - fall back to a path reference\"，属于 Ideas 分类。",
+      "headline": "sogeisetsu：9 次提交，2 个 bug，1 个讨论",
+      "summary": "2026-10-14，`sogeisetsu` 在三个仓库共完成 **9 次本人提交**，另有 21 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 中的自动提交。在 `sogeisetsu/asset-inventory` 中，5 次提交移除了 skill、贡献者文档、README、指南和示例中的 `/asset-inventory` 斜杠命令引用，修正了 rule 及所有示例中的 skill 调用事实，并发布 `v1.15.4`。在 `sogeisetsu/myBlog` 中，3 次提交新增了 OpenChamber 截图样本：`desktop-1440x900.jpg`、`panel-region-1to1.png` 和 `mobile-390x844.jpg`。在 `sogeisetsu/sogeisetsu` 中，1 次本人提交为日报与 AI 摘要在采集命中上限时增加了截断标注。在 `openchamber/openchamber` 中开出了两个 issue：#4899 关于浏览器截图在 200% 显示下以 CSS 像素尺寸（1x）导出，#4896 关于无法在 UI 中解除 agent 关联的 issue 或 PR。`openchamber-bot[bot]` 对两者均回复，标记为 `fix-ready` 并追溯了原因。此外在 `openchamber/openchamber` 发起了讨论 #4893，标题为 \"Picked attachments are dropped for text-only models - fall back to a path reference\"。当日无 PR、review 或 release 记录。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "ae3f3525d97abaa4ac915179360b427e618380b920e79a4f94b5da4790511814"
+  "dataHash": "b26937e50ac2cba26b89da7feabd8e132e433ca66677ab518f0d9e4313bc3935"
 }

@@ -3,30 +3,61 @@
   "windowStart": "2026-10-15T00:00:00+08:00",
   "windowEnd": "2026-10-16T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-14T18:40:53.235Z",
-  "empty": true,
+  "generatedAt": "2026-10-14T19:17:34.504Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 2,
     "prs": 0,
-    "issues": 0,
+    "issues": 1,
     "reviews": 0
   },
   "commits": [
     {
-      "repo": "sogeisetsu/sogeisetsu",
-      "count": 0,
+      "repo": "sogeisetsu/asset-inventory",
+      "count": 1,
       "own": true,
-      "messages": [],
-      "automated": 2,
+      "messages": [
+        {
+          "sha": "6ecf880e729730ca39f4e691d219b8288096392e",
+          "message": "chore(release): v1.15.5",
+          "ts": "2026-10-14T17:54:47Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 1,
+      "own": true,
+      "messages": [
+        {
+          "sha": "cb173356f46ec3cab0a23888a494908e35bc7d5c",
+          "message": "fix(daily): 提交归属支持别名，兼容非 GitHub 账号邮箱的提交",
+          "ts": "2026-10-14T19:16:44Z"
+        }
+      ],
+      "automated": 3,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 2,
+  "automatedCommits": 3,
   "pullRequests": [],
   "reviews": [],
-  "issues": [],
+  "issues": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4920,
+      "title": "[Bug] Context panel breakdown bar divides whole-session estimates by the last message's input, so 其他 is always 0%",
+      "url": "https://github.com/openchamber/openchamber/issues/4920",
+      "action": "opened",
+      "ts": "2026-10-14T18:49:56.000Z",
+      "own": false,
+      "state": "open"
+    }
+  ],
   "releases": [],
   "stars": [],
   "starInventory": [
@@ -131,8 +162,31 @@
       "hits": false
     }
   },
-  "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "dataHash": "d1b455f4babe97b7be30eb78baf45dc87672d74811a5a729b061f3e991f45694"
+  "discussions": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4821,
+      "title": "[Idea] Add session aggregate stats to the Context Usage Panel",
+      "url": "https://github.com/openchamber/openchamber/discussions/4821",
+      "category": "Ideas",
+      "comments": 1,
+      "action": "commented",
+      "ts": "2026-10-14T18:53:22.000Z",
+      "own": false
+    }
+  ],
+  "ai": {
+    "en": {
+      "headline": "2 commits, 1 issue opened, 1 discussion comment",
+      "summary": "On 2026-10-15, `sogeisetsu` made **2 own commits** across two repositories, plus 3 automated commits by `github-actions[bot]`. In `sogeisetsu/asset-inventory`, one own commit tagged the release as `v1.15.5` (`chore(release): v1.15.5`). In `sogeisetsu/sogeisetsu`, one own commit fixed daily-report commit attribution to support aliases and non-GitHub-account email addresses (`fix(daily): 提交归属支持别名，兼容非 GitHub 账号邮箱的提交`); the same repo also saw 3 automated commits from `github-actions[bot]`. No pull requests or reviews were recorded. One issue was opened: `openchamber/openchamber` #4920, titled \"[Bug] Context panel breakdown bar divides whole-session estimates by the last message's input, so 其他 is always 0%\", which remains open. The user also joined an existing discussion, `openchamber/openchamber` #4821 \"[Idea] Add session aggregate stats to the Context Usage Panel\" (Ideas, 1 comment), by commenting rather than starting it. No releases, stars, or replies were recorded, and no section hit its collection cap.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "2 次提交、1 个新 issue、1 条讨论回复",
+      "summary": "2026-10-15，`sogeisetsu` 在两个仓库中完成 **2 次本人提交**，另有 3 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/asset-inventory` 中，1 次本人提交将版本标记为 `v1.15.5`（`chore(release): v1.15.5`）。在 `sogeisetsu/sogeisetsu` 中，1 次本人提交修复了日报提交归属逻辑，使其支持别名并兼容非 GitHub 账号邮箱的提交（`fix(daily): 提交归属支持别名，兼容非 GitHub 账号邮箱的提交`）；同一仓库还有 3 次由 `github-actions[bot]` 自动提交。当日没有 PR 或 review 记录。新开 1 个 issue：`openchamber/openchamber` #4920，标题为 \"[Bug] Context panel breakdown bar divides whole-session estimates by the last message's input, so 其他 is always 0%\"，目前仍处于 open 状态。此外，用户在已有讨论 `openchamber/openchamber` #4821 \"[Idea] Add session aggregate stats to the Context Usage Panel\"（Ideas，1 条评论）中进行了评论，而非发起新讨论。当日没有 release、star 或回复记录，且没有任何分区触及采集上限。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "sensenova",
+  "dataHash": "2aac28176161747f13465d032b857a4f93cd50d28ae8ce1a6eff22f70021d69b"
 }
