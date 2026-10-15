@@ -16,7 +16,7 @@
  *   node scripts/daily/index.mjs [--date=YYYY-MM-DD] [--rerender] [--force] [--dry-run] [--no-ai]
  *   --date      只处理指定自然日（默认：同时处理「昨天（定稿）」与「今天（滚动）」）
  *   --rerender  只用已存 JSON 重新渲染 HTML/MD 与 index，不抓数据、不调 AI（改渲染代码后用）
- *   --force     忽略内容哈希，强制重新生成
+ *   --force     忽略内容哈希，强制重新生成（并重取定稿日的评论数快照，见 existingData）
  *   --dry-run   只打印摘要，不写任何文件
  *   --no-ai     跳过 AI 调用，直接产出「无叙述」确定版（联调用）
  *
@@ -144,14 +144,15 @@ async function processDate(date) {
   const previousData = readJsonIfExists(path.join(DATA_DIR, `${prevDate}.json`));
   console.log(`[daily-report] 目标日: ${date}（Asia/Shanghai），上一日数据: ${prevDate}（${previousData ? "有" : "无"}）`);
 
-  // 当天已存数据先读：既作为评论数快照冻结的来源传给 collect，也复用于后面的 dataHash 比较
+  // 当天已存数据先读：既作为评论数快照冻结的来源传给 collect，也复用于后面的 dataHash 比较。
+  // --force（改了提示词 / 数据口径后用）连快照一起重取：否则定稿日的评论数会被旧口径永久冻结。
   const existing = readJsonIfExists(path.join(DATA_DIR, `${date}.json`));
   const data = await collectDailyData({
     token: TOKEN,
     username: USERNAME,
     date,
     previousData,
-    existingData: existing,
+    existingData: FORCE ? null : existing,
   });
   console.log(`[daily-report] 数据: totals=${JSON.stringify(data.totals)} · ${sectionCount(data)} · empty=${data.empty}`);
 
