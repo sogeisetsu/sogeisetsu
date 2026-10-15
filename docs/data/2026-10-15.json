@@ -3,7 +3,7 @@
   "windowStart": "2026-10-15T00:00:00+08:00",
   "windowEnd": "2026-10-16T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-15T02:51:11.400Z",
+  "generatedAt": "2026-10-15T04:48:15.758Z",
   "empty": false,
   "totals": {
     "commits": 3,
@@ -28,7 +28,7 @@
           "ts": "2026-10-14T19:16:44Z"
         }
       ],
-      "automated": 12,
+      "automated": 14,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -48,7 +48,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 12,
+  "automatedCommits": 14,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -210,16 +210,16 @@
   ],
   "ai": {
     "en": {
-      "headline": "3 commits, 4 issue actions, 1 discussion reply on openchamber",
-      "summary": "sogeisetsu made **3 own commits** across two repositories on 2026-10-15, plus 12 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/sogeisetsu`, two own commits updated the agents docs to explain commit-attribution aliases and fixed the daily script so commit attribution supports aliases, including commits authored with non-GitHub-account email addresses. In `sogeisetsu/asset-inventory`, one own commit tagged the release as `v1.15.5`. No pull requests, reviews, or releases were recorded. On the issues side, 4 actions were taken in `openchamber/openchamber`: opened #4920 \"[Bug] Context panel breakdown bar divides whole-session estimates by the last message's input, so 其他 is always 0%\", commented on #4111 \"Deleting a multi-run leaves orphaned MCP child processes; git worktree remove --force then fails with Permission denied\", and both commented on and closed #4346 \"[test] SidebarHeader.test.tsx still passes onOpenMultiRun/canOpenMultiRun removed in d9fbf6b\". The user also joined the existing discussion #4821 \"[Idea] Add session aggregate stats to the Context Usage Panel\" in `openchamber/openchamber` with a comment. No truncation was reported for any section.",
+      "headline": "3 commits, 4 issue actions, 1 discussion reply on 2026-10-15",
+      "summary": "sogeisetsu made **3 own commits** across two repos, plus 14 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/sogeisetsu`, 2 own commits updated agent docs to explain commit-attribution aliases and fixed the daily script so commit attribution supports aliases for non-GitHub account emails. In `sogeisetsu/asset-inventory`, 1 own commit tagged the `v1.15.5` release. No pull requests or reviews were filed. On issues, 4 actions were recorded in `openchamber/openchamber`: opened #4920 about the context panel breakdown bar dividing whole-session estimates by the last message's input so 其他 stays at 0%, commented on #4111 about deleting a multi-run leaving orphaned MCP child processes and `git worktree remove --force` failing with Permission denied, and both commented on and closed #4346 about `SidebarHeader.test.tsx` still passing after `onOpenMultiRun`/`canOpenMultiRun` were removed in `d9fbf6b`. In discussions, the user commented in existing discussion #4821 titled \"[Idea] Add session aggregate stats to the Context Usage Panel\" in `openchamber/openchamber`. No releases were published and no replies were received. No section was truncated.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "3 次提交、4 次 issue 操作、1 条讨论回复",
-      "summary": "sogeisetsu 在 2026-10-15 于两个仓库共完成 **3 次本人提交**，另有 12 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 中自动提交。在 `sogeisetsu/sogeisetsu` 中，两次本人提交分别更新了 agents 文档以说明提交归属别名，并修复了 daily 脚本使提交归属支持别名，兼容非 GitHub 账号邮箱的提交。在 `sogeisetsu/asset-inventory` 中，一次本人提交将版本标记为 `v1.15.5`。当日无 PR、无 review、无 release。issue 方面在 `openchamber/openchamber` 共 4 次操作：新开 #4920 \"[Bug] Context panel breakdown bar divides whole-session estimates by the last message's input, so 其他 is always 0%\"，在 #4111 \"Deleting a multi-run leaves orphaned MCP child processes; git worktree remove --force then fails with Permission denied\" 上留言，并对 #4346 \"[test] SidebarHeader.test.tsx still passes onOpenMultiRun/canOpenMultiRun removed in d9fbf6b\" 留言后将其关闭。用户还在 `openchamber/openchamber` 的既有讨论 #4821 \"[Idea] Add session aggregate stats to the Context Usage Panel\" 中参与回复。各分区均未触发截断。",
+      "headline": "2026-10-15：3 次提交、4 次 issue 操作、1 条讨论回复",
+      "summary": "sogeisetsu 在两个仓库中共完成 **3 次本人提交**，另有 14 次由 `github-actions[bot]` 自动提交，均位于 `sogeisetsu/sogeisetsu`。在 `sogeisetsu/sogeisetsu` 中，2 次本人提交分别更新了 agents 文档以说明提交归属别名，并修复了 daily 脚本使提交归属支持别名、兼容非 GitHub 账号邮箱的提交。在 `sogeisetsu/asset-inventory` 中，1 次本人提交打了 `v1.15.5` 版本标签。当日未提交任何 PR 或 review。issue 方面在 `openchamber/openchamber` 记录了 4 次操作：新开 #4920，指出上下文面板的 breakdown 条把整场会话估算除以最后一条消息的输入，导致「其他」始终为 0%；在 #4111 上留言，讨论删除 multi-run 后遗留的 MCP 子进程以及 `git worktree remove --force` 报 Permission denied 的问题；在 #4346 上留言并关闭该 issue，该 issue 涉及 `onOpenMultiRun`/`canOpenMultiRun` 在 `d9fbf6b` 中被移除后 `SidebarHeader.test.tsx` 仍然通过。讨论方面，用户在 `openchamber/openchamber` 的既有讨论 #4821「[Idea] Add session aggregate stats to the Context Usage Panel」中留言。当日无发布、无收到的回复，各分区均未触发截断。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "1183066ea1b01075ed2c7621dffacc39f97e628de6e0571e1007c099af69d265"
+  "dataHash": "b653f4ee9d0846adc19bbad2b5dae7bec1dacd005ec93e2eba83de60f2b699af"
 }
