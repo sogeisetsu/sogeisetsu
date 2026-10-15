@@ -350,7 +350,7 @@ function parseJsonPayload(text) {
 }
 
 /** 粗算句数：中文句号/叹号/问号直接计数（中文句间通常无空格）；英文句末标点需后接空白或结尾，避免小数点、缩写点误判。 */
-function countSentences(text) {
+export function countSentences(text) {
   const s = String(text).trim();
   if (!s) return 0;
   const cjk = (s.match(/[。！？]/g) || []).length;
@@ -361,7 +361,7 @@ function countSentences(text) {
 }
 
 /** 按句末标点切句（中英兼顾），保留标点、去掉空段。 */
-function splitSentences(text) {
+export function splitSentences(text) {
   const s = String(text).trim();
   if (!s) return [];
   const out = [];
@@ -403,7 +403,7 @@ function fitSentences(text, keepMax) {
 /**
  * headline 超长时优先在分隔符处断开，其次按词边界断开；保证不超过 maxChars。
  */
-function fitHeadline(text, maxChars) {
+export function fitHeadline(text, maxChars) {
   const s = String(text).trim();
   if (s.length <= maxChars) return s;
   const seps = ["；", ";", " | ", "—", " - "];
@@ -422,7 +422,7 @@ function fitHeadline(text, maxChars) {
  * 把过长文本截断到 maxChars 内，尽量保留完整句子（句界优先），并保证句数落在 [keepMin, keepMax]。
  * 用于强制模型无法稳定遵守的硬性长度上限：宁可截短，也不因超长整段失败。
  */
-function fitText(text, maxChars, keepMin, keepMax) {
+export function fitText(text, maxChars, keepMin, keepMax) {
   const s = String(text).trim();
   if (!s) return "";
   if (s.length <= maxChars && countSentences(s) <= keepMax) return s;

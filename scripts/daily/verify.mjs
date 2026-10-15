@@ -12,7 +12,16 @@
  *     以及 favicon.svg / chomsky.woff2 实体与 wOF2 魔数
  *   D 报告正文：无 "merge:" 提交标题、页脚「不含合并提交」、自动提交说明按
  *     Σ automated 出现（>0 必须有，=0 必须无）、有 AI 叙述时双语 ai-summary 各 ≥1 段
- *   E 打印检查过的数据文件 / 报告数量
+ *   F 回填数据 data/backfill（仓库根固定，与 --dir 无关）：文件数 >0、逐文件
+ *     schema（date 与文件名一致 / source=search-backfill / backfillLimits / totals /
+ *     明细数组 / dataHash / totals = Σ）
+ *   G 30 天总结 docs/summary.json：JSON/schema、ai 结构（ai 非 null 时）
+ *   H 数字一致：窗口 = cstDayMinus(30)~cstDayMinus(1)、totals 与 automatedCommits
+ *     等于逐日（docs/data ∪ data/backfill，daily 优先）求和、missing 与实际缺日集合相等
+ *   I docs/summary.html：文档结构 + head + 确定数字条与 totals 一致、自动提交相加表述、
+ *     缺日标注、有 AI 叙述时双语 ai-summary 块与 headline 逐字
+ *   J 首页卡片一致性：index 是否含 href="./summary.html" 与双语 headline（随 ai 而定）
+ *   E 打印检查过的数据文件 / 报告 / 回填数量
  *
  * 用法：
  *   node scripts/daily/verify.mjs [--dir=docs] [--quiet]
@@ -27,6 +36,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { BACKFILL_DIR, cstDayMinus, dateRange, readJsonIfExists } from "./lib/days.mjs";
 import { hasVisibleActivity } from "./render.mjs";
 
 // ---------------------------------------------------------------- 常量与参数
@@ -45,6 +55,8 @@ const SITE = path.isAbsolute(DIR_ARG) ? DIR_ARG : path.resolve(ROOT, DIR_ARG);
 const DATA_DIR = path.join(SITE, "data");
 const REPORT_DIR = path.join(SITE, "report");
 const INDEX_PATH = path.join(SITE, "index.html");
+const SUMMARY_JSON_PATH = path.join(SITE, "summary.json");
+const SUMMARY_HTML_PATH = path.join(SITE, "summary.html");
 const FAVICON_PATH = path.join(SITE, "favicon.svg");
 const FONT_PATH = path.join(SITE, "assets", "fonts", "chomsky.woff2");
 
@@ -66,6 +78,16 @@ function check(label, ok, detail) {
 /** 仓库根相对路径，统一正斜杠，便于输出。 */
 function rel(p) {
   return path.relative(ROOT, p).split(path.sep).join("/");
+}
+
+/** 与 render.mjs 的 esc 同口径的轻量转义（headline / 文本逐字比对用）。 */
+function htmlEsc(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }
 
 function readText(file) {
@@ -519,6 +541,378 @@ function main() {
     }
   }
 
+  // ---------------- F 回填数据 data/backfill（仓库根固定，与 --dir 无关） ----------------
+  let backfillFiles = [];
+  if (existsSync(BACKFILL_DIR)) {
+    try {
+      backfillFiles = readdirSync(BACKFILL_DIR)
+        .filter((f) => f.endsWith(".json"))
+        .sort();
+    } catch {
+      backfillFiles = [];
+    }
+  }
+  check(
+    "backfill: 文件数 > 0",
+    backfillFiles.length > 0,
+    `${rel(BACKFILL_DIR)} 下没有 .json 回填文件（30 天总结依赖回填数据）`
+  );
+
+  for (const file of backfillFiles) {
+    const label = `backfill/${file.slice(0, -".json".length)}`;
+    const raw = readText(path.join(BACKFILL_DIR, file));
+    if (raw === null) {
+      check(`${label}: schema`, false, "读取失败");
+      continue;
+    }
+    let j;
+    try {
+      j = JSON.parse(raw);
+    } catch (e) {
+      check(`${label}: schema`, false, `JSON.parse 失败: ${e && e.message ? e.message : e}`);
+      continue;
+    }
+    if (j === null || typeof j !== "object" || Array.isArray(j)) {
+      check(`${label}: schema`, false, "顶层不是对象");
+      continue;
+    }
+
+    const bad = [];
+    const base = file.slice(0, -".json".length);
+    if (typeof j.date !== "string" || !DATE_RE.test(j.date)) {
+      bad.push(`date=${JSON.stringify(j.date)}`);
+    } else if (j.date !== base) {
+      bad.push(`date=${j.date} 与文件名 ${base} 不一致`);
+    }
+    if (j.source !== "search-backfill") bad.push(`source=${JSON.stringify(j.source)}`);
+    if (
+      !j.backfillLimits ||
+      typeof j.backfillLimits !== "object" ||
+      Array.isArray(j.backfillLimits) ||
+      Object.keys(j.backfillLimits).length === 0
+    ) {
+      bad.push("backfillLimits 缺失或不是非空对象");
+    }
+    const t =
+      j.totals && typeof j.totals === "object" && !Array.isArray(j.totals) ? j.totals : null;
+    if (!t) bad.push("totals{} 缺失");
+    else {
+      for (const k of ["commits", "prs", "issues", "reviews"]) {
+        if (typeof t[k] !== "number" || !Number.isFinite(t[k])) bad.push(`totals.${k} 非数字`);
+      }
+    }
+    const arraysOk = ["commits", "pullRequests", "reviews", "issues"].every((k) =>
+      Array.isArray(j[k])
+    );
+    if (!arraysOk) {
+      for (const k of ["commits", "pullRequests", "reviews", "issues"]) {
+        if (!Array.isArray(j[k])) bad.push(`${k}[] 缺失`);
+      }
+    }
+    if (typeof j.dataHash !== "string" || j.dataHash === "") bad.push("dataHash 缺失");
+    if (t && arraysOk) {
+      const sumCommits = sumOf(j.commits, "count");
+      if (t.commits !== sumCommits) bad.push(`totals.commits ${t.commits}≠Σ${sumCommits}`);
+      if (t.prs !== j.pullRequests.length) {
+        bad.push(`totals.prs ${t.prs}≠len ${j.pullRequests.length}`);
+      }
+      if (t.issues !== j.issues.length) {
+        bad.push(`totals.issues ${t.issues}≠len ${j.issues.length}`);
+      }
+      if (t.reviews !== j.reviews.length) {
+        bad.push(`totals.reviews ${t.reviews}≠len ${j.reviews.length}`);
+      }
+    }
+    check(`${label}: schema`, bad.length === 0, bad.join("; "));
+  }
+
+  // ---------------- G/H 30 天总结 docs/summary.json ----------------
+  const summaryRaw = readText(SUMMARY_JSON_PATH);
+  let summary = null;
+  if (summaryRaw === null) {
+    check("summary.json: JSON 合法", false, `缺失或不可读: ${rel(SUMMARY_JSON_PATH)}`);
+  } else {
+    let parsed;
+    let parseErr = null;
+    try {
+      parsed = JSON.parse(summaryRaw);
+    } catch (e) {
+      parseErr = e && e.message ? e.message : e;
+    }
+    if (parseErr !== null) {
+      check("summary.json: JSON 合法", false, `JSON.parse 失败: ${parseErr}`);
+    } else if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+      check("summary.json: JSON 合法", false, "顶层不是对象");
+    } else {
+      check("summary.json: JSON 合法", true, "");
+      summary = parsed;
+    }
+  }
+
+  if (summary) {
+    const badS = [];
+    const ws = summary.windowStart;
+    const we = summary.windowEnd;
+    if (typeof ws !== "string" || !DATE_RE.test(ws)) badS.push(`windowStart=${JSON.stringify(ws)}`);
+    if (typeof we !== "string" || !DATE_RE.test(we)) badS.push(`windowEnd=${JSON.stringify(we)}`);
+    if (typeof summary.days !== "number" || !Number.isFinite(summary.days) || summary.days <= 0) {
+      badS.push(`days=${JSON.stringify(summary.days)}`);
+    }
+    const m = summary.missing;
+    if (!m || typeof m !== "object" || Array.isArray(m)) {
+      badS.push("missing 非对象");
+    } else {
+      if (typeof m.days !== "number" || !Number.isFinite(m.days)) {
+        badS.push(`missing.days=${JSON.stringify(m.days)}`);
+      }
+      if (!Array.isArray(m.dates)) badS.push("missing.dates 非数组");
+    }
+    const t = summary.totals;
+    if (!t || typeof t !== "object" || Array.isArray(t)) {
+      badS.push("totals{} 缺失");
+    } else {
+      for (const k of ["commits", "prs", "issues", "reviews"]) {
+        if (typeof t[k] !== "number" || !Number.isFinite(t[k])) badS.push(`totals.${k} 非数字`);
+      }
+    }
+    if (
+      typeof summary.automatedCommits !== "number" ||
+      !Number.isFinite(summary.automatedCommits)
+    ) {
+      badS.push(`automatedCommits=${JSON.stringify(summary.automatedCommits)}`);
+    }
+    if (typeof summary.dataHash !== "string" || summary.dataHash === "") badS.push("dataHash 缺失");
+    const aiOk =
+      summary.ai === null ||
+      (summary.ai !== undefined &&
+        typeof summary.ai === "object" &&
+        !Array.isArray(summary.ai));
+    if (!aiOk) badS.push(`ai 非 null 也非对象（${typeof summary.ai}）`);
+    check("summary.json: schema", badS.length === 0, badS.join("; "));
+
+    // ai 非 null 时的叙述结构（en/zh 各需非空纯文本 headline、overview、数组段）
+    if (summary.ai !== null && summary.ai !== undefined) {
+      const badAi = [];
+      const ai = summary.ai;
+      if (typeof ai !== "object" || Array.isArray(ai)) {
+        badAi.push(`ai 非对象（${typeof ai}）`);
+      } else {
+        for (const lang of ["en", "zh"]) {
+          const sec = ai[lang];
+          if (!sec || typeof sec !== "object" || Array.isArray(sec)) {
+            badAi.push(`ai.${lang} 缺失或非对象`);
+            continue;
+          }
+          const h = sec.headline;
+          if (typeof h !== "string" || !h.trim()) badAi.push(`ai.${lang}.headline 为空`);
+          else if (/[*`]/.test(h)) badAi.push(`ai.${lang}.headline 含反引号或星号`);
+          if (typeof sec.overview !== "string" || !sec.overview.trim()) {
+            badAi.push(`ai.${lang}.overview 为空`);
+          }
+          if (!Array.isArray(sec.highlights)) badAi.push(`ai.${lang}.highlights 非数组`);
+          if (!Array.isArray(sec.byRepo)) badAi.push(`ai.${lang}.byRepo 非数组`);
+        }
+      }
+      check("summary.json: ai 结构", badAi.length === 0, badAi.join("; "));
+    }
+
+    // 窗口重算（闭区间 30 天，今天不含）
+    const wantStart = cstDayMinus(30);
+    const wantEnd = cstDayMinus(1);
+    check(
+      "summary: 窗口 = cstDayMinus(30)~cstDayMinus(1)",
+      ws === wantStart && we === wantEnd,
+      `summary.json=${ws}..${we}，按今天重算=${wantStart}..${wantEnd}`
+    );
+
+    const winOk =
+      typeof ws === "string" &&
+      DATE_RE.test(ws) &&
+      typeof we === "string" &&
+      DATE_RE.test(we) &&
+      ws <= we;
+    if (winOk) {
+      // 逐日求和：docs/data ∪ data/backfill，同一天以 docs/data 为准（与 collect.mjs 同口径）
+      const dates = dateRange(ws, we);
+      const sums = { commits: 0, prs: 0, issues: 0, reviews: 0 };
+      let autoSum = 0;
+      const present = new Set();
+      for (const d of dates) {
+        const j =
+          readJsonIfExists(path.join(DATA_DIR, `${d}.json`)) ??
+          readJsonIfExists(path.join(BACKFILL_DIR, `${d}.json`));
+        if (!j) continue;
+        present.add(d);
+        const t = j.totals && typeof j.totals === "object" ? j.totals : {};
+        for (const k of ["commits", "prs", "issues", "reviews"]) sums[k] += Number(t[k]) || 0;
+        autoSum += Number(j.automatedCommits) || 0;
+      }
+
+      const t = summary.totals && typeof summary.totals === "object" ? summary.totals : {};
+      const diffs = ["commits", "prs", "issues", "reviews"]
+        .filter((k) => Number(t[k]) !== sums[k])
+        .map((k) => `${k} ${JSON.stringify(t[k])}≠Σ${sums[k]}`);
+      check("summary: totals = 逐日 Σ", diffs.length === 0, diffs.join("; "));
+
+      check(
+        "summary: automatedCommits = 逐日 Σ",
+        Number(summary.automatedCommits) === autoSum,
+        `summary.json=${JSON.stringify(summary.automatedCommits)} 逐日Σ=${autoSum}`
+      );
+
+      const wantMissing = dates.filter((d) => !present.has(d));
+      const gotDates =
+        summary.missing && typeof summary.missing === "object" && Array.isArray(summary.missing.dates)
+          ? [...summary.missing.dates].sort()
+          : null;
+      const setEqual =
+        gotDates !== null &&
+        gotDates.length === wantMissing.length &&
+        gotDates.every((d, i) => d === wantMissing[i]);
+      const daysEqual =
+        summary.missing &&
+        typeof summary.missing === "object" &&
+        Number(summary.missing.days) === wantMissing.length &&
+        gotDates !== null &&
+        gotDates.length === Number(summary.missing.days);
+      check(
+        "summary: missing 与实际缺日一致",
+        Boolean(setEqual && daysEqual),
+        `missing=${JSON.stringify(summary.missing)} 实际缺日=${JSON.stringify(wantMissing)}`
+      );
+    } else {
+      check("summary: totals = 逐日 Σ", false, "windowStart/windowEnd 不是合法 YYYY-MM-DD 闭区间");
+      check(
+        "summary: automatedCommits = 逐日 Σ",
+        false,
+        "windowStart/windowEnd 不是合法 YYYY-MM-DD 闭区间"
+      );
+      check(
+        "summary: missing 与实际缺日一致",
+        false,
+        "windowStart/windowEnd 不是合法 YYYY-MM-DD 闭区间"
+      );
+    }
+  }
+
+  // ---------------- I docs/summary.html ----------------
+  const summaryHtml = readText(SUMMARY_HTML_PATH);
+  check("summary.html 可读", summaryHtml !== null, `缺失或不可读: ${rel(SUMMARY_HTML_PATH)}`);
+
+  if (summaryHtml !== null) {
+    const badH = [];
+    if (!/^<!doctype html>/i.test(summaryHtml)) {
+      badH.push(`开头=${JSON.stringify(summaryHtml.slice(0, 30))}`);
+    }
+    if (!summaryHtml.includes('<html lang="en" data-lang="en"')) badH.push('缺 <html lang="en" data-lang="en"');
+    if (!summaryHtml.includes("</html>")) badH.push("缺 </html>");
+    check("summary.html: 文档结构", badH.length === 0, badH.join("; "));
+
+    headChecks("summary", summaryHtml, "");
+
+    if (summary) {
+      const t = summary.totals && typeof summary.totals === "object" ? summary.totals : {};
+      const gotNums = [...summaryHtml.matchAll(/<div class="stat-num">([^<]*)<\/div>/g)].map(
+        (mm) => mm[1]
+      );
+      const wantNums = ["commits", "prs", "issues", "reviews"].map((k) => String(t[k]));
+      check(
+        "summary.html: 数字条与 totals 一致",
+        gotNums.length === 4 && wantNums.every((n, i) => gotNums[i] === n),
+        `页面=${JSON.stringify(gotNums)} 期望=${JSON.stringify(wantNums)}`
+      );
+
+      // 自动提交与 totals 是「相加」关系：>0 时必须有相加表述，且不得出现包含式措辞
+      if (Number(summary.automatedCommits) > 0) {
+        const additive = /另有|\bplus\b/i.test(summaryHtml);
+        const overlap = /其中|\bof which\b/i.test(summaryHtml);
+        check(
+          "summary.html: 自动提交为相加表述",
+          additive && !overlap,
+          !additive
+            ? `automatedCommits=${summary.automatedCommits} 但页面缺少「另有/plus」相加表述`
+            : "页面出现「其中/of which」包含式表述"
+        );
+      }
+
+      const mDays =
+        summary.missing && typeof summary.missing === "object" ? Number(summary.missing.days) : 0;
+      const mDates =
+        summary.missing && typeof summary.missing === "object" && Array.isArray(summary.missing.dates)
+          ? summary.missing.dates
+          : [];
+      if (mDays > 0) {
+        const notices = [...summaryHtml.matchAll(/<p class="trunc-notice">([\s\S]*?)<\/p>/g)]
+          .map((mm) => mm[1].replace(/<[^>]*>/g, ""))
+          .filter((txt) => /Data missing for|缺数据/.test(txt));
+        const hit = notices.some(
+          (txt) =>
+            txt.includes(String(mDays)) &&
+            (mDates.length === 0 || mDates.some((d) => txt.includes(String(d))))
+        );
+        check(
+          "summary.html: 缺日标注",
+          hit,
+          `missing.days=${mDays}、dates=${JSON.stringify(mDates)} 未在页面缺日提示中出现`
+        );
+      }
+
+      // 有 AI 叙述时：双语 ai-summary 块各 ≥1 段，headline 双语逐字出现在页面
+      if (summary.ai !== null && summary.ai !== undefined) {
+        const badBlock = [];
+        for (const lang of ["en", "zh"]) {
+          const re = new RegExp(`<div class="ai-summary i18n" data-lang="${lang}">([\\s\\S]*?)</div>`);
+          const block = re.exec(summaryHtml);
+          const paras = block ? (block[1].match(/<p[\s>]/g) || []).length : 0;
+          if (!block) badBlock.push(`${lang} 块缺失`);
+          else if (paras < 1) badBlock.push(`${lang} 块内没有 <p>`);
+        }
+        check("summary.html: ai-summary 双语块", badBlock.length === 0, badBlock.join("; "));
+
+        const ai = summary.ai && typeof summary.ai === "object" ? summary.ai : {};
+        const heads = [ai.en && ai.en.headline, ai.zh && ai.zh.headline].map((h) =>
+          String(h ?? "")
+        );
+        const missHead = heads.filter(
+          (h) => h !== "" && !(summaryHtml.includes(h) || summaryHtml.includes(htmlEsc(h)))
+        );
+        check(
+          "summary.html: ai headline 双语逐字",
+          missHead.length === 0,
+          `页面未逐字出现: ${missHead.map((h) => JSON.stringify(h)).join(", ")}`
+        );
+      }
+    }
+  }
+
+  // ---------------- J 首页卡片一致性 ----------------
+  if (summary && indexHtml !== null) {
+    const ai = summary.ai && typeof summary.ai === "object" ? summary.ai : null;
+    const heads = ai
+      ? [String(ai.en && ai.en.headline ? ai.en.headline : "").trim(),
+         String(ai.zh && ai.zh.headline ? ai.zh.headline : "").trim()]
+      : ["", ""];
+    const wantLink = Boolean(ai && (heads[0] !== "" || heads[1] !== ""));
+    const hasLink = indexHtml.includes('href="./summary.html"');
+    check(
+      "index: summary.html 链接",
+      hasLink === wantLink,
+      wantLink
+        ? '有 AI headline 但 index 缺少 href="./summary.html"'
+        : 'ai 为空但 index 含 href="./summary.html"（卡片与页面都不出叙述）'
+    );
+    if (wantLink) {
+      const miss = heads.filter(
+        (h) => h !== "" && !(indexHtml.includes(h) || indexHtml.includes(htmlEsc(h)))
+      );
+      check(
+        "index: 卡片 headline 双语逐字",
+        miss.length === 0,
+        `index 未逐字出现: ${miss.map((h) => JSON.stringify(h)).join(", ")}`
+      );
+    }
+  }
+
   // ---------------- 输出 ----------------
   let failed = 0;
   for (const r of results) {
@@ -530,7 +924,9 @@ function main() {
     }
   }
   // E：检查覆盖量
-  console.log(`checked ${dataDates.length} data files, ${reportDates.length} reports`);
+  console.log(
+    `checked ${dataDates.length} data files, ${reportDates.length} reports, ${backfillFiles.length} backfill files`
+  );
   console.log(`${results.length} checks, ${failed} failed`);
   process.exit(failed > 0 ? 1 : 0);
 }

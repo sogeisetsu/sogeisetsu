@@ -1,0 +1,24 @@
+name: Check
+
+on:
+  push:
+  pull_request:
+
+# 纯预检：只读、零 secret、不碰 docs/，所以只给读权限。
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v7
+
+      - name: 设置 Node.js 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+
+      - name: 预检（不变式自检）
+        run: node scripts/daily/check.mjs

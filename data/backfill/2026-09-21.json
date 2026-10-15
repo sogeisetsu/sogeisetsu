@@ -1,0 +1,157 @@
+{
+  "date": "2026-09-21",
+  "windowStart": "2026-09-21T00:00:00+08:00",
+  "windowEnd": "2026-09-22T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-15T19:45:00.122Z",
+  "empty": false,
+  "totals": {
+    "commits": 3,
+    "prs": 6,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "count": 3,
+      "own": true,
+      "messages": [
+        {
+          "sha": "ce3eb0ffdcaab166aa42eab21826f1478f85c561",
+          "message": "feat: v1.4.0 — automate doc checks, fix language promise, trim SKILL.md",
+          "ts": "2026-09-21T15:52:52Z"
+        },
+        {
+          "sha": "cbdb9164d89179651db77e02a7cbb35564c01f70",
+          "message": "chore(docs): fix 1.3.0 release date and add version + glossary checks",
+          "ts": "2026-09-21T13:16:18Z"
+        },
+        {
+          "sha": "f4696de07b6ec62c8320dab1fb962a081078de87",
+          "message": "docs: add v1.3.0 release notes and register them in docs check",
+          "ts": "2026-09-21T12:44:02Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    }
+  ],
+  "automatedCommits": 0,
+  "pullRequests": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 3,
+      "title": "feat: v1.4.0 — automate doc checks, fix language promise, trim SKILL.md",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/3",
+      "action": "merged",
+      "ts": "2026-09-21T15:54:27.000Z",
+      "own": true,
+      "state": "merged"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 3,
+      "title": "feat: v1.4.0 — automate doc checks, fix language promise, trim SKILL.md",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/3",
+      "action": "opened",
+      "ts": "2026-09-21T15:53:31.000Z",
+      "own": true,
+      "state": "open"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 2,
+      "title": "chore(docs): fix 1.3.0 release date and add version + glossary checks",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/2",
+      "action": "merged",
+      "ts": "2026-09-21T13:17:01.000Z",
+      "own": true,
+      "state": "merged"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 2,
+      "title": "chore(docs): fix 1.3.0 release date and add version + glossary checks",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/2",
+      "action": "opened",
+      "ts": "2026-09-21T13:16:51.000Z",
+      "own": true,
+      "state": "open"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 1,
+      "title": "release: v1.3.0 — English-first restructure & docs tooling",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/1",
+      "action": "merged",
+      "ts": "2026-09-21T12:44:38.000Z",
+      "own": true,
+      "state": "merged"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 1,
+      "title": "release: v1.3.0 — English-first restructure & docs tooling",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/1",
+      "action": "opened",
+      "ts": "2026-09-21T12:44:27.000Z",
+      "own": true,
+      "state": "open"
+    }
+  ],
+  "reviews": [],
+  "issues": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.4.0",
+      "name": "v1.4.0 — automated doc checks & honest language promise",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.4.0",
+      "publishedAt": "2026-09-21T15:55:09Z",
+      "notes": "<!--\n Release notes for v1.4.0 (English). Paste into the GitHub Release body.\n Chinese version: zh/release-notes-v1.4.0-ZH.md\n Release: v1.4.0 — asset-inventory (sogeisetsu/asset-inventory)\n-->\n\n# v1.4.0\n\nThis release turns the documentation rules into automated checks, closes a language promise the skill could not keep, and trims `SKILL.md`. The inventory logic and 7-table structure are unchanged.\n\n## What's New\n\n- **PR-triggered docs check** (`.github/workflows/docs-check.yml`) — every pull request to `master` now runs `node --check` on both scripts and `node scripts/check-docs.mjs`. Previously the only workflow deployed Pages on `master` push, so PRs had no gate at all.\n- **Version-consistency check** — `check-docs.mjs` reads `metadata.version` from the `SKILL.md` frontmatter and fails if it disagrees with the top release heading in `CHANGELOG.md` or `zh/CHANGELOG-ZH.md`.\n- **Glossary-structure check** — every language block in `references/glossary.json` must expose the same key set as `en`; missing or extra keys are reported per language.\n- **Japanese glossary entries** — `references/glossary.json` now ships `en` / `zh` / `ja`, and the skill states an explicit fallback for any other language instead of implying every language has fixed strings.\n- **`references/checklist.md`** — the full Quality Checklist, extracted from `SKILL.md`.\n- **`update.ps1 -DryRun`** — preview whic…"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.3.0",
+      "name": "v1.3.0 — English-first restructure & docs tooling",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.3.0",
+      "publishedAt": "2026-09-21T12:45:26Z",
+      "notes": "<!--\n Release notes for v1.3.0 (English). Paste into the GitHub Release body.\n Chinese version: zh/release-notes-v1.3.0-ZH.md\n Release: v1.3.0 — asset-inventory (sogeisetsu/asset-inventory)\n-->\n\n# v1.3.0\n\nThis release makes the repository English-first, adds a paired Chinese doc set, and introduces tooling that keeps the docs honest. The inventory logic and 7-table structure are unchanged.\n\n## What's New\n\n- **English-first skill content** — `SKILL.md`, `references/`, and `examples/` are rewritten in English; the frontmatter `description` is now pure English.\n- **Explicit Output Language section** — output follows the user's language (a Chinese request yields Chinese output), while the skill's own instructions stay English.\n- **Chinese doc set (`zh/`)** — `CONTRIBUTING-ZH.md`, `CHANGELOG-ZH.md`, and `release-notes-v1.1.0-ZH.md`, paired with the English docs at the repo root.\n- **Localization glossary** (`references/glossary.json`) — a machine-readable map of fixed output strings per language (headers, state markers, confidence suffixes, table titles, empty-table/unknown strings, provenance), so localized output stays consistent and diff-comparable.\n- **Docs validation script** (`scripts/check-docs.mjs`) — resolves relative Markdown links and `<img src>`, checks the EN/ZH pair table, warns on one-sided edits, validates frontmatter, and flags CJK in English docs.\n- **Asset genera…"
+    }
+  ],
+  "stars": [],
+  "starInventory": [],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": true
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "source": "search-backfill",
+  "backfillLimits": {
+    "stars": "unavailable",
+    "releases": "own-repos-only",
+    "issues": "search-approx",
+    "reviews": "search-approx",
+    "discussions": "search-approx",
+    "comments": "unavailable",
+    "commits": "repo-scan-accurate"
+  },
+  "dataHash": "9deca904fb9ff68ba9b06df1fe10ad56b03f9ec995ed212faa5dd67613059a02"
+}

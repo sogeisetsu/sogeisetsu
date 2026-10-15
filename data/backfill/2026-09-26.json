@@ -1,0 +1,162 @@
+{
+  "date": "2026-09-26",
+  "windowStart": "2026-09-26T00:00:00+08:00",
+  "windowEnd": "2026-09-27T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-15T19:49:17.382Z",
+  "empty": false,
+  "totals": {
+    "commits": 6,
+    "prs": 0,
+    "issues": 3,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "0104e4abb68c0fbd2bb2b290d75fca459c97ea74",
+          "message": "chore(release): v1.14.0",
+          "ts": "2026-09-26T03:49:06Z"
+        },
+        {
+          "sha": "f15d2da0ef4f74cc8a94c092cb1e76a9f6431f3d",
+          "message": "fix(skill): localize Table 7 category names via glossary hostCategories (7 languages)",
+          "ts": "2026-09-26T03:30:59Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "fd7150438cf2208dca2a005048ad2b8409a908ee",
+          "message": "chore: release v1.1.0",
+          "ts": "2026-09-26T04:21:40Z"
+        },
+        {
+          "sha": "c1e5c1b7ede068163497b1c63b7b43e194322d81",
+          "message": "feat: restructure output as three-part body plus data appendix",
+          "ts": "2026-09-26T04:19:10Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "32c6e0cac9db84d88ca2eed5ce30cc16a0c82edd",
+          "message": "feat: switch all copy to English, replace chart note with peak/average summary",
+          "ts": "2026-09-26T08:04:54Z"
+        },
+        {
+          "sha": "1e2ee0680d35215b43cbc4e53f78cef17da431a1",
+          "message": "feat: 近 30 天活动卡片 + 每日自动更新 workflow",
+          "ts": "2026-09-26T07:41:53Z"
+        }
+      ],
+      "automated": 2,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    }
+  ],
+  "automatedCommits": 2,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 3950,
+      "title": "[Bug] Small-model background calls to OpenCode Go fail with missing x-opencode-session on 2.0.1 — AI rename / walkthrough broken for Go models",
+      "url": "https://github.com/openchamber/openchamber/issues/3950",
+      "action": "closed",
+      "ts": "2026-09-26T01:07:43.000Z",
+      "own": false,
+      "state": "closed"
+    },
+    {
+      "repo": "openchamber/openchamber",
+      "number": 3947,
+      "title": "[Bug] v2.0.1 release is missing latest.yml / latest-mac.yml — auto-update finds nothing on Windows and macOS",
+      "url": "https://github.com/openchamber/openchamber/issues/3947",
+      "action": "closed",
+      "ts": "2026-09-26T01:06:00.000Z",
+      "own": false,
+      "state": "closed"
+    },
+    {
+      "repo": "openchamber/openchamber",
+      "number": 3966,
+      "title": "Behavior settings: saving after an external AGENTS.md edit silently overwrites the file (stale-save clobber)",
+      "url": "https://github.com/openchamber/openchamber/issues/3966",
+      "action": "closed",
+      "ts": "2026-09-25T22:41:36.000Z",
+      "own": false,
+      "state": "closed"
+    }
+  ],
+  "releases": [
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "tag": "v1.1.0",
+      "name": "v1.1.0",
+      "url": "https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v1.1.0",
+      "publishedAt": "2026-09-26T04:22:44Z",
+      "notes": "# opencode-go-model-picker v1.1.0\n\nReworks the skill's output into a scannable **three-part body plus a data appendix**. The read-only apply gate, the recommendation modes, and the fallback-chain policy are unchanged.\n\n## What's Changed\n\n### Changed\n\n- **Recommendation table** — one row per custom agent with exactly: agent name, capability focus (trait), current model, recommended model, and the cost/throughput/capability reason. `⚠ limited-time` / `⚠ geo-restricted` / `⚠ trains on your data` markers live in the recommended-model cell, with their full explanation in the highlights.\n- **Paste-ready config** — a complete copy-pasteable JSONC block per detected source: a preset block for `oh-my-opencode-slim.json`, an `agent` block for `opencode.jsonc` (or the frontmatter `model:` line for Markdown agents), both when both are detected — each labeled with its paste target, with fallback chains preserved where the source supports them.\n- **Highlights** — one paragraph covering the recommendation mode and its origin, whether the balanced price ceiling held, the full text of every ⚠ flag, plan changes vs the last snapshot, and any pick that needs a human decision.\n- **Data appendix** — sources with fetch dates (seed values explicitly labeled with the seed's date), the snapshot diff, the relevant-models price table, the first-run decision-factors table, the manual-verification list, a…"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.14.0",
+      "name": "v1.14.0 — skills.sh install, workflow-first SKILL.md",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.14.0",
+      "publishedAt": "2026-09-26T03:49:20Z",
+      "notes": "<!--\n Release notes for v1.14.0 (English). Paste into the GitHub Release body.\n Chinese version: ../../zh/release-notes/release-notes-v1.14.0-ZH.md\n Release: v1.14.0 — asset-inventory (sogeisetsu/asset-inventory)\n Scope: all changes since the previous Release tag (v1.13.3), including the\n 1.13.4–1.13.7 patches.\n-->\n\n# v1.14.0\n\nInstall with one command via skills.sh, a workflow-first SKILL.md, and honest handling of the edge cases real machines throw at an inventory — plus everything that landed in the 1.13.4–1.13.7 patches since the last release. The 7-table structure and inventory logic are unchanged.\n\n## Added\n\n- **Install via skills.sh** — every README (7 languages) and the install guide now offer the one-liner `npx skills add sogeisetsu/asset-inventory`: it detects the agents on your machine (OpenCode, Claude Code, Codex, GitHub Copilot, …) and installs into each, with `-g` for global, `-y` to skip prompts, and `--copy` instead of symlinking. The English and Chinese READMEs also carry the official skills.sh badge.\n- **Richer skill description** — the frontmatter description now states the three provenance questions (what it is / who brought it in / how to use it), the state markers, the trigger scenarios (diff mode, cleanup and unused-asset questions), the usage-guide deliverable, and the read-only and masking guarantees, so hosts and registries can judge relevance before…"
+    }
+  ],
+  "stars": [],
+  "starInventory": [],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": true
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "source": "search-backfill",
+  "backfillLimits": {
+    "stars": "unavailable",
+    "releases": "own-repos-only",
+    "issues": "search-approx",
+    "reviews": "search-approx",
+    "discussions": "search-approx",
+    "comments": "unavailable",
+    "commits": "repo-scan-accurate"
+  },
+  "dataHash": "55fe58ebbb4a9aab59a4d5dc2f6dc99b756ae9b0dce9b8040528cb3e9f29bf43"
+}

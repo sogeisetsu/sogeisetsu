@@ -1,0 +1,118 @@
+{
+  "date": "2026-09-23",
+  "windowStart": "2026-09-23T00:00:00+08:00",
+  "windowEnd": "2026-09-24T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-15T19:47:11.809Z",
+  "empty": false,
+  "totals": {
+    "commits": 9,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "count": 9,
+      "own": true,
+      "messages": [
+        {
+          "sha": "f57ca8cbc3321beda8670165797f9715649f2dbf",
+          "message": "test: add dim8 evaluation prompts (darwin Phase 0.5)",
+          "ts": "2026-09-22T18:03:03Z"
+        },
+        {
+          "sha": "f450570c8ab52a37ba0b92cc3c44988d20df9b10",
+          "message": "optimize asset-inventory: dedup model-chain exemption rule (dim7)",
+          "ts": "2026-09-22T17:50:09Z"
+        },
+        {
+          "sha": "80fc30752a378b1d171ac2db809e0dc9250a12a6",
+          "message": "optimize asset-inventory: add unparseable-paste failure branch (dim3)",
+          "ts": "2026-09-22T17:44:38Z"
+        },
+        {
+          "sha": "730171d2aab759ae7046e9c5c84eea9e63429a1a",
+          "message": "optimize asset-inventory: extract Table 2/6 rules from overview cells (dim7)",
+          "ts": "2026-09-22T17:44:14Z"
+        },
+        {
+          "sha": "6f206274e18da2e5cd4ff85ac08b8a1a2078f716",
+          "message": "optimize asset-inventory: link troubleshooting guide from Error Handling (dim6); sync zh mirror",
+          "ts": "2026-09-22T17:43:06Z"
+        },
+        {
+          "sha": "05d4cf7ef3cda51367acb537eadafdcb48194f23",
+          "message": "optimize asset-inventory: add visible checkpoint markers (dim4)",
+          "ts": "2026-09-22T17:42:28Z"
+        },
+        {
+          "sha": "776bab2946f8ff2c6afded331538968a9b902a9e",
+          "message": "docs: register v1.12.0 in rollout TODO",
+          "ts": "2026-09-22T16:13:51Z"
+        },
+        {
+          "sha": "f68074007dc3cbde8ab0b0cc9fb9013aa42bf2b6",
+          "message": "chore(release): v1.12.0",
+          "ts": "2026-09-22T16:11:51Z"
+        },
+        {
+          "sha": "93bb775b24049cc1cd1e6d8c9ff60c61d1200e9d",
+          "message": "docs: show /skills picker as the skill manual-invocation path",
+          "ts": "2026-09-22T16:11:27Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    }
+  ],
+  "automatedCommits": 0,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.12.0",
+      "name": "v1.12.0",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.12.0",
+      "publishedAt": "2026-09-22T16:14:55Z",
+      "notes": "<!--\n Release notes for v1.12.0 (English). Paste into the GitHub Release body.\n Chinese version: ../../zh/release-notes/release-notes-v1.12.0-ZH.md\n Release: v1.12.0 — asset-inventory (sogeisetsu/asset-inventory)\n-->\n\n# v1.12.0\n\nA correctness fix for how skill invocation is described, plus a version bump. The 7-table structure and the inventory logic are unchanged.\n\n## Changed\n\n- **Skill `How to call` now shows the real TUI path** — the cell reads `auto-triggers on intent, or pick from /skills (typing /skill-name works too)` instead of implying a bare `/skill-name`: the OpenCode TUI hides skills from the `/` autocomplete (commands with `source === \"skill\"` are skipped) and `/skills` is the official picker, though typing the full name still dispatches as a command. Updated `SKILL.md` (rule + Name legend), `references/checklist.md`, `references/format-example.md`, `references/usage-guide.md`, and all EN/ZH samples (`inventory.md`, `asset-inventory.json`, `usage-guide.md`); sample pages rebuilt.\n\n## Usage\n\nCopy the install prompt from the landing page (or the README) and send it to your AI assistant, or install the skill manually into your global or project-scoped skills directory. Then ask: \"List my plugins / skills / commands / MCP / agents\".\n\n## License\n\nMIT — see [LICENSE](../../LICENSE)."
+    }
+  ],
+  "stars": [],
+  "starInventory": [],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": true
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "source": "search-backfill",
+  "backfillLimits": {
+    "stars": "unavailable",
+    "releases": "own-repos-only",
+    "issues": "search-approx",
+    "reviews": "search-approx",
+    "discussions": "search-approx",
+    "comments": "unavailable",
+    "commits": "repo-scan-accurate"
+  },
+  "dataHash": "cb18f71198b5c1c82a2f04480a54335516ef09122508a91b9c99a0cc358ab3d9"
+}

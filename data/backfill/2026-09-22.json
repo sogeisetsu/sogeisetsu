@@ -1,0 +1,513 @@
+{
+  "date": "2026-09-22",
+  "windowStart": "2026-09-22T00:00:00+08:00",
+  "windowEnd": "2026-09-23T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-15T19:46:06.547Z",
+  "empty": false,
+  "totals": {
+    "commits": 55,
+    "prs": 10,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "count": 55,
+      "own": true,
+      "messages": [
+        {
+          "sha": "d9f42379a5b1bb1d590f3ef075876b4b1b3feb99",
+          "message": "chore(release): v1.11.8",
+          "ts": "2026-09-22T15:01:58Z"
+        },
+        {
+          "sha": "b9d4ce96e663cb2c3483bbab344ada9cb587c3e1",
+          "message": "chore: behavior-neutral token trim (SKILL.md + references/)",
+          "ts": "2026-09-22T15:01:54Z"
+        },
+        {
+          "sha": "00293ee1f9a3f5162a4948de82d5d30e666e6021",
+          "message": "chore(release): v1.11.7",
+          "ts": "2026-09-22T14:50:56Z"
+        },
+        {
+          "sha": "ecd442c23e1a969ab38356302c470dcecc467d1b",
+          "message": "docs: declare skill source repository in SKILL.md",
+          "ts": "2026-09-22T14:50:13Z"
+        },
+        {
+          "sha": "476dcd170f532a5169660203636c9e6a4dd44fec",
+          "message": "chore(release): v1.11.6",
+          "ts": "2026-09-22T14:34:47Z"
+        },
+        {
+          "sha": "4d3be10d1838a8eaae5267febe0a36294f4ae946",
+          "message": "chore: move TODO.md under docs/",
+          "ts": "2026-09-22T14:34:24Z"
+        },
+        {
+          "sha": "f7da5a31b08837c1caa33c5b7bae8b101e88366c",
+          "message": "chore: move assets/ under docs/",
+          "ts": "2026-09-22T14:33:35Z"
+        },
+        {
+          "sha": "395f45b6969838bf06636a2710d4ac5d9c78e7cd",
+          "message": "chore(release): v1.11.5",
+          "ts": "2026-09-22T13:32:54Z"
+        },
+        {
+          "sha": "06b5cb2cce95959f2e0667ce706d2d74d374fb30",
+          "message": "docs: GitHub Release bodies are English-only",
+          "ts": "2026-09-22T13:32:24Z"
+        },
+        {
+          "sha": "2397dfc5f048475d0ad3a512cc422d795078c1b8",
+          "message": "chore: track AGENTS.md, drop local-only notes",
+          "ts": "2026-09-22T13:31:49Z"
+        },
+        {
+          "sha": "68ecb10b13eddd64b399352781f1011f4d24a931",
+          "message": "chore(release): v1.11.4",
+          "ts": "2026-09-22T13:18:53Z"
+        },
+        {
+          "sha": "e5c4f6261eaf15b4939671901fcdfc3f5a433470",
+          "message": "docs: require git clone in Install via AI prompts, drop ZIP fallback",
+          "ts": "2026-09-22T13:18:52Z"
+        },
+        {
+          "sha": "4ffd9f1c847b875082d8066cb8fc75be8df43433",
+          "message": "chore(release): v1.11.3",
+          "ts": "2026-09-22T12:46:18Z"
+        },
+        {
+          "sha": "378f41b5c1516b96350fecbf9d70212502657521",
+          "message": "fix(skill): merge a skill with its same-named command only when the same plugin package delivers both",
+          "ts": "2026-09-22T12:46:18Z"
+        },
+        {
+          "sha": "f5c520e70837fc5e052bd593824445462aa3637a",
+          "message": "chore(release): v1.11.2",
+          "ts": "2026-09-22T12:31:45Z"
+        },
+        {
+          "sha": "b4058db0f383e9d949b99ffa2ece85ce003c8111",
+          "message": "fix(skill): never merge a command with its same-named skill; widen upstream lookup",
+          "ts": "2026-09-22T12:31:45Z"
+        },
+        {
+          "sha": "b441e8e121a1af17e4e86a75355aed84f3a629dd",
+          "message": "chore(release): v1.11.1",
+          "ts": "2026-09-21T21:08:03Z"
+        },
+        {
+          "sha": "a0b6a6d3543ccc2899784ebede6f108bd83818e1",
+          "message": "fix(skill): harden rules to prevent recurring output defects",
+          "ts": "2026-09-21T21:08:03Z"
+        },
+        {
+          "sha": "60a444c78a9970892069b15cec34ec1eb3296f75",
+          "message": "chore(release): v1.11.0",
+          "ts": "2026-09-21T20:54:55Z"
+        },
+        {
+          "sha": "243bc06ef64a54f6d4be0ce5a38bdb6ccd179540",
+          "message": "docs(release-notes): add bilingual v1.11.0 release notes",
+          "ts": "2026-09-21T20:54:55Z"
+        },
+        {
+          "sha": "a025f1e5d38ace0e488f1572153b9bd514e7bdb4",
+          "message": "chore(release): v1.10.3",
+          "ts": "2026-09-21T20:53:15Z"
+        },
+        {
+          "sha": "2d81cdeb927cd29cf5ebc7152c87830b00dd4239",
+          "message": "refactor(skill): trim instructions for token cost without changing behavior",
+          "ts": "2026-09-21T20:53:14Z"
+        },
+        {
+          "sha": "2bdb47915a61b71763f00535515b341eb752f8db",
+          "message": "chore(release): v1.10.2",
+          "ts": "2026-09-21T20:41:15Z"
+        },
+        {
+          "sha": "cd1278b05509f05b835b1b707cd2a1092070db82",
+          "message": "docs: add a Targeting section and link it from the EN/ZH READMEs",
+          "ts": "2026-09-21T20:41:14Z"
+        },
+        {
+          "sha": "bfda38baf290b18bdaa9c2e8eae10bbb963db4c8",
+          "message": "feat(docs): M3 example panel + light interaction polish",
+          "ts": "2026-09-21T20:41:14Z"
+        },
+        {
+          "sha": "aa97258cdaa1d64ea976cdc8e7865086c8fcb36b",
+          "message": "fix(v1.10.1): redirect old release-note URLs via docs/404.html",
+          "ts": "2026-09-21T20:16:08Z"
+        },
+        {
+          "sha": "00a478a42c4f94c5e601160b12b5fd3d6a0e3334",
+          "message": "fix(v1.10.0): make build-sample-pages --check line-ending agnostic",
+          "ts": "2026-09-21T20:10:43Z"
+        },
+        {
+          "sha": "6f672bfe0efe47e653ef645c44f7fd0b6ee7a4f1",
+          "message": "chore(release): v1.10.0 bilingual release notes + version bump",
+          "ts": "2026-09-21T20:07:43Z"
+        },
+        {
+          "sha": "c318b9031f2600287f17308ce6c9e0ac63dfba43",
+          "message": "fix(v1.9.4): detail-page polish (drop sample bar, table borders, JSON height)",
+          "ts": "2026-09-21T20:06:52Z"
+        },
+        {
+          "sha": "29ed0081bfd60de2f75849a1de5058e6b0fcbd95",
+          "message": "fix(v1.9.3): stop docs language stacking, remember choice per tab",
+          "ts": "2026-09-21T20:05:55Z"
+        },
+        {
+          "sha": "a45097b1ebcfef30707845a058f5d2e575e24f83",
+          "message": "docs(v1.9.2): move release notes into docs/release-notes/ and zh/release-notes/",
+          "ts": "2026-09-21T20:05:08Z"
+        },
+        {
+          "sha": "ce3621a195d4dcdc478a387372b2a0ba7d4eeb17",
+          "message": "docs(contributing): add the branch rule (do not change master directly) + v1.9.1",
+          "ts": "2026-09-21T19:47:08Z"
+        },
+        {
+          "sha": "01a072e10291e305fd6bfd9844a3dcb896aa9584",
+          "message": "chore(release): v1.9.0 changelog, release notes, version bump",
+          "ts": "2026-09-21T19:39:35Z"
+        },
+        {
+          "sha": "cc9301bf6890d63f7b5cf6e9b5926f759f5bf646",
+          "message": "feat(samples): render the detail pages from the sample files",
+          "ts": "2026-09-21T19:39:28Z"
+        },
+        {
+          "sha": "3e7fe70460977a73772da4645c26e63505ddb44f",
+          "message": "feat(glossary): add ko/ru/ar/es fixed strings for seven-language output (1.8.0)",
+          "ts": "2026-09-21T19:34:49Z"
+        },
+        {
+          "sha": "f99bd945124ddb9fed0616a899974197177fea81",
+          "message": "fix(docs): fall back to English for untranslated content (1.7.4)",
+          "ts": "2026-09-21T19:33:38Z"
+        },
+        {
+          "sha": "f09e2a154ecc5ff52216cb12526984a5dc3f4b73",
+          "message": "refactor(readme): move localized READMEs into readmes/ (1.7.3)",
+          "ts": "2026-09-21T19:30:41Z"
+        },
+        {
+          "sha": "fb4a43157152b7359e57ac965da7e77de245f918",
+          "message": "docs(readme): drop title emoji and add an Install via AI section",
+          "ts": "2026-09-21T19:29:22Z"
+        },
+        {
+          "sha": "cb03be04ff6177c22e1ca81382d2df51f0ee59c4",
+          "message": "fix(mcp): list real invocation paths instead of claiming Agent-only",
+          "ts": "2026-09-21T19:28:23Z"
+        },
+        {
+          "sha": "a9b190fc71d3ce6ea45509719e026c59f5ebcb8a",
+          "message": "docs(process): add bilingual rollout plan and clarify per-level tag policy",
+          "ts": "2026-09-21T19:26:12Z"
+        },
+        {
+          "sha": "c6652c66f61833ef95b9ad6bf086a04e2be06fe5",
+          "message": "chore(release): bump to 1.7.0 with changelog and release notes",
+          "ts": "2026-09-21T18:56:06Z"
+        },
+        {
+          "sha": "4ca8d0943c809542874955c19bc118e45c90f5d2",
+          "message": "build(check-docs): verify all 7 localized READMEs exist and cross-link",
+          "ts": "2026-09-21T18:53:49Z"
+        },
+        {
+          "sha": "45637261e061e2e34c335e82dc8788cff7fe984b",
+          "message": "docs(contributing): add commit-granularity and tag/release rules",
+          "ts": "2026-09-21T18:50:34Z"
+        },
+        {
+          "sha": "71b004eb13f7e4e053e3ed5e2ee9f32b827715ac",
+          "message": "docs(readme): slim both READMEs and move long-form content into docs/guides/",
+          "ts": "2026-09-21T18:49:03Z"
+        },
+        {
+          "sha": "b0484b840e2969f342dc0a250ef96468baa1deb3",
+          "message": "feat(readme): add Japanese, Korean, Russian, Arabic, Spanish READMEs and locale-aware doc checks",
+          "ts": "2026-09-21T18:48:56Z"
+        },
+        {
+          "sha": "7199f8d5acb242cf35291c4f290f1bae17c86b69",
+          "message": "feat(docs): support EN/ZH/JA/KO/RU/AR/ES across all pages, with RTL for Arabic",
+          "ts": "2026-09-21T18:44:35Z"
+        },
+        {
+          "sha": "d4228c9feec4eb94bee6557c070c708ae14d4b26",
+          "message": "fix(docs): make the copy-button feedback follow the active language",
+          "ts": "2026-09-21T18:39:33Z"
+        },
+        {
+          "sha": "15755b26aa7e84cbd3721647edcb3894a3f45ec5",
+          "message": "docs(web): render the inventory table and line-by-line JSON instead of raw code blocks",
+          "ts": "2026-09-21T18:39:03Z"
+        },
+        {
+          "sha": "40180682ca6ba479329ab0c844b4e463965b72eb",
+          "message": "style(docs): restyle landing and detail pages to Material Design 3",
+          "ts": "2026-09-21T18:37:08Z"
+        },
+        {
+          "sha": "1f5178dcf2d05fbd3fc3f4c68da8e1f95b0e6e3a",
+          "message": "docs: publish sample output files and link them from both READMEs",
+          "ts": "2026-09-21T18:35:48Z"
+        },
+        {
+          "sha": "e04183c8e367df4b7f02bb69de70d3f17a4c5322",
+          "message": "chore(release): bump to 1.6.1 for the provenance and model-chain fixes",
+          "ts": "2026-09-21T18:30:09Z"
+        },
+        {
+          "sha": "5a690ef341511fe8700281b2e5d44136a8ff9b23",
+          "message": "fix(skill): read array-shaped model chains and stop over-applying the single-model exemption",
+          "ts": "2026-09-21T18:20:13Z"
+        },
+        {
+          "sha": "183db4a72cf0f267a91338e0b63f3fbda0924c23",
+          "message": "fix(skill): stop misattributing plugin-managed skills as local, and never infer a repo from a folder name",
+          "ts": "2026-09-21T18:19:08Z"
+        },
+        {
+          "sha": "da6459ad11663eee983424a38a38c069070743ef",
+          "message": "feat: v1.6.0 — fix MCP enumeration + update.ps1 bugs, docs detail pages, one-paragraph What-it-does",
+          "ts": "2026-09-21T17:05:04Z"
+        },
+        {
+          "sha": "a2edce3e98810d2f3036281a7ebc937578a7cd59",
+          "message": "fix: v1.5.0 — deliver ja glossary, close checker gap, drop duplicate example",
+          "ts": "2026-09-21T16:23:49Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    }
+  ],
+  "automatedCommits": 0,
+  "pullRequests": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 8,
+      "title": "feat: v1.7.0 - seven languages, Material docs site, rendered examples",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/8",
+      "action": "merged",
+      "ts": "2026-09-21T18:57:37.000Z",
+      "own": true,
+      "state": "merged"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 8,
+      "title": "feat: v1.7.0 - seven languages, Material docs site, rendered examples",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/8",
+      "action": "opened",
+      "ts": "2026-09-21T18:56:37.000Z",
+      "own": true,
+      "state": "open"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 7,
+      "title": "chore: bump to 1.6.1",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/7",
+      "action": "merged",
+      "ts": "2026-09-21T18:31:05.000Z",
+      "own": true,
+      "state": "merged"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 7,
+      "title": "chore: bump to 1.6.1",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/7",
+      "action": "opened",
+      "ts": "2026-09-21T18:30:21.000Z",
+      "own": true,
+      "state": "open"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 6,
+      "title": "fix: v1.6.1 - correct skill provenance and agent model chains",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/6",
+      "action": "merged",
+      "ts": "2026-09-21T18:21:48.000Z",
+      "own": true,
+      "state": "merged"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 6,
+      "title": "fix: v1.6.1 - correct skill provenance and agent model chains",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/6",
+      "action": "opened",
+      "ts": "2026-09-21T18:21:04.000Z",
+      "own": true,
+      "state": "open"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 5,
+      "title": "feat: v1.6.0 — fix MCP enumeration + update.ps1 bugs, docs detail pages",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/5",
+      "action": "merged",
+      "ts": "2026-09-21T17:22:33.000Z",
+      "own": true,
+      "state": "merged"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 5,
+      "title": "feat: v1.6.0 — fix MCP enumeration + update.ps1 bugs, docs detail pages",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/5",
+      "action": "opened",
+      "ts": "2026-09-21T17:15:19.000Z",
+      "own": true,
+      "state": "open"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 4,
+      "title": "fix: v1.5.0 — deliver ja glossary, close checker gap, drop duplicate example",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/4",
+      "action": "merged",
+      "ts": "2026-09-21T16:25:09.000Z",
+      "own": true,
+      "state": "merged"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "number": 4,
+      "title": "fix: v1.5.0 — deliver ja glossary, close checker gap, drop duplicate example",
+      "url": "https://github.com/sogeisetsu/asset-inventory/pull/4",
+      "action": "opened",
+      "ts": "2026-09-21T16:24:20.000Z",
+      "own": true,
+      "state": "open"
+    }
+  ],
+  "reviews": [],
+  "issues": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.11.4",
+      "name": "v1.11.4 - Install via AI now requires git clone",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.11.4",
+      "publishedAt": "2026-09-22T13:19:39Z",
+      "notes": "The **Install via AI** prompt now requires `git clone` — it no longer falls back to a ZIP download, so an installer can never pull an outdated archive from the Releases page.\n\n## What's Changed\n\n- **Install via AI (step 2)** — the prompt now spells out `git clone https://github.com/sogeisetsu/asset-inventory.git` and forbids the ZIP fallback. Updated across all 7 READMEs and the 7 localized prompts on the docs site.\n- **Manual install guide** — kept the main-page **Code → Download ZIP** option, but now explicitly warns that ZIPs from the **Releases** page can be outdated.\n\n**Full Changelog**: https://github.com/sogeisetsu/asset-inventory/compare/v1.11.3...v1.11.4"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.11.3",
+      "name": "v1.11.3 — Provenance rule hardening + merge-scope fixes (rolls up 1.11.1-1.11.3)",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.11.3",
+      "publishedAt": "2026-09-22T13:17:01Z",
+      "notes": "Rolls up patches **1.11.1–1.11.3** (per the repo's release policy, patches only carry tags; this is their first Release page).\n\n## What's Changed\n\n- **1.11.1 — Rule hardening**: home-path masking (`~` / `%USERPROFILE%`) required in both Markdown and JSON output; config-disabled agents that `agent list` never exposes are now named; unregistered skill-/plugin-like residue is recorded in the Provenance **Unresolved** line with the observed reason.\n- **1.11.2 — Commands vs. skills**: a command and its same-named skill are never merged (separate rows; gate/wrapper commands described as gates); upstream discovery widened (config-root sibling checkout, marketplace cache); `inventory.md` opens with a `/command` vs bare-name legend.\n- **1.11.3 — Merge scope corrected**: a skill and its same-named command merge into **one row only when the same plugin package delivers both** (e.g. `deepwork` + `/deepwork`); separately authored pairs stay two rows.\n\n**Full changelog**: https://github.com/sogeisetsu/asset-inventory/compare/v1.11.0...v1.11.3"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.11.0",
+      "name": "v1.11.0 — Docs-site M3 + Targeting docs + token trim",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.11.0",
+      "publishedAt": "2026-09-21T20:55:17Z",
+      "notes": "<!--\n Release notes for v1.11.0 (English). Paste into the GitHub Release body.\n Chinese version: ../../zh/release-notes/release-notes-v1.11.0-ZH.md\n Release: v1.11.0 — asset-inventory (sogeisetsu/asset-inventory)\n-->\n\n# v1.11.0\n\nA documentation-site polish plus a behavior-neutral token trim. The 7-table structure and the inventory logic are unchanged.\n\n## What's New\n\n- **Targeting docs** — `docs/guides/how-it-works.md` now documents what each argument scans and what it writes (`mcp`, `agents`, `hosts`, `skills`, `diff`, `usage`), linked from the quick-start argument line of `README.md` and `README-ZH.md`.\n- **Rendered samples are now M3 panels** — each rendered sample sits in a Material 3 outlined panel with a localized caption (for example \"Rendered sample\", or the Chinese for it) and demoted inner headings, so it no longer competes with the page's own headings.\n- **Light M3 interaction polish** — hover state layers, a visible keyboard focus ring, and M3 easing curves across the docs site.\n\n## Changed\n\n- **Token trim (behavior-neutral)** — `SKILL.md` is ~17% smaller and `references/format-example.md` ~25% smaller, achieved by removing duplicated rules and illustrative rows and moving the path-variable table into `references/host-commands.md`. Every rule was audited to remain present and unambiguous, and a produced inventory is unchanged.\n\n## Fixes / Consistency\n\n- **Old relea…"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.10.0",
+      "name": "v1.10.0 - docs-site fixes + release-notes reorg",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.10.0",
+      "publishedAt": "2026-09-21T20:11:02Z",
+      "notes": "<!--\n Release notes for v1.10.0 (English). Paste into the GitHub Release body.\n Chinese version: ../../zh/release-notes/release-notes-v1.10.0-ZH.md\n Release: v1.10.0 — asset-inventory (sogeisetsu/asset-inventory)\n-->\n\n# v1.10.0\n\nThis release is a documentation-site pass plus a repository tidy-up. The inventory logic and 7-table structure are unchanged.\n\n## What's New\n\n- **Release notes in their own folders** — `docs/release-notes/` and `zh/release-notes/`, instead of loose files at the root of `docs/` and `zh/`. `check-docs`'s pair table, the CONTRIBUTING/repository trees, and every cross-link were updated.\n\n## Fixes / Consistency\n\n- **Language stacking fixed** — the docs language toggle grouped translations by `className`, which included the `.i18n-on` class it had just added; a second switch split each slot and rendered several languages at once. Grouping now ignores `i18n-on`, so every slot shows exactly one language.\n- **Language choice is per-tab** — the toggle now uses `sessionStorage` instead of `localStorage`, so a fresh visit always starts in English while a choice still carries across pages within the same tab.\n- **Detail pages cleaned up** — removed the file-path bar above each rendered sample, added real cell borders to the `.facts` tables, and capped the JSON sample's height with a scrollbar.\n- **`build-sample-pages --check` is line-ending agnostic** — it normaliz…"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.9.0",
+      "name": "v1.9.0 — rendered bilingual sample pages",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.9.0",
+      "publishedAt": "2026-09-21T19:39:51Z",
+      "notes": "<!--\n Release notes for v1.9.0 (English). Paste into the GitHub Release body.\n Chinese version: zh/release-notes-v1.9.0-ZH.md\n Release: v1.9.0 — asset-inventory (sogeisetsu/asset-inventory)\n-->\n\n# v1.9.0\n\nThe three output-detail pages now show their samples **rendered from the sample files** instead of as raw code blocks — and the sample set is bilingual.\n\n## Added\n\n- **`scripts/build-sample-pages.mjs`** — renders `docs/samples/` into `inventory.html` (Markdown table), `usage-guide.html` (full Markdown), and `asset-inventory-json.html` (pretty-printed JSON). It runs with `--check` in CI, so a stale page fails the build.\n- **English samples** at `docs/samples/`; the Chinese samples moved to `docs/samples/zh/`. English is the fallback for languages without a translated sample.\n\n## Changed\n\n- **Rendered examples** — the detail pages no longer dump raw Markdown or a run-on JSON blob. `usage-guide.html` renders headings and tables, `asset-inventory-json.html` shows one key per line with indentation, and `inventory.html` shows its table.\n- **Human-readable page titles** — the `<h1>` and tab title are localized and no longer a bare filename.\n\n## Verification\n\n- `build-sample-pages.mjs --check`: 3 pages up to date.\n- `check-docs`: 0 errors.\n- Rendered pages inspected in a browser: JSON is indented, Markdown renders as HTML, and untranslated languages fall back to the English sample.…"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.8.0",
+      "name": "v1.8.0 — seven fixed-string languages (ko/ru/ar/es)",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.8.0",
+      "publishedAt": "2026-09-21T19:35:06Z",
+      "notes": "<!--\n Release notes for v1.8.0 (English). Paste into the GitHub Release body.\n Chinese version: zh/release-notes-v1.8.0-ZH.md\n Release: v1.8.0 — asset-inventory (sogeisetsu/asset-inventory)\n-->\n\n# v1.8.0\n\nThe skill's fixed output strings now cover all seven languages the documentation already promised.\n\n## Added\n\n- **Four new fixed-string languages** — `references/glossary.json` gains `ko` (Korean), `ru` (Russian), `ar` (Arabic), and `es` (Spanish) blocks alongside `en` / `zh` / `ja`. Each carries the same 10 keys as `en`: `columns`, `columnsAgent`, `tableTitles`, `state`, `confidence`, `emptyTable`, `unknown`, `threeQuestions`, `provenance`, `provenanceRealName`.\n\n## Changed\n\n- **`SKILL.md` language claim widened** — the \"Fixed-string languages\" line now lists all seven, so a request in Korean, Russian, Arabic, or Spanish uses the glossary strings verbatim instead of deriving them from the English block. Languages outside the seven still follow the documented derive-from-English rule.\n\n## Verification\n\n- `check-docs`: the glossary-structure check confirms every language block exposes the same key set as `en`.\n- Each new block was compared against `en` by hand: 10 keys, 5 columns, 6 agent columns, 3 provenance lines.\n\n## License\n\nMIT — see [LICENSE](../LICENSE)."
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.7.0",
+      "name": "v1.7.0 — seven languages, Material docs site, rendered examples",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.7.0",
+      "publishedAt": "2026-09-21T18:57:59Z",
+      "notes": "<!--\n Release notes for v1.7.0 (English). Paste into the GitHub Release body.\n Chinese version: zh/release-notes-v1.7.0-ZH.md\n Release: v1.7.0 — asset-inventory (sogeisetsu/asset-inventory)\n-->\n\n# v1.7.0\n\nSeven languages, a Material landing site with rendered examples, and long-form docs split out of the READMEs. The inventory logic and 7-table structure are unchanged.\n\n## Added\n\n- **Seven-language docs site** — the landing page and all detail pages support English, Chinese, Japanese, Korean, Russian, Arabic (RTL), and Spanish; the choice persists across pages.\n- **Localized READMEs** — `README-JA.md`, `README-KO.md`, `README-RU.md`, `README-AR.md`, `README-ES.md`, cross-linking the full set.\n- **`docs/guides/`** — long-form documentation linked from the READMEs.\n- **`docs/samples/`** — published example output so users can see the final artifacts before running anything.\n- **Material Design 3 restyle** of the docs site.\n- **New `check-docs` validations** — HTML link checking, and a check that all seven READMEs exist and cross-link.\n\n## Changed\n\n- **READMEs slimmed** into concise, emoji-accented landing pages; detail moved to `docs/guides/`.\n- **Landing-page examples render** as a real table and line-by-line JSON instead of raw code blocks.\n- **`CONTRIBUTING` (EN+ZH)** now documents the commit-granularity rule and the tag/release policy.\n\n## Fixed\n\n- **Copy-button feedback** n…"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.6.0",
+      "name": "v1.6.0 — fix MCP enumeration, repair update.ps1, docs detail pages",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.6.0",
+      "publishedAt": "2026-09-21T17:28:17Z",
+      "notes": "<!--\n Release notes for v1.6.0 (English). Paste into the GitHub Release body.\n Chinese version: zh/release-notes-v1.6.0-ZH.md\n Release: v1.6.0 — asset-inventory (sogeisetsu/asset-inventory)\n-->\n\n# v1.6.0\n\nThree real bugs fixed, a cleaner output format, and a landing page that explains each deliverable. The inventory logic and 7-table structure are unchanged.\n\n## Fixed\n\n- **MCP servers were silently dropped.** The skill listed one MCP server and stopped, even when the config had five (`websearch`, `context7`, `grep_app`, `pdf-mcp`, `PaddleOCR-VL-*`). `Discover` now has an explicit MCP step that reads every `mcp` key and **asserts the row count against the config's key count** — a one-row Table 5 is now a red flag in both the table spec and the checklist.\n- **`update.ps1` nested directories.** `Copy-Item -Recurse` into an existing target nested the source inside it, so repeated updates grew `references/references/…`. The target is removed before copying now.\n- **`update.ps1` backup step failed and polluted the install.** The backup dir was never created (write error), and backups landed *inside* the skill directory. They now go to a sibling directory, created before use.\n\n## Changed\n\n- **`What it does` is one detailed paragraph** — no more `Simple: … Detailed: …`. Each cell covers how it is invoked, when to use it, and what happens after.\n- **Usage guide has two modes** — generi…"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.5.0",
+      "name": "v1.5.0 — deliver ja glossary, close checker gap, drop duplicate example",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.5.0",
+      "publishedAt": "2026-09-21T16:25:39Z",
+      "notes": "<!--\n Release notes for v1.5.0 (English). Paste into the GitHub Release body.\n Chinese version: zh/release-notes-v1.5.0-ZH.md\n Release: v1.5.0 — asset-inventory (sogeisetsu/asset-inventory)\n-->\n\n# v1.5.0\n\nThis release fixes a claim v1.4.0 could not back up, closes the checker gap that let it through, and removes a duplicated runtime file. The inventory logic and 7-table structure are unchanged.\n\n## What's New\n\n- **Language-claim check** — `check-docs.mjs` now parses the \"Fixed-string languages\" line in `SKILL.md` and fails if any advertised language has no block in `references/glossary.json`.\n- **Reference-integrity check** — every `references/<name>` named in `SKILL.md` must exist, and `references/checklist.md` must keep at least 20 items.\n- **Japanese glossary block** — actually delivered now; `en` / `zh` / `ja` each carry the same 10 keys.\n- **`update.ps1 -Help`** — usage, options, and install locations, changing nothing.\n- **\"Which file should I read?\" navigation** in both READMEs.\n\n## Fixes / Consistency\n\n- **`SKILL.md` advertised `ja` with no `ja` data.** v1.4.0's SKILL.md said the glossary shipped English, Chinese, and Japanese, but `references/glossary.json` only had `en` and `zh` — and the checker missed it because it only compared languages that already existed. Both the data and the checker are fixed.\n- **Duplicate example file removed.** `examples/inventory-example…"
+    }
+  ],
+  "stars": [],
+  "starInventory": [],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": true
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "source": "search-backfill",
+  "backfillLimits": {
+    "stars": "unavailable",
+    "releases": "own-repos-only",
+    "issues": "search-approx",
+    "reviews": "search-approx",
+    "discussions": "search-approx",
+    "comments": "unavailable",
+    "commits": "repo-scan-accurate"
+  },
+  "dataHash": "a38cbd6b12f61760ba71f518957d3249f9b30d945cb78773f612a71ee0e52a46"
+}

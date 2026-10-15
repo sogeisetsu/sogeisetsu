@@ -1,0 +1,237 @@
+{
+  "date": "2026-09-29",
+  "windowStart": "2026-09-29T00:00:00+08:00",
+  "windowEnd": "2026-09-30T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-15T19:52:27.405Z",
+  "empty": false,
+  "totals": {
+    "commits": 25,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "count": 12,
+      "own": true,
+      "messages": [
+        {
+          "sha": "9fce123c18f8843cd76082fab870098fa2d44afb",
+          "message": "fix(pages): keep the hero emphasis band intact when it wraps, in both scripts",
+          "ts": "2026-09-29T14:28:41Z"
+        },
+        {
+          "sha": "23442c42be59b7d60ad7584dddc8c5b596267c93",
+          "message": "feat(pages): bilingual landing page with light/dark themes and a design pass",
+          "ts": "2026-09-29T13:22:08Z"
+        },
+        {
+          "sha": "49b727b678122c4b2f452e06a4d40ea982289b8f",
+          "message": "docs: fix Pages links, add .nojekyll, sync file tree and plan",
+          "ts": "2026-09-29T11:27:07Z"
+        },
+        {
+          "sha": "178f3be0fafdfd0b5c05574c7729b70614081199",
+          "message": "docs: add a GitHub Pages landing page under docs/",
+          "ts": "2026-09-29T11:24:58Z"
+        },
+        {
+          "sha": "bd181f2287180e5767f3303cf51d678a6ef05525",
+          "message": "chore: ignore OpenChamber local state",
+          "ts": "2026-09-29T11:08:43Z"
+        },
+        {
+          "sha": "2345846df321cca0774fb66d3c0ba7135aa6cb01",
+          "message": "feat: first-class observations evidence type, C1-C8 fixes, corpus/CI and M3 results",
+          "ts": "2026-09-29T11:08:28Z"
+        },
+        {
+          "sha": "4bd42e72c116435959cc7f015bf588ae6813f7ed",
+          "message": "docs: add Chinese README with a language switch and local-only ZH translations",
+          "ts": "2026-09-29T11:05:52Z"
+        },
+        {
+          "sha": "0e8b1efb1656d03ee5a62627d2776d1d72a8a46a",
+          "message": "feat(m2): add validation scripts, examples and CI; harden M1 contract per review",
+          "ts": "2026-09-29T08:54:19Z"
+        },
+        {
+          "sha": "e787cff9d46b456943830674898abdba87fe4f8f",
+          "message": "feat(skill): add SKILL.md and four reference documents (M1)",
+          "ts": "2026-09-29T08:19:53Z"
+        },
+        {
+          "sha": "7919d0450a25eb23be79c8e698ea1c36e647ff40",
+          "message": "docs: add branch workflow and English-content rules",
+          "ts": "2026-09-29T08:13:18Z"
+        },
+        {
+          "sha": "932b3b349f1b5d06d521760cf574f5e0ddb1255d",
+          "message": "chore: add .gitattributes and normalize line endings",
+          "ts": "2026-09-29T04:43:13Z"
+        },
+        {
+          "sha": "bb934b45028eb06cfc0be06024acbc3ffd64a3e4",
+          "message": "chore: initialize meld-deepresearch repository (M0)",
+          "ts": "2026-09-29T04:41:31Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "count": 11,
+      "own": true,
+      "messages": [
+        {
+          "sha": "3315a449e095ab88632b5e0c2ac31b575b5acbca",
+          "message": "chore(release): v1.15.3",
+          "ts": "2026-09-29T11:09:16Z"
+        },
+        {
+          "sha": "160f2bb587fccbfd81533c4a8f9de909fa8e1648",
+          "message": "docs(agents): make the zh/skill-zh.md mirror sync explicit",
+          "ts": "2026-09-29T11:07:18Z"
+        },
+        {
+          "sha": "44321ef1ac7c8c2481eb48bd47865ef9438228b5",
+          "message": "chore(release): v1.15.2",
+          "ts": "2026-09-29T11:02:33Z"
+        },
+        {
+          "sha": "4ef8831d3700dd80f60270b448931907dc4a5d9c",
+          "message": "docs(contributing): move contributor-only troubleshooting out of the runtime payload",
+          "ts": "2026-09-29T10:57:14Z"
+        },
+        {
+          "sha": "b935e65bff013ff8e83a0b618e702cf92d0bf5dc",
+          "message": "chore(release): v1.15.1",
+          "ts": "2026-09-29T10:17:27Z"
+        },
+        {
+          "sha": "d47f984588c896cad2f37775944ff32e0ce43489",
+          "message": "docs(skill): trim the frontmatter description to what plus triggers",
+          "ts": "2026-09-29T10:16:32Z"
+        },
+        {
+          "sha": "f2ba8f88e7cc364d28bb4249f6306ec897bf4e1f",
+          "message": "refactor(skill): move mode routing, failure handling and Table 2/6 rules into references",
+          "ts": "2026-09-29T10:16:00Z"
+        },
+        {
+          "sha": "e0b26d9425a38a1bcfaee2504ccd76b18ca90087",
+          "message": "refactor(checklist): point at rules instead of restating them",
+          "ts": "2026-09-29T10:15:54Z"
+        },
+        {
+          "sha": "a9deb15275acf7bb43bcab1b050716d5f11c3e09",
+          "message": "chore(release): v1.15.0",
+          "ts": "2026-09-29T09:06:10Z"
+        },
+        {
+          "sha": "17bdc76a5592092ee86f0441a82ec0e227af3f4a",
+          "message": "docs(changelog): log registry-first host-command scan under [Unreleased]",
+          "ts": "2026-09-29T09:04:54Z"
+        },
+        {
+          "sha": "b20c96b33ba06d46efb206b92aef70f6b9aeed29",
+          "message": "feat(skill): scan host commands registry-first, demote the phrase filter to a fallback",
+          "ts": "2026-09-29T09:04:36Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "071f60e315264223032b17fce462ae39ed6ab299",
+          "message": "docs: stop pinning the oh-my-opencode-slim version in the READMEs",
+          "ts": "2026-09-29T10:53:11Z"
+        },
+        {
+          "sha": "bc6dbd6b97eb481c4d5182f028e76f55f4ef8332",
+          "message": "docs: restructure SKILL.md around progressive disclosure",
+          "ts": "2026-09-29T10:49:51Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 0,
+      "own": true,
+      "messages": [],
+      "automated": 1,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    }
+  ],
+  "automatedCommits": 1,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.15.0",
+      "name": "v1.15.0 — registry-first host-command scan",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.15.0",
+      "publishedAt": "2026-09-29T09:06:53Z",
+      "notes": "<!--\n Release notes for v1.15.0 (English). Paste into the GitHub Release body.\n Chinese version: ../../zh/release-notes/release-notes-v1.15.0-ZH.md\n Release: v1.15.0 — asset-inventory (sogeisetsu/asset-inventory)\n Scope: all changes since the previous Release tag (v1.14.0).\n-->\n\n# v1.15.0\n\nHost commands are now found by enumerating the app bundle's own registries instead of hunting for prose, so an inventory stops losing commands it should have listed. The 7-table structure and every other scan are unchanged.\n\n## Changed\n\n- **Host-command scan is registry-first** — `references/host-commands.md` now runs two passes. Pass 1 enumerates the bundle's command registry deterministically: the `{id,name,source}` entry array, a raw-`id` completeness guard that a different field order cannot hide entries from, the composer-autocomplete i18n key set, and the prompt templates that name a command (`command:\"/xxx\"` literals, magicPrompt descriptions). The registry `id`/`name` is authoritative for the typed form — an autocomplete key is not always its camelCase transliteration (`workspaceReview` → `/workspace-review` holds; `featurePlan` → `/plan-feature`, and `feature-plan` occurs zero times in the bundle). The old phrase-filtered token scan is demoted to Pass 2, a documented fallback carrying an explicit \"this is not the complete set\" warning, and `references/checklist.md` now gates Table 4…"
+    }
+  ],
+  "stars": [],
+  "starInventory": [],
+  "replies": [],
+  "stateChanges": [
+    {
+      "repo": "VoltAgent/awesome-agent-skills",
+      "number": 1103,
+      "title": "Add skill: sogeisetsu/asset-inventory",
+      "url": "https://github.com/VoltAgent/awesome-agent-skills/pull/1103",
+      "action": "closed",
+      "actor": "necatiozmen",
+      "ts": "2026-09-29T10:28:59.000Z",
+      "own": false
+    }
+  ],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "source": "search-backfill",
+  "backfillLimits": {
+    "stars": "unavailable",
+    "releases": "own-repos-only",
+    "issues": "search-approx",
+    "reviews": "search-approx",
+    "discussions": "search-approx",
+    "comments": "unavailable",
+    "commits": "repo-scan-accurate"
+  },
+  "dataHash": "32b6a5a4ef6d41087f9d3d2dd682a40d91e9322183e5726c8f66227ad470d134"
+}

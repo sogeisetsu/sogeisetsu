@@ -982,7 +982,7 @@ const STAGGER = Array.from({ length: 14 }, (_, i) =>
   `.wrap > *:nth-child(${i + 1}){animation-delay:${(i * 0.045).toFixed(3)}s}`
 ).join('\n');
 
-export function pageStyle(assetPrefix = '') {
+export function pageStyle(assetPrefix = '', extraCss = '') {
   return `
 @font-face{font-family:'Chomsky';src:url('${assetPrefix}assets/fonts/chomsky.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
 :root{
@@ -1322,11 +1322,11 @@ ${STAGGER}
 @media (max-width:400px){
   .ghbtn{padding:8px 11px}
   .ghbtn-label{display:none}
-}
+}${extraCss ? `\n${extraCss}` : ''}
 `;
 }
 
-export function htmlDoc({ title, body, assetPrefix = '' }) {
+export function htmlDoc({ title, body, assetPrefix = '', extraCss = '' }) {
   return `<!doctype html>
 <html lang="en" data-lang="en">
 <head>
@@ -1336,7 +1336,7 @@ export function htmlDoc({ title, body, assetPrefix = '' }) {
 <title>${esc(title)}</title>
 <link rel="icon" type="image/svg+xml" href="${assetPrefix}favicon.svg">
 <script>${LANG_BOOTSTRAP}</script>
-<style>${pageStyle(assetPrefix)}</style>
+<style>${pageStyle(assetPrefix, extraCss)}</style>
 </head>
 <body>
 ${body}

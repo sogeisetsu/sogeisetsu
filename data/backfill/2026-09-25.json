@@ -1,0 +1,411 @@
+{
+  "date": "2026-09-25",
+  "windowStart": "2026-09-25T00:00:00+08:00",
+  "windowEnd": "2026-09-26T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-15T19:39:08.418Z",
+  "empty": false,
+  "totals": {
+    "commits": 39,
+    "prs": 1,
+    "issues": 10,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "count": 27,
+      "own": true,
+      "messages": [
+        {
+          "sha": "61a0d34c1e9c948b19d0db3032a6d8237a0fb49f",
+          "message": "docs(changelog): log description/source additions and darwin restructure rounds under [Unreleased]",
+          "ts": "2026-09-25T14:36:19Z"
+        },
+        {
+          "sha": "87f7b17a9a9a0cd4e6da2c6a146687ccffbc3a5d",
+          "message": "optimize asset-inventory: dim3 encode failure branches for nested mcp count assertion and diff state-flips",
+          "ts": "2026-09-25T14:23:25Z"
+        },
+        {
+          "sha": "5e80598504adb9ed9d27a2f7521699f6e3b6bb7c",
+          "message": "feat(skill): add metadata.source pointing to the GitHub repo (Agent Skills spec extension key)",
+          "ts": "2026-09-25T14:22:59Z"
+        },
+        {
+          "sha": "ce8ff3ca20b32f268a32f1cd5cba9cb6ae91f10f",
+          "message": "optimize asset-inventory: dim7 workflow-first restructure (Procedure before format spec, targeted-writes deduped, 'The Rule' renamed)",
+          "ts": "2026-09-25T14:19:14Z"
+        },
+        {
+          "sha": "7c87fee1be030045770deb4e4048d5c4aa620f26",
+          "message": "test: expand skill test prompts from 3 to 7 (coverage: zh/real-name/unknown-target/model-chains)",
+          "ts": "2026-09-25T14:13:32Z"
+        },
+        {
+          "sha": "c54a9b6cf2b1e65ee9931417f8ac1333e2cf1727",
+          "message": "docs(skill): expand frontmatter description with provenance, states, triggers, and guarantees",
+          "ts": "2026-09-25T13:47:23Z"
+        },
+        {
+          "sha": "84c95091ef56476785be70ba0afd744b5eb69733",
+          "message": "docs(changelog): log skills.sh install docs and badge under [Unreleased]",
+          "ts": "2026-09-25T13:29:03Z"
+        },
+        {
+          "sha": "600d03538be696792da8614a89749325e46adec8",
+          "message": "docs(readme): add official skills.sh badge to EN+ZH badge rows",
+          "ts": "2026-09-25T13:29:03Z"
+        },
+        {
+          "sha": "39771475756ac69947cd92a35484501b4d5b84c1",
+          "message": "docs(guide): add one-command skills.sh install section to install-and-update",
+          "ts": "2026-09-25T13:29:03Z"
+        },
+        {
+          "sha": "47c831a59f48238ecb51eb8ebeeeccd38e2b513c",
+          "message": "docs(readme): add skills.sh install subsection to all 7 language READMEs",
+          "ts": "2026-09-25T13:23:04Z"
+        },
+        {
+          "sha": "3b34f100141d7dc102db1b9e8011e49eacc7afd4",
+          "message": "chore(release): v1.13.7",
+          "ts": "2026-09-25T06:57:08Z"
+        },
+        {
+          "sha": "841b4e99e29e3a2749f831157faa6d1546bb0b86",
+          "message": "docs(contrib): list build-sample-pages.mjs in the file trees",
+          "ts": "2026-09-25T06:55:14Z"
+        },
+        {
+          "sha": "832402b7ab2cd7ea9233f7f25b4a9f96b8439bf5",
+          "message": "docs(check): align header check list, guard [Unreleased] and non-semver versions",
+          "ts": "2026-09-25T06:55:14Z"
+        },
+        {
+          "sha": "6b89da94fdbcae259187a0cd2ef1538ac5ad65f6",
+          "message": "chore: pretty-print references/glossary.json for reviewable diffs",
+          "ts": "2026-09-25T06:55:13Z"
+        },
+        {
+          "sha": "3e2ccdae7bc389c502fb00e72e7be6c67c70542b",
+          "message": "docs: install prompt defines <target> as the skills root in every language",
+          "ts": "2026-09-25T06:55:13Z"
+        },
+        {
+          "sha": "08c2a15841f49d3d0a1b497fb22aa56356c460bf",
+          "message": "fix: update.ps1 -DryRun previews without pulling or failing on a missing install",
+          "ts": "2026-09-25T06:55:13Z"
+        },
+        {
+          "sha": "aa5a9f18987d74154a41aed0baf8b4e6f8eca196",
+          "message": "chore(release): v1.13.6",
+          "ts": "2026-09-25T05:43:54Z"
+        },
+        {
+          "sha": "5e87541115da9334b328ba2282df41eebe01075e",
+          "message": "docs: render inventory sample as standalone HTML pages, repoint site links",
+          "ts": "2026-09-25T05:42:16Z"
+        },
+        {
+          "sha": "3980c7110de8709a2aed4c4c22f6933d0b50b0f1",
+          "message": "docs(skill): How-to-call skill path is host-aware (/skills is OpenCode TUI only)",
+          "ts": "2026-09-25T05:15:19Z"
+        },
+        {
+          "sha": "630cd6c710da42a22bc5f57b7364906d9941528e",
+          "message": "docs: quick-start wording — host-verified invocation paths, target not argument",
+          "ts": "2026-09-25T05:15:18Z"
+        },
+        {
+          "sha": "536e341c15d074967f9c82031d302be264f3cd26",
+          "message": "docs: drop the Copy commands button from the landing page",
+          "ts": "2026-09-25T05:10:15Z"
+        },
+        {
+          "sha": "0a2d8d0caec01bfe2ac1bac17959d71ee6e16816",
+          "message": "chore(release): v1.13.5",
+          "ts": "2026-09-25T04:29:34Z"
+        },
+        {
+          "sha": "7d73cec665c8f01d2147a889edc8d8a18d1b248a",
+          "message": "fix: update.ps1 backups leave the skills namespace (skills/ backups load as duplicate skill)",
+          "ts": "2026-09-25T04:26:46Z"
+        },
+        {
+          "sha": "7df21be60c2d0e638af5c328bea5053cabfc5aa8",
+          "message": "chore(release): v1.13.4",
+          "ts": "2026-09-24T22:34:22Z"
+        },
+        {
+          "sha": "b4276fe5540874d7cd1bddc6a9abffda13680e45",
+          "message": "docs(checklist): gate evidence verdicts, no silent truncation, one sufficient source per fact",
+          "ts": "2026-09-24T22:29:39Z"
+        },
+        {
+          "sha": "3e186387620b26aa7ecdb0bfc2f817c9d6bd74bf",
+          "message": "docs: full-scan prints evidence-ranked context candidates + suppressed count, never the token list",
+          "ts": "2026-09-24T22:29:39Z"
+        },
+        {
+          "sha": "4a8340417f6ae917071f8882895756a1d3a86d96",
+          "message": "feat: verdict-not-dump evidence rules (assert-style verification, sufficiency stop, output budget)",
+          "ts": "2026-09-24T22:29:39Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "count": 12,
+      "own": true,
+      "messages": [
+        {
+          "sha": "67a1859662fa4f32f8d81760a6d45b4f9732315e",
+          "message": "docs: add explicit source repository provenance to SKILL.md",
+          "ts": "2026-09-25T13:46:39Z"
+        },
+        {
+          "sha": "3d907bb3961ced2692051195eb528960c8cebc5e",
+          "message": "docs: add skills.sh CLI install option to README pair",
+          "ts": "2026-09-25T13:22:17Z"
+        },
+        {
+          "sha": "81d9a8232b981f0bd7bb4478e3f3b4937f7d3a54",
+          "message": "docs: add skills.sh badge to README pair",
+          "ts": "2026-09-25T13:02:18Z"
+        },
+        {
+          "sha": "b4a151ac97a7dc415dc04e3bceb74b166991fafc",
+          "message": "docs: add v1.0.0 changelog link refs",
+          "ts": "2026-09-25T07:36:44Z"
+        },
+        {
+          "sha": "04df9775c130c7cd5d14b34beb0bf634bf9a5964",
+          "message": "chore: release v1.0.0",
+          "ts": "2026-09-25T07:35:03Z"
+        },
+        {
+          "sha": "60cc8b1b5af422cb0455f45a7ff2d3d8bb470743",
+          "message": "fix: preserve snapshot preferences on refresh, align schemaVersion, clarify price seed output",
+          "ts": "2026-09-25T07:28:06Z"
+        },
+        {
+          "sha": "1d8d59c39c8553392d32cdd65694a0e531c85b70",
+          "message": "optimize opencode-go-model-picker: disambiguate failure-mode row 5 status semantics (dim3/dim8)",
+          "ts": "2026-09-25T07:07:58Z"
+        },
+        {
+          "sha": "39f33adde0d21580705c16351cd82f18f43ba334",
+          "message": "docs: document explicit failure-mode handling in README pair",
+          "ts": "2026-09-25T06:46:44Z"
+        },
+        {
+          "sha": "f717544423f9d124c009f89aa754b74de2d3993b",
+          "message": "optimize opencode-go-model-picker: visible checkpoint markers (dim4)",
+          "ts": "2026-09-25T06:44:56Z"
+        },
+        {
+          "sha": "f2ddc73a52a45d60b241dbe493ca10da0860ff86",
+          "message": "chore: add darwin test prompts used for baseline full_test runs",
+          "ts": "2026-09-25T06:40:34Z"
+        },
+        {
+          "sha": "d9d1be693fb9b9177f480b9a97e67e0c5999db01",
+          "message": "optimize opencode-go-model-picker: dedupe refresh strategy to single source (dim7)",
+          "ts": "2026-09-25T06:26:25Z"
+        },
+        {
+          "sha": "28ffffba0f589d4fb4dbb87cbe267bcdceb6f11a",
+          "message": "optimize opencode-go-model-picker: if-then failure-mode table (dim3)",
+          "ts": "2026-09-25T06:20:38Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    }
+  ],
+  "automatedCommits": 0,
+  "pullRequests": [
+    {
+      "repo": "VoltAgent/awesome-agent-skills",
+      "number": 1103,
+      "title": "Add skill: sogeisetsu/asset-inventory",
+      "url": "https://github.com/VoltAgent/awesome-agent-skills/pull/1103",
+      "action": "opened",
+      "ts": "2026-09-25T05:30:07.000Z",
+      "own": false,
+      "state": "open"
+    }
+  ],
+  "reviews": [],
+  "issues": [
+    {
+      "repo": "vercel-labs/skills",
+      "number": 2298,
+      "title": "[Listing]: Request indexing for sogeisetsu/asset-inventory",
+      "url": "https://github.com/vercel-labs/skills/issues/2298",
+      "action": "opened",
+      "ts": "2026-09-25T13:15:41.000Z",
+      "own": false,
+      "state": "open"
+    },
+    {
+      "repo": "vercel-labs/skills",
+      "number": 2297,
+      "title": "[Listing]: Request indexing for sogeisetsu/opencode-go-model-picker",
+      "url": "https://github.com/vercel-labs/skills/issues/2297",
+      "action": "opened",
+      "ts": "2026-09-25T13:11:01.000Z",
+      "own": false,
+      "state": "open"
+    },
+    {
+      "repo": "openchamber/openchamber",
+      "number": 3965,
+      "title": "Behavior 设置页：外部修改 AGENTS.md 后保存会静默覆盖（stale-save clobber）",
+      "url": "https://github.com/openchamber/openchamber/issues/3965",
+      "action": "closed",
+      "ts": "2026-09-25T04:23:14.000Z",
+      "own": false,
+      "state": "closed"
+    },
+    {
+      "repo": "openchamber/openchamber",
+      "number": 3965,
+      "title": "Behavior 设置页：外部修改 AGENTS.md 后保存会静默覆盖（stale-save clobber）",
+      "url": "https://github.com/openchamber/openchamber/issues/3965",
+      "action": "commented",
+      "ts": "2026-09-25T04:23:13.000Z",
+      "own": false
+    },
+    {
+      "repo": "openchamber/openchamber",
+      "number": 3966,
+      "title": "Behavior settings: saving after an external AGENTS.md edit silently overwrites the file (stale-save clobber)",
+      "url": "https://github.com/openchamber/openchamber/issues/3966",
+      "action": "opened",
+      "ts": "2026-09-25T04:23:04.000Z",
+      "own": false,
+      "state": "open"
+    },
+    {
+      "repo": "openchamber/openchamber",
+      "number": 3965,
+      "title": "Behavior 设置页：外部修改 AGENTS.md 后保存会静默覆盖（stale-save clobber）",
+      "url": "https://github.com/openchamber/openchamber/issues/3965",
+      "action": "opened",
+      "ts": "2026-09-25T04:21:39.000Z",
+      "own": false,
+      "state": "open"
+    },
+    {
+      "repo": "anomalyco/opencode",
+      "number": 51263,
+      "title": "websearch: tinyfish provider returns HTTP 400 (missing Mcp-Session-Id) on every search",
+      "url": "https://github.com/anomalyco/opencode/issues/51263",
+      "action": "opened",
+      "ts": "2026-09-25T03:46:15.000Z",
+      "own": false,
+      "state": "open"
+    },
+    {
+      "repo": "openchamber/openchamber",
+      "number": 3950,
+      "title": "[Bug] Small-model background calls to OpenCode Go fail with missing x-opencode-session on 2.0.1 — AI rename / walkthrough broken for Go models",
+      "url": "https://github.com/openchamber/openchamber/issues/3950",
+      "action": "opened",
+      "ts": "2026-09-24T21:15:07.000Z",
+      "own": false,
+      "state": "open"
+    },
+    {
+      "repo": "openchamber/openchamber",
+      "number": 3947,
+      "title": "[Bug] v2.0.1 release is missing latest.yml / latest-mac.yml — auto-update finds nothing on Windows and macOS",
+      "url": "https://github.com/openchamber/openchamber/issues/3947",
+      "action": "opened",
+      "ts": "2026-09-24T20:51:31.000Z",
+      "own": false,
+      "state": "open"
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 38,
+      "title": "Feature request: OpenCode V2 compatibility — plugin fails to load with PluginModule.LoadError (V1 plugin API)",
+      "url": "https://github.com/antongulin/opencode-skill-creator/issues/38",
+      "action": "opened",
+      "ts": "2026-09-24T20:24:29.000Z",
+      "own": false,
+      "state": "open"
+    }
+  ],
+  "releases": [
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "tag": "v1.0.0",
+      "name": "v1.0.0",
+      "url": "https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v1.0.0",
+      "publishedAt": "2026-09-25T07:38:06Z",
+      "notes": "# opencode-go-model-picker v1.0.0\n\nFirst stable release of **opencode-go-model-picker** — an OpenCode Agent Skill that picks or rebalances the models used by your **custom** OpenCode agents (native agents, `oh-my-opencode-slim` presets, and agent-injecting plugins) against the latest OpenCode Go plan. Read-only by default: it fetches the plan, produces recommendations with fallback chains, and never edits your config without a preview and an explicit confirmation.\n\n## Highlights\n\n- **Plan-aware allocation** — fetches the live Go plan every run (models, per-model monthly limits, limited-time promos, estimated request counts) and allocates a model per agent by role trait, under `budget` / `balanced` / `quality` recommendation modes with a two-question first-run diagnostic.\n- **Fallback chains** — builds ordered 2–4 entry failover chains (best fit → cheaper Go model → different provider) for chain-capable sources such as `oh-my-opencode-slim`, and explicitly refuses to invent arrays for sources whose `model` is a single value.\n- **Never invents numbers** — every price, limit, and capability is reported with its source and fetch date. Committed price and LMArena score seeds act as dated offline fallbacks; anything unverifiable is marked for manual verification.\n- **Read-only by default** — output ends at an explicit 🛑 gate; nothing is written to your configuration without your co…"
+    }
+  ],
+  "stars": [],
+  "starInventory": [],
+  "replies": [
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 38,
+      "title": "Feature request: OpenCode V2 compatibility — plugin fails to load with PluginModule.LoadError (V1 plugin API)",
+      "url": "https://github.com/antongulin/opencode-skill-creator/issues/38",
+      "author": "laserscout",
+      "excerpt": "Adding a reproduction datapoint on **macOS / Homebrew OpenCode 2.0.16** (`opencode-v2` formula) — same error, same cause: ``` WARN message=\"failed to load plugin\" target=opencode-skill-creator cause=…",
+      "kind": "issue_comment",
+      "ts": "2026-09-25T08:32:36.000Z",
+      "own": false
+    },
+    {
+      "repo": "anomalyco/opencode",
+      "number": 51263,
+      "title": "websearch: tinyfish provider returns HTTP 400 (missing Mcp-Session-Id) on every search",
+      "url": "https://github.com/anomalyco/opencode/issues/51263",
+      "author": "github-actions[bot]",
+      "excerpt": "This issue might be a duplicate of an existing issue. Please check: - #38891: Remote MCP Streamable-HTTP requests omit `Mcp-Session-Id`, causing tool calls to fail with HTTP 400. This report describe…",
+      "kind": "issue_comment",
+      "ts": "2026-09-25T03:47:14.000Z",
+      "own": false
+    }
+  ],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": true
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "source": "search-backfill",
+  "backfillLimits": {
+    "stars": "unavailable",
+    "releases": "own-repos-only",
+    "issues": "search-approx",
+    "reviews": "search-approx",
+    "discussions": "search-approx",
+    "comments": "unavailable",
+    "commits": "repo-scan-accurate"
+  },
+  "dataHash": "8be5391800d7c37a268dfa087b8c10059d91c4833da79a95454343e16af17783"
+}

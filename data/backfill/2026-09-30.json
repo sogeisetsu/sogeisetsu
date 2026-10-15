@@ -1,0 +1,113 @@
+{
+  "date": "2026-09-30",
+  "windowStart": "2026-09-30T00:00:00+08:00",
+  "windowEnd": "2026-10-01T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-15T19:53:28.497Z",
+  "empty": false,
+  "totals": {
+    "commits": 6,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "count": 6,
+      "own": true,
+      "messages": [
+        {
+          "sha": "d137543eef90de9ff0c40662e11dbe81ecdc9919",
+          "message": "fix(pages): stack gate label and note on two lines",
+          "ts": "2026-09-30T09:02:56Z"
+        },
+        {
+          "sha": "1036c2e1a9ce861b1a5378ba71ec80c86077ea53",
+          "message": "docs(plan): record M0-M4 as complete after the 0.1.0 release",
+          "ts": "2026-09-30T07:44:04Z"
+        },
+        {
+          "sha": "eea2c45a971b9c8d37ba93ce8cf1ad129e415d26",
+          "message": "chore(release): prepare 0.1.0",
+          "ts": "2026-09-30T07:32:36Z"
+        },
+        {
+          "sha": "309ffa4393b44095c2ddf8fa0023213567595435",
+          "message": "docs(changelog): note chapter alignment and snap behaviour on the landing page",
+          "ts": "2026-09-30T07:19:17Z"
+        },
+        {
+          "sha": "4f360b66683cfda5c6293ae7de609928578a53f5",
+          "message": "fix(pages): align chapters to the screen, redraw the pipeline, more motion",
+          "ts": "2026-09-30T07:18:17Z"
+        },
+        {
+          "sha": "7de962da49ba45ea2ccf917cc2b39dcec6e47f8d",
+          "message": "feat(pages): redesign the landing page with scroll-linked motion",
+          "ts": "2026-09-30T05:09:08Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 0,
+      "own": true,
+      "messages": [],
+      "automated": 1,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    }
+  ],
+  "automatedCommits": 1,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "tag": "v0.1.0",
+      "name": "v0.1.0",
+      "url": "https://github.com/sogeisetsu/meld-deepresearch/releases/tag/v0.1.0",
+      "publishedAt": "2026-09-30T07:36:51Z",
+      "notes": "**Full Changelog**: https://github.com/sogeisetsu/meld-deepresearch/commits/v0.1.0"
+    }
+  ],
+  "stars": [],
+  "starInventory": [],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "source": "search-backfill",
+  "backfillLimits": {
+    "stars": "unavailable",
+    "releases": "own-repos-only",
+    "issues": "search-approx",
+    "reviews": "search-approx",
+    "discussions": "search-approx",
+    "comments": "unavailable",
+    "commits": "repo-scan-accurate"
+  },
+  "dataHash": "2b7c4d4992a95449331db90f85ee7f7deb3f5bf88f798da771867d8950e03232"
+}
