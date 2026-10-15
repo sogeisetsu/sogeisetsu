@@ -11,12 +11,12 @@ _Updated automatically: 2026-10-15_
 - 📝 Pushed 50 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 24 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 8 commits to `sogeisetsu/asset-inventory`
+- 📝 Pushed 1 commit to `sogeisetsu/opencode-agent-sandbox`
 - 📝 Pushed 1 commit to `sogeisetsu/myBlog`
 - 🚀 [feat: v1.7.0 - seven languages, Material docs site, rendered examples](https://github.com/sogeisetsu/asset-inventory/pull/8) · merged
 - 🚀 [chore: bump to 1.6.1](https://github.com/sogeisetsu/asset-inventory/pull/7) · merged
 - 🚀 [fix: v1.6.1 - correct skill provenance and agent model chains](https://github.com/sogeisetsu/asset-inventory/pull/6) · merged
 - 🚀 [feat: v1.6.0 — fix MCP enumeration + update.ps1 bugs, docs detail pages](https://github.com/sogeisetsu/asset-inventory/pull/5) · merged
-- 🚀 [fix: v1.5.0 — deliver ja glossary, close checker gap, drop duplicate example](https://github.com/sogeisetsu/asset-inventory/pull/4) · merged
 
 </details>
 
