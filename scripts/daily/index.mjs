@@ -144,11 +144,18 @@ async function processDate(date) {
   const previousData = readJsonIfExists(path.join(DATA_DIR, `${prevDate}.json`));
   console.log(`[daily-report] 目标日: ${date}（Asia/Shanghai），上一日数据: ${prevDate}（${previousData ? "有" : "无"}）`);
 
-  const data = await collectDailyData({ token: TOKEN, username: USERNAME, date, previousData });
+  // 当天已存数据先读：既作为评论数快照冻结的来源传给 collect，也复用于后面的 dataHash 比较
+  const existing = readJsonIfExists(path.join(DATA_DIR, `${date}.json`));
+  const data = await collectDailyData({
+    token: TOKEN,
+    username: USERNAME,
+    date,
+    previousData,
+    existingData: existing,
+  });
   console.log(`[daily-report] 数据: totals=${JSON.stringify(data.totals)} · ${sectionCount(data)} · empty=${data.empty}`);
 
   const hash = contentHash(data);
-  const existing = readJsonIfExists(path.join(DATA_DIR, `${date}.json`));
   const missingAi = hasVisibleActivity(data) && !NO_AI && !(existing && existing.ai);
   if (!DRY_RUN && !FORCE && existing && existing.dataHash === hash && !missingAi) {
     console.log(`[daily-report] ${date} 内容无变化，跳过 AI 与写入`);

@@ -4,7 +4,7 @@
  * ------------------------------------------------------------------
  * render.mjs / lib/github.mjs 纯函数的确定性回归（零依赖，不触网、不需要 key）。
  *
- * 覆盖（对应复审问题 3）：
+ * 覆盖（对应复审问题 3 与本次复审）：
  *   · aiInlineToHtml     — 标记「仅两样」(code+bold)；斜体/链接/字面 HTML 保持字面；转义安全
  *   · mdBlockToHtml      — 标题/列表/段落；先转义；fence 未闭合到 EOF 也收尾；截断边界内
  *   · i18nInline         — en/zh 两侧各走内联渲染
@@ -12,6 +12,9 @@
  *   · splitParagraphs    — 英文句末切分不与 v1.3.0 / e.g. 撞车；保留结尾标点
  *   · renderReportPage   — 分区/角标/双语/转义；空状态与可见段口径
  *   · hasVisibleActivity — 可见段判定（discussion/release/star/回复/状态变更/纯机器人提交等边界）
+ *   · buildTargetQueries / filterTargetsInWindow — 目标检索下界不回退、出窗条目不进列表
+ *   · isPullRow / commentTotalOf                 — PR 行口径（会话评论 + 行内评审评论）
+ *   · groupCommentCountTargets / attachCommentCounts — 分组/上限/冻结短路（禁网断言）
  *
  * 用法：node scripts/daily/test-render.mjs
  * 输出：每个用例一行 PASS/FAIL；结尾 N/M；有失败退出码 1。
@@ -19,12 +22,28 @@
 
 const { aiInlineToHtml, mdBlockToHtml, i18nInline, splitParagraphs, renderReportPage, hasVisibleActivity } =
   await import(new URL("./render.mjs", import.meta.url).href);
-const { normalizeNotes } = await import(new URL("./lib/github.mjs", import.meta.url).href);
+const {
+  normalizeNotes,
+  buildTargetQueries,
+  filterTargetsInWindow,
+  isPullRow,
+  commentTotalOf,
+  groupCommentCountTargets,
+  attachCommentCounts,
+} = await import(new URL("./lib/github.mjs", import.meta.url).href);
 
 // ---------------------------------------------------------------- 断言收集
 
 let passed = 0;
 const cases = [];
+const pending = []; // 异步用例（如冻结短路需要 await 网络契约）
+
+const report = (name, results) => {
+  const ok = results.every(([, v]) => v);
+  if (ok) passed += 1;
+  console.log(`${ok ? "PASS" : "FAIL"} ${name}  [${results.map(([k, v]) => `${k}=${v}`).join(", ")}]`);
+};
+
 const check = (name, fn) => {
   cases.push(name); // 计入总数，保证抛异常的用例也拉低通过率
   let results;
@@ -34,9 +53,18 @@ const check = (name, fn) => {
     console.log(`FAIL ${name}  [threw: ${err && err.message}]`);
     return;
   }
-  const ok = results.every(([, v]) => v);
-  if (ok) passed += 1;
-  console.log(`${ok ? "PASS" : "FAIL"} ${name}  [${results.map(([k, v]) => `${k}=${v}`).join(", ")}]`);
+  if (results && typeof results.then === "function") {
+    // 异步用例：先登记，main 末尾统一 await，保证汇总数字正确
+    pending.push(
+      Promise.resolve(results)
+        .then((r) => report(name, r))
+        .catch((err) => {
+          console.log(`FAIL ${name}  [threw: ${err && err.message}]`);
+        })
+    );
+    return;
+  }
+  report(name, results);
 };
 
 // ---------------------------------------------------------------- aiInlineToHtml
@@ -428,7 +456,118 @@ check("renderReportPage: 空状态与可见段互斥（discussion-only 不再安
   ];
 });
 
+// ---------------------------------------------------------------- 目标检索（buildTargetQueries / filterTargetsInWindow）
+
+check("buildTargetQueries: 下界早于 win.date 一天，三条 query 不回退到当天", () => {
+  const qs = buildTargetQueries("sogeisetsu", { date: "2026-10-16" });
+  return [
+    ["len3", qs.length === 3],
+    ["firstExact", qs[0] === "author:sogeisetsu updated:>=2026-10-15"],
+    ["pr", qs[1] === "author:sogeisetsu updated:>=2026-10-15 type:pr"],
+    ["issue", qs[2] === "author:sogeisetsu updated:>=2026-10-15 type:issue"],
+    ["noSameDayBound", qs.every((q) => !q.includes("updated:>=2026-10-16"))],
+  ];
+});
+
+check("filterTargetsInWindow: 只留窗口内条目，updated_at 缺失保留", () => {
+  // 2026-10-16（+08）= UTC [2026-10-15T16:00Z, 2026-10-16T16:00Z)
+  const win = {
+    date: "2026-10-16",
+    startMs: Date.parse("2026-10-15T16:00:00Z"),
+    endMs: Date.parse("2026-10-16T16:00:00Z"),
+  };
+  const items = [
+    { id: "in", updated_at: "2026-10-15T18:00:00Z" },
+    { id: "before", updated_at: "2026-10-15T10:00:00Z" },
+    { id: "after", updated_at: "2026-10-16T18:00:00Z" },
+    { id: "missing" },
+  ];
+  const out = filterTargetsInWindow(items, win);
+  return [
+    ["len2", out.length === 2],
+    ["keepsIn", out.some((i) => i.id === "in")],
+    ["dropsBefore", !out.some((i) => i.id === "before")],
+    ["dropsAfter", !out.some((i) => i.id === "after")],
+    ["keepsMissing", out.some((i) => i.id === "missing")],
+  ];
+});
+
+// ---------------------------------------------------------------- PR 行口径（isPullRow / commentTotalOf）
+
+check("isPullRow: /pull/ 为 true、/issues/ 为 false", () => [
+  ["pull", isPullRow({ url: "https://github.com/a/b/pull/12" }) === true],
+  ["issue", isPullRow({ url: "https://github.com/a/b/issues/12" }) === false],
+  ["missingUrl", isPullRow({}) === false],
+  ["nullRow", isPullRow(null) === false],
+]);
+
+check("commentTotalOf: Issue=会话评论，PR=会话+行内，缺字段不兜底成 0", () => [
+  ["prBoth", commentTotalOf({ comments: 2, review_comments: 3 }, true) === 5],
+  ["issueOnly", commentTotalOf({ comments: 2 }, false) === 2],
+  ["prReviewOnly", commentTotalOf({ review_comments: 3 }, true) === 3],
+  ["emptyIssue", commentTotalOf({}, false) === null],
+  ["nullComments", commentTotalOf({ comments: null, review_comments: 3 }, true) === 3],
+  ["stringComments", commentTotalOf({ comments: "2" }, false) === null],
+]);
+
+// ---------------------------------------------------------------- 评论数回填（分组 / 上限 / 冻结）
+
+check("groupCommentCountTargets: 非法行跳过、同 key 合并、超上限 capped", () => {
+  const rows = [
+    { repo: "a/b", number: 1, action: "opened" },
+    { repo: "a/b", number: 1, action: "commented" },
+    { repo: "c/d", number: 2, action: "opened" },
+    { repo: "", number: 3 },
+    { number: 4 },
+    { repo: "e/f" },
+    { repo: "e/f", number: 0 },
+    null,
+  ];
+  const g = groupCommentCountTargets(rows, 40);
+  const merged = g.groups.get("a/b#1");
+  const capped = groupCommentCountTargets(
+    [
+      { repo: "a/b", number: 1 },
+      { repo: "c/d", number: 2 },
+      { repo: "e/f", number: 3 },
+    ],
+    2
+  );
+  return [
+    ["skipsInvalid", g.groups.size === 2 && g.keys.length === 2],
+    ["mergedItems2", Boolean(merged) && merged.items.length === 2],
+    ["notCapped", g.capped === false],
+    ["capKeys2", capped.keys.length === 2],
+    ["cappedTrue", capped.capped === true],
+  ];
+});
+
+check("attachCommentCounts: frozen 短路（禁网也写出快照值）", async () => {
+  const origFetch = globalThis.fetch;
+  globalThis.fetch = () => {
+    throw new Error("network disabled");
+  };
+  try {
+    const rows = [
+      { repo: "a/b", number: 1, action: "opened" },
+      { repo: "a/b", number: 1, action: "commented" },
+    ];
+    const written = await attachCommentCounts(null, rows, new Map(), {
+      frozen: new Map([["a/b#1", 7]]),
+    });
+    return [
+      ["noThrow", true],
+      ["written2", written === 2],
+      ["row1", rows[0].comments === 7],
+      ["row2", rows[1].comments === 7],
+    ];
+  } finally {
+    globalThis.fetch = origFetch; // 用例结束必须还原，别污染后续用例
+  }
+});
+
 // ---------------------------------------------------------------- 汇总
 
+await Promise.all(pending); // 等异步用例收口，保证汇总数字正确
 console.log(`\n${passed}/${cases.length} cases passed`);
 process.exit(passed === cases.length ? 0 : 1);

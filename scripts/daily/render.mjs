@@ -729,23 +729,36 @@ function discussionActionBadge(action) {
 }
 
 /**
+ * Comment-count word shared by the HTML/Markdown issue · PR · discussion rows
+ * and by the Markdown discussions meta: `N comment(s)` — or '' when the count is
+ * missing (historical JSON) or not a finite number, so no stray text, stray
+ * `0 comments`, `undefined` or `NaN` can ever be rendered.
+ */
+function commentCountWord(it) {
+  const n = it == null ? undefined : it.comments;
+  if (typeof n !== 'number' || !Number.isFinite(n)) return '';
+  return `${n} comment${n === 1 ? '' : 's'}`;
+}
+
+/**
  * Comment-count fragment shared by issue / PR / discussion rows — identical
  * wording and structure on all three paths (`#number · N comments · time`).
  * Returns '' when the count is missing (historical JSON) or not a finite
  * number, so no stray text, `undefined` or `NaN` can ever be rendered.
  */
 function commentCountHtml(it) {
-  const n = it == null ? undefined : it.comments;
-  if (typeof n !== 'number' || !Number.isFinite(n)) return '';
-  return `${SEP}<span>${i18n(`${n} comment${n === 1 ? '' : 's'}`, `${n} 条评论`)}</span>`;
+  const word = commentCountWord(it);
+  if (!word) return '';
+  const n = num(it.comments);
+  return `${SEP}<span>${i18n(word, `${n} 条评论`)}</span>`;
 }
 
 /** Markdown twin of commentCountHtml: ` _(N comments)_` appended after the row's
  * `repo#number` ref, or '' when the count is missing / not a finite number. */
 function commentCountMd(it) {
-  const n = it == null ? undefined : it.comments;
-  if (typeof n !== 'number' || !Number.isFinite(n)) return '';
-  return ` _(${n} comment${n === 1 ? '' : 's'})_`;
+  const word = commentCountWord(it);
+  if (!word) return '';
+  return ` _(${word})_`;
 }
 
 function discussionsSection(items) {
@@ -1646,8 +1659,7 @@ export function renderMarkdown({ data, ai } = {}) {
       const action = String(it.action || '').toLowerCase();
       const label = action ? `**${mdInline(action[0].toUpperCase() + action.slice(1))}** ` : '';
       const cat = String(it.category || '').trim();
-      const n = num(it.comments);
-      const meta = [cat, `${n} comment${n === 1 ? '' : 's'}`].filter(Boolean);
+      const meta = [cat, commentCountWord(it)].filter(Boolean);
       out.push(
         `- ${label}${mdLink(it.title || '(untitled)', it.url)}` +
           ` — \`${mdInline(it.repo)}#${mdInline(it.number)}\`` +

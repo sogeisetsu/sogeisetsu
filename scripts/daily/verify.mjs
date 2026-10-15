@@ -455,22 +455,40 @@ function main() {
       );
     }
 
-    // issue/PR 行的评论数已回填（数字且 >0）时，报告必须渲染对应中文文案；
-    // 按出现的最大计数校验，避免多行时脆弱。历史数据无 comments 字段 → 自然跳过。
-    const commentCounts = [];
+    // issue/PR 行的评论数已回填（数字且 >0）时必须逐行渲染在自己的 <li> 片段里：
+    // 按行校验（片段里同时含 repo、#number 与「N 条评论」），同 repo#number 出现 N 行就要求
+    // 命中片段数 >= N —— 避免同值多行漏渲染时靠最大计数 + 全文档 includes 蒙混过关，
+    // 也挡住 Discussions 行或 AI 叙述里的同数字。历史数据无 comments 字段 → 自然跳过。
+    const liParts = html.split("<li");
+    const want = new Map(); // key → {repo, number, comments, need}
     for (const k of ["issues", "pullRequests"]) {
       for (const row of Array.isArray(data[k]) ? data[k] : []) {
-        const c = row && typeof row === "object" ? row.comments : undefined;
-        if (typeof c === "number" && Number.isFinite(c) && c > 0) commentCounts.push(c);
+        if (!row || typeof row !== "object") continue;
+        const c = row.comments;
+        if (typeof c !== "number" || !Number.isFinite(c) || c <= 0) continue;
+        if (typeof row.repo !== "string" || !row.repo || row.number === undefined || row.number === null) {
+          continue; // 无 repo/number 无法定位行，A 检查的 schema 已另管
+        }
+        const key = `${row.repo}#${row.number}`;
+        const prev = want.get(key);
+        if (prev) prev.need += 1;
+        else want.set(key, { repo: row.repo, number: row.number, comments: c, need: 1 });
       }
     }
-    if (commentCounts.length > 0) {
-      const max = Math.max(...commentCounts);
-      check(
-        `${label}: 评论数已渲染`,
-        html.includes(`${max} 条评论`),
-        `存在 comments=${max} 的 issue/PR 行但报告缺少「${max} 条评论」`
-      );
+    if (want.size > 0) {
+      const missing = [];
+      for (const [key, exp] of want) {
+        const hits = liParts.filter(
+          (p) =>
+            p.includes(exp.repo) &&
+            p.includes(`#${exp.number}`) &&
+            p.includes(`${exp.comments} 条评论`)
+        ).length;
+        if (hits < exp.need) {
+          missing.push(`${key} 期望 ${exp.need} 处，实际 ${hits} 处（comments=${exp.comments}）`);
+        }
+      }
+      check(`${label}: 评论数已渲染`, missing.length === 0, missing.join("; "));
     }
 
     // 空状态卡与内容分区互斥：有可展示活动就不得出现「安静的一天」，反之必须出现。

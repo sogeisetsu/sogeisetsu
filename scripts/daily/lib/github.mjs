@@ -42,7 +42,8 @@
  * 用法（CLI 冒烟）：
  *   node scripts/daily/lib/github.mjs --date=YYYY-MM-DD [--dump=path.json]
  *   环境变量 GITHUB_TOKEN 可选；无 token 也能跑公开数据（GraphQL 相关段自动降级）。
- *   CLI 会自动读取 docs/data/前一日.json 作为 stars delta 基准（缺失则按无基准处理）。
+ *   CLI 会自动读取 docs/data/前一日.json 作为 stars delta 基准（缺失则按无基准处理），
+ *   并读取当天已存的 docs/data/<date>.json 作为评论数快照（窗口已关闭时冻结，见 storedCommentCounts）。
  */
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -621,25 +622,58 @@ async function isPublicRepo(owner, repoName, token, cache) {
 }
 
 /**
- * Search API 定位“我发起且窗口内更新过”的 Issue / PR —— 回复与状态变更两段共用的目标列表：
- * 三个查询（全部 / type:pr / type:issue）合并去重后截断到 TARGET_MAX 条；某查询失败只跳过它。
+ * 「我发起的条目」检索的三个 query（回复与状态变更两段共用）。
  *
  * 日期下界：GitHub Search 的 `updated:` 只接受 UTC 日历日（= 当日 00:00Z = +08 的 08:00），
  * 而日报窗口是 +08 日历日 —— 直接用 win.date 会漏掉「+08 当天 00:00–08:00」被我更新的条目。
- * 故下界放宽一天（dayBefore(win.date)）、并按 sort=updated&order=desc 取，让 TARGET_MAX 的 slice
- * 优先保住窗口内的条目；出窗条目由 fetchReplies / fetchStateChanges 里既有的 inWindow 本地兜底
- * （与 Discussions 段同一手法）。
+ * 故下界必须放宽一天（dayBefore(win.date)），出窗条目再由 filterTargetsInWindow 本地精滤。
  *
- * 返回 { targets, truncated }：truncated=true 表示某查询返回满一页（可能还有后续），
- * 或去重后总数超过 TARGET_MAX 被 slice 砍掉 —— 两种情况都意味着“只覆盖了部分条目”。
+ * @param {string} username GitHub 用户名
+ * @param {{date: string}} win computeWindow() 结果
+ * @returns {string[]} [全量 / type:pr / type:issue] 三条 query
  */
-async function searchAuthoredTargets(token, username, win) {
+export function buildTargetQueries(username, win) {
   const from = dayBefore(win.date); // Search 的 updated: 是 UTC 日历日，下界放宽一天
-  const queries = [
+  return [
     `author:${username} updated:>=${from}`,
     `author:${username} updated:>=${from} type:pr`,
     `author:${username} updated:>=${from} type:issue`,
   ];
+}
+
+/**
+ * 只保留 `updated_at` 落在窗口 [startMs, endMs) 内的条目。
+ * `updated_at` 缺失 / 不可解析（tsOf 得 0）的一律**保留**（宁多勿漏，
+ * 交由 fetchReplies / fetchStateChanges 里既有的 inWindow 兜底）。
+ *
+ * 用途：放宽一天的查询下界会混进「窗口之前/之后」更新的条目，
+ * `sort=updated&order=desc` 下它们会挤占 TARGET_MAX 的 slice，把窗口内条目静默挤出。
+ *
+ * @param {object[]} items Search 命中的条目
+ * @param {object} win computeWindow() 结果
+ * @returns {object[]} 窗口内（或时间不可解析）的条目，保持原顺序
+ */
+export function filterTargetsInWindow(items, win) {
+  return (items || []).filter((item) => {
+    const ms = tsOf(item && item.updated_at);
+    return ms === 0 || inWindow(ms, win);
+  });
+}
+
+/**
+ * Search API 定位“我发起且窗口内更新过”的 Issue / PR —— 回复与状态变更两段共用的目标列表：
+ * 三个查询（全部 / type:pr / type:issue）合并去重后截断到 TARGET_MAX 条；某查询失败只跳过它。
+ *
+ * 日期下界见 buildTargetQueries；命中的条目先经 filterTargetsInWindow 精滤到窗口内，
+ * 再并入去重 Map，因此 TARGET_MAX 的 slice 只会砍窗口内条目（出窗条目根本进不了列表）。
+ *
+ * 返回 { targets, truncated }：truncated **只在窗口内条目被砍时**为真 ——
+ *   (a) 某查询整页取满、且该页最旧一条**没有越过窗口起点**（或不可解析，无法证明已越过）→ 后面可能还有窗口内条目；
+ *   (b) 去重后的窗口内条目数超过 TARGET_MAX 被 slice 砍掉。
+ * 出窗条目占满一页 / 总数超限都不算截断，避免页面与 AI 输出「仅检查了前 25 条」的假提示。
+ */
+async function searchAuthoredTargets(token, username, win) {
+  const queries = buildTargetQueries(username, win);
   const hits = new Map(); // key: repository_url#number 去重
   let truncated = false;
   for (const q of queries) {
@@ -650,14 +684,22 @@ async function searchAuthoredTargets(token, username, win) {
     if (!got) continue; // 无 token 常被限流：restGet 已警告，跳过本查询
     const items = got.data && got.data.items;
     if (!Array.isArray(items)) continue;
-    if (items.length >= SEARCH_PER_PAGE) truncated = true; // 命中页大小，可能还有后续
-    for (const item of items) {
+    const inWin = filterTargetsInWindow(items, win);
+    // 整页取满且该页最后一条（按 updated 倒序 = 最旧）没有越过窗口起点（或不可解析，无法证明已越过）
+    // → 后面可能还有窗口内条目。注意判据是 `oldestMs >= win.startMs` 而不是 inWindow：
+    // 重生成过去日期时整页可能全落在窗口**之后**，此时窗口内条目还在下一页，同样必须置真。
+    const oldest = items.length > 0 ? items[items.length - 1] : null;
+    const oldestMs = tsOf(oldest && oldest.updated_at);
+    if (items.length >= SEARCH_PER_PAGE && (oldestMs === 0 || oldestMs >= win.startMs)) {
+      truncated = true;
+    }
+    for (const item of inWin) {
       const key = `${item.repository_url || ""}#${item.number || 0}`;
       if (!hits.has(key)) hits.set(key, item);
     }
   }
-  const all = [...hits.values()];
-  if (all.length > TARGET_MAX) truncated = true; // 去重后超过上限，被 slice 砍掉
+  const all = [...hits.values()]; // 已是窗口内条目
+  if (all.length > TARGET_MAX) truncated = true; // 窗口内条目超过上限，被 slice 砍掉
   return { targets: all.slice(0, TARGET_MAX), truncated };
 }
 
@@ -782,22 +824,17 @@ async function fetchStateChanges(token, username, win, targets, repoVisibility) 
 }
 
 /**
- * 实时回填 Issue / PR 行的评论总数（就地修改 items，返回写入条数）：
- * 公共事件 payload 里的 comments 是事件发生时刻的旧值（新开的 issue 恒为 0），不能直接用，
- * 这里按 `${repo}#${number}` 去重后逐条读 /repos/:o/:r/issues/:n 的 comments（采集时刻实时值），
- * 同 key 的所有条目（如「开启」与「评论」两行）共享同一计数。
- * 契约：
- *   - 每个 key 先过公开性闸门（isPublicRepo，复用同一份 repoVisibility 缓存），非公开直接跳过且不设字段；
- *   - 任何失败（restGet 返回 null、comments 缺失 / 非数字）→ 不设置该字段（属性保持不存在，
- *     不写 null/undefined），restGet 已打警告、不重复 warn，也绝不抛错；
- *   - 去重后超过 COMMENT_COUNT_MAX 个 key 时只处理前 N 个并打一行警告（不新增 truncated 键）；
- *   - 只用于展示：不调 applyEndStates、不动 totals。
- * @param {string|null} token GitHub token
+ * 把 items 按 `${repo}#${number}` 分组（评论数回填的去重 + 上限逻辑，纯函数）：
+ * 非法行（非对象 / 缺 repo / number 非正整数）直接跳过；
+ * 同一 key 的所有条目（如「开启」与「评论」两行）合成一个 group，共享同一计数。
+ * key 数超过 max 时只保留前 max 个并置 capped=true（打不打警告由调用方决定）。
+ *
  * @param {object[]} items [...issues, ...pullRequests]（可含重复 repo#number）
- * @param {Map<string, boolean>} repoVisibility 共享的仓库公开性缓存
- * @returns {Promise<number>} 写入 comments 字段的条目数
+ * @param {number} max key 数上限（COMMENT_COUNT_MAX）
+ * @returns {{groups: Map<string, {repo: string, number: number, items: object[]}>,
+ *           keys: string[], capped: boolean}}
  */
-async function attachCommentCounts(token, items, repoVisibility) {
+export function groupCommentCountTargets(items, max) {
   const groups = new Map(); // key → {repo, number, items[]}
   for (const item of items || []) {
     if (!item || typeof item !== "object") continue;
@@ -808,33 +845,124 @@ async function attachCommentCounts(token, items, repoVisibility) {
     if (!groups.has(key)) groups.set(key, { repo, number, items: [] });
     groups.get(key).items.push(item);
   }
+  const all = [...groups.keys()];
+  const capped = all.length > max;
+  return { groups, keys: capped ? all.slice(0, max) : all, capped };
+}
 
-  let keys = [...groups.keys()];
-  if (keys.length > COMMENT_COUNT_MAX) {
+/**
+ * 该行是否 PR：issues 数组里可能混入 PR 行 —— IssueCommentEvent 命中 PR 时带
+ * payload.pull_request，条目 url 指向 `.../pull/<n>` 而非 `.../issues/<n>`。
+ */
+export function isPullRow(item) {
+  const url = item && typeof item.url === "string" ? item.url : "";
+  return /\/pull\/\d+/.test(url);
+}
+
+/**
+ * 评论总数：Issue = 会话评论；PR = 会话评论 + 行内评审评论
+ * （与 fetchReplies 对 PR 同时收 issue_comment + review_comment 的口径对齐）。
+ * 两项都取不到有限数字 → null；**不用 0 兜底**，否则「取不到」会被伪装成「0 条评论」。
+ *
+ * @param {object|null} payload `/issues/:n` 或 `/pulls/:n` 的响应体
+ * @param {boolean} pull 该行是否 PR（true 时才把 review_comments 计入）
+ * @returns {number|null}
+ */
+export function commentTotalOf(payload, pull) {
+  const p = payload && typeof payload === "object" ? payload : {};
+  const issueCount = Number.isFinite(p.comments) ? p.comments : null;
+  const reviewCount = pull && Number.isFinite(p.review_comments) ? p.review_comments : null;
+  if (issueCount === null && reviewCount === null) return null;
+  return (issueCount ?? 0) + (reviewCount ?? 0);
+}
+
+/**
+ * 已存日报里的评论数快照：`repo#number` → 计数（只收有限数字）。
+ *
+ * 用途（与 stars 用 previousData 做 delta 基准同一模式）：窗口已关闭的定稿日
+ * 重采集时（cron 会把「昨天」再跑一轮、`workflow_dispatch --date=` 可跑任意日期）
+ * 直接复用磁盘上已存的计数，不再打实时接口 —— 否则评论数会随采集时刻漂移，
+ * 改写已定稿页面、击穿「无变化跳过 AI 与写入」的不变量，还会跨天重复计数。
+ * 首次生成（该日期无已存数据）或旧数据无 comments 字段时快照为空 → 该 key 自然实时取一次。
+ *
+ * @param {object|null} existingData 该日期磁盘上已存的 docs/data/<date>.json 解析结果
+ * @returns {Map<string, number>}
+ */
+export function storedCommentCounts(existingData) {
+  const map = new Map();
+  if (!existingData || typeof existingData !== "object") return map;
+  for (const k of ["issues", "pullRequests"]) {
+    for (const row of Array.isArray(existingData[k]) ? existingData[k] : []) {
+      if (!row || typeof row !== "object") continue;
+      const repo = typeof row.repo === "string" ? row.repo : "";
+      const number = Number(row.number);
+      if (!repo || !Number.isInteger(number) || number <= 0) continue;
+      const c = row.comments;
+      if (typeof c !== "number" || !Number.isFinite(c)) continue;
+      map.set(`${repo}#${number}`, c);
+    }
+  }
+  return map;
+}
+
+/**
+ * 回填 Issue / PR 行的评论总数（就地修改 items，返回写入条数）：
+ * 公共事件 payload 里的 comments 是事件发生时刻的旧值（新开的 issue 恒为 0），不能直接用，
+ * 这里按 `${repo}#${number}` 去重后逐条读取，同 key 的所有条目（如「开启」与「评论」两行）共享同一计数：
+ *   - Issue 行 → `GET /repos/:o/:r/issues/:n` 的 `comments`（会话评论）；
+ *   - PR 行（同 key 任一条目是 PR 即按 PR 口径）→ `GET /repos/:o/:r/pulls/:n`，
+ *     计数 = `comments + review_comments`（与 Replies 段 issue_comment + review_comment 对齐）。
+ * 契约：
+ *   - options.frozen（Map|null）命中 key → 直接写该快照值并跳过，**不发任何网络请求**
+ *     （包括不调 isPublicRepo）—— 定稿日冻结，见 storedCommentCounts；
+ *   - 其余每个 key 先过公开性闸门（isPublicRepo，复用同一份 repoVisibility 缓存），非公开直接跳过且不设字段；
+ *   - 任何失败（restGet 返回 null、评论总数取不到有限数字）→ 不设置该字段（属性保持不存在，
+ *     不写 null/undefined），restGet 已打警告、不重复 warn，也绝不抛错；
+ *   - 去重后超过 COMMENT_COUNT_MAX 个 key 时只处理前 N 个并打一行警告（不新增 truncated 键）；
+ *   - 只用于展示：不调 applyEndStates、不动 totals。
+ * @param {string|null} token GitHub token
+ * @param {object[]} items [...issues, ...pullRequests]（可含重复 repo#number）
+ * @param {Map<string, boolean>} repoVisibility 共享的仓库公开性缓存
+ * @param {{frozen?: Map<string, number>|null}} [options] frozen：已存日报的评论数快照
+ *   （storedCommentCounts() 结果），命中的 key 用快照值而非实时值
+ * @returns {Promise<number>} 写入 comments 字段的条目数
+ */
+export async function attachCommentCounts(token, items, repoVisibility, options = {}) {
+  const frozen = (options && options.frozen) || null;
+  const { groups, keys, capped } = groupCommentCountTargets(items, COMMENT_COUNT_MAX);
+  if (capped) {
     warn(
       "commentCounts",
-      `去重后 ${keys.length} 个条目超过上限 ${COMMENT_COUNT_MAX}，只回填前 ${COMMENT_COUNT_MAX} 个`
+      `去重后 ${groups.size} 个条目超过上限 ${COMMENT_COUNT_MAX}，只回填前 ${COMMENT_COUNT_MAX} 个`
     );
-    keys = keys.slice(0, COMMENT_COUNT_MAX);
   }
 
   let written = 0;
   for (const key of keys) {
     const g = groups.get(key);
+    // 快照冻结：命中即写、立即 continue，全程不碰网络（含公开性查询）
+    if (frozen && frozen.has(key)) {
+      for (const item of g.items) {
+        item.comments = frozen.get(key);
+        written += 1;
+      }
+      continue;
+    }
     const m = /^([^/]+)\/(.+)$/.exec(g.repo);
     if (!m) continue;
     const owner = m[1];
     const repoName = m[2];
     // 与回复 / 状态变更同一道公开性闸门（共享缓存，正常情况下不再发额外请求）
     if (!(await isPublicRepo(owner, repoName, token, repoVisibility))) continue;
+    const isPull = g.items.some(isPullRow); // 任一行是 PR → 按 PR 口径
     const got = await restGet(
       `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repoName)}` +
-        `/issues/${g.number}`,
+        `/${isPull ? "pulls" : "issues"}/${g.number}`,
       token,
       "commentCounts"
     );
-    const n = got && got.data && got.data.comments;
-    if (typeof n !== "number" || !Number.isFinite(n)) continue; // restGet 已警告，不重复 warn
+    const n = commentTotalOf(got && got.data, isPull);
+    if (n === null) continue; // restGet 已警告，不重复 warn
     for (const item of g.items) {
       item.comments = n;
       written += 1;
@@ -1032,6 +1160,11 @@ async function fetchDiscussions(token, username, win) {
  * @param {string} opts.date 报告日，格式 "YYYY-MM-DD"（Asia/Shanghai 日历日）
  * @param {object|null} opts.previousData 前一日 docs/data/YYYY-MM-DD.json 解析结果（星标 delta 基准：
  *   优先用其 starInventory，缺失时回退 stars），可为 null
+ * @param {object|null} opts.existingData 该日期**磁盘上已存**的 docs/data/<date>.json 解析结果（可为 null）。
+ *   仅用于评论数快照冻结：`win.endMs <= Date.now()`（窗口已关闭的定稿日）时按
+ *   storedCommentCounts(existingData) 冻结，重采集不再打实时接口，避免评论数随采集时刻漂移
+ *   改写定稿页面 / 击穿「无变化跳过」不变量 / 跨天重复计数；「今天」滚动报窗口未关，仍取实时值；
+ *   首次生成或旧数据无 comments 字段时快照为空 → 自然实时取一次。
  * @returns {Promise<object>} 固定 shape 的日报数据，每个 key 恒存在、数组可为空：
  *   { date, windowStart, windowEnd, username, generatedAt, empty,
  *     totals:{commits,prs,issues,reviews},   // = Σcommits[].count（仅用户提交）及各数组长度
@@ -1042,8 +1175,9 @@ async function fetchDiscussions(token, username, win) {
  *                                             // automatedBots = 机器人身份（去重排序）
  *     automatedCommits:number,                // = Σcommits[].automated（不进 totals / empty）
  *     pullRequests:[{repo,number,title,url,action,ts,own,state?,comments?}],
- *                                             // comments: 该条目的评论总数（REST 实时值，含机器人与本人，
- *                                             // 仅展示、不进 totals；仓库非公开或读取失败时不设该字段）
+ *                                             // comments: 该条目的评论总数（窗口已关闭的定稿日=已存 JSON 快照，
+ *                                             // 否则 REST 实时值；PR＝会话评论+行内评审评论，Issue＝会话评论；
+ *                                             // 含机器人与本人，仅展示、不进 totals；仓库非公开或读取失败时不设该字段）
  *     reviews:[{repo,number,title,url,ts,own}],
  *     issues:[{repo,number,title,url,action,ts,own,state?,comments?}],   // state: open|closed|merged，窗口末时刻；
  *                                                              // 由他人的状态变更或自身动作推导，可缺省；
@@ -1063,7 +1197,7 @@ async function fetchDiscussions(token, username, win) {
  *                                                                     // ts 为动作时间）；comments=评论总数；
  *                                                                     // 仅公开仓库；不计入 totals / empty
  */
-export async function collectDailyData({ token, username, date, previousData }) {
+export async function collectDailyData({ token, username, date, previousData, existingData }) {
   const win = computeWindow(date);
 
   // --- 1. 公共事件（窗口过滤；事件流本身就是公开数据）---
@@ -1125,8 +1259,14 @@ export async function collectDailyData({ token, username, date, previousData }) 
   // --- 9. 端点状态回填：以窗口结束时刻为准，原地写入 issues / pullRequests 的 state ---
   applyEndStates(issues, pullRequests, stateChanges);
 
-  // --- 10. 评论数回填：issues / PR 行的实时评论总数（仅展示，不进 totals；非公开或读失败则不设字段）---
-  await attachCommentCounts(token, [...issues, ...pullRequests], repoVisibility);
+  // --- 10. 评论数回填：issues / PR 行的评论总数（仅展示，不进 totals；非公开或读失败则不设字段）---
+  // 定稿日冻结：窗口已关闭才用已存 JSON 的评论数快照（否则重采集会漂移改写定稿页面）；
+  // 「今天」滚动报窗口未关，仍取实时值。见 storedCommentCounts。
+  const frozenComments = win.endMs <= Date.now() ? storedCommentCounts(existingData) : null;
+  const written = await attachCommentCounts(token, [...issues, ...pullRequests], repoVisibility, {
+    frozen: frozenComments,
+  });
+  if (written > 0) console.log(`${LOG} 评论数回填: ${written} 行`);
 
   // --- 合计：只由实际展示的公开数据求和，保证 totals 与各段恒等 ---
   const totals = {
@@ -1183,22 +1323,30 @@ function dayBefore(date) {
     .slice(0, 10);
 }
 
+/** 读取指定日 docs/data/YYYY-MM-DD.json；文件缺失或损坏 → null（不打日志）。 */
+function loadDataFile(date) {
+  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+  const file = path.join(root, "docs", "data", `${date}.json`);
+  try {
+    return JSON.parse(readFileSync(file, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
 /** 读取前一日 docs/data/YYYY-MM-DD.json 作为 stars delta 基准；不存在或损坏 → null。 */
 function loadPreviousData(date) {
   const prev = dayBefore(date);
-  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
-  const file = path.join(root, "docs", "data", `${prev}.json`);
-  try {
-    const data = JSON.parse(readFileSync(file, "utf8"));
+  const data = loadDataFile(prev);
+  if (data) {
     const inv = Array.isArray(data.starInventory) ? data.starInventory.length : 0;
     const legacy = Array.isArray(data.stars) ? data.stars.length : 0;
     const label = inv > 0 ? `starInventory ${inv} 条` : `stars ${legacy} 条（旧格式回退）`;
     console.log(`${LOG} 上一日基准: docs/data/${prev}.json（${label}）`);
     return data;
-  } catch {
-    console.log(`${LOG} 上一日基准: docs/data/${prev}.json 不可用（stars delta 按无基准处理）`);
-    return null;
   }
+  console.log(`${LOG} 上一日基准: docs/data/${prev}.json 不可用（stars delta 按无基准处理）`);
+  return null;
 }
 
 async function main() {
@@ -1219,6 +1367,7 @@ async function main() {
     username: "sogeisetsu",
     date,
     previousData: loadPreviousData(date),
+    existingData: loadDataFile(date), // 当天已存 JSON：窗口已关闭时冻结评论数快照
   });
 
   // 人工可读摘要
