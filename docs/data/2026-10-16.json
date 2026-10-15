@@ -3,10 +3,10 @@
   "windowStart": "2026-10-16T00:00:00+08:00",
   "windowEnd": "2026-10-17T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-15T20:12:17.830Z",
+  "generatedAt": "2026-10-15T20:16:34.508Z",
   "empty": false,
   "totals": {
-    "commits": 10,
+    "commits": 11,
     "prs": 0,
     "issues": 2,
     "reviews": 0
@@ -58,9 +58,14 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 3,
+      "count": 4,
       "own": true,
       "messages": [
+        {
+          "sha": "227c6ac1452460282fd6b56ee068c15e36b5589c",
+          "message": "fix(daily): --force 一并重取定稿日的评论数快照",
+          "ts": "2026-10-15T20:16:02Z"
+        },
         {
           "sha": "cc0d781ad98b3c9e948a161d50dde088d79ceec7",
           "message": "fix(daily): 候选条目不再按 updated_at 是否落在窗口内过滤",
@@ -77,13 +82,13 @@
           "ts": "2026-10-15T18:52:55Z"
         }
       ],
-      "automated": 10,
+      "automated": 11,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 10,
+  "automatedCommits": 11,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -278,16 +283,16 @@
   ],
   "ai": {
     "en": {
-      "headline": "10 own commits, 2 issues opened, 1 discussion started on 2026-10-16",
-      "summary": "On 2026-10-16, `sogeisetsu` made **10 own commits** across two repositories, plus 10 additional automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-agent-sandbox` (7 commits), the work was documentation-focused: adding `AGENTS.md`, creating a `knowledge/` base for Git & GitHub findings with Excalidraw sketches, archiving OpenCode V2 distribution/architecture/auth notes and Windows path pitfalls, archiving `oh-my-opencode-slim` and hosted OpenCode findings, generalizing `knowledge` from Git/GitHub-only to \"various knowledge\", making the knowledge supplement a default action in `docs(agents)`, and noting the origin remote in `AGENTS.md`. In `sogeisetsu/sogeisetsu` (3 own commits), the daily pipeline was fixed: candidate entries no longer filtered by whether `updated_at` fell inside the window, comment-count semantics and target lookup were tightened per review feedback, and a +08 early-morning reply-collection gap was repaired while Issue/PR rows now display comment counts.",
+      "headline": "11 commits, 2 issues opened, 1 discussion started",
+      "summary": "On 2026-10-16 the user logged **11 own commits** across two repositories, plus 11 additional automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-agent-sandbox` (7 commits) the work was documentation-focused: adding `AGENTS.md`, creating a `knowledge/` base for Git & GitHub findings with Excalidraw sketches, generalizing the knowledge scope beyond Git/GitHub, archiving OpenCode V2 distribution/architecture/auth notes and Windows path pitfalls, archiving oh-my-opencode-slim and hosted OpenCode findings, and making knowledge supplementation a default action with adjustable architecture. In `sogeisetsu/sogeisetsu` (4 commits) the user fixed the daily report pipeline: `--force` now also re-fetches the finalized-day comment snapshot, candidate entries are no longer filtered by whether `updated_at` falls inside the window, comment-count semantics and target lookup were tightened per review feedback, and a +08 early-morning reply-collection gap was fixed while Issue/PR rows now display comment counts. The user opened 2 issues on `anomalyco/opencode`: #55785 reporting that `mimo-v2.6-flash` and `mimo-v2.5` advertise image input but the Go endpoint rejects every image with 400, and #55772 requesting a way to run the CLI bundled with the Windows desktop app.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "2026-10-16：10 次本人提交、2 个 issue、1 个讨论",
-      "summary": "2026-10-16，`sogeisetsu` 在两个仓库共完成 **10 次本人提交**，另有 10 次由 `github-actions[bot]` 自动提交（均在 `sogeisetsu/sogeisetsu`）。在 `sogeisetsu/opencode-agent-sandbox`（7 次）以文档为主：新增 `AGENTS.md`，建立 `knowledge/` 目录归档 Git & GitHub 发现并附 Excalidraw 草图，归档 OpenCode V2 分发/架构/认证与 Windows 路径坑，归档 `oh-my-opencode-slim` 与托管 OpenCode 实测知识，将 `knowledge` 从仅限 Git/GitHub 泛化为「各种知识」，在 `docs(agents)` 中将 knowledge 补充改为默认动作，并在 `AGENTS.md` 中注明 origin remote。在 `sogeisetsu/sogeisetsu`（3 次本人提交）修复 daily 流水线：候选条目不再按 `updated_at` 是否落在窗口内过滤；按复审意见收紧评论数口径与 target 检索；修复 +08 凌晨漏采回复，并在 Issue/PR 行显示评论数。在 `anomalyco/opencode` 新开 2 个 issue：#55785 \"go: mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image (400)\" 与 #55772 \"[FEATURE]: Windows desktop ships the CLI but there is no way to run it\"，两者均为 open 状态；#55785 收到 3 条评论，包括 `micahgerges` 的实测确认与 `opencode-agent[bot]` 的元数据核对；#55772 收到 1 条来自 `opencode-agent[bot]` 的回复。另观察到 `anomalyco/opencode` #51263 \"websearch: tinyfish provider returns HTTP 400 (missing Mcp-Session-Id) on every search\" 被 `Tarquinen` 关闭。用户还在 `openchamber/openchamber` 的 Ideas 分类下发起讨论 #4982 \"Share session archive state with OpenCode's own clients\"。当日无 PR、无 review、无 release；各分区均未截断。",
+      "headline": "11 次提交、2 个 issue、1 个讨论",
+      "summary": "2026-10-16 当天，用户在两个仓库共完成 **11 次本人提交**，另有 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 中自动提交 11 次。在 `sogeisetsu/opencode-agent-sandbox`（7 次）中，工作以文档为主：新增 `AGENTS.md`，建立 `knowledge/` 目录用于 Git & GitHub 相关发现并附 Excalidraw 草图，将 knowledge 范围从 Git/GitHub 泛化为「各种知识」，归档 OpenCode V2 分发/架构/认证与 Windows 路径坑，归档 oh-my-opencode-slim 与托管 OpenCode 实测知识，并将 knowledge 补充改为默认动作、架构可随内容调整。在 `sogeisetsu/sogeisetsu`（4 次）中，用户修复了日报流水线：`--force` 现同时重取定稿日的评论数快照，候选条目不再按 `updated_at` 是否落在窗口内过滤，按复审意见收紧了评论数口径与 target 检索，修复了 +08 凌晨漏采回复的问题，并在 Issue/PR 行显示评论数。用户在 `anomalyco/opencode` 新开 2 个 issue：#55785 报告 `mimo-v2.6-flash` 与 `mimo-v2.5` 声称支持图像输入但 Go 端点拒绝所有图像（400），#55772 请求为 Windows 桌面版内置的 CLI 提供运行方式。这两个 issue 共收到 3 条回复，来自 `micahgerges` 与 `opencode-agent[bot]`，其中 `micahgerges` 使用真实 OpenCode Go key 在 Linux/Docker 上的 `opencode serve 2.0.29` 中确认了 Go 端点行为。用户还在 `openchamber/openchamber` 发起了讨论 #4982，标题为「Share session archive state with OpenCode's own clients」，归类于 Ideas。当天无 PR、无 review、无 release，且没有任何分区触及采集上限。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "96de4dd76589098673411b68f6f2aee7c0843c8ba3e215508cec434484308d6b"
+  "dataHash": "db14551df6af7fb9a9fdaf8c65f888334a62729f7609d45e2f30ed9841671902"
 }
