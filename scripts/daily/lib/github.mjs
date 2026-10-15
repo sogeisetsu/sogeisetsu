@@ -40,10 +40,11 @@
  *   - 仅 --date 格式非法时 CLI 报错退出
  *
  * 用法（CLI 冒烟）：
- *   node scripts/daily/lib/github.mjs --date=YYYY-MM-DD [--dump=path.json]
+ *   node scripts/daily/lib/github.mjs --date=YYYY-MM-DD [--dump=path.json] [--force]
  *   环境变量 GITHUB_TOKEN 可选；无 token 也能跑公开数据（GraphQL 相关段自动降级）。
  *   CLI 会自动读取 docs/data/前一日.json 作为 stars delta 基准（缺失则按无基准处理），
- *   并读取当天已存的 docs/data/<date>.json 作为评论数快照（窗口已关闭时冻结，见 storedCommentCounts）。
+ *   并读取当天已存的 docs/data/<date>.json 作为评论数快照（窗口已关闭时冻结，见 storedCommentCounts）；
+ *   --force 跳过该快照冻结、直接取实时评论数（与 index.mjs 的 --force 语义对齐）。
  */
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -1384,10 +1385,11 @@ async function main() {
   const argv = process.argv.slice(2);
   const dateArg = argv.find((a) => a.startsWith("--date="));
   const dumpArg = argv.find((a) => a.startsWith("--dump="));
+  const force = argv.includes("--force"); // 跳过评论数快照冻结，取实时值（对齐 index.mjs 的 --force）
   const token = process.env.GITHUB_TOKEN || null;
   const date = dateArg ? dateArg.slice("--date=".length) : previousShanghaiDate();
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    console.error(`${LOG} 用法: node scripts/daily/lib/github.mjs --date=YYYY-MM-DD [--dump=path.json]`);
+    console.error(`${LOG} 用法: node scripts/daily/lib/github.mjs --date=YYYY-MM-DD [--dump=path.json] [--force]`);
     console.error(`${LOG} 收到的 --date 非法: ${date}`);
     process.exit(1);
   }
@@ -1398,7 +1400,7 @@ async function main() {
     username: "sogeisetsu",
     date,
     previousData: loadPreviousData(date),
-    existingData: loadDataFile(date), // 当天已存 JSON：窗口已关闭时冻结评论数快照
+    existingData: force ? null : loadDataFile(date), // 当天已存 JSON：窗口已关闭时冻结评论数快照（--force 取实时值）
   });
 
   // 人工可读摘要
