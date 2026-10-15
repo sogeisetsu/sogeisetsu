@@ -32,7 +32,7 @@ function run(label, args) {
   return ok;
 }
 
-const syntaxTargets = ["lib/ai.mjs", "render.mjs", "lib/github.mjs", "index.mjs"];
+const syntaxTargets = ["lib/ai.mjs", "lib/days.mjs", "render.mjs", "lib/github.mjs", "index.mjs"];
 let failed = 0;
 
 for (const t of syntaxTargets) {

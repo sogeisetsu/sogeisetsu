@@ -24,28 +24,31 @@
  * 与已存 JSON 的 dataHash 相同则不调用 AI、不写文件、不提交，避免浪费 token。
  */
 
-import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
-import { createHash } from "node:crypto";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { collectDailyData } from "./lib/github.mjs";
 import { defaultProviders, generateNarrative } from "./lib/ai.mjs";
 import { renderIndexPage, renderMarkdown, renderReportPage, hasVisibleActivity } from "./render.mjs";
+import {
+  DATA_DIR,
+  DATE_RE,
+  INDEX_PATH,
+  REPORT_DIR,
+  SUMMARY_JSON_PATH,
+  contentHash,
+  cstDayMinus,
+  listDateStrings,
+  listDays,
+  prevDateOf,
+  readJsonIfExists,
+  writeAtomic,
+} from "./lib/days.mjs";
+import { summaryCard } from "../summary/render.mjs";
 
 // ---------------------------------------------------------------- 常量与参数
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const DATA_DIR = path.join(ROOT, "docs", "data");
-const REPORT_DIR = path.join(ROOT, "docs", "report");
-const INDEX_PATH = path.join(ROOT, "docs", "index.html");
-
 const USERNAME = process.env.GITHUB_REPOSITORY_OWNER || "sogeisetsu";
 const TOKEN = process.env.GITHUB_TOKEN || null;
-const CST_OFFSET_MS = 8 * 3600 * 1000;
-const DAY_MS = 24 * 3600 * 1000;
-const ARCHIVE_LIMIT = 60;
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 const args = process.argv.slice(2);
 const argVal = (name) => {
@@ -58,78 +61,21 @@ const FORCE = args.includes("--force");
 const DATE_ARG = argVal("date");
 const RERENDER = args.includes("--rerender");
 
-/** Asia/Shanghai 日历日，往前推 days 天，返回 YYYY-MM-DD。 */
-function cstDayMinus(days) {
-  const shifted = new Date(Date.now() + CST_OFFSET_MS);
-  const t = new Date(Date.UTC(shifted.getUTCFullYear(), shifted.getUTCMonth(), shifted.getUTCDate() - days));
-  return t.toISOString().slice(0, 10);
-}
-
-/** 把 YYYY-MM-DD 往前推一天。 */
-function prevDateOf(date) {
-  return new Date(Date.parse(`${date}T00:00:00Z`) - DAY_MS).toISOString().slice(0, 10);
-}
-
-function readJsonIfExists(file) {
-  if (!existsSync(file)) return null;
-  try {
-    return JSON.parse(readFileSync(file, "utf8"));
-  } catch {
-    return null;
-  }
-}
-
-/** 原子写入：先写临时文件再 rename。 */
-function writeAtomic(file, text) {
-  mkdirSync(path.dirname(file), { recursive: true });
-  const tmp = `${file}.tmp-${process.pid}`;
-  writeFileSync(tmp, text, "utf8");
-  renameSync(tmp, file);
-}
-
-/** 内容哈希：忽略 generatedAt / ai / aiProvider / dataHash，其余参与比较。 */
-function contentHash(data) {
-  const { generatedAt, ai, aiProvider, dataHash, ...rest } = data;
-  return createHash("sha256").update(JSON.stringify(rest)).digest("hex");
-}
-
-/** 扫描 docs/data，返回最近 ARCHIVE_LIMIT 天的索引条目（新→旧）。 */
-function listDays() {
-  if (!existsSync(DATA_DIR)) return [];
-  return readdirSync(DATA_DIR)
-    .filter((f) => DATE_RE.test(f.replace(/\.json$/, "")) && f.endsWith(".json"))
-    .map((f) => f.slice(0, 10))
-    .sort()
-    .reverse()
-    .slice(0, ARCHIVE_LIMIT)
-    .map((d) => {
-      const j = readJsonIfExists(path.join(DATA_DIR, `${d}.json`));
-      return {
-        date: d,
-        url: `./report/${d}.html${j?.dataHash ? `?v=${String(j.dataHash).slice(0, 10)}` : ""}`,
-        headline_en: j?.ai?.en?.headline ?? null,
-        headline_zh: j?.ai?.zh?.headline ?? null,
-        // 归档行的「安静的一天」用可见段口径（讨论/发布/标星/回复也算活动），
-        // 不能用 data.empty（totals 口径）——否则只发 discussion 的一天会被标成安静的一天。
-        hasActivity: hasVisibleActivity(j),
-      };
-    });
-}
-
-/** 扫描 docs/data，返回所有已存在的日期（新→旧）。 */
-function listDateStrings() {
-  if (!existsSync(DATA_DIR)) return [];
-  return readdirSync(DATA_DIR)
-    .filter((f) => f.endsWith(".json") && DATE_RE.test(f.slice(0, 10)))
-    .map((f) => f.slice(0, 10))
-    .sort()
-    .reverse();
-}
+/** Asia/Shanghai 日历日推算、JSON 读写、docs/data 扫描：见 lib/days.mjs（与 30 天总结共用）。 */
 
 function sectionCount(data) {
   return ["commits", "pullRequests", "reviews", "issues", "discussions", "releases", "stars", "replies"]
     .map((k) => `${k}=${Array.isArray(data[k]) ? data[k].length : 0}`)
     .join(" ");
+}
+
+/**
+ * 首页顶部总结卡片片段：读 docs/summary.json，交给 scripts/summary 的渲染层出卡片。
+ * 没有总结文件（或读不出来）时返回 null —— 归档页照常渲染，不报错。
+ */
+function summaryCardHtml() {
+  const summary = readJsonIfExists(SUMMARY_JSON_PATH);
+  return summary ? summaryCard({ summary }) : null;
 }
 
 // ---------------------------------------------------------------- 单日处理
@@ -217,7 +163,7 @@ async function main() {
       console.log(`[daily-report] 重新渲染 docs/report/${d}.html/.md`);
     }
     const days = listDays();
-    writeAtomic(INDEX_PATH, renderIndexPage({ days, generatedAt: new Date().toISOString(), username: USERNAME }));
+    writeAtomic(INDEX_PATH, renderIndexPage({ days, generatedAt: new Date().toISOString(), username: USERNAME, summaryCardHtml: summaryCardHtml() }));
     console.log(`[daily-report] 已重写 docs/index.html（归档 ${days.length} 天）`);
     return;
   }
@@ -239,7 +185,7 @@ async function main() {
   }
 
   const days = listDays();
-  writeAtomic(INDEX_PATH, renderIndexPage({ days, generatedAt: new Date().toISOString(), username: USERNAME }));
+  writeAtomic(INDEX_PATH, renderIndexPage({ days, generatedAt: new Date().toISOString(), username: USERNAME, summaryCardHtml: summaryCardHtml() }));
   console.log(`[daily-report] 已写入 docs/index.html（归档 ${days.length} 天）`);
 }
 
