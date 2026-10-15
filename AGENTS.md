@@ -51,5 +51,6 @@ git push
 - 提交归属＝`login` 或 `commit.author.name` 命中 `sogeisetsu` 或别名（`COMMIT_AUTHOR_ALIASES`，见 `scripts/daily/lib/github.mjs`，如 `suyue`），大小写不敏感；GitHub 按提交邮箱关联账号，未关联的署名（如本地邮箱 `suyue@localhost`）须列别名才计入本人。
 - `totals` 只由展示数据求和；页面数字与 AI 摘要数字都以此为准。
 - Discussions：我发起（`started`）/ 我评论（`commented`）+ 他人回复并入 replies（`kind=discussion_comment`）；仅公开仓库；不进 `totals` / `empty`（与 releases / stars 一致）。
+- Issue/PR 行的评论数＝`comments`（REST 实时取，含机器人与本人，仅展示用，不进 `totals`；仓库非公开或读取失败则不显示）。
 - 代码修改必须走分支：新建分支 → 提交 → 合并回 `main` → push；不要直接在 `main` 上修改。
 - 不擅自新增依赖；改 CI / 改权限前先确认。

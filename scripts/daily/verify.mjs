@@ -295,6 +295,19 @@ function main() {
     });
     check(`${label}: automated 字段`, autoBad.length === 0, autoBad.join("; "));
 
+    // 评论数（新字段：历史数据允许缺失；存在则必须是 >= 0 的有限整数）
+    const badC = [];
+    for (const k of ["issues", "pullRequests"]) {
+      (Array.isArray(j[k]) ? j[k] : []).forEach((row, i) => {
+        if (!row || typeof row !== "object" || row.comments === undefined) return;
+        const c = row.comments;
+        if (typeof c !== "number" || !Number.isFinite(c) || c < 0 || !Number.isInteger(c)) {
+          badC.push(`${k}[${i}].comments=${JSON.stringify(c)}`);
+        }
+      });
+    }
+    check(`${label}: comments 字段`, badC.length === 0, badC.join("; "));
+
     // 截断提示字段（新字段：历史数据允许缺失；存在则校验结构）
     if (j.truncated !== undefined) {
       const badT = [];
@@ -439,6 +452,24 @@ function main() {
         `${label}: 讨论数据已渲染`,
         html.includes(">Discussions<"),
         `discussions=${data.discussions.length} 条但报告缺少 Discussions 分区`
+      );
+    }
+
+    // issue/PR 行的评论数已回填（数字且 >0）时，报告必须渲染对应中文文案；
+    // 按出现的最大计数校验，避免多行时脆弱。历史数据无 comments 字段 → 自然跳过。
+    const commentCounts = [];
+    for (const k of ["issues", "pullRequests"]) {
+      for (const row of Array.isArray(data[k]) ? data[k] : []) {
+        const c = row && typeof row === "object" ? row.comments : undefined;
+        if (typeof c === "number" && Number.isFinite(c) && c > 0) commentCounts.push(c);
+      }
+    }
+    if (commentCounts.length > 0) {
+      const max = Math.max(...commentCounts);
+      check(
+        `${label}: 评论数已渲染`,
+        html.includes(`${max} 条评论`),
+        `存在 comments=${max} 的 issue/PR 行但报告缺少「${max} 条评论」`
       );
     }
 

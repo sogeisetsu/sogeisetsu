@@ -308,6 +308,62 @@ check("renderReportPage: discussions 分区 + 动作徽章 + 评论数双语 + �
   ];
 });
 
+// ---------------------------------------------------------------- issue/PR 评论数
+
+check("renderReportPage: issue/PR 行评论数（双语单复数），缺失不渲染", () => {
+  const htmlOf = (issues, pullRequests) =>
+    renderReportPage({
+      data: {
+        date: "2026-10-16",
+        username: "sogeisetsu",
+        generatedAt: "2026-10-16T12:00:00.000Z",
+        empty: false,
+        totals: { commits: 0, prs: pullRequests.length, issues: issues.length, reviews: 0 },
+        commits: [],
+        pullRequests,
+        reviews: [],
+        issues,
+        stateChanges: [],
+        discussions: [],
+        releases: [],
+        stars: [],
+        replies: [],
+      },
+      ai: null,
+    });
+  const issue = (number, extra) => ({
+    repo: "anomalyco/opencode",
+    number,
+    title: `issue ${number}`,
+    url: `https://github.com/anomalyco/opencode/issues/${number}`,
+    action: "opened",
+    ts: "2026-10-16T01:00:00.000Z",
+    own: false,
+    ...extra,
+  });
+  const pr = (number, extra) => ({
+    repo: "anomalyco/opencode",
+    number,
+    title: `pr ${number}`,
+    url: `https://github.com/anomalyco/opencode/pull/${number}`,
+    action: "opened",
+    ts: "2026-10-16T02:00:00.000Z",
+    own: false,
+    ...extra,
+  });
+  const withCounts = htmlOf([issue(55785, { comments: 3 })], [pr(55772, { comments: 1 })]);
+  const without = htmlOf([issue(7, {})], []); // 历史 JSON：无 comments 字段
+  return [
+    ["zhPlural", withCounts.includes('data-lang="zh">3 条评论</span>')],
+    ["enPlural", withCounts.includes('data-lang="en">3 comments</span>')],
+    ["enSingular", withCounts.includes('data-lang="en">1 comment</span>')],
+    ["zhSingular", withCounts.includes('data-lang="zh">1 条评论</span>')],
+    ["missingZhSilent", !without.includes("条评论")],
+    ["missingEnSilent", !/\d+ comments?/.test(without)],
+    ["missingNoNaN", !/undefined|NaN/.test(without)],
+  ];
+});
+
 // ---------------------------------------------------------------- hasVisibleActivity
 
 check("hasVisibleActivity: 可见段判定与边界", () => {

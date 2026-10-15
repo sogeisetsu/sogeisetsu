@@ -13,7 +13,9 @@
  *   3. REST /users/:u/repos + releases    —— 自有仓库的 Release（published_at 落在窗口内）
  *   4. GraphQL repository.stargazerCount —— 自有仓库星标总数：全量存入 starInventory 作次日基准，
  *                                          展示的 stars 只列 delta 非 0 的变化项
- *   5. REST /search/issues + 评论列表     —— 定位我最近更新的条目（回复 / 状态变更共用，上限 25），
+ *   5. REST /search/issues + 评论列表     —— 定位我最近更新的条目（回复 / 状态变更共用，上限 25；
+ *                                          Search 的 updated: 是 UTC 日历日而窗口是 +08 日历日，
+ *                                          故查询下界放宽一天、按 updated 倒序取，再由本地 inWindow 精滤），
  *                                          以及他人在我 PR / Issue 下的回复（逐仓校验公开后才收录）
  *   6. REST /repos/:o/:r/issues/:n/events —— 他人对我条目的 closed / merged / reopened
  *                                          （stateChanges 段，不计入 totals）
@@ -75,6 +77,7 @@ const DISCUSSION_SEARCH_MAX = 50; // Discussion search 每个别名取的节点�
 const DISCUSSION_COMMENTS_MAX = 100; // 每条讨论拉取的评论节点上限（连接尾部=最新，comments(last: N)）
 const REPLIES_PAGE_SIZE = 30; // /issues|pulls/:n/comments 单页大小（显式传 per_page，与截断判定一致）
 const STATE_EVENTS_PAGE_SIZE = 100; // /issues/:n/events 单页大小（截断判定用）
+const COMMENT_COUNT_MAX = 40; // 回填评论数的条目数上限（去重后的 repo#number）
 
 // ---------------------------------------------------------------- 小工具
 
@@ -620,21 +623,29 @@ async function isPublicRepo(owner, repoName, token, cache) {
 /**
  * Search API 定位“我发起且窗口内更新过”的 Issue / PR —— 回复与状态变更两段共用的目标列表：
  * 三个查询（全部 / type:pr / type:issue）合并去重后截断到 TARGET_MAX 条；某查询失败只跳过它。
+ *
+ * 日期下界：GitHub Search 的 `updated:` 只接受 UTC 日历日（= 当日 00:00Z = +08 的 08:00），
+ * 而日报窗口是 +08 日历日 —— 直接用 win.date 会漏掉「+08 当天 00:00–08:00」被我更新的条目。
+ * 故下界放宽一天（dayBefore(win.date)）、并按 sort=updated&order=desc 取，让 TARGET_MAX 的 slice
+ * 优先保住窗口内的条目；出窗条目由 fetchReplies / fetchStateChanges 里既有的 inWindow 本地兜底
+ * （与 Discussions 段同一手法）。
+ *
  * 返回 { targets, truncated }：truncated=true 表示某查询返回满一页（可能还有后续），
  * 或去重后总数超过 TARGET_MAX 被 slice 砍掉 —— 两种情况都意味着“只覆盖了部分条目”。
  */
 async function searchAuthoredTargets(token, username, win) {
+  const from = dayBefore(win.date); // Search 的 updated: 是 UTC 日历日，下界放宽一天
   const queries = [
-    `author:${username} updated:>=${win.date}`,
-    `author:${username} updated:>=${win.date} type:pr`,
-    `author:${username} updated:>=${win.date} type:issue`,
+    `author:${username} updated:>=${from}`,
+    `author:${username} updated:>=${from} type:pr`,
+    `author:${username} updated:>=${from} type:issue`,
   ];
   const hits = new Map(); // key: repository_url#number 去重
   let truncated = false;
   for (const q of queries) {
     const url =
       `https://api.github.com/search/issues?q=${encodeURIComponent(q)}` +
-      `&per_page=${SEARCH_PER_PAGE}`;
+      `&per_page=${SEARCH_PER_PAGE}&sort=updated&order=desc`;
     const got = await restGet(url, token, "search");
     if (!got) continue; // 无 token 常被限流：restGet 已警告，跳过本查询
     const items = got.data && got.data.items;
@@ -768,6 +779,68 @@ async function fetchStateChanges(token, username, win, targets, repoVisibility) 
   }
   changes.sort((a, b) => tsOf(b.ts) - tsOf(a.ts));
   return { changes, truncated };
+}
+
+/**
+ * 实时回填 Issue / PR 行的评论总数（就地修改 items，返回写入条数）：
+ * 公共事件 payload 里的 comments 是事件发生时刻的旧值（新开的 issue 恒为 0），不能直接用，
+ * 这里按 `${repo}#${number}` 去重后逐条读 /repos/:o/:r/issues/:n 的 comments（采集时刻实时值），
+ * 同 key 的所有条目（如「开启」与「评论」两行）共享同一计数。
+ * 契约：
+ *   - 每个 key 先过公开性闸门（isPublicRepo，复用同一份 repoVisibility 缓存），非公开直接跳过且不设字段；
+ *   - 任何失败（restGet 返回 null、comments 缺失 / 非数字）→ 不设置该字段（属性保持不存在，
+ *     不写 null/undefined），restGet 已打警告、不重复 warn，也绝不抛错；
+ *   - 去重后超过 COMMENT_COUNT_MAX 个 key 时只处理前 N 个并打一行警告（不新增 truncated 键）；
+ *   - 只用于展示：不调 applyEndStates、不动 totals。
+ * @param {string|null} token GitHub token
+ * @param {object[]} items [...issues, ...pullRequests]（可含重复 repo#number）
+ * @param {Map<string, boolean>} repoVisibility 共享的仓库公开性缓存
+ * @returns {Promise<number>} 写入 comments 字段的条目数
+ */
+async function attachCommentCounts(token, items, repoVisibility) {
+  const groups = new Map(); // key → {repo, number, items[]}
+  for (const item of items || []) {
+    if (!item || typeof item !== "object") continue;
+    const repo = typeof item.repo === "string" ? item.repo : "";
+    const number = Number(item.number);
+    if (!repo || !Number.isInteger(number) || number <= 0) continue;
+    const key = `${repo}#${number}`;
+    if (!groups.has(key)) groups.set(key, { repo, number, items: [] });
+    groups.get(key).items.push(item);
+  }
+
+  let keys = [...groups.keys()];
+  if (keys.length > COMMENT_COUNT_MAX) {
+    warn(
+      "commentCounts",
+      `去重后 ${keys.length} 个条目超过上限 ${COMMENT_COUNT_MAX}，只回填前 ${COMMENT_COUNT_MAX} 个`
+    );
+    keys = keys.slice(0, COMMENT_COUNT_MAX);
+  }
+
+  let written = 0;
+  for (const key of keys) {
+    const g = groups.get(key);
+    const m = /^([^/]+)\/(.+)$/.exec(g.repo);
+    if (!m) continue;
+    const owner = m[1];
+    const repoName = m[2];
+    // 与回复 / 状态变更同一道公开性闸门（共享缓存，正常情况下不再发额外请求）
+    if (!(await isPublicRepo(owner, repoName, token, repoVisibility))) continue;
+    const got = await restGet(
+      `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repoName)}` +
+        `/issues/${g.number}`,
+      token,
+      "commentCounts"
+    );
+    const n = got && got.data && got.data.comments;
+    if (typeof n !== "number" || !Number.isFinite(n)) continue; // restGet 已警告，不重复 warn
+    for (const item of g.items) {
+      item.comments = n;
+      written += 1;
+    }
+  }
+  return written;
 }
 
 /**
@@ -968,10 +1041,13 @@ async function fetchDiscussions(token, username, win) {
  *                                             // 全局 sha 去重；automated = 机器人提交数，
  *                                             // automatedBots = 机器人身份（去重排序）
  *     automatedCommits:number,                // = Σcommits[].automated（不进 totals / empty）
- *     pullRequests:[{repo,number,title,url,action,ts,own,state?}],
+ *     pullRequests:[{repo,number,title,url,action,ts,own,state?,comments?}],
+ *                                             // comments: 该条目的评论总数（REST 实时值，含机器人与本人，
+ *                                             // 仅展示、不进 totals；仓库非公开或读取失败时不设该字段）
  *     reviews:[{repo,number,title,url,ts,own}],
- *     issues:[{repo,number,title,url,action,ts,own,state?}],   // state: open|closed|merged，窗口末时刻；
- *                                                              // 由他人的状态变更或自身动作推导，可缺省
+ *     issues:[{repo,number,title,url,action,ts,own,state?,comments?}],   // state: open|closed|merged，窗口末时刻；
+ *                                                              // 由他人的状态变更或自身动作推导，可缺省；
+ *                                                              // comments 同 pullRequests（可缺省）
  *     releases:[{repo,tag,name,url,publishedAt,notes}],   // notes: 规范化 Markdown（保留换行，≤1400 字符）
  *     stars:[{repo,delta,total}],            // 展示用：仅 delta 为数字且非 0 的仓库
  *     starInventory:[{repo,total}],          // 全量自有仓库星标清单（供次日 delta 基准，不过滤）
@@ -1048,6 +1124,9 @@ export async function collectDailyData({ token, username, date, previousData }) 
 
   // --- 9. 端点状态回填：以窗口结束时刻为准，原地写入 issues / pullRequests 的 state ---
   applyEndStates(issues, pullRequests, stateChanges);
+
+  // --- 10. 评论数回填：issues / PR 行的实时评论总数（仅展示，不进 totals；非公开或读失败则不设字段）---
+  await attachCommentCounts(token, [...issues, ...pullRequests], repoVisibility);
 
   // --- 合计：只由实际展示的公开数据求和，保证 totals 与各段恒等 ---
   const totals = {

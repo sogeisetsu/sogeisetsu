@@ -619,7 +619,8 @@ function prSection(items, totals, notice) {
       return (
         `<li class="row row-block">` +
         `<div class="row-head">${statusBadge(it)}${extLink(it.url, title, 'row-title')}</div>` +
-        `<div class="row-meta">${repoSpan(it.repo)}${SEP}<span class="num">#${esc(it.number)}</span>${timeHtml(it.ts)}</div>` +
+        `<div class="row-meta">${repoSpan(it.repo)}${SEP}<span class="num">#${esc(it.number)}</span>` +
+        `${commentCountHtml(it)}${timeHtml(it.ts)}</div>` +
         `</li>`
       );
     })
@@ -655,7 +656,8 @@ function issuesSection(items, totals, notice) {
       return (
         `<li class="row row-block">` +
         `<div class="row-head">${statusBadge(it)}${extLink(it.url, title, 'row-title')}</div>` +
-        `<div class="row-meta">${repoSpan(it.repo)}${SEP}<span class="num">#${esc(it.number)}</span>${timeHtml(it.ts)}</div>` +
+        `<div class="row-meta">${repoSpan(it.repo)}${SEP}<span class="num">#${esc(it.number)}</span>` +
+        `${commentCountHtml(it)}${timeHtml(it.ts)}</div>` +
         `</li>`
       );
     })
@@ -726,20 +728,38 @@ function discussionActionBadge(action) {
   return `<span class="badge ${m.cls}">${inner}</span>`;
 }
 
+/**
+ * Comment-count fragment shared by issue / PR / discussion rows — identical
+ * wording and structure on all three paths (`#number · N comments · time`).
+ * Returns '' when the count is missing (historical JSON) or not a finite
+ * number, so no stray text, `undefined` or `NaN` can ever be rendered.
+ */
+function commentCountHtml(it) {
+  const n = it == null ? undefined : it.comments;
+  if (typeof n !== 'number' || !Number.isFinite(n)) return '';
+  return `${SEP}<span>${i18n(`${n} comment${n === 1 ? '' : 's'}`, `${n} 条评论`)}</span>`;
+}
+
+/** Markdown twin of commentCountHtml: ` _(N comments)_` appended after the row's
+ * `repo#number` ref, or '' when the count is missing / not a finite number. */
+function commentCountMd(it) {
+  const n = it == null ? undefined : it.comments;
+  if (typeof n !== 'number' || !Number.isFinite(n)) return '';
+  return ` _(${n} comment${n === 1 ? '' : 's'})_`;
+}
+
 function discussionsSection(items) {
   const rows = items
     .map((it) => {
       const title = String(it.title || '').trim() ? it.title : UNTITLED();
       const cat = String(it.category || '').trim();
       const catChip = cat ? `<span class="chip chip-kind">${esc(cat)}</span>` : '';
-      const n = num(it.comments);
-      const count = i18n(`${n} comment${n === 1 ? '' : 's'}`, `${n} 条评论`);
       return (
         `<li class="row row-block">` +
         `<div class="row-head">${discussionActionBadge(it.action)}${catChip}` +
         `${extLink(it.url, title, 'row-title')}</div>` +
         `<div class="row-meta">${repoSpan(it.repo)}${SEP}` +
-        `<span class="num">#${esc(it.number)}</span>${SEP}<span>${count}</span>${timeHtml(it.ts)}</div>` +
+        `<span class="num">#${esc(it.number)}</span>${commentCountHtml(it)}${timeHtml(it.ts)}</div>` +
         `</li>`
       );
     })
@@ -1584,7 +1604,7 @@ export function renderMarkdown({ data, ai } = {}) {
     for (const p of prs) {
       const action = String(p.action || '').toLowerCase();
       const label = action ? `**${mdInline(action[0].toUpperCase() + action.slice(1))}** ` : '';
-      out.push(`- ${label}${mdLink(p.title || '(untitled)', p.url)} — \`${mdInline(p.repo)}#${mdInline(p.number)}\``);
+      out.push(`- ${label}${mdLink(p.title || '(untitled)', p.url)} — \`${mdInline(p.repo)}#${mdInline(p.number)}\`${commentCountMd(p)}`);
     }
     const trunc = truncLine('events', false);
     if (trunc) out.push(trunc);
@@ -1610,7 +1630,7 @@ export function renderMarkdown({ data, ai } = {}) {
     for (const it of issues) {
       const action = String(it.action || '').toLowerCase();
       const label = action ? `**${mdInline(action[0].toUpperCase() + action.slice(1))}** ` : '';
-      out.push(`- ${label}${mdLink(it.title || '(untitled)', it.url)} — \`${mdInline(it.repo)}#${mdInline(it.number)}\``);
+      out.push(`- ${label}${mdLink(it.title || '(untitled)', it.url)} — \`${mdInline(it.repo)}#${mdInline(it.number)}\`${commentCountMd(it)}`);
     }
     const trunc = truncLine('events', false);
     if (trunc) out.push(trunc);
