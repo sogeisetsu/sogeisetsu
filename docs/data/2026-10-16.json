@@ -3,10 +3,10 @@
   "windowStart": "2026-10-16T00:00:00+08:00",
   "windowEnd": "2026-10-17T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-15T16:51:39.387Z",
+  "generatedAt": "2026-10-15T17:06:47.628Z",
   "empty": false,
   "totals": {
-    "commits": 3,
+    "commits": 5,
     "prs": 0,
     "issues": 1,
     "reviews": 0
@@ -14,9 +14,19 @@
   "commits": [
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
-      "count": 3,
+      "count": 5,
       "own": true,
       "messages": [
+        {
+          "sha": "287a638b110d54586ad3f2eed1a7a72d8b1cbbd4",
+          "message": "docs: knowledge 泛化为「各种知识」，不再限定 Git/GitHub",
+          "ts": "2026-10-15T16:57:08Z"
+        },
+        {
+          "sha": "d53c40aa752cc9d7d64ba6611bd17548872106ad",
+          "message": "docs(agents): knowledge 补充改为默认动作，架构可随内容调整",
+          "ts": "2026-10-15T16:54:29Z"
+        },
         {
           "sha": "a6f674ff1d7f11be48569749258d3046738442fa",
           "message": "docs(knowledge): add knowledge/ base for Git & GitHub findings, with Excalidraw sketches",
@@ -35,9 +45,19 @@
       ],
       "automated": 0,
       "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 0,
+      "own": true,
+      "messages": [],
+      "automated": 2,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
     }
   ],
-  "automatedCommits": 0,
+  "automatedCommits": 2,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -163,16 +183,16 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "3 commits to opencode-agent-sandbox and 1 feature request opened upstream",
-      "summary": "On 2026-10-16, sogeisetsu made **3 commits** in `sogeisetsu/opencode-agent-sandbox`, all documentation work: adding a `knowledge/` base for Git and GitHub findings with Excalidraw sketches, noting the origin remote in `AGENTS.md`, and adding `AGENTS.md` itself. There were no automated commits, no pull requests, and no reviews. The user opened 1 issue upstream: `anomalyco/opencode` issue `#55772` titled \"[FEATURE]: Windows desktop ships the CLI but there is no way to run it\", which remains open. No releases, stars, replies, state changes, or discussions were recorded for the day.",
+      "headline": "5 commits in opencode-agent-sandbox plus 2 automated; 1 issue opened upstream",
+      "summary": "On 2026-10-16, `sogeisetsu` made **5 own commits** in `sogeisetsu/opencode-agent-sandbox`, all documentation-focused: adding an `AGENTS.md` file, noting the origin remote in it, creating a `knowledge/` base for Git & GitHub findings with Excalidraw sketches, generalizing the knowledge wording from Git/GitHub to \"various knowledge\", and making the knowledge supplement a default action with architecture adjustable to content. In `sogeisetsu/sogeisetsu`, there were 0 own commits plus 2 automated commits by `github-actions[bot]`. No pull requests, reviews, releases, stars, or discussions were recorded. One issue was opened upstream: `anomalyco/opencode` issue #55772, titled \"[FEATURE]: Windows desktop ships the CLI but there is no way to run it\", which remains open. No truncation occurred in any section.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "向 opencode-agent-sandbox 提交 3 次，并向上游提交 1 个功能请求",
-      "summary": "2026-10-16，sogeisetsu 在 `sogeisetsu/opencode-agent-sandbox` 中完成了 **3 次提交**，全部为文档工作：新增 `knowledge/` 目录用于记录 Git 与 GitHub 相关发现并附 Excalidraw 草图、在 `AGENTS.md` 中注明 origin 远程、以及新增 `AGENTS.md` 文件。当日没有自动提交、没有 Pull Request，也没有代码评审。用户在上游新开了 1 个 issue：`anomalyco/opencode` 的 `#55772`，标题为“[FEATURE]: Windows desktop ships the CLI but there is no way to run it”，目前仍处于 open 状态。当日没有发布、星标、回复、状态变更或讨论记录。",
+      "headline": "opencode-agent-sandbox 5 次提交加 2 次自动提交；上游新开 1 个 issue",
+      "summary": "2026-10-16，`sogeisetsu` 在 `sogeisetsu/opencode-agent-sandbox` 完成 **5 次本人提交**，全部为文档相关：新增 `AGENTS.md` 文件、在其中注明 origin 远程、建立 `knowledge/` 目录用于记录 Git 与 GitHub 相关发现并附 Excalidraw 草图、将 knowledge 措辞从 Git/GitHub 泛化为「各种知识」、以及把 knowledge 补充改为默认动作并允许架构随内容调整。在 `sogeisetsu/sogeisetsu` 中，本人提交 0 次，另有 2 次由 `github-actions[bot]` 自动提交。当日无 PR、评审、发布、星标或讨论活动。上游新开 1 个 issue：`anomalyco/opencode` 的 #55772，标题为「[FEATURE]: Windows desktop ships the CLI but there is no way to run it」，目前仍处于 open 状态。各部分均未触发截断。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "2e403e29443b02cb113294537f9be2368e9597aa0609e14023f5837d6a8291c2"
+  "dataHash": "99f59bf9d02949e029f1315944ef878dda67561b81efee7173119dcb793e7920"
 }
