@@ -12,7 +12,8 @@
  *   · splitParagraphs    — 英文句末切分不与 v1.3.0 / e.g. 撞车；保留结尾标点
  *   · renderReportPage   — 分区/角标/双语/转义；空状态与可见段口径
  *   · hasVisibleActivity — 可见段判定（discussion/release/star/回复/状态变更/纯机器人提交等边界）
- *   · buildTargetQueries / filterTargetsInWindow — 目标检索下界不回退、出窗条目不进列表
+ *   · buildTargetQueries / filterTargetCandidates / orderTargetCandidates —
+ *     目标检索下界不回退、只剔窗口起点之前的条目、窗口内优先切片
  *   · isPullRow / commentTotalOf                 — PR 行口径（会话评论 + 行内评审评论）
  *   · groupCommentCountTargets / attachCommentCounts — 分组/上限/冻结短路（禁网断言）
  *
@@ -25,7 +26,8 @@ const { aiInlineToHtml, mdBlockToHtml, i18nInline, splitParagraphs, renderReport
 const {
   normalizeNotes,
   buildTargetQueries,
-  filterTargetsInWindow,
+  filterTargetCandidates,
+  orderTargetCandidates,
   isPullRow,
   commentTotalOf,
   groupCommentCountTargets,
@@ -456,7 +458,7 @@ check("renderReportPage: 空状态与可见段互斥（discussion-only 不再安
   ];
 });
 
-// ---------------------------------------------------------------- 目标检索（buildTargetQueries / filterTargetsInWindow）
+// ---------------------------------------------------------------- 目标检索（buildTargetQueries / filterTargetCandidates / orderTargetCandidates）
 
 check("buildTargetQueries: 下界早于 win.date 一天，三条 query 不回退到当天", () => {
   const qs = buildTargetQueries("sogeisetsu", { date: "2026-10-16" });
@@ -469,7 +471,7 @@ check("buildTargetQueries: 下界早于 win.date 一天，三条 query 不回退
   ];
 });
 
-check("filterTargetsInWindow: 只留窗口内条目，updated_at 缺失保留", () => {
+check("filterTargetCandidates: 只剔窗口起点之前的条目，窗口后与缺失 updated_at 保留", () => {
   // 2026-10-16（+08）= UTC [2026-10-15T16:00Z, 2026-10-16T16:00Z)
   const win = {
     date: "2026-10-16",
@@ -482,13 +484,38 @@ check("filterTargetsInWindow: 只留窗口内条目，updated_at 缺失保留", 
     { id: "after", updated_at: "2026-10-16T18:00:00Z" },
     { id: "missing" },
   ];
-  const out = filterTargetsInWindow(items, win);
+  const out = filterTargetCandidates(items, win);
   return [
-    ["len2", out.length === 2],
+    ["len3", out.length === 3],
     ["keepsIn", out.some((i) => i.id === "in")],
     ["dropsBefore", !out.some((i) => i.id === "before")],
-    ["dropsAfter", !out.some((i) => i.id === "after")],
+    ["keepsAfter", out.some((i) => i.id === "after")],
     ["keepsMissing", out.some((i) => i.id === "missing")],
+  ];
+});
+
+check("orderTargetCandidates: 窗口内优先占 slice，超 max 截断", () => {
+  // 同一窗口：2026-10-16（+08）= UTC [2026-10-15T16:00Z, 2026-10-16T16:00Z)
+  const win = {
+    date: "2026-10-16",
+    startMs: Date.parse("2026-10-15T16:00:00Z"),
+    endMs: Date.parse("2026-10-16T16:00:00Z"),
+  };
+  // 故意把 3 条窗口后的条目排在前面（模拟 new→old 排序下挤占 slice）
+  const items = [
+    { id: "after1", updated_at: "2026-10-17T01:00:00Z" },
+    { id: "after2", updated_at: "2026-11-01T00:00:00Z" },
+    { id: "after3", updated_at: "2026-12-01T00:00:00Z" },
+    { id: "in", updated_at: "2026-10-15T18:00:00Z" },
+  ];
+  const small = orderTargetCandidates(items, win, 2);
+  const big = orderTargetCandidates(items, win, 10);
+  return [
+    ["smallLen2", small.targets.length === 2],
+    ["inFirst", small.targets[0] && small.targets[0].id === "in"],
+    ["smallTruncated", small.truncated === true],
+    ["bigLen4", big.targets.length === 4],
+    ["bigNotTruncated", big.truncated === false],
   ];
 });
 

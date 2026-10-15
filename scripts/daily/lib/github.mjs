@@ -626,7 +626,7 @@ async function isPublicRepo(owner, repoName, token, cache) {
  *
  * 日期下界：GitHub Search 的 `updated:` 只接受 UTC 日历日（= 当日 00:00Z = +08 的 08:00），
  * 而日报窗口是 +08 日历日 —— 直接用 win.date 会漏掉「+08 当天 00:00–08:00」被我更新的条目。
- * 故下界必须放宽一天（dayBefore(win.date)），出窗条目再由 filterTargetsInWindow 本地精滤。
+ * 故下界必须放宽一天（dayBefore(win.date)），出窗条目再由 filterTargetCandidates / orderTargetCandidates 本地处理。
  *
  * @param {string} username GitHub 用户名
  * @param {{date: string}} win computeWindow() 结果
@@ -642,35 +642,67 @@ export function buildTargetQueries(username, win) {
 }
 
 /**
- * 只保留 `updated_at` 落在窗口 [startMs, endMs) 内的条目。
- * `updated_at` 缺失 / 不可解析（tsOf 得 0）的一律**保留**（宁多勿漏，
- * 交由 fetchReplies / fetchStateChanges 里既有的 inWindow 兜底）。
+ * 只剔掉「整体处于窗口起点之前」的条目：`updated_at >= win.startMs` 才保留。
  *
- * 用途：放宽一天的查询下界会混进「窗口之前/之后」更新的条目，
- * `sort=updated&order=desc` 下它们会挤占 TARGET_MAX 的 slice，把窗口内条目静默挤出。
+ * 为什么不能按 `inWindow(ms, win)` 过滤（回归原因）：`updated_at` 只是**最后一次**
+ * 活动时间，它只证明「窗口之后还动过」，**不证明「窗口内没动过」** ——
+ * 一个条目在窗口内收到回复、窗口关闭后又被人碰过一次，`updated_at` 就落在窗口之后，
+ * 按 inWindow 过滤会把它整体滤掉，`fetchReplies` / `fetchStateChanges` 根本不去拉它，
+ * 该条目在窗口内的回复与状态变更被静默删除。窗口后更新的条目必须保留，
+ * 由 fetchReplies / fetchStateChanges 里既有的 `inWindow` 精滤出真正的行。
+ *
+ * `updated_at` 缺失 / 不可解析（tsOf 得 0）一律保留（宁多勿漏）。
  *
  * @param {object[]} items Search 命中的条目
  * @param {object} win computeWindow() 结果
- * @returns {object[]} 窗口内（或时间不可解析）的条目，保持原顺序
+ * @returns {object[]} 最后一次活动早于窗口起点的条目被剔除，其余保持原顺序
  */
-export function filterTargetsInWindow(items, win) {
+export function filterTargetCandidates(items, win) {
   return (items || []).filter((item) => {
     const ms = tsOf(item && item.updated_at);
-    return ms === 0 || inWindow(ms, win);
+    return ms === 0 || ms >= win.startMs; // 只剔「最后一次活动早于窗口起点」的条目
   });
 }
 
 /**
- * Search API 定位“我发起且窗口内更新过”的 Issue / PR —— 回复与状态变更两段共用的目标列表：
+ * 候选条目排序 + 切片（纯函数）：**窗口内更新的条目优先**，窗口之后更新的紧随其后，
+ * 保证 TARGET_MAX 的 slice 先满足窗口内条目；两条都可能在窗口内有回复，
+ * 所以窗口后的条目不是「丢弃」，只是「排后面」。
+ * truncated：候选总数超过 max 被砍即为 true（被砍的两类都可能携带窗口内活动）。
+ *
+ * @param {object[]} items 候选条目（已过去早于窗口起点的条目）
+ * @param {object} win computeWindow() 结果
+ * @param {number} max 切片上限（TARGET_MAX）
+ * @returns {{targets: object[], truncated: boolean}}
+ */
+export function orderTargetCandidates(items, win, max) {
+  const primary = []; // updated_at 落在窗口内 / 不可解析
+  const later = []; // updated_at 在窗口结束之后
+  for (const item of items || []) {
+    const ms = tsOf(item && item.updated_at);
+    if (ms === 0 || ms < win.endMs) primary.push(item);
+    else later.push(item);
+  }
+  const ordered = [...primary, ...later];
+  return { targets: ordered.slice(0, max), truncated: ordered.length > max };
+}
+
+/**
+ * Search API 定位“我发起的、可能携带窗口内活动”的 Issue / PR —— 回复与状态变更两段共用的目标列表：
  * 三个查询（全部 / type:pr / type:issue）合并去重后截断到 TARGET_MAX 条；某查询失败只跳过它。
  *
- * 日期下界见 buildTargetQueries；命中的条目先经 filterTargetsInWindow 精滤到窗口内，
- * 再并入去重 Map，因此 TARGET_MAX 的 slice 只会砍窗口内条目（出窗条目根本进不了列表）。
+ * 日期下界见 buildTargetQueries；命中的条目先经 filterTargetCandidates 剔掉
+ * 「最后一次活动早于窗口起点」的条目（**不再按 inWindow 过滤候选** —— `updated_at` 是最后一次
+ * 活动时间，窗口后更新的条目仍可能携带窗口内的回复 / 状态变更，按 inWindow 滤会把它们整体
+ * 静默删掉，这是回归原因），再并入去重 Map；结尾由 orderTargetCandidates 排序切片：
+ * 窗口内更新的条目优先、窗口之后更新的紧随其后，保证 slice 先满足窗口内条目。
  *
- * 返回 { targets, truncated }：truncated **只在窗口内条目被砍时**为真 ——
+ * 返回 { targets, truncated }：targets = 可能携带窗口内活动的条目（窗口内优先、窗口后次之）；
+ * truncated 为真当且仅当：
  *   (a) 某查询整页取满、且该页最旧一条**没有越过窗口起点**（或不可解析，无法证明已越过）→ 后面可能还有窗口内条目；
- *   (b) 去重后的窗口内条目数超过 TARGET_MAX 被 slice 砍掉。
- * 出窗条目占满一页 / 总数超限都不算截断，避免页面与 AI 输出「仅检查了前 25 条」的假提示。
+ *   (b) 候选总数超过 TARGET_MAX 被 orderTargetCandidates 的 slice 砍掉
+ *       （被砍的窗口内与窗口后条目都可能携带窗口内活动）。
+ * 出窗（早于窗口起点）条目占满一页 / 被剔都不算截断，避免页面与 AI 输出「仅检查了前 25 条」的假提示。
  */
 async function searchAuthoredTargets(token, username, win) {
   const queries = buildTargetQueries(username, win);
@@ -684,7 +716,7 @@ async function searchAuthoredTargets(token, username, win) {
     if (!got) continue; // 无 token 常被限流：restGet 已警告，跳过本查询
     const items = got.data && got.data.items;
     if (!Array.isArray(items)) continue;
-    const inWin = filterTargetsInWindow(items, win);
+    const candidates = filterTargetCandidates(items, win);
     // 整页取满且该页最后一条（按 updated 倒序 = 最旧）没有越过窗口起点（或不可解析，无法证明已越过）
     // → 后面可能还有窗口内条目。注意判据是 `oldestMs >= win.startMs` 而不是 inWindow：
     // 重生成过去日期时整页可能全落在窗口**之后**，此时窗口内条目还在下一页，同样必须置真。
@@ -693,14 +725,13 @@ async function searchAuthoredTargets(token, username, win) {
     if (items.length >= SEARCH_PER_PAGE && (oldestMs === 0 || oldestMs >= win.startMs)) {
       truncated = true;
     }
-    for (const item of inWin) {
+    for (const item of candidates) {
       const key = `${item.repository_url || ""}#${item.number || 0}`;
       if (!hits.has(key)) hits.set(key, item);
     }
   }
-  const all = [...hits.values()]; // 已是窗口内条目
-  if (all.length > TARGET_MAX) truncated = true; // 窗口内条目超过上限，被 slice 砍掉
-  return { targets: all.slice(0, TARGET_MAX), truncated };
+  const ordered = orderTargetCandidates([...hits.values()], win, TARGET_MAX);
+  return { targets: ordered.targets, truncated: truncated || ordered.truncated };
 }
 
 /**

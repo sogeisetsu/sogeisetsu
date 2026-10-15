@@ -729,14 +729,23 @@ function discussionActionBadge(action) {
 }
 
 /**
+ * Comment count (finite number) or null; missing / invalid always null,
+ * never coerced to 0.
+ */
+function commentCountValue(it) {
+  const n = it == null ? undefined : it.comments;
+  return typeof n === 'number' && Number.isFinite(n) ? n : null;
+}
+
+/**
  * Comment-count word shared by the HTML/Markdown issue · PR · discussion rows
  * and by the Markdown discussions meta: `N comment(s)` — or '' when the count is
  * missing (historical JSON) or not a finite number, so no stray text, stray
  * `0 comments`, `undefined` or `NaN` can ever be rendered.
  */
 function commentCountWord(it) {
-  const n = it == null ? undefined : it.comments;
-  if (typeof n !== 'number' || !Number.isFinite(n)) return '';
+  const n = commentCountValue(it);
+  if (n === null) return '';
   return `${n} comment${n === 1 ? '' : 's'}`;
 }
 
@@ -747,10 +756,9 @@ function commentCountWord(it) {
  * number, so no stray text, `undefined` or `NaN` can ever be rendered.
  */
 function commentCountHtml(it) {
-  const word = commentCountWord(it);
-  if (!word) return '';
-  const n = num(it.comments);
-  return `${SEP}<span>${i18n(word, `${n} 条评论`)}</span>`;
+  const n = commentCountValue(it);
+  if (n === null) return '';
+  return `${SEP}<span>${i18n(`${n} comment${n === 1 ? '' : 's'}`, `${n} 条评论`)}</span>`;
 }
 
 /** Markdown twin of commentCountHtml: ` _(N comments)_` appended after the row's
