@@ -3,12 +3,12 @@
   "windowStart": "2026-10-16T00:00:00+08:00",
   "windowEnd": "2026-10-17T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-16T14:51:17.328Z",
+  "generatedAt": "2026-10-16T16:51:07.158Z",
   "empty": false,
   "totals": {
     "commits": 14,
     "prs": 0,
-    "issues": 3,
+    "issues": 5,
     "reviews": 0
   },
   "commits": [
@@ -97,13 +97,13 @@
           "ts": "2026-10-15T18:52:55Z"
         }
       ],
-      "automated": 31,
+      "automated": 33,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 31,
+  "automatedCommits": 33,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -119,6 +119,16 @@
     },
     {
       "repo": "anomalyco/opencode",
+      "number": 50823,
+      "title": "opencode-go: mimo-v2.6-flash vision reads a stale image after ≥5 images in one session",
+      "url": "https://github.com/anomalyco/opencode/issues/50823",
+      "action": "commented",
+      "ts": "2026-10-15T18:03:48.000Z",
+      "own": false,
+      "comments": 1
+    },
+    {
+      "repo": "anomalyco/opencode",
       "number": 55785,
       "title": "go: mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image (400)",
       "url": "https://github.com/anomalyco/opencode/issues/55785",
@@ -127,6 +137,16 @@
       "own": false,
       "state": "open",
       "comments": 4
+    },
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4111,
+      "title": "Deleting a multi-run leaves orphaned MCP child processes; git worktree remove --force then fails with Permission denied",
+      "url": "https://github.com/openchamber/openchamber/issues/4111",
+      "action": "commented",
+      "ts": "2026-10-15T17:45:07.000Z",
+      "own": false,
+      "comments": 2
     },
     {
       "repo": "anomalyco/opencode",
@@ -319,5 +339,5 @@
   ],
   "ai": null,
   "aiProvider": null,
-  "dataHash": "cc7ae9ee772768c81cd1d74fdb7c5cff5c472de4f766c55aff6dde4be05ebcfe"
+  "dataHash": "88e74575b9f4bcadea6592b6cb9053c7f291320969f9d687952c61dcd1d78700"
 }
