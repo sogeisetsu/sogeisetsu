@@ -3,12 +3,12 @@
   "windowStart": "2026-10-16T00:00:00+08:00",
   "windowEnd": "2026-10-17T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-16T00:27:21.590Z",
+  "generatedAt": "2026-10-16T01:03:13.689Z",
   "empty": false,
   "totals": {
-    "commits": 12,
+    "commits": 14,
     "prs": 0,
-    "issues": 2,
+    "issues": 3,
     "reviews": 0
   },
   "commits": [
@@ -58,13 +58,18 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 5,
+      "count": 7,
       "own": true,
       "messages": [
         {
           "sha": "3997726835bd9c1d00b9b1d9f5697c5d18b42910",
           "message": "chore(daily): CLI 加 --force（跳过评论数快照冻结），并说明重跑已关闭日期的补录效应",
           "ts": "2026-10-15T20:30:25Z"
+        },
+        {
+          "sha": "c58723d6f9f413ee86170440466968ed152e2bda",
+          "message": "feat(summary): 新增近 30 天 GitHub 活动 AI 总结（首页卡片 + 独立页）",
+          "ts": "2026-10-15T20:27:52Z"
         },
         {
           "sha": "227c6ac1452460282fd6b56ee068c15e36b5589c",
@@ -77,6 +82,11 @@
           "ts": "2026-10-15T20:11:43Z"
         },
         {
+          "sha": "512fc6137c6912a77d70ea8e492a93dd22fc7ac9",
+          "message": "refactor(daily): 抽出 lib/days.mjs 共享助手，AI 生成入口通用化",
+          "ts": "2026-10-15T19:52:48Z"
+        },
+        {
           "sha": "786d43b7778174be32a2f6870a341431f9eb4801",
           "message": "fix(daily): 按复审意见收紧评论数口径与 target 检索",
           "ts": "2026-10-15T19:52:35Z"
@@ -87,16 +97,26 @@
           "ts": "2026-10-15T18:52:55Z"
         }
       ],
-      "automated": 16,
+      "automated": 18,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 16,
+  "automatedCommits": 18,
   "pullRequests": [],
   "reviews": [],
   "issues": [
+    {
+      "repo": "anomalyco/opencode",
+      "number": 55785,
+      "title": "go: mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image (400)",
+      "url": "https://github.com/anomalyco/opencode/issues/55785",
+      "action": "commented",
+      "ts": "2026-10-15T18:24:45.000Z",
+      "own": false,
+      "comments": 3
+    },
     {
       "repo": "anomalyco/opencode",
       "number": 55785,
@@ -288,16 +308,16 @@
   ],
   "ai": {
     "en": {
-      "headline": "12 commits across 2 repos, 2 issues opened, 1 discussion started",
-      "summary": "sogeisetsu made **12 commits** across two repositories on 2026-10-16, plus 16 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-agent-sandbox` (7 commits), the work was documentation-heavy: archiving OpenCode V2 distribution, architecture, and authentication notes along with Windows path pitfalls; archiving `oh-my-opencode-slim` and hosted OpenCode findings; generalizing the `knowledge/` directory from Git/GitHub-only to broader knowledge with Excalidraw sketches; making knowledge supplementation a default action in `docs(agents)`; and adding `AGENTS.md` with a note on the origin remote. In `sogeisetsu/sogeisetsu` (5 commits), the daily-report CLI gained a `--force` flag to skip the comment-count snapshot freeze and to re-fetch snapshots for finalized dates; candidate filtering by `updated_at` window was removed; comment-count semantics and target retrieval were tightened per review feedback; and a +08 early-morning reply-collection gap was fixed, with comment counts now displayed on Issue/PR rows. Two issues were opened in `anomalyco/opencode`: `#55785` reporting that `mimo-v2.6-flash` and `mimo-v2.5` advertise image input but the Go endpoint rejects every image with 400, and `#55772` requesting a way to run the CLI bundled with the Windows desktop app.",
+      "headline": "14 own commits across 2 repos, 3 issues on anomalyco/opencode, 1 discussion",
+      "summary": "On 2026-10-16 the user logged **14 own commits** across two repositories, plus 18 automated commits by `github-actions[bot]` on `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-agent-sandbox` (7 commits) the work was documentation-heavy: adding `AGENTS.md`, introducing a `knowledge/` base for Git & GitHub findings with Excalidraw sketches, generalizing the knowledge scope beyond Git/GitHub, archiving OpenCode V2 distribution/architecture/auth notes plus Windows path pitfalls, archiving oh-my-opencode-slim and hosted OpenCode field notes, and making knowledge supplementation a default action with architecture allowed to adapt. In `sogeisetsu/sogeisetsu` (7 commits) the user added a `--force` flag to the daily CLI to skip the comment-count snapshot freeze and explained the backfill effect on re-running closed dates, shipped a new 30-day GitHub activity AI summary (home card plus standalone page), fixed `--force` to also re-fetch the finalized day's comment snapshot, stopped filtering candidate entries by whether `updated_at` fell inside the window, extracted `lib/days.mjs` as a shared helper to generalize the AI-generation entry point, tightened comment-count semantics and target lookup per review feedback, and fixed a +08 early-morning reply-collection gap while surfacing comment counts on Issue/PR rows.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "12 次提交跨 2 个仓库，新开 2 个 issue，发起 1 个讨论",
-      "summary": "sogeisetsu 在 2026-10-16 于两个仓库共提交 **12 次**，另有 `sogeisetsu/sogeisetsu` 中由 `github-actions[bot]` 自动提交的 16 次。在 `sogeisetsu/opencode-agent-sandbox`（7 次提交）中，工作以文档为主：归档 OpenCode V2 分发、架构、认证说明以及 Windows 路径坑；归档 `oh-my-opencode-slim` 与托管 OpenCode 实测知识；将 `knowledge/` 目录从仅限 Git/GitHub 泛化为各类知识并附 Excalidraw 草图；在 `docs(agents)` 中将知识补充改为默认动作；新增 `AGENTS.md` 并注明 origin 远端。在 `sogeisetsu/sogeisetsu`（5 次提交）中，日报 CLI 新增 `--force` 参数以跳过评论数快照冻结并对已定稿日期重取快照；取消按 `updated_at` 窗口过滤候选条目；根据复审意见收紧评论数口径与 target 检索；修复 +08 凌晨漏采回复的问题，并在 Issue/PR 行显示评论数。在 `anomalyco/opencode` 新开两个 issue：`#55785` 报告 `mimo-v2.6-flash` 与 `mimo-v2.5` 声明支持图像输入但 Go 端点对所有图像返回 400；`#55772` 请求为 Windows 桌面版内置的 CLI 提供运行方式。`#55785` 收到 3 条评论，包括 `micahgerges` 使用真实 OpenCode Go key 的确认以及 `opencode-agent[bot]` 的回复；`#55772` 收到 `opencode-agent[bot]` 的 1 条评论。在 `openchamber/openchamber` 发起讨论 `#4982`（Ideas）：\"Share session archive state with OpenCode's own clients\"。当日无 PR、评审或发布记录。",
+      "headline": "14 次本人提交覆盖 2 个仓库，anomalyco/opencode 上 3 个 issue，新开 1 个讨论",
+      "summary": "2026-10-16 当天，用户在两个仓库共提交 **14 次本人提交**，另有 `sogeisetsu/sogeisetsu` 上由 `github-actions[bot]` 自动提交的 18 次。在 `sogeisetsu/opencode-agent-sandbox`（7 次）以文档工作为主：新增 `AGENTS.md`，建立 `knowledge/` 目录归档 Git & GitHub 相关发现并附 Excalidraw 草图，将 knowledge 范围从 Git/GitHub 泛化为「各种知识」，归档 OpenCode V2 分发/架构/认证与 Windows 路径坑，归档 oh-my-opencode-slim 与托管 OpenCode 实测知识，并把 knowledge 补充改为默认动作、允许架构随内容调整。在 `sogeisetsu/sogeisetsu`（7 次）中，用户为 daily CLI 增加 `--force` 参数以跳过评论数快照冻结并说明重跑已关闭日期的补录效应，新增近 30 天 GitHub 活动 AI 总结（首页卡片 + 独立页），修复 `--force` 一并重取定稿日评论数快照，取消按 `updated_at` 是否落在窗口内过滤候选条目，抽出 `lib/days.mjs` 共享助手以通用化 AI 生成入口，按复审意见收紧评论数口径与 target 检索，并修复 +08 凌晨漏采回复、在 Issue/PR 行显示评论数。在 `anomalyco/opencode` 上，用户新开 issue `#55785`（\"go: mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image (400)\"）和 `#55772`（\"[FEATURE]: Windows desktop ships the CLI but there is no way to run it\"），并在 `#55785` 上追加评论；`opencode-agent[bot]` 在两个 issue 上均有回复，`micahgerges` 在 `#55785` 上给出了受控 2×2 复现。此外，`Tarquinen` 关闭了 `anomalyco/opencode#51263`（\"websearch: tinyfish provider returns HTTP 400 (missing Mcp-Session-Id) on every search\"）。用户还在 `openchamber/openchamber` 的 Ideas 分类下新开讨论 `#4982` \"Share session archive state with OpenCode's own clients\"。当天无 PR、无 review、无 release，各采集分区均未触及上限。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "e0f3bb9caaea92534649a9f82292031d2be8114eb60d3d97446cfa9fb435d801"
+  "dataHash": "a85357b13f0020737c5b6d6fd4f11b1fc877b1dc6a833b49aaca7694ab860bd3"
 }
