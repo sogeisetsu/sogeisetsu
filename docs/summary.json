@@ -3,7 +3,7 @@
   "windowEnd": "2026-10-15",
   "days": 30,
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-16T01:02:16.848Z",
+  "generatedAt": "2026-10-16T01:04:32.628Z",
   "missing": {
     "days": 0,
     "dates": []
@@ -212,6 +212,161 @@
     }
   },
   "dataHash": "118bec1b9caf34e486a9dde7d0f80ab83d6bf6fae84ffd08f942f64ac62d5771",
-  "ai": null,
-  "aiProvider": null
+  "ai": {
+    "en": {
+      "headline": "sogeisetsu: 297 commits, 25 PRs, 41 issues across 30 days",
+      "overview": "Over the 30-day window from 2026-09-16 to 2026-10-15, the account recorded 297 commits, 25 pull requests, 41 issues, and 0 reviews. All 30 days of the window have data; no days are missing. Because the window spans the backfill boundary, earlier dates (2026-09-16 through 2026-10-01) were reconstructed via GitHub Search and are approximate: star counts are unavailable, releases cover only the user's own repositories, and issue, review, discussion, and comment figures are search-derived approximations. Commit counts come from a repository scan and are accurate.\n\nCommit activity was concentrated in three repositories. `sogeisetsu/asset-inventory` accounted for 139 own commits with no automated commits, `sogeisetsu/meld-deepresearch` for 76 own commits, and `sogeisetsu/sogeisetsu` for 59 own commits plus 208 automated commits. `sogeisetsu/opencode-go-model-picker` contributed 19 own commits, `sogeisetsu/myBlog` 3, `sogeisetsu/opencode-agent-sandbox` 1, and `sogeisetsu/opencode-skill-creator` 0 own commits plus 5 automated commits.\n\nPull requests were split between the user's own work and contributions to other projects. In `sogeisetsu/asset-inventory`, PRs #1 through #8 were opened and merged on 2026-09-21, covering releases from v1.3.0 through v1.7.0. Four PRs (#39, #40, #41, #42) were opened in `antongulin/opencode-skill-creator` on 2026-09-28 and closed on 2026-10-01. One PR (#1103) was opened in `VoltAgent/awesome-agent-skills` on 2026-09-25 and closed on 2026-09-29.\n\nIssue activity was dominated by `openchamber/openchamber`, where the user opened or commented on issues including #4111, #4337, #4345, #4346, #4537, #4601, #4664, #4896, #4899, and #4920. Issues were also opened in `alvinunreal/oh-my-opencode-slim` (#1475), `anomalyco/opencode` (#50878, #51263), `OpenSenseNova/SenseNova-Skills-DeepResearch` (#11), `OpenSenseNova/SenseNova-Skills` (#180), `iOfficeAI/OfficeCLI` (#254, #458), `vercel-labs/skills` (#2297, #2298), and `antongulin/opencode-skill-creator` (#38, #43). Seven discussions were started or commented on in `openchamber/openchamber` (#4502, #4599, #4600, #4821, #4823, #4893). No reviews were recorded.\n\nReleases were published across three of the user's own repositories. `sogeisetsu/asset-inventory` shipped 17 releases from v1.3.0 through v1.15.0 between 2026-09-21 and 2026-09-29. `sogeisetsu/meld-deepresearch` shipped four releases from v0.1.0 through v0.4.0 between 2026-09-30 and 2026-10-07. `sogeisetsu/opencode-go-model-picker` shipped three releases from v1.0.0 through v1.3.0 between 2026-09-25 and 2026-10-03.",
+      "highlights": [
+        {
+          "repo": "sogeisetsu/asset-inventory",
+          "number": 8,
+          "kind": "pr",
+          "text": "PR #8 (feat: v1.7.0 - seven languages, Material docs site, rendered examples) was opened and merged on 2026-09-21.",
+          "url": "https://github.com/sogeisetsu/asset-inventory/pull/8"
+        },
+        {
+          "repo": "sogeisetsu/asset-inventory",
+          "kind": "release",
+          "text": "Release v1.15.0 (registry-first host-command scan) was published on 2026-09-29.",
+          "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.15.0",
+          "tag": "v1.15.0"
+        },
+        {
+          "repo": "sogeisetsu/meld-deepresearch",
+          "kind": "release",
+          "text": "Release v0.4.0 (thin CLI, lighter skill, gate downgrades) was published on 2026-10-07.",
+          "url": "https://github.com/sogeisetsu/meld-deepresearch/releases/tag/v0.4.0",
+          "tag": "v0.4.0"
+        },
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "kind": "release",
+          "text": "Release v1.3.0 (better agent discovery and chain safety) was published on 2026-10-03.",
+          "url": "https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v1.3.0",
+          "tag": "v1.3.0"
+        },
+        {
+          "repo": "openchamber/openchamber",
+          "number": 4920,
+          "kind": "issue",
+          "text": "Issue #4920 (Context panel breakdown bar divides whole-session estimates by the last message's input) was opened on 2026-10-14.",
+          "url": "https://github.com/openchamber/openchamber/issues/4920"
+        },
+        {
+          "repo": "antongulin/opencode-skill-creator",
+          "number": 42,
+          "kind": "pr",
+          "text": "PR #42 (fix: harden eval robustness in parsing, aggregation, and install) was opened on 2026-09-28 and closed on 2026-10-01.",
+          "url": "https://github.com/antongulin/opencode-skill-creator/pull/42"
+        },
+        {
+          "repo": "openchamber/openchamber",
+          "number": 4893,
+          "kind": "discussion",
+          "text": "Discussion #4893 (Picked attachments are dropped for text-only models) was started on 2026-10-14.",
+          "url": "https://github.com/openchamber/openchamber/discussions/4893"
+        }
+      ],
+      "byRepo": [
+        {
+          "repo": "sogeisetsu/asset-inventory",
+          "text": "The most active repository with 139 own commits and no automated commits. Eight PRs (#1-#8) were opened and merged on 2026-09-21, covering releases from v1.3.0 through v1.7.0. Seventeen releases were published between 2026-09-21 and 2026-09-29, spanning v1.3.0 through v1.15.0. Work included automated doc checks, seven-language support, a Material docs site, rendered examples, a skills.sh install path, and a registry-first host-command scan."
+        },
+        {
+          "repo": "sogeisetsu/meld-deepresearch",
+          "text": "76 own commits and no automated commits. Four releases were published between 2026-09-30 and 2026-10-07, from v0.1.0 through v0.4.0. The project evolved from a single research skill into a family of three cooperating skills with a thin CLI wrapper, hardened validation, and gate downgrades."
+        },
+        {
+          "repo": "sogeisetsu/sogeisetsu",
+          "text": "59 own commits plus 208 automated commits. Work included switching all copy to English, adding a 30-day activity card with a daily auto-update workflow, upgrading CI actions to v7, and changing the daily report to a rolling 2-hour update cadence."
+        },
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "text": "19 own commits and no automated commits. Three releases were published between 2026-09-25 and 2026-10-03, from v1.0.0 through v1.3.0. The project added an offline price seed, a two-question diagnostic, agent discovery scripts, and a snapshot summary tool."
+        },
+        {
+          "repo": "openchamber/openchamber",
+          "text": "The most active external repository for issues and discussions. Ten issues were opened or commented on, including #4111, #4337, #4345, #4346, #4537, #4601, #4664, #4896, #4899, and #4920. Seven discussions were started or commented on, including #4502, #4599, #4600, #4821, #4823, and #4893."
+        }
+      ]
+    },
+    "zh": {
+      "headline": "sogeisetsu：30天内297次提交、25个PR、41个Issue",
+      "overview": "在2026-09-16至2026-10-15的30天窗口内，该账号共记录297次提交、25个拉取请求、41个Issue和0次代码审查。窗口内全部30天均有数据，无缺失日期。由于窗口跨越了回填边界，较早日期（2026-09-16至2026-10-01）通过GitHub搜索重建，数据为近似值：星标数不可用，发布仅覆盖用户自有仓库，Issue、审查、讨论和评论数据为搜索近似结果。提交数据来自仓库扫描，准确可靠。\n\n提交活动集中在三个仓库。`sogeisetsu/asset-inventory`贡献139次本人提交，无自动提交；`sogeisetsu/meld-deepresearch`贡献76次本人提交；`sogeisetsu/sogeisetsu`贡献59次本人提交，另有208次自动提交。`sogeisetsu/opencode-go-model-picker`贡献19次本人提交，`sogeisetsu/myBlog`贡献3次，`sogeisetsu/opencode-agent-sandbox`贡献1次，`sogeisetsu/opencode-skill-creator`贡献0次本人提交，另有5次自动提交。\n\n拉取请求分为用户自有工作和对他人项目的贡献。在`sogeisetsu/asset-inventory`中，PR #1至#8于2026-09-21开启并合并，涵盖v1.3.0至v1.7.0的发布。在`antongulin/opencode-skill-creator`中，4个PR（#39、#40、#41、#42）于2026-09-28开启，2026-10-01关闭。在`VoltAgent/awesome-agent-skills`中，1个PR（#1103）于2026-09-25开启，2026-09-29关闭。\n\nIssue活动以`openchamber/openchamber`为主，用户在此开启或评论了多个Issue，包括#4111、#4337、#4345、#4346、#4537、#4601、#4664、#4896、#4899和#4920。此外还在`alvinunreal/oh-my-opencode-slim`（#1475）、`anomalyco/opencode`（#50878、#51263）、`OpenSenseNova/SenseNova-Skills-DeepResearch`（#11）、`OpenSenseNova/SenseNova-Skills`（#180）、`iOfficeAI/OfficeCLI`（#254、#458）、`vercel-labs/skills`（#2297、#2298）和`antongulin/opencode-skill-creator`（#38、#43）中开启了Issue。在`openchamber/openchamber`中开启或评论了7个讨论（#4502、#4599、#4600、#4821、#4823、#4893）。未记录任何代码审查。\n\n发布集中在用户自有仓库的三个项目中。`sogeisetsu/asset-inventory`在2026-09-21至2026-09-29间发布了17个版本，从v1.3.0到v1.15.0。`sogeisetsu/meld-deepresearch`在2026-09-30至2026-10-07间发布了4个版本，从v0.1.0到v0.4.0。`sogeisetsu/opencode-go-model-picker`在2026-09-25至2026-10-03间发布了3个版本，从v1.0.0到v1.3.0。",
+      "highlights": [
+        {
+          "repo": "sogeisetsu/asset-inventory",
+          "number": 8,
+          "kind": "pr",
+          "text": "PR #8（feat: v1.7.0 - seven languages, Material docs site, rendered examples）于2026-09-21开启并合并。",
+          "url": "https://github.com/sogeisetsu/asset-inventory/pull/8"
+        },
+        {
+          "repo": "sogeisetsu/asset-inventory",
+          "kind": "release",
+          "text": "v1.15.0版本（registry-first host-command scan）于2026-09-29发布。",
+          "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.15.0",
+          "tag": "v1.15.0"
+        },
+        {
+          "repo": "sogeisetsu/meld-deepresearch",
+          "kind": "release",
+          "text": "v0.4.0版本（thin CLI, lighter skill, gate downgrades）于2026-10-07发布。",
+          "url": "https://github.com/sogeisetsu/meld-deepresearch/releases/tag/v0.4.0",
+          "tag": "v0.4.0"
+        },
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "kind": "release",
+          "text": "v1.3.0版本（better agent discovery and chain safety）于2026-10-03发布。",
+          "url": "https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v1.3.0",
+          "tag": "v1.3.0"
+        },
+        {
+          "repo": "openchamber/openchamber",
+          "number": 4920,
+          "kind": "issue",
+          "text": "Issue #4920（Context panel breakdown bar divides whole-session estimates by the last message's input）于2026-10-14开启。",
+          "url": "https://github.com/openchamber/openchamber/issues/4920"
+        },
+        {
+          "repo": "antongulin/opencode-skill-creator",
+          "number": 42,
+          "kind": "pr",
+          "text": "PR #42（fix: harden eval robustness in parsing, aggregation, and install）于2026-09-28开启，2026-10-01关闭。",
+          "url": "https://github.com/antongulin/opencode-skill-creator/pull/42"
+        },
+        {
+          "repo": "openchamber/openchamber",
+          "number": 4893,
+          "kind": "discussion",
+          "text": "讨论 #4893（Picked attachments are dropped for text-only models）于2026-10-14开启。",
+          "url": "https://github.com/openchamber/openchamber/discussions/4893"
+        }
+      ],
+      "byRepo": [
+        {
+          "repo": "sogeisetsu/asset-inventory",
+          "text": "最活跃的仓库，139次本人提交，无自动提交。8个PR（#1-#8）于2026-09-21开启并合并，涵盖v1.3.0至v1.7.0的发布。2026-09-21至2026-09-29间共发布17个版本，从v1.3.0到v1.15.0。工作内容包括自动化文档检查、七语言支持、Material文档站点、渲染示例、skills.sh安装路径和基于注册表的主机命令扫描。"
+        },
+        {
+          "repo": "sogeisetsu/meld-deepresearch",
+          "text": "76次本人提交，无自动提交。2026-09-30至2026-10-07间发布4个版本，从v0.1.0到v0.4.0。项目从单一研究技能演进为三个协作技能家族，配有轻量CLI封装、加固验证和门禁降级。"
+        },
+        {
+          "repo": "sogeisetsu/sogeisetsu",
+          "text": "59次本人提交，另有208次自动提交。工作包括将所有文案切换为英文、添加30天活动卡片及每日自动更新工作流、将CI操作升级至v7、将日报改为每2小时滚动更新。"
+        },
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "text": "19次本人提交，无自动提交。2026-09-25至2026-10-03间发布3个版本，从v1.0.0到v1.3.0。项目添加了离线价格种子、两问诊断、代理发现脚本和快照摘要工具。"
+        },
+        {
+          "repo": "openchamber/openchamber",
+          "text": "Issue和讨论最活跃的外部仓库。开启或评论了10个Issue，包括#4111、#4337、#4345、#4346、#4537、#4601、#4664、#4896、#4899和#4920。开启或评论了7个讨论，包括#4502、#4599、#4600、#4821、#4823和#4893。"
+        }
+      ]
+    }
+  },
+  "aiProvider": "sensenova"
 }
