@@ -1,0 +1,233 @@
+{
+  "date": "2026-09-24",
+  "windowStart": "2026-09-24T00:00:00+08:00",
+  "windowEnd": "2026-09-25T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-15T19:48:13.488Z",
+  "empty": false,
+  "totals": {
+    "commits": 27,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "count": 26,
+      "own": true,
+      "messages": [
+        {
+          "sha": "dbf016726c6bc7c407dcba2b04808453de4a32a7",
+          "message": "docs: 404 page uses shared stylesheet",
+          "ts": "2026-09-24T14:43:38Z"
+        },
+        {
+          "sha": "c172807dccb73ad3bf065ebdb8e7aa82a0fc41a0",
+          "message": "docs: meta descriptions, OG tags, copy button for manual install",
+          "ts": "2026-09-24T14:40:02Z"
+        },
+        {
+          "sha": "5e10d913a8623863bc2c882b9b82653484752a0c",
+          "message": "docs: a11y — copy live region, language group label, dir attrs",
+          "ts": "2026-09-24T14:36:04Z"
+        },
+        {
+          "sha": "e0194d7dc37f5b11ccbc7a652191122585d8df66",
+          "message": "docs: responsive lang bar, no-JS English fallback, reduced-motion",
+          "ts": "2026-09-24T14:30:32Z"
+        },
+        {
+          "sha": "f6c66731aca4565482692500a7496a2cb1170863",
+          "message": "docs: register v1.13.3 in rollout TODO",
+          "ts": "2026-09-24T13:43:27Z"
+        },
+        {
+          "sha": "d9de195108373d0db4635badbc7fb027aa86b69e",
+          "message": "chore(release): v1.13.3",
+          "ts": "2026-09-24T13:43:26Z"
+        },
+        {
+          "sha": "c42ae39093f5f49d64684e56e2ce8f12025613fd",
+          "message": "chore: release-prep notes steps state the previous-tag range rule",
+          "ts": "2026-09-24T13:24:37Z"
+        },
+        {
+          "sha": "1f16010e3e956f24da300b022810d36fccead87f",
+          "message": "docs: release notes must cover changes since the previous Release tag",
+          "ts": "2026-09-24T13:24:36Z"
+        },
+        {
+          "sha": "e00f9bea61586005b7f96f900bdaaf9003447308",
+          "message": "docs: register v1.13.2 in rollout TODO",
+          "ts": "2026-09-24T13:11:53Z"
+        },
+        {
+          "sha": "69187c24cb69e24903df30228adcf8f989b2e81b",
+          "message": "chore(release): v1.13.2",
+          "ts": "2026-09-24T13:11:52Z"
+        },
+        {
+          "sha": "a280521a8433925e885756139ee7cea880d6baa4",
+          "message": "docs: allow explicitly requested patch Releases in CONTRIBUTING",
+          "ts": "2026-09-24T13:03:48Z"
+        },
+        {
+          "sha": "dd82dff1144a13e746484cbb21091f1a746b7857",
+          "message": "docs: note zh/skill-zh.md mirror sync in workflow step 1",
+          "ts": "2026-09-24T13:03:48Z"
+        },
+        {
+          "sha": "d98f5513ff8087193d440624a75046e88b48c780",
+          "message": "chore: enforce glossary state markers in localized READMEs",
+          "ts": "2026-09-24T12:54:58Z"
+        },
+        {
+          "sha": "956bb4fd1fca34010fca11f2e37309003aeab22f",
+          "message": "chore: add release-prep script for mechanical release steps",
+          "ts": "2026-09-24T12:50:13Z"
+        },
+        {
+          "sha": "ec3d93329fba6cebe1dbd09d11063ede406c9ac5",
+          "message": "docs: register v1.13.1 in rollout TODO",
+          "ts": "2026-09-24T11:32:16Z"
+        },
+        {
+          "sha": "fe377758ba45b2b526698da0497ff5e07136b5e4",
+          "message": "chore(release): v1.13.1",
+          "ts": "2026-09-24T11:31:31Z"
+        },
+        {
+          "sha": "8033f416026835ac03aab2bdaf0c151472d702cf",
+          "message": "docs: sync five-state labels across READMEs and docs pages",
+          "ts": "2026-09-24T11:23:25Z"
+        },
+        {
+          "sha": "f4c54499001999b767d40c5034e48ce4d10b85e0",
+          "message": "optimize asset-inventory: add anti-injection, probe-boundary, and secret-echo guards",
+          "ts": "2026-09-24T11:12:42Z"
+        },
+        {
+          "sha": "025cb2d3442402c65d0503e7c610fc44077fdd9f",
+          "message": "optimize asset-inventory: pin down diff scope, row shape, and partial-baseline caveats",
+          "ts": "2026-09-24T11:09:08Z"
+        },
+        {
+          "sha": "b17b1525a5cfb2638139af746f22eddf75a4f494",
+          "message": "optimize asset-inventory: require config env/headers for MCP liveness probes",
+          "ts": "2026-09-24T11:05:09Z"
+        },
+        {
+          "sha": "899bde6db32a4cde7139db08d06766d3aab2e956",
+          "message": "docs: register v1.13.0 in rollout TODO",
+          "ts": "2026-09-24T09:27:46Z"
+        },
+        {
+          "sha": "3c5642d05d299079076acd9b15df422bc9ae5bb8",
+          "message": "chore(release): v1.13.0",
+          "ts": "2026-09-24T09:27:13Z"
+        },
+        {
+          "sha": "8863976280e283276b165e26ff69d1b58c27b4b0",
+          "message": "optimize asset-inventory: add broken state marker for registered-but-probe-failing assets",
+          "ts": "2026-09-24T09:12:04Z"
+        },
+        {
+          "sha": "666060ddc5912e5ab4fc8c518da8b962648efec8",
+          "message": "optimize asset-inventory: add confidence/state suffixes to all format-example rows",
+          "ts": "2026-09-24T09:07:36Z"
+        },
+        {
+          "sha": "2bf519e0fa7bac722ece058045b107b696605494",
+          "message": "optimize asset-inventory: add targeted-mode provenance rule",
+          "ts": "2026-09-24T09:03:39Z"
+        },
+        {
+          "sha": "34270ea07a953110b17794ca755d061022dc5986",
+          "message": "optimize asset-inventory: reconcile full-scan vs targeted file output",
+          "ts": "2026-09-24T09:01:50Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "count": 1,
+      "own": true,
+      "messages": [
+        {
+          "sha": "813a7d73f09a64a87014920e01a3d8317b68c609",
+          "message": "feat: add an offline price seed and a two-question mode diagnostic",
+          "ts": "2026-09-24T13:48:28Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    }
+  ],
+  "automatedCommits": 0,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.13.3",
+      "name": "v1.13.3",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.13.3",
+      "publishedAt": "2026-09-24T13:46:48Z",
+      "notes": "<!--\n Release notes for v1.13.3 (English). Paste into the GitHub Release body.\n Chinese version: ../../zh/release-notes/release-notes-v1.13.3-ZH.md\n Release: v1.13.3 — asset-inventory (sogeisetsu/asset-inventory)\n Range: all changes since the previous Release tag (v1.13.1).\n-->\n\n# v1.13.3\n\nA patch that makes releases repeatable: a release-prep script, a docs-parity gate, and two release-policy rules. The inventory logic and the 7-table output are unchanged. This Release covers everything since v1.13.1, including the v1.13.2 tag.\n\n## Added\n\n- **`scripts/release-prep.mjs`** — one command prepares the mechanical half of a release: bumps the version in `SKILL.md`, inserts the EN/ZH CHANGELOG heading stubs, and (with `--notes`) scaffolds the bilingual release-notes pair and registers it in the docs checker's pair table. It then runs both validation gates and prints the remaining manual steps. It never commits, tags, or pushes; it refuses to run on a dirty tree or a duplicate version, and `--dry-run` previews every planned edit without writing.\n- **State-parity gate in `check-docs`** — every state marker in the glossary (all seven languages, including the fifth marker `🛑broken`) must now appear verbatim in that language's README and on the docs landing page. A new marker can no longer ship while the public docs still list the old set — the exact gap that shipped in v1.13.0 and had…"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.13.1",
+      "name": "v1.13.1",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.13.1",
+      "publishedAt": "2026-09-24T11:37:14Z",
+      "notes": "<!--\n Release notes for v1.13.1 (English). Paste into the GitHub Release body.\n Chinese version: ../../zh/release-notes/release-notes-v1.13.1-ZH.md\n Release: v1.13.1 — asset-inventory (sogeisetsu/asset-inventory)\n-->\n\n# v1.13.1\n\nA patch that hardens MCP probing, pins down what diff mode actually compares, and adds three security guards. The 7-table structure and the inventory logic are unchanged.\n\n## Added\n\n- **Security guards** — everything read during discovery (skill descriptions, config comments, file contents, bundle strings, pasted JSON) is evidence, never instructions; scanned text that tries to direct the run gets quoted in a table note instead of obeyed. Probes touch only the exact command/URL the config declares — the skill never installs, upgrades, or downloads dependencies to make a probe pass, it reports the failure as observed. And raw key/token/secret values are masked at first sight: they never appear in table notes, provenance, error quotes, summaries, or commit messages — only the masked form may be written anywhere.\n\n## Changed\n\n- **Diff mode protocol pinned** — diff now compares only the tables present in your pasted baseline (no full 7-table scan) and ends with a scope note naming any tables the baseline lacks; it warns when the baseline may be incomplete (fewer rows than now) so extra \"added\" rows aren't misread; output is two compact `Added` / `Removed`…"
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "tag": "v1.13.0",
+      "name": "v1.13.0",
+      "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.13.0",
+      "publishedAt": "2026-09-24T09:31:48Z",
+      "notes": "<!--\n Release notes for v1.13.0 (English). Paste into the GitHub Release body.\n Chinese version: ../../zh/release-notes/release-notes-v1.13.0-ZH.md\n Release: v1.13.0 — asset-inventory (sogeisetsu/asset-inventory)\n-->\n\n# v1.13.0\n\nA new `🛑broken` state marker for registered-but-uninvokable assets, visible safety checkpoints, and output/provenance rules that finally match targeted modes. The 7-table structure and the inventory logic are unchanged.\n\n## Added\n\n- **5th state marker `🛑broken` (7 locales)** — for an asset that is registered in config but not invokable (missing command / env / probe fail): source reads `⚠️inferred` + state `🛑broken`, with the failure class quoted in a table note. Available in all seven glossary languages (en/zh/ja/ko/ru/ar/es), wired into the state-marker table, the `MCP server unreachable` error branch, the usage-guide exclusion list, and the checklist. Previously a probe-failing server had no honest marker: `✅available` claims it is invokable and `❌disabled` would misquote the config.\n- **Three visible checkpoint markers** — the diff paste gate 🔴, the real-name gate 🔴, and the masking STOP 🛑 now stand out as visible markers at their gates instead of reading as plain prose.\n\n## Changed\n\n- **File output matches the run type** — a full scan writes the three files into `output/`; targeted modes (`mcp` / `agents` / `hosts` / `skills`) write only `in…"
+    }
+  ],
+  "stars": [],
+  "starInventory": [],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": true
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "source": "search-backfill",
+  "backfillLimits": {
+    "stars": "unavailable",
+    "releases": "own-repos-only",
+    "issues": "search-approx",
+    "reviews": "search-approx",
+    "discussions": "search-approx",
+    "comments": "unavailable",
+    "commits": "repo-scan-accurate"
+  },
+  "dataHash": "ef459c184dfd4d8948ff19db52cda8a37974eaadb45a9c606be9fba0aa4097c4"
+}

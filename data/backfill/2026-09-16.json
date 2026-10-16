@@ -1,0 +1,54 @@
+{
+  "date": "2026-09-16",
+  "windowStart": "2026-09-16T00:00:00+08:00",
+  "windowEnd": "2026-09-17T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-15T19:58:25.705Z",
+  "empty": true,
+  "totals": {
+    "commits": 0,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [],
+  "automatedCommits": 0,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [],
+  "stars": [],
+  "starInventory": [],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": true
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "source": "search-backfill",
+  "backfillLimits": {
+    "stars": "unavailable",
+    "releases": "own-repos-only",
+    "issues": "search-approx",
+    "reviews": "search-approx",
+    "discussions": "search-approx",
+    "comments": "unavailable",
+    "commits": "repo-scan-accurate"
+  },
+  "dataHash": "063c4abbbcbe30075da057f48e0f5fcfc6dc27468257425ef9fce9075864b4d0"
+}

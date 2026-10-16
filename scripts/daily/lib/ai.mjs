@@ -27,6 +27,8 @@
  *
  * 导出：
  *   generateNarrative({ data, providers })   // 是否有内容值得叙述由调用方判断；本函数不按 empty 自行拦截
+ *   generateStructured({ system, user, validate, providers, feedback })
+ *                                            // 通用结构化生成入口：日报与 30 天总结共用同一套重试/校验循环
  *   defaultProviders(env = process.env)      // 同步返回 provider 列表（没 key 的跳过）
  *   resolveSenseNovaModel(apiKey, baseUrl?)  // GET {baseUrl}/models 挑模型，进程内缓存
  *
@@ -348,7 +350,7 @@ function parseJsonPayload(text) {
 }
 
 /** 粗算句数：中文句号/叹号/问号直接计数（中文句间通常无空格）；英文句末标点需后接空白或结尾，避免小数点、缩写点误判。 */
-function countSentences(text) {
+export function countSentences(text) {
   const s = String(text).trim();
   if (!s) return 0;
   const cjk = (s.match(/[。！？]/g) || []).length;
@@ -359,7 +361,7 @@ function countSentences(text) {
 }
 
 /** 按句末标点切句（中英兼顾），保留标点、去掉空段。 */
-function splitSentences(text) {
+export function splitSentences(text) {
   const s = String(text).trim();
   if (!s) return [];
   const out = [];
@@ -401,7 +403,7 @@ function fitSentences(text, keepMax) {
 /**
  * headline 超长时优先在分隔符处断开，其次按词边界断开；保证不超过 maxChars。
  */
-function fitHeadline(text, maxChars) {
+export function fitHeadline(text, maxChars) {
   const s = String(text).trim();
   if (s.length <= maxChars) return s;
   const seps = ["；", ";", " | ", "—", " - "];
@@ -420,7 +422,7 @@ function fitHeadline(text, maxChars) {
  * 把过长文本截断到 maxChars 内，尽量保留完整句子（句界优先），并保证句数落在 [keepMin, keepMax]。
  * 用于强制模型无法稳定遵守的硬性长度上限：宁可截短，也不因超长整段失败。
  */
-function fitText(text, maxChars, keepMin, keepMax) {
+export function fitText(text, maxChars, keepMin, keepMax) {
   const s = String(text).trim();
   if (!s) return "";
   if (s.length <= maxChars && countSentences(s) <= keepMax) return s;
@@ -534,8 +536,11 @@ function extractContent(json, shape) {
  *   · JSON 提取/校验失败 → 逐次加严提醒，最多追加 3 次（共 4 次尝试）→ 换下一家
  *   · 截断（finish_reason=length）→ 打印 usage/reasoning 诊断并翻倍 max_tokens 重试（上限 65536）
  *   · chat 默认发 reasoning_effort=none 关闭思考（避免 CoT 吃光 max_tokens 导致 content 为空）；400 时去掉重试
+ *
+ * `validate(parsed)` 是同步校验器，返回 { ok:true, value } 或 { ok:false, reason }；
+ * `feedback(reason, n)` 按失败原因生成可执行的纠正提示（默认 buildRetryFeedback，日报专用）。
  */
-async function attemptProvider(provider, system, user, data) {
+async function attemptProvider(provider, system, user, validate, feedback = buildRetryFeedback) {
   const base = String(provider.baseUrl || "").replace(/\/+$/, "");
   const providerKey = `${provider.name}\u0000${base}`;
   let shape = provider.shape === "responses" ? "responses" : "chat";
@@ -669,7 +674,7 @@ async function attemptProvider(provider, system, user, data) {
     } else {
       const parsed = parseJsonPayload(content);
       checked = parsed
-        ? validateNarrative(parsed, data)
+        ? validate(parsed)
         : { ok: false, reason: "无法从返回文本中提取 JSON" };
     }
     if (checked.ok) return { ok: true, value: checked.value };
@@ -680,9 +685,9 @@ async function attemptProvider(provider, system, user, data) {
     );
 
     if (corrections < MAX_CORRECTIONS) {
-      const feedback = buildRetryFeedback(checked.reason, corrections);
+      const hint = feedback(checked.reason, corrections);
       corrections += 1;
-      prompt = `${user}\n\n${feedback}`;
+      prompt = `${user}\n\n${hint}`;
       console.error(
         `${LOG} ${provider.name}: 返回不合约束（${checked.reason}），追加纠正提示后重试（第 ${corrections + 1}/${
           MAX_CORRECTIONS + 1
@@ -725,6 +730,41 @@ async function normalizeProvider(raw) {
 // ---------------------------------------------------------------- 主入口
 
 /**
+ * 通用结构化生成入口：按顺序尝试 providers，成功返回 { value, provider }；以下返回 null：
+ *   没有可用 provider／全部 provider 失败。
+ *
+ * `validate(parsed)`（同步）决定「这份 JSON 能不能收」，`feedback(reason, n)`（可选）
+ * 给出针对性的纠正提示；日报的 generateNarrative 与 30 天总结都走这里，
+ * 重试/JSON 模式/截断/退让行为完全一致。
+ */
+export async function generateStructured({ system, user, validate, providers, feedback } = {}) {
+  const list = Array.isArray(providers) ? providers : [];
+  if (list.length === 0) {
+    console.error(`${LOG} 没有可用 provider（未配置 API key）`);
+    return null;
+  }
+  if (typeof validate !== "function") {
+    console.error(`${LOG} 缺少 validate 校验器`);
+    return null;
+  }
+
+  for (const raw of list) {
+    const provider = await normalizeProvider(raw);
+    if (!provider) continue;
+    console.error(`${LOG} ${provider.name}: 尝试（shape=${provider.shape}, model=${provider.model}）`);
+    const outcome = await attemptProvider(provider, system, user, validate, feedback);
+    if (outcome.ok) {
+      console.error(`${LOG} ${provider.name}: 成功`);
+      return { value: outcome.value, provider: provider.name };
+    }
+    console.error(`${LOG} ${provider.name}: 失败 — ${outcome.reason}`);
+  }
+
+  console.error(`${LOG} 所有 provider 均失败`);
+  return null;
+}
+
+/**
  * 生成每日叙事。成功返回 { en, zh, provider }；以下情况返回 null：
  *   没有可用 provider／全部 provider 失败。
  *
@@ -738,28 +778,16 @@ export async function generateNarrative({ data, providers }) {
     console.error(`${LOG} data 为空，跳过`);
     return null;
   }
-  const list = Array.isArray(providers) ? providers : [];
-  if (list.length === 0) {
-    console.error(`${LOG} 没有可用 provider（未配置 API key）`);
-    return null;
-  }
 
   const { system, user } = buildPrompts(data);
-
-  for (const raw of list) {
-    const provider = await normalizeProvider(raw);
-    if (!provider) continue;
-    console.error(`${LOG} ${provider.name}: 尝试（shape=${provider.shape}, model=${provider.model}）`);
-    const outcome = await attemptProvider(provider, system, user, data);
-    if (outcome.ok) {
-      console.error(`${LOG} ${provider.name}: 成功`);
-      return { en: outcome.value.en, zh: outcome.value.zh, provider: provider.name };
-    }
-    console.error(`${LOG} ${provider.name}: 失败 — ${outcome.reason}`);
-  }
-
-  console.error(`${LOG} 所有 provider 均失败`);
-  return null;
+  const res = await generateStructured({
+    system,
+    user,
+    validate: (parsed) => validateNarrative(parsed, data),
+    providers,
+  });
+  if (!res) return null;
+  return { en: res.value.en, zh: res.value.zh, provider: res.provider };
 }
 
 // ---------------------------------------------------------------- CLI

@@ -1,0 +1,61 @@
+name: Update 30-day summary
+
+on:
+  schedule:
+    # 每天一次（UTC 22:17 = 北京时间次日 06:17）。
+    # 故意避开整点：:00 是 GitHub schedule 投递最拥堵的时刻（官方文档明说会被延迟、
+    # 拥堵严重时直接丢弃），本仓实测曾被延迟 +1 ~ +47 分钟、甚至整趟丢掉。
+    # 与 update-daily-report.yml 的偶数小时 :17、update-activity.yml 的偶数小时 :30 也错开。
+    - cron: "17 22 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "强制重调 AI（忽略窗口哈希）"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+# 与 update-daily-report.yml / update-activity.yml 同组：三个 workflow 都会往 main 推
+# 生成物，同组排队（cancel-in-progress: false，只串行不取消）避免 push 撞车。
+concurrency:
+  group: update-activity
+  cancel-in-progress: false
+
+jobs:
+  update-summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: 设置 Node.js 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+
+      - name: 生成近 30 天 AI 总结
+        run: node scripts/summary/index.mjs ${{ inputs.force && '--force' || '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+
+      - name: 提交并推送更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: 更新近 30 天 AI 总结"
+          # 生成物 docs/ 可丢弃：并发运行 rebase 撞车时，-X theirs 保留本次新生成的版本，避免冲突失败
+          for i in 1 2 3; do
+            git push && exit 0
+            git pull --rebase --autostash -X theirs origin main
+          done
+          echo "推送失败：重试 3 次后仍未成功" >&2
+          exit 1

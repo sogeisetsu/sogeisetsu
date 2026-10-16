@@ -1,0 +1,143 @@
+{
+  "date": "2026-09-28",
+  "windowStart": "2026-09-28T00:00:00+08:00",
+  "windowEnd": "2026-09-29T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-15T19:51:28.271Z",
+  "empty": false,
+  "totals": {
+    "commits": 3,
+    "prs": 4,
+    "issues": 2,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 3,
+      "own": true,
+      "messages": [
+        {
+          "sha": "bd07e1da9d0429ed5d5234dae32673fb07b395ab",
+          "message": "fix: 统计数字与拆分不再可能对不上",
+          "ts": "2026-09-28T15:25:45Z"
+        },
+        {
+          "sha": "599bb5542e82d7e53c63ca7f415a92bf508af45e",
+          "message": "ci: 升级 checkout/setup-node 到 v7，摆脱已弃用的 Node 20 运行时",
+          "ts": "2026-09-28T15:11:23Z"
+        },
+        {
+          "sha": "d71dde60675c842ce78979478af654fe5695193b",
+          "message": "copy: 活动卡片与 README 明细统一为中性表述",
+          "ts": "2026-09-28T15:05:30Z"
+        }
+      ],
+      "automated": 3,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    }
+  ],
+  "automatedCommits": 3,
+  "pullRequests": [
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 42,
+      "title": "fix: harden eval robustness in parsing, aggregation, and install",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/42",
+      "action": "opened",
+      "ts": "2026-09-28T03:25:33.000Z",
+      "own": false,
+      "state": "open"
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 41,
+      "title": "fix: dispose review servers on plugin unload",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/41",
+      "action": "opened",
+      "ts": "2026-09-28T03:25:29.000Z",
+      "own": false,
+      "state": "open"
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 40,
+      "title": "fix: accept CRLF line endings in skill frontmatter validation",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/40",
+      "action": "opened",
+      "ts": "2026-09-28T03:25:26.000Z",
+      "own": false,
+      "state": "open"
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 39,
+      "title": "fix: open review URL with platform-specific browser command",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/39",
+      "action": "opened",
+      "ts": "2026-09-28T03:25:21.000Z",
+      "own": false,
+      "state": "open"
+    }
+  ],
+  "reviews": [],
+  "issues": [
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 43,
+      "title": "build: dist rebuilds inline @opencode-ai/plugin + zod, swamping small PR diffs",
+      "url": "https://github.com/antongulin/opencode-skill-creator/issues/43",
+      "action": "opened",
+      "ts": "2026-09-28T15:31:55.000Z",
+      "own": false,
+      "state": "open"
+    },
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4111,
+      "title": "Deleting a multi-run leaves orphaned MCP child processes; git worktree remove --force then fails with Permission denied",
+      "url": "https://github.com/openchamber/openchamber/issues/4111",
+      "action": "opened",
+      "ts": "2026-09-28T14:44:43.000Z",
+      "own": false,
+      "state": "open"
+    }
+  ],
+  "releases": [],
+  "stars": [],
+  "starInventory": [],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "source": "search-backfill",
+  "backfillLimits": {
+    "stars": "unavailable",
+    "releases": "own-repos-only",
+    "issues": "search-approx",
+    "reviews": "search-approx",
+    "discussions": "search-approx",
+    "comments": "unavailable",
+    "commits": "repo-scan-accurate"
+  },
+  "dataHash": "849afbed884b808f9b15d117642c01afcd3f59cbc0d524c4110807ab0a7fcbd9"
+}

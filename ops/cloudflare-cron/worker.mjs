@@ -1,10 +1,11 @@
 /**
  * sogeisetsu 定时任务 watchdog（Cloudflare Worker + Cron Trigger）
  * ------------------------------------------------------------------
- * 兜的是两个 workflow，它们的时间表**不一样**，必须各算各的、不能互相顶替：
+ * 兜的是三个 workflow，它们的时间表**不一样**，必须各算各的、不能互相顶替：
  *
  *   [daily]    update-daily-report.yml   分钟 17，小时步长 2  → 日报（AI 生成，时间敏感）
  *   [activity] update-activity.yml       分钟 30，小时步长 2  → 近 30 天活动卡片（无 AI，滚动窗口）
+ *   [summary]  update-summary.yml        每天 UTC 22:17       → 近 30 天 AI 总结（每天一次，用 slotHourUtc 表达）
  *
  * cron 表达式不写进这个块注释：`星号 + 斜杠` 会提前把它闭合。见 README。
  *
@@ -16,7 +17,7 @@
  * 需要的 secret：
  *   GITHUB_TOKEN  fine-grained PAT，仅 sogeisetsu/sogeisetsu 一个仓库，
  *                 Repository permissions → Actions: Read and write
- *                 （两个 workflow 在同一个仓，权限不需要改）
+ *                 （三个 workflow 在同一个仓，权限不需要改）
  *
  * 日志：Cloudflare Dashboard → 该 Worker → Settings → Trigger Events → View events
  *       （console.log / console.error 都会出现在这里，最近 100 次）
@@ -24,7 +25,7 @@
  * 失败可见性：任何 API 调用失败都不吞错，打完日志直接抛异常 —— 这次 invocation 会被
  *       Cloudflare 记为失败，dashboard 的 Invocations 成功率会掉，等于自带告警；
  *       避免出现「成功率 100% 但每次都在 401」这种只有翻日志才看得见的状态。
- *       两个 target 互不影响：一个失败另一个照常判断，但只要有一个失败，这次
+ *       各 target 互不影响：一个失败另一个照常判断，但只要有一个失败，这次
  *       invocation 仍记为失败。
  */
 
@@ -33,8 +34,9 @@ const REPO = "sogeisetsu";
 const REF = "main"; // dispatch 端点接受文件名或数字 ID
 
 /**
- * 每个 target 一份自己的时间表 —— 两个 workflow 的 cron 不同，共用一个 slot 会错位。
- * slotMinute / hourStep 必须与各自 workflow 里的 cron 对齐；
+ * 每个 target 一份自己的时间表 —— 各 workflow 的 cron 不同，共用一个 slot 会错位。
+ * slotMinute / hourStep 必须与各自 workflow 里的 cron 对齐（slotHourUtc 是「每天固定
+ * UTC 某小时第几分」的另一种写法，给了它就不再用 hourStep）；
  * graceMinutes 是宽限期：GitHub 自己的 schedule 会迟到（本仓实测 +1 ~ +47 分钟），
  * 早于 slot + grace 就补，会在它稍后到达时变成两个 run。重复 run 不花钱也不重复调 AI
  * （index.mjs 有 dataHash 跳过；活动卡片重跑无 diff 也不会 commit），只是多占一个
@@ -55,6 +57,13 @@ const TARGETS = [
     hourStep: 2,
     graceMinutes: 30,
   },
+  {
+    label: "summary",
+    workflow: "update-summary.yml",
+    slotMinute: 17,
+    slotHourUtc: 22,
+    graceMinutes: 30,
+  },
 ];
 
 const API = "https://api.github.com";
@@ -63,9 +72,29 @@ const MINUTE_MS = 60 * 1000;
 
 const iso = (ms) => new Date(ms).toISOString();
 
-/** 最近的、属于该 target 调度表的时点（ms，UTC）。 */
-function lastDueSlot(nowMs, { slotMinute, hourStep }) {
+/**
+ * 最近的、属于该 target 调度表的时点（ms，UTC）。
+ * 两种调度表达，二选一：
+ *   - 给了 slotHourUtc（0–23 整数）→ 每天固定 UTC 该小时的第 slotMinute 分，
+ *     直接按当天该时刻算，晚于 now 就整体退 24 小时；不走 hourStep 回退。
+ *   - 只有 slotMinute + hourStep → 「每 hourStep 小时的第 slotMinute 分」，
+ *     本小时取 slotMinute，再往前退到小时能被 hourStep 整除的那一个。
+ */
+function lastDueSlot(nowMs, { slotMinute, slotHourUtc, hourStep }) {
   const d = new Date(nowMs);
+  if (Number.isInteger(slotHourUtc)) {
+    let ms = Date.UTC(
+      d.getUTCFullYear(),
+      d.getUTCMonth(),
+      d.getUTCDate(),
+      slotHourUtc,
+      slotMinute,
+      0,
+      0
+    );
+    if (ms > nowMs) ms -= 24 * 60 * MINUTE_MS; // 今天的时点还没到 → 退到昨天
+    return ms;
+  }
   let ms = Date.UTC(
     d.getUTCFullYear(),
     d.getUTCMonth(),
@@ -160,7 +189,7 @@ export default {
     const nowMs = controller?.scheduledTime ?? Date.now();
     console.log(`tick @ ${iso(nowMs)}`);
 
-    // 两个 target 并发跑（各 1 次列表查询，需要时才多 1 次 dispatch），互不阻塞；
+    // 各 target 并发跑（各 1 次列表查询，需要时才多 1 次 dispatch），互不阻塞；
     // 但只要有一个失败，这次 invocation 就记为失败 → 成功率掉下来。
     const results = await Promise.allSettled(
       TARGETS.map((t) => checkAndFill(token, nowMs, t))

@@ -80,6 +80,10 @@ const DISCUSSION_COMMENTS_MAX = 100; // 每条讨论拉取的评论节点上限�
 const REPLIES_PAGE_SIZE = 30; // /issues|pulls/:n/comments 单页大小（显式传 per_page，与截断判定一致）
 const STATE_EVENTS_PAGE_SIZE = 100; // /issues/:n/events 单页大小（截断判定用）
 const COMMENT_COUNT_MAX = 40; // 回填评论数的条目数上限（去重后的 repo#number）
+// --- 历史回填（collectHistoricalData / Search 重建）专用常量 ---
+const SEARCH_GAP_MS = 2100; // Search 查询之间的固定间隔：该端点限速约 30 次/分钟，留余量
+const RATE_LIMIT_WAIT_MS = 60_000; // Search 403/429 限流后的退避时长
+const BACKFILL_SEARCH_PER_PAGE = 100; // 回填的 Search 每查询取一页（单日动作量远小于 100，不做翻页）
 
 // ---------------------------------------------------------------- 小工具
 
@@ -735,6 +739,232 @@ async function searchAuthoredTargets(token, username, win) {
   return { targets: ordered.targets, truncated: truncated || ordered.truncated };
 }
 
+// ---------------------------------------------------------------- 5.5 历史回填：Search 重建动作段
+
+/**
+ * 一次 issues Search 查询（单页，不翻页）：403/429 限流时退避 60s 重试，最多 2 次；
+ * 重试耗尽 / 任何失败 → 警告 + 返回 []，绝不抛错。
+ * 为什么不直接用 restGet：限流重试要读响应头 x-ratelimit-remaining，而 restGet 把
+ * 一切 4xx 归并成 null、拿不到状态细节，故这里自建一次轻量 fetch（5xx / 网络异常
+ * 仍复用 httpFetch 的既有重试）。
+ */
+async function searchIssuesBackfill(q, token, section) {
+  const url =
+    `https://api.github.com/search/issues?q=${encodeURIComponent(q)}` +
+    `&per_page=${BACKFILL_SEARCH_PER_PAGE}&sort=updated&order=desc`;
+  const retries = 2;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    let res;
+    try {
+      res = await httpFetch(url, { headers: apiHeaders(token) });
+    } catch (err) {
+      warn(section, `请求失败: ${err.message}`); // httpFetch 重试耗尽（5xx / 网络异常）
+      return [];
+    }
+    if (res.status === 403 || res.status === 429) {
+      if (attempt < retries) {
+        const remaining = res.headers.get("x-ratelimit-remaining");
+        warn(
+          section,
+          `HTTP ${res.status} 限流（x-ratelimit-remaining=${remaining ?? "?"}），` +
+            `${RATE_LIMIT_WAIT_MS}ms 后重试（第 ${attempt + 1}/${retries} 次）`
+        );
+        await sleep(RATE_LIMIT_WAIT_MS);
+        continue;
+      }
+      warn(section, `HTTP ${res.status} 限流重试耗尽，本查询返回空: ${q}`);
+      return [];
+    }
+    const text = await res.text();
+    if (res.status >= 400) {
+      warn(section, `HTTP ${res.status}: ${url}`);
+      return [];
+    }
+    try {
+      const items = JSON.parse(text).items;
+      return Array.isArray(items) ? items : [];
+    } catch (err) {
+      warn(section, `响应不是合法 JSON: ${err.message} (${url})`);
+      return [];
+    }
+  }
+  return [];
+}
+
+/** Search 结果条目 → "owner/repo"（从 repository_url 解析）；解析失败回空串。 */
+function repoOfSearchItem(item) {
+  const m = /\/repos\/([^/]+)\/([^/]+)$/.exec(String(item && item.repository_url));
+  return m ? `${m[1]}/${m[2]}` : "";
+}
+
+/**
+ * 用 Search API 重建历史窗口内的动作段（PR / Issue 的开与关、我发的评论、我提交的评审）
+ * —— 回填专用：公共事件流只保留最近 300 条 / 短窗口，离线日期已拿不到动作级事件
+ * （2026-09-17 ~ 10-01 即撞上该限制），只能按日期区间用 issues Search 反查。
+ *
+ * 口径要点（与 mapEvents 逐条对齐）：
+ *   - Search 的 created:/closed:/updated: 是 UTC 日历日，而窗口是 +08 日历日
+ *     （= UTC [前一日 16:00, 当日 16:00)）——查询下界一律放宽一天，落库前逐条 inWindow 校时；
+ *   - 带 token 的 Search 会返回私有仓库结果：每条都过 isPublicRepo 公开性闸门（共享缓存），
+ *     非公开直接丢弃（宁可少报，不可泄露）；
+ *   - 评论 / 评审段 Search 只能定位目标，动作时间要逐条 REST 拉评论 / 评审列表本地过滤；
+ *     评论只走 issue comments（不处理 review comments），与 IssueCommentEvent 口径一致；
+ *   - Search 查询之间 sleep(SEARCH_GAP_MS) 压限速；403/429 退避重试见 searchIssuesBackfill；
+ *   - 同一 (repo, number, action, ts) 只保留一条（多个查询的结果会互相重叠）。
+ *
+ * @param {string|null} token GitHub token
+ * @param {string} username GitHub 用户名
+ * @param {object} win computeWindow() 结果
+ * @param {Map<string, boolean>} repoVisibility 共享的仓库公开性缓存
+ * @returns {Promise<{pullRequests: object[], reviews: object[], issues: object[]}>}
+ */
+async function rebuildActionsBySearch(token, username, win, repoVisibility) {
+  const pullRequests = [];
+  const reviews = [];
+  const issues = [];
+  const seen = new Set(); // repo#number+action+ts 去重（跨查询共享）
+  const from = dayBefore(win.date); // 日期下界放宽一天（Search 是 UTC 日历日）
+  const key = (repo, number, action, ms) => `${repo}#${number}+${action}+${ms}`;
+  // 公开性闸门：非公开仓库整条丢弃（宁可少报，不可泄露）
+  const isPublic = async (repo) => {
+    const m = /^([^/]+)\/(.+)$/.exec(repo);
+    return Boolean(m) && (await isPublicRepo(m[1], m[2], token, repoVisibility));
+  };
+
+  // --- 开 / 关四段：author: created: / author: closed: 反查，动作时间取 created_at / closed_at ---
+  const actionQueries = [
+    { q: `author:${username} created:${from}..${win.date} type:pr`, section: "search-pr", kind: "pr-opened" },
+    {
+      q: `author:${username} created:${from}..${win.date} type:issue`,
+      section: "search-issue",
+      kind: "issue-opened",
+    },
+    { q: `author:${username} closed:${from}..${win.date} type:pr`, section: "search-pr", kind: "pr-closed" },
+    {
+      q: `author:${username} closed:${from}..${win.date} type:issue`,
+      section: "search-issue",
+      kind: "issue-closed",
+    },
+  ];
+  for (const { q, section, kind } of actionQueries) {
+    const items = await searchIssuesBackfill(q, token, section);
+    for (const item of items) {
+      const repo = repoOfSearchItem(item);
+      if (!repo || !(await isPublic(repo))) continue;
+      const isPr = kind.startsWith("pr");
+      let action;
+      let tsStr;
+      if (kind === "pr-opened" || kind === "issue-opened") {
+        action = "opened";
+        tsStr = item.created_at;
+      } else if (kind === "pr-closed") {
+        // merged_at 非空 ⇒ 这条 closed 实为合并（与 PullRequestEvent 的判定同源）
+        action = item.pull_request && item.pull_request.merged_at ? "merged" : "closed";
+        tsStr = item.closed_at;
+      } else {
+        action = "closed";
+        tsStr = item.closed_at;
+      }
+      const ms = tsOf(tsStr);
+      if (!ms || !inWindow(ms, win)) continue; // Search 日期限定是 UTC 天，逐条校时兜底
+      const k = key(repo, item.number ?? 0, action, ms);
+      if (seen.has(k)) continue;
+      seen.add(k);
+      const entry = {
+        repo,
+        number: item.number ?? 0,
+        title: item.title || "",
+        url: item.html_url || `https://github.com/${repo}/${isPr ? "pull" : "issues"}/${item.number ?? 0}`,
+        action,
+        ts: isoOf(ms),
+        own: isOwnRepoName(repo, username),
+      };
+      if (isPr) pullRequests.push(entry);
+      else issues.push(entry);
+    }
+    await sleep(SEARCH_GAP_MS); // 查询之间限速（Search 端点约 30 次/分钟）
+  }
+
+  // --- 评论段：commenter: 定位目标 → 逐条 REST 拉 issue comments，只留我窗口内的 ---
+  {
+    const items = await searchIssuesBackfill(
+      `commenter:${username} updated:${from}..${win.date}`,
+      token,
+      "search-comments"
+    );
+    for (const item of items) {
+      const repo = repoOfSearchItem(item);
+      if (!repo || !(await isPublic(repo))) continue;
+      const got = await restGet(
+        `https://api.github.com/repos/${repo}` +
+          `/issues/${item.number}/comments?since=${encodeURIComponent(win.startISO)}&per_page=100`,
+        token,
+        "search-comments"
+      );
+      if (!got || !Array.isArray(got.data)) continue;
+      for (const c of got.data) {
+        // 与 IssueCommentEvent 同口径：只认“我本人”的会话评论
+        if (!isOwnLogin(c.user && c.user.login, username)) continue;
+        const ms = tsOf(c.created_at);
+        if (!ms || !inWindow(ms, win)) continue; // since 只是服务端预过滤，本地再兜一层
+        const k = key(repo, item.number ?? 0, "commented", ms);
+        if (seen.has(k)) continue;
+        seen.add(k);
+        issues.push({
+          repo,
+          number: item.number ?? 0,
+          title: item.title || "",
+          url: item.html_url || c.html_url || `https://github.com/${repo}/issues/${item.number ?? 0}`,
+          action: "commented",
+          ts: isoOf(ms),
+          own: isOwnRepoName(repo, username),
+        });
+      }
+    }
+    await sleep(SEARCH_GAP_MS);
+  }
+
+  // --- 评审段：reviewed-by: 定位 PR → 逐条 REST 拉 reviews，只留我窗口内提交的（拉不到就空，不报错）---
+  {
+    const items = await searchIssuesBackfill(
+      `reviewed-by:${username} updated:${from}..${win.date}`,
+      token,
+      "search-reviews"
+    );
+    for (const item of items) {
+      const repo = repoOfSearchItem(item);
+      if (!repo || !(await isPublic(repo))) continue;
+      const got = await restGet(
+        `https://api.github.com/repos/${repo}/pulls/${item.number}/reviews?per_page=100`,
+        token,
+        "search-reviews"
+      );
+      if (!got || !Array.isArray(got.data)) continue;
+      for (const r of got.data) {
+        if (!isOwnLogin(r.user && r.user.login, username)) continue; // 只要我提交的评审
+        const ms = tsOf(r.submitted_at);
+        if (!ms || !inWindow(ms, win)) continue;
+        const k = key(repo, item.number ?? 0, "reviewed", ms);
+        if (seen.has(k)) continue;
+        seen.add(k);
+        reviews.push({
+          repo,
+          number: item.number ?? 0,
+          title: item.title || "",
+          url: item.html_url || `https://github.com/${repo}/pull/${item.number ?? 0}`,
+          ts: isoOf(ms),
+          own: isOwnRepoName(repo, username),
+        });
+      }
+    }
+  }
+
+  pullRequests.sort(byTsDesc);
+  reviews.sort(byTsDesc);
+  issues.sort(byTsDesc);
+  return { pullRequests, reviews, issues };
+}
+
 /**
  * 他人的 PR / Issue 评论（回复我发的条目）：
  * 基于目标列表逐个拉评论 → 只保留非本人、且 created_at 落在窗口内的评论。
@@ -1337,6 +1567,147 @@ export async function collectDailyData({ token, username, date, previousData, ex
       stateChanges: { cap: STATE_EVENTS_PAGE_SIZE, hits: stateChangesTruncated },
     },
     discussions,
+  };
+}
+
+// ---------------------------------------------------------------- 历史回填（Search 重建通道）
+
+/**
+ * 各段的如实标注（字符串枚举，供 30 天总结页标注数据口径）：
+ *   stars         — 事件流 / GraphQL 历史快照均无解（star 历史不可按天重建），恒为空
+ *   releases      — 只扫自有仓库（fetchOwnRepos 口径），他仓 Release 不在日报口径内
+ *   issues/reviews/discussions — Search 近似重建（日期限定是 UTC 日历日、命中集受 Search 覆盖影响）
+ *   comments      — 评论数（comments 字段）不回填；他人回复 / 状态变更对历史日期只能近似定位目标
+ *   commits       — 仓库提交历史扫描（REST since/until），按提交日期归属，准确
+ */
+const BACKFILL_LIMITS = {
+  stars: "unavailable",
+  releases: "own-repos-only",
+  issues: "search-approx",
+  reviews: "search-approx",
+  discussions: "search-approx",
+  comments: "unavailable",
+  commits: "repo-scan-accurate",
+};
+
+/**
+ * 采集指定日（Asia/Shanghai）的 GitHub 活动数据 —— 历史回填（Search 重建）通道。
+ *
+ * 为什么存在这条通道：/users/:u/events/public 只保留最近 300 条 / 短窗口，
+ * 2026-09-17 ~ 10-01 的动作级事件已拿不到，30 天总结需要这一段，故用 Search API
+ * 按日期区间重建；返回结构与 collectDailyData 完全一致，额外带 source / backfillLimits。
+ *
+ * 各段来源与局限（详见 BACKFILL_LIMITS）：
+ *   - commits：仓库提交历史扫描（REST since/until），与事件流无关，准确；
+ *   - releases：自有仓库扫描，口径与日报一致；
+ *   - pullRequests / reviews / issues：Search 重建（rebuildActionsBySearch），近似；
+ *   - stars / starInventory：恒为空（无历史快照可重建，previousData 因此不参与计算，
+ *     保留参数仅为与 collectDailyData 签名对齐）；
+ *   - replies / stateChanges / discussions：沿用日报实现；
+ *     searchAuthoredTargets 的 updated:>= 对历史日期只能近似定位目标。
+ * 任何一段失败都只打警告并返回空数组；仅 date 非法（computeWindow）会抛错。
+ *
+ * @param {object} opts 采集参数（与 collectDailyData 同签名）
+ * @param {string|null} opts.token GitHub token
+ * @param {string} opts.username GitHub 用户名
+ * @param {string} opts.date 报告日 "YYYY-MM-DD"（Asia/Shanghai 日历日）
+ * @param {object|null} opts.previousData 回填日恒传 null（stars 段无来源，不参与计算）
+ * @returns {Promise<object>} collectDailyData 同结构 + source + backfillLimits
+ */
+export async function collectHistoricalData({ token, username, date, previousData }) {
+  const win = computeWindow(date); // date 非法时抛错（唯一允许抛错的入口校验）
+
+  // --- 1. 动作段：事件流已过期，改用 Search 按日期区间重建（公开性缓存与 6/7 段共享）---
+  const repoVisibility = new Map();
+  const { pullRequests, reviews, issues } = await rebuildActionsBySearch(
+    token,
+    username,
+    win,
+    repoVisibility
+  );
+
+  // --- 2. 自有仓库（提交扫描 / Release 共用；按 pushed 降序，与事件流无关）---
+  const ownRepos = await fetchOwnRepos(token, username);
+
+  // --- 3. 提交：仓库历史扫描是准确的（不传事件流，扫描集只剩窗口内推送过的自有仓库）---
+  const commits = await buildCommits([], token, username, win, ownRepos);
+
+  // --- 4. Release：自有仓库扫描，口径与日报一致 ---
+  const releases = await fetchReleases(token, username, ownRepos, win);
+
+  // --- 5. 星标：无历史快照可重建，恒为空（见 BACKFILL_LIMITS.stars）---
+  const stars = [];
+  const starInventory = [];
+
+  // --- 6~7. 我发起的条目定位 + 他人的回复 / 状态变更：沿用日报实现；
+  //         注意 searchAuthoredTargets 的 updated:>= 是“从那天至今”，对历史日期只能近似 ---
+  const { targets, truncated: targetsTruncated } = await searchAuthoredTargets(token, username, win);
+  const { replies, truncated: repliesTruncated } = await fetchReplies(
+    token,
+    username,
+    win,
+    targets,
+    repoVisibility
+  );
+  const { changes: stateChanges, truncated: stateChangesTruncated } = await fetchStateChanges(
+    token,
+    username,
+    win,
+    targets,
+    repoVisibility
+  );
+
+  // --- 8. Discussions：本来就是 GraphQL search，不依赖事件流，口径与日报一致 ---
+  const { list: discussions, replies: discussionReplies } = await fetchDiscussions(
+    token,
+    username,
+    win
+  );
+  if (discussionReplies.length) {
+    replies.push(...discussionReplies);
+    replies.sort(byTsDesc);
+  }
+
+  // --- 9. 端点状态回填：与日报同一函数、同一口径 ---
+  applyEndStates(issues, pullRequests, stateChanges);
+
+  // --- 合计：与 collectDailyData 逐字一致（totals 只含四项；empty = 四项之和 === 0）---
+  const totals = {
+    commits: commits.reduce((sum, c) => sum + c.count, 0),
+    prs: pullRequests.length,
+    issues: issues.length,
+    reviews: reviews.length,
+  };
+  const empty = totals.commits + totals.prs + totals.issues + totals.reviews === 0;
+  const automatedCommits = commits.reduce((sum, c) => sum + num(c.automated), 0);
+
+  return {
+    date: win.date,
+    windowStart: win.startISO,
+    windowEnd: win.endISO,
+    username,
+    generatedAt: new Date().toISOString(),
+    empty,
+    totals,
+    commits,
+    automatedCommits,
+    pullRequests,
+    reviews,
+    issues,
+    releases,
+    stars,
+    starInventory,
+    replies,
+    stateChanges,
+    truncated: {
+      events: { cap: EVENT_MAX, hits: false }, // 回填没有事件流来源，无“事件截断”可言
+      targets: { cap: TARGET_MAX, hits: targetsTruncated },
+      replies: { cap: REPLIES_PAGE_SIZE, hits: repliesTruncated },
+      stateChanges: { cap: STATE_EVENTS_PAGE_SIZE, hits: stateChangesTruncated },
+    },
+    discussions,
+    source: "search-backfill",
+    backfillLimits: { ...BACKFILL_LIMITS },
   };
 }
 

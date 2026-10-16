@@ -2,10 +2,10 @@
 
 > 运行链路图（可编辑）：[`flow.excalidraw`](./flow.excalidraw) —— 在 OpenChamber 的 Files 视图里点开就是 Excalidraw 画布。
 
-GitHub Actions 的 `schedule` 是 best-effort：本仓两个 workflow 单日各 12 个时点，实测只跑 3~4 个，
+GitHub Actions 的 `schedule` 是 best-effort：本仓的 workflow 单日各 12 个时点，实测只跑 3~4 个，
 且丢掉的时点**不产生任何 run**，所以既没有失败告警也没有页面提示。
 
-`worker.mjs` 每 10 分钟，对下面两个 target **分别**检查一遍「它最近那个该跑的时点有没有 run」，
+`worker.mjs` 每 10 分钟，对下面三个 target **分别**检查一遍「它最近那个该跑的时点有没有 run」，
 没有就补一次 `POST /actions/workflows/<file>/dispatches`。GitHub 正常投递时它什么都不做，
 因此不产生重复 run。
 
@@ -13,11 +13,13 @@ GitHub Actions 的 `schedule` 是 best-effort：本仓两个 workflow 单日各 
 | --- | --- | --- | --- | --- |
 | `daily` | `update-daily-report.yml` | UTC 偶数小时 **:17** | 日报（AI 生成） | 高：晚一小时页面就停在上一次 |
 | `activity` | `update-activity.yml` | UTC 偶数小时 **:30** | 近 30 天活动卡片（无 AI） | 低：滚动窗口，晚几小时看不出来 |
+| `summary` | `update-summary.yml` | 每天 **UTC 22:17**（北京时间次日 06:17） | 近 30 天 AI 总结 | 中：每天一次，丢当天就得等第二天 |
 
-> 这两条时间线**不是一回事**，各自算各自的 slot（`TARGETS` 里一份配置一个），不能互相顶替：
-> 日报补过了不代表卡片跑过，反过来也一样。
+> 这三条时间线**不是一回事**，各自算各自的 slot（`TARGETS` 里一份配置一个），不能互相顶替：
+> 日报补过了不代表卡片跑过，反过来也一样；`summary` 走 `slotHourUtc`（每天固定 UTC 某小时第几分），
+> 与前两个的「每 2 小时」算法互不相干，给了 `slotHourUtc` 就不再按 `hourStep` 逐小时回退。
 
-`../.github/workflows/` 里两个 workflow 的 cron 与 push 触发保持不变，作为第一层；这个 Worker 是兜底。
+`../.github/workflows/` 里三个 workflow 的 cron 与 push 触发保持不变，作为第一层；这个 Worker 是兜底。
 
 ## 需要你自己做的（我碰不到你的 Cloudflare / GitHub 账号）
 
@@ -50,9 +52,10 @@ GitHub Actions 的 `schedule` 是 best-effort：本仓两个 workflow 单日各 
 ### 3. 验收
 
 挑一个被 GitHub 丢掉的时点看：`slot + graceMinutes` 之后 worker 日志出现
-`[daily] … 没有 run，已补一次 workflow_dispatch` 或 `[activity] … 已补一次 workflow_dispatch`，
+`[daily] … 没有 run，已补一次 workflow_dispatch`、`[activity] … 已补一次 workflow_dispatch`
+或 `[summary] … 已补一次 workflow_dispatch`，
 同时对应 workflow 的 Actions 里出现一个 `event=workflow_dispatch` 的 run。
-日志前缀 `[daily]` / `[activity]` 就是用来分辨是哪条线的。
+日志前缀 `[daily]` / `[activity]` / `[summary]` 就是用来分辨是哪条线的。
 
 日常盯一个数就够：Settings → Triggers 的 **Invocations 成功率**。worker 不吞错——API 调用
 失败会抛异常，这次 invocation 记为失败，成功率直接掉；相反"成功率 100%"才算正常。日志细节
@@ -112,14 +115,16 @@ Worker 拼进 `Authorization` 头就成了非 ASCII，GitHub 回 `401 Bad creden
 | 字段 | 默认 | 含义 |
 | --- | --- | --- |
 | `slotMinute` / `hourStep` | `17`/`2`（daily）、`30`/`2`（activity） | 必须与各自 workflow 里的 cron 对齐；改 cron 时两边一起改 |
-| `graceMinutes` | `30`（两个都是） | 宽限期。调大 → 更少重复 run、页面更慢；调小 → 更快追上、GitHub 迟到时会重复 |
-| `label` | `daily` / `activity` | 只影响日志前缀，排错时用来区分是哪条线 |
+| `slotHourUtc` | `22`（summary，分钟走 `slotMinute: 17`） | **可选**，0–23 整数。给了它就表示「每天 UTC 该小时的第 `slotMinute` 分」：直接取当天该时刻，晚于当前时间就整体退 24 小时，**不再走 `hourStep` 的逐小时回退**（老算法会把每天 22:17 错算成 00:17，所以 `summary` 必须用这种写法）。与 `hourStep` 二选一 |
+| `graceMinutes` | `30`（三个都是） | 宽限期。调大 → 更少重复 run、页面更慢；调小 → 更快追上、GitHub 迟到时会重复 |
+| `label` | `daily` / `activity` / `summary` | 只影响日志前缀，排错时用来区分是哪条线 |
 
-想再加一个被兜的 workflow：往 `TARGETS` 里加一项、把它的 `slotMinute` 对齐到那个 cron 的分钟即可，
-其余逻辑不用动。
+想再加一个被兜的 workflow：往 `TARGETS` 里加一项——「每 N 小时」型把 `slotMinute` 对齐到那个
+cron 的分钟、写 `hourStep`；「每天固定时刻」型写 `slotMinute` + `slotHourUtc`，其余逻辑不用动。
 
 重复 run 的代价很小：日报 `scripts/daily/index.mjs` 有 dataHash 跳过，数据没变时不调 AI、不写文件；
-活动卡片重跑后没有 diff，`git diff --cached --quiet ||` 会跳过 commit。
+活动卡片重跑后没有 diff，`git diff --cached --quiet ||` 会跳过 commit；
+30 天总结 `scripts/summary/index.mjs` 同样有窗口哈希跳过（手动 dispatch 才需要 `force` 输入强制重调）。
 
 ## 想用 wrangler 版本化部署（可选）
 

@@ -1,0 +1,243 @@
+{
+  "date": "2026-10-01",
+  "windowStart": "2026-10-01T00:00:00+08:00",
+  "windowEnd": "2026-10-02T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-15T19:54:27.523Z",
+  "empty": false,
+  "totals": {
+    "commits": 0,
+    "prs": 4,
+    "issues": 2,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/opencode-skill-creator",
+      "count": 0,
+      "own": true,
+      "messages": [],
+      "automated": 5,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 0,
+      "own": true,
+      "messages": [],
+      "automated": 1,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    }
+  ],
+  "automatedCommits": 6,
+  "pullRequests": [
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 41,
+      "title": "fix: dispose review servers on plugin unload",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/41",
+      "action": "closed",
+      "ts": "2026-10-01T13:24:40.000Z",
+      "own": false,
+      "state": "closed"
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 40,
+      "title": "fix: accept CRLF line endings in skill frontmatter validation",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/40",
+      "action": "closed",
+      "ts": "2026-10-01T05:37:56.000Z",
+      "own": false,
+      "state": "closed"
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 39,
+      "title": "fix: open review URL with platform-specific browser command",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/39",
+      "action": "closed",
+      "ts": "2026-10-01T05:05:50.000Z",
+      "own": false,
+      "state": "closed"
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 42,
+      "title": "fix: harden eval robustness in parsing, aggregation, and install",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/42",
+      "action": "closed",
+      "ts": "2026-10-01T04:23:19.000Z",
+      "own": false,
+      "state": "closed"
+    }
+  ],
+  "reviews": [],
+  "issues": [
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 43,
+      "title": "build: dist rebuilds inline @opencode-ai/plugin + zod, swamping small PR diffs",
+      "url": "https://github.com/antongulin/opencode-skill-creator/issues/43",
+      "action": "closed",
+      "ts": "2026-10-01T01:03:21.000Z",
+      "own": false,
+      "state": "closed"
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 38,
+      "title": "Feature request: OpenCode V2 compatibility — plugin fails to load with PluginModule.LoadError (V1 plugin API)",
+      "url": "https://github.com/antongulin/opencode-skill-creator/issues/38",
+      "action": "closed",
+      "ts": "2026-10-01T01:03:20.000Z",
+      "own": false,
+      "state": "closed"
+    }
+  ],
+  "releases": [],
+  "stars": [],
+  "starInventory": [],
+  "replies": [
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 42,
+      "title": "fix: harden eval robustness in parsing, aggregation, and install",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/42",
+      "author": "antongulin",
+      "excerpt": "Thanks @sogeisetsu — the useful parts of this design have now been delivered on current `main` via the owner successor **#49**, released as **opencode-skill-creator v0.3.5**. - **Adopted and reworked…",
+      "kind": "issue_comment",
+      "ts": "2026-10-01T15:12:59.000Z",
+      "own": false
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 41,
+      "title": "fix: dispose review servers on plugin unload",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/41",
+      "author": "antongulin",
+      "excerpt": "Thanks for this proposal, @sogeisetsu — closing it as **superseded (not merged)** now that the intent has been delivered. **Delivered via owner successor #48** (merged `3797f3778f871be598af96a167eea6…",
+      "kind": "issue_comment",
+      "ts": "2026-10-01T13:24:38.000Z",
+      "own": false
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 40,
+      "title": "fix: accept CRLF line endings in skill frontmatter validation",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/40",
+      "author": "antongulin",
+      "excerpt": "Superseded — closing without merge. Thanks @sogeisetsu for this fix. The CRLF normalization design from this PR was adopted via maintainer successor **#47** (merged at `d99826c`, non-squash), which p…",
+      "kind": "issue_comment",
+      "ts": "2026-10-01T05:37:50.000Z",
+      "own": false
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 39,
+      "title": "fix: open review URL with platform-specific browser command",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/39",
+      "author": "antongulin",
+      "excerpt": "Thanks @sogeisetsu — the platform-specific browser launcher design from this PR has been delivered. 🙇 **Delivered via successor [#46](https://github.com/antongulin/opencode-skill-creator/pull/46)** …",
+      "kind": "issue_comment",
+      "ts": "2026-10-01T05:05:48.000Z",
+      "own": false
+    }
+  ],
+  "stateChanges": [
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 41,
+      "title": "fix: dispose review servers on plugin unload",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/41",
+      "action": "closed",
+      "actor": "antongulin",
+      "ts": "2026-10-01T13:24:40.000Z",
+      "own": false
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 40,
+      "title": "fix: accept CRLF line endings in skill frontmatter validation",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/40",
+      "action": "closed",
+      "actor": "antongulin",
+      "ts": "2026-10-01T05:37:56.000Z",
+      "own": false
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 39,
+      "title": "fix: open review URL with platform-specific browser command",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/39",
+      "action": "closed",
+      "actor": "antongulin",
+      "ts": "2026-10-01T05:05:50.000Z",
+      "own": false
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 42,
+      "title": "fix: harden eval robustness in parsing, aggregation, and install",
+      "url": "https://github.com/antongulin/opencode-skill-creator/pull/42",
+      "action": "closed",
+      "actor": "antongulin",
+      "ts": "2026-10-01T04:23:19.000Z",
+      "own": false
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 43,
+      "title": "build: dist rebuilds inline @opencode-ai/plugin + zod, swamping small PR diffs",
+      "url": "https://github.com/antongulin/opencode-skill-creator/issues/43",
+      "action": "closed",
+      "actor": "antongulin",
+      "ts": "2026-10-01T01:03:21.000Z",
+      "own": false
+    },
+    {
+      "repo": "antongulin/opencode-skill-creator",
+      "number": 38,
+      "title": "Feature request: OpenCode V2 compatibility — plugin fails to load with PluginModule.LoadError (V1 plugin API)",
+      "url": "https://github.com/antongulin/opencode-skill-creator/issues/38",
+      "action": "closed",
+      "actor": "antongulin",
+      "ts": "2026-10-01T01:03:20.000Z",
+      "own": false
+    }
+  ],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "source": "search-backfill",
+  "backfillLimits": {
+    "stars": "unavailable",
+    "releases": "own-repos-only",
+    "issues": "search-approx",
+    "reviews": "search-approx",
+    "discussions": "search-approx",
+    "comments": "unavailable",
+    "commits": "repo-scan-accurate"
+  },
+  "dataHash": "5dfc5d7b0399d2ab1c0d9e88d54887f1181c9d4edd543a76407b3f49f7f61934"
+}

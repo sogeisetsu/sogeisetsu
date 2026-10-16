@@ -1,0 +1,76 @@
+{
+  "date": "2026-09-27",
+  "windowStart": "2026-09-27T00:00:00+08:00",
+  "windowEnd": "2026-09-28T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-15T19:50:27.633Z",
+  "empty": false,
+  "totals": {
+    "commits": 2,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "afc6881d8e1e5544c5b114ae9a7118b2d0e48a35",
+          "message": "chore: add .gitattributes to enforce LF endings",
+          "ts": "2026-09-26T18:23:45Z"
+        },
+        {
+          "sha": "9b513c19e8f9ae547b193ad602dedd5c35187916",
+          "message": "chore: ignore .opencode",
+          "ts": "2026-09-26T18:18:57Z"
+        }
+      ],
+      "automated": 1,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    }
+  ],
+  "automatedCommits": 1,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [],
+  "stars": [],
+  "starInventory": [],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": true
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "source": "search-backfill",
+  "backfillLimits": {
+    "stars": "unavailable",
+    "releases": "own-repos-only",
+    "issues": "search-approx",
+    "reviews": "search-approx",
+    "discussions": "search-approx",
+    "comments": "unavailable",
+    "commits": "repo-scan-accurate"
+  },
+  "dataHash": "5b24e575810b1395e2dbaa65a9c1486cd0f11971326c830fc7fd13806a55d4b1"
+}

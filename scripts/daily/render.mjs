@@ -49,7 +49,7 @@ const MONTHS_SHORT = [
 // ---------------------------------------------------------------- escaping
 
 /** Escape a value for HTML text / attribute context. Copied from render-svg.mjs. */
-function esc(value) {
+export function esc(value) {
   return String(value == null ? '' : value)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -63,7 +63,7 @@ function esc(value) {
  * Accepts absolute http(s) links (GitHub item URLs) and relative links
  * (index -> day pages). Anything protocol-ish and unknown is dropped.
  */
-function safeHref(url) {
+export function safeHref(url) {
   const s = String(url == null ? '' : url).trim();
   if (!s) return null;
   if (/^(javascript|data|vbscript|file|blob):/i.test(s)) return null;
@@ -325,7 +325,7 @@ function fmtDateShort(value) {
  * identical only one copy is emitted; otherwise both are baked in and CSS
  * shows exactly one based on <html data-lang>.
  */
-function i18n(en, zh) {
+export function i18n(en, zh) {
   const a = en == null ? '' : String(en);
   const b = zh == null || zh === '' ? a : String(zh);
   if (a === b) return esc(a);
@@ -378,7 +378,7 @@ export function splitParagraphs(text, lang) {
 
 // ---------------------------------------------------------------- fragments
 
-const SEP = '<span class="dot">·</span>';
+export const SEP = '<span class="dot">·</span>';
 
 function repoSpan(repo) {
   return repo ? `<span class="repo">${esc(repo)}</span>` : '';
@@ -467,7 +467,7 @@ function githubButton(username) {
 }
 
 /** Right-aligned cluster: GitHub profile button + language toggle. */
-function topbarRight(username) {
+export function topbarRight(username) {
   return `<div class="topbar-right">${githubButton(username)}${langToggle()}</div>`;
 }
 
@@ -501,7 +501,7 @@ const ICONS = {
   moon: '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/>',
 };
 
-function icon(name) {
+export function icon(name) {
   const body = ICONS[name] || '<circle cx="12" cy="12" r="4"/>';
   return (
     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ` +
@@ -512,7 +512,7 @@ function icon(name) {
 
 // ---------------------------------------------------------------- sections
 
-function section(iconName, titleEn, titleZh, pillHtml, body) {
+export function section(iconName, titleEn, titleZh, pillHtml, body) {
   return (
     `<section class="card">` +
     `<header class="sec-head">` +
@@ -531,7 +531,7 @@ function section(iconName, titleEn, titleZh, pillHtml, body) {
  * total is missing or not a number. (0 is a valid total: e.g. a commits
  * section rendered only for automated commits must still read 0.)
  */
-function pill(total, fallback) {
+export function pill(total, fallback) {
   const hasTotal =
     total !== null && total !== undefined && total !== '' && Number.isFinite(Number(total));
   const value = hasTotal ? Number(total) : Number(fallback) || 0;
@@ -884,7 +884,7 @@ function repliesSection(items, notice) {
   );
 }
 
-function statsStrip(totals) {
+export function statsStrip(totals) {
   const defs = [
     { key: 'commits', en: 'Commits', zh: '提交' },
     { key: 'prs', en: 'Pull requests', zh: 'PR' },
@@ -957,7 +957,7 @@ function emptyState() {
   );
 }
 
-function footerBlock(generatedAt) {
+export function footerBlock(generatedAt) {
   const ms = toMs(generatedAt);
   const when = ms
     ? (() => {
@@ -986,7 +986,7 @@ const LANG_BOOTSTRAP =
   "if(l==='zh'||l==='en'){document.documentElement.setAttribute('data-lang',l);" +
   "document.documentElement.lang=(l==='zh')?'zh-CN':'en';}}catch(e){}";
 
-const TOGGLE_SCRIPT =
+export const TOGGLE_SCRIPT =
   "(function(){" +
   "function sync(l){var a=document.querySelectorAll('[data-set-lang]');" +
   "for(var i=0;i<a.length;i++){a[i].setAttribute('aria-pressed'," +
@@ -1003,7 +1003,7 @@ const STAGGER = Array.from({ length: 14 }, (_, i) =>
   `.wrap > *:nth-child(${i + 1}){animation-delay:${(i * 0.045).toFixed(3)}s}`
 ).join('\n');
 
-function pageStyle(assetPrefix = '') {
+export function pageStyle(assetPrefix = '', extraCss = '') {
   return `
 @font-face{font-family:'Chomsky';src:url('${assetPrefix}assets/fonts/chomsky.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
 :root{
@@ -1343,11 +1343,11 @@ ${STAGGER}
 @media (max-width:400px){
   .ghbtn{padding:8px 11px}
   .ghbtn-label{display:none}
-}
+}${extraCss ? `\n${extraCss}` : ''}
 `;
 }
 
-function htmlDoc({ title, body, assetPrefix = '' }) {
+export function htmlDoc({ title, body, assetPrefix = '', extraCss = '' }) {
   return `<!doctype html>
 <html lang="en" data-lang="en">
 <head>
@@ -1357,7 +1357,7 @@ function htmlDoc({ title, body, assetPrefix = '' }) {
 <title>${esc(title)}</title>
 <link rel="icon" type="image/svg+xml" href="${assetPrefix}favicon.svg">
 <script>${LANG_BOOTSTRAP}</script>
-<style>${pageStyle(assetPrefix)}</style>
+<style>${pageStyle(assetPrefix, extraCss)}</style>
 </head>
 <body>
 ${body}
@@ -1477,9 +1477,11 @@ export function renderReportPage({ data, ai } = {}) {
 
 // ---------------------------------------------------------------- index page
 
-export function renderIndexPage({ days, generatedAt, username } = {}) {
+export function renderIndexPage({ days, generatedAt, username, summaryCardHtml } = {}) {
   const list = A(days).slice(0, 60);
   const user = username == null ? '' : String(username).trim();
+  // 近 30 天 AI 总结卡片（片段已由 scripts/summary/render.mjs 渲染好）；没有总结文件时为空串
+  const summaryCard = typeof summaryCardHtml === 'string' ? summaryCardHtml.trim() : '';
 
   const rows = list
     .map((day) => {
@@ -1516,6 +1518,7 @@ export function renderIndexPage({ days, generatedAt, username } = {}) {
       '每日一份报告，最新在前。'
     )}</p>` +
     `</header>\n` +
+    (summaryCard ? `${summaryCard}\n` : '') +
     (list.length
       ? `<ul class="daylist">\n${rows}\n</ul>\n`
       : `<section class="card empty-card"><p class="empty-sub">${i18n(
