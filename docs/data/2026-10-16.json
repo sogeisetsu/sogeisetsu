@@ -3,12 +3,12 @@
   "windowStart": "2026-10-16T00:00:00+08:00",
   "windowEnd": "2026-10-17T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-16T18:51:02.026Z",
+  "generatedAt": "2026-10-16T20:51:02.078Z",
   "empty": false,
   "totals": {
     "commits": 14,
     "prs": 0,
-    "issues": 5,
+    "issues": 6,
     "reviews": 0
   },
   "commits": [
@@ -137,6 +137,16 @@
       "own": false,
       "state": "open",
       "comments": 4
+    },
+    {
+      "repo": "anomalyco/opencode",
+      "number": 51281,
+      "title": "fix(core): recover worktree removal blocked by cached locations",
+      "url": "https://github.com/anomalyco/opencode/pull/51281",
+      "action": "commented",
+      "ts": "2026-10-15T17:45:09.000Z",
+      "own": false,
+      "comments": 3
     },
     {
       "repo": "openchamber/openchamber",
@@ -339,5 +349,5 @@
   ],
   "ai": null,
   "aiProvider": null,
-  "dataHash": "88e74575b9f4bcadea6592b6cb9053c7f291320969f9d687952c61dcd1d78700"
+  "dataHash": "18159261d8da73b4f4955f9034d1d9c87bd7d421187376db81e5386aea0c9e82"
 }
