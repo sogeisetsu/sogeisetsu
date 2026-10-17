@@ -98,5 +98,10 @@ Before working on any task, read `codemap.md` to understand:
 
 For deep work on a specific folder, also read that folder's `codemap.md`
 （`scripts/`、`scripts/daily/`、`scripts/daily/lib/`、`scripts/summary/`、`ops/`、`ops/cloudflare-cron/`）。
+
+映射只覆盖 `scripts/**` 与 `ops/**` 的代码与配置；`docs/` / `data/` / `assets/` 是生成物，不在映射范围内。
+**开始改动前先核对映射是否过期**：基线提交与判断命令写在 `codemap.md` 顶部
+（`git log --oneline 5c9eeab..HEAD -- scripts ops`，有输出即需复核）。不要用"提交号是否等于 HEAD"判断
+—— 本仓每 2 小时有 bot 自动提交生成物，那样会恒报过期。
 注意：`.slim/` 只是 codemap 工具的本地缓存（已在 `.gitignore` 忽略），不要提交。
 
