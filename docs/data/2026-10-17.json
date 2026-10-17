@@ -3,10 +3,10 @@
   "windowStart": "2026-10-17T00:00:00+08:00",
   "windowEnd": "2026-10-18T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-17T10:51:04.649Z",
+  "generatedAt": "2026-10-17T10:59:14.765Z",
   "empty": false,
   "totals": {
-    "commits": 9,
+    "commits": 10,
     "prs": 0,
     "issues": 1,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 9,
+      "count": 10,
       "own": true,
       "messages": [
+        {
+          "sha": "211aa26fc4faad077471556da8d9f8204d34224d",
+          "message": "fix(ai): 200 但 content 为空时也翻倍 max_tokens 重试，别空转纠正提示",
+          "ts": "2026-10-17T10:55:03Z"
+        },
         {
           "sha": "f97d6c5b2620c383dbd91b1181acd46e7b521d05",
           "message": "chore(docs): 重渲染 docs/summary.html（按仓库条数 pill）",
@@ -63,13 +68,13 @@
           "ts": "2026-10-17T09:57:24Z"
         }
       ],
-      "automated": 23,
+      "automated": 24,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 23,
+  "automatedCommits": 24,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -195,16 +200,16 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "Reworked repo summary site in sogeisetsu/sogeisetsu and replied on an opencode",
-      "summary": "All **9 own commits** landed in `sogeisetsu/sogeisetsu`, and the work centered on the generated repo-summary site. The site was re-rendered with a per-repo count pill and a teaser plus a fixed number on each repo card; the `byRepo` section was expanded to cover every repo instead of being cut at 8, and the AI fallback provider was switched from Zen to OpenCode Go (longcat → deepseek). Style fixes enlarged Chinese badge and tag fonts and tightened letter spacing, a CI job began rebasing to retry failed pushes, and `AGENTS.md` was updated with the workspace state and the new provider order. Another 23 automated commits were made by `github-actions[bot]`. No releases, pull requests, reviews, replies, or star activity were recorded. I also commented on `anomalyco/opencode` issue #56113, titled \"Subagent runs fail with 'model_coming_soon' on MiMo-V2.6-Flash while the main session on the same model works fine\", where the 6 comments reflect an active discussion.",
+      "headline": "sogeisetsu: 10 commits on daily-report tooling, 1 issue comment",
+      "summary": "On 2026-10-17 the user made **10 own commits** in `sogeisetsu/sogeisetsu`, plus 24 automated commits by `github-actions[bot]`. The own commits fixed the AI retry path so an HTTP 200 with empty content also doubles `max_tokens` and retries instead of spinning on the correction prompt. Two summary fixes followed: repository section headings gained count pills matching the highlights section, and the `byRepo` cap was relaxed to track the real repository count instead of a fixed 8. A feature commit added a homepage teaser with per-repository concrete numbers, expanded `byRepo` to cover every repository, and explained what each one does. The AI fallback provider was switched from Zen to OpenCode Go (`longcat` to `deepseek`), and `AGENTS.md` was finalized with the updated provider order. CI work made activity pushes rebase and retry the same way the daily report does, and rendering changes enlarged badge and label font sizes in the Chinese version. No pull requests, reviews, or releases were recorded, and totals show **1 issue** touched: a comment on `anomalyco/opencode` issue #56113 about subagent runs failing with `model_coming_soon` on MiMo-V2.6-Flash while the main session works.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "重构 sogeisetsu/sogeisetsu 的仓库摘要站点，并回复 opencode 模型报错 issue",
-      "summary": "当天 **9 次本人提交** 全部落在 `sogeisetsu/sogeisetsu`，内容集中在自动生成的仓库摘要站点：站点重新渲染并加上按仓库的条数 pill，首页 teaser 与每个仓库卡片都补上确定数字；`byRepo` 板块放宽条数上限，覆盖全部仓库而不是一直砍到 8 条；AI 备用 provider 由 Zen 换成 OpenCode Go（longcat → deepseek）。样式上放大了中文版徽章与标签的字号并收紧字距，CI 任务改为推送失败时 rebase 重试，`AGENTS.md` 也按工作区既有更新和新的 provider 顺序落定。另有 23 次由 `github-actions[bot]` 自动提交。当天没有发布、PR、review、回复或 star 记录。我还评论了 `anomalyco/opencode` 的 issue #56113，标题为 \"Subagent runs fail with 'model_coming_soon' on MiMo-V2.6-Flash while the main session on the same model works fine\"，该讨论共有 6 条评论，互动仍在进行。",
+      "headline": "sogeisetsu：日报工具链 10 次提交，评论 1 个 issue",
+      "summary": "2026-10-17，用户在 `sogeisetsu/sogeisetsu` 完成了 **10 次本人提交**，另有 24 次由 `github-actions[bot]` 自动提交。本人提交修复了 AI 重试逻辑：HTTP 200 但 content 为空时同样翻倍 `max_tokens` 重试，不再空转纠正提示。随后有两处 summary 修复：仓库板块标题补上与要点板块一致的条数 pill，`byRepo` 条数上限改为随真实仓库数放宽，不再固定 8 条砍仓库。一项功能提交新增首页 teaser 与各仓库确定数字，让 `byRepo` 覆盖全部仓库并讲清各仓做了什么。备用 AI provider 由 Zen 换成 OpenCode Go（`longcat` 改为 `deepseek`），并落定 `AGENTS.md`（同步工作区既有更新、provider 顺序改为 OpenCode Go）。CI 方面让 activity 推送失败时按日报同法 rebase 重试，渲染上放大了中文版徽章与标签的字号、收紧了字距。当日没有 PR、评审和发布，总计触及 **1 个 issue**：在 `anomalyco/opencode` 的 #56113 下留言，该问题是 MiMo-V2.6-Flash 上子代理报 `model_coming_soon` 而同一模型的主会话正常。",
       "releaseNotes": []
     }
   },
-  "aiProvider": "opencode-go-longcat",
-  "dataHash": "bae8bde4bb93e59dedc75c34712248b0386a5bfb2818c0ba8565fe4b3f79747e"
+  "aiProvider": "opencode-go-deepseek",
+  "dataHash": "ea6ddddff8a469e94bd85303149565a165a7fb5ef322306070424b25ca50e28e"
 }
