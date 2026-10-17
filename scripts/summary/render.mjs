@@ -428,8 +428,19 @@ export function renderSummaryPage({ summary, username } = {}) {
   if (hl) parts.push(section('spark', 'Highlights', '要点', pill(A(O(ai).highlights).length || A(O(ai).zh.highlights).length, 0), hl));
 
   // By repository
+  // 与 Highlights 一致：标题右侧给出条数（每个有活动的仓库一条），别让两条板块一个有一个没有
   const br = byRepoBody(ai || {});
-  if (br) parts.push(section('commit', 'By repository', '按仓库', '', br));
+  if (br) {
+    parts.push(
+      section(
+        'commit',
+        'By repository',
+        '按仓库',
+        pill(A(O(ai).byRepo).length || A(O(ai).zh.byRepo).length, 0),
+        br
+      )
+    );
+  }
 
   // footer + 固定口径说明
   parts.push(footerBlock(s.generatedAt));

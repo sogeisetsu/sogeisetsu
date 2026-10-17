@@ -14,7 +14,8 @@
  *   C validateSummary         —— 合法接受（URL 逐条来自输入数据）、12 项拒绝矩阵、
  *     超长 overview / headline / teaser 截断不拒收、byRepo 条数随真实仓库数放宽
  *   D 端到端                  —— 假 provider → generateStructured（含纠正重试 2 次）→
- *     renderSummaryPage / summaryCard 的数字、双语、headline、teaser（旧数据回退第一段）、缺日标注
+ *     renderSummaryPage / summaryCard 的数字、双语、headline、teaser（旧数据回退第一段）、
+ *     两个板块标题的条数 pill、缺日标注
  *   E 临时目录清理
  *
  * 用法：node scripts/summary/test-summary.mjs
@@ -741,6 +742,17 @@ await check("e2e: renderSummaryPage 数字/双语/headline/缺日", () => {
     ["headZh", html.includes(hZh)],
     ["missingNotice", notices.some((t) => t.includes("4") && c1.missing.dates.some((d) => t.includes(d)))],
     ["aiBlocks", html.includes('<div class="ai-summary i18n" data-lang="en">') && html.includes('<div class="ai-summary i18n" data-lang="zh">')],
+  ];
+});
+
+await check("e2e: Highlights / By repository 标题都带条数 pill", () => {
+  if (!e2eSummary) return [["summaryReady", false]];
+  const html = renderSummaryPage({ summary: e2eSummary });
+  const pills = [...html.matchAll(/<span class="pill">([^<]*)<\/span>/g)].map((m) => m[1]);
+  return [
+    ["twoPills", pills.length === 2],
+    ["highlightsPill", pills[0] === String(e2eSummary.ai.en.highlights.length)],
+    ["byRepoPill", pills[1] === String(e2eSummary.ai.en.byRepo.length)],
   ];
 });
 
