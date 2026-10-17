@@ -19,6 +19,9 @@ jobs:
     steps:
       - name: 检出仓库
         uses: actions/checkout@v7
+        with:
+          # 与日报/总结两条一致：push 撞车后要走 git pull --rebase 重试，需要完整历史
+          fetch-depth: 0
 
       - name: 设置 Node.js 20
         uses: actions/setup-node@v7
@@ -35,5 +38,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md assets/30-day-activity.svg
-          git diff --cached --quiet || git commit -m "chore: 更新近 30 天活动卡片"
-          git push
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: 更新近 30 天活动卡片"
+          # 排队期间 main 可能已被日报/总结推进（run 拿的是创建时的 commit），
+          # 直接 push 会 non-fast-forward。生成物（README 卡片块 + SVG）可丢弃：
+          # rebase 撞车时 -X theirs 保留本次新生成的版本，与另两条 workflow 同法重试 3 次。
+          for i in 1 2 3; do
+            git push && exit 0
+            git pull --rebase --autostash -X theirs origin main
+          done
+          echo "推送失败：重试 3 次后仍未成功" >&2
+          exit 1
