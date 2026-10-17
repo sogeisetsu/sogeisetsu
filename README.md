@@ -8,7 +8,7 @@ _Updated automatically: 2026-10-17_
 <details><summary>🔨 Owned repos</summary>
 
 - 📝 Pushed 125 commits to `sogeisetsu/meld-deepresearch`
-- 📝 Pushed 58 commits to `sogeisetsu/sogeisetsu`
+- 📝 Pushed 68 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 24 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 8 commits to `sogeisetsu/asset-inventory`
 - 📝 Pushed 7 commits to `sogeisetsu/opencode-agent-sandbox`
@@ -22,6 +22,7 @@ _Updated automatically: 2026-10-17_
 
 <details><summary>🌐 Contributed to</summary>
 
+- 💬 Commented on [anomalyco/opencode#56113](https://github.com/anomalyco/opencode/issues/56113): Subagent runs fail with 'model_coming_soon' on MiMo-V2.6-Flash while the main session on the same model works fine
 - 💬 Commented on [anomalyco/opencode#55785](https://github.com/anomalyco/opencode/issues/55785): go: mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image \(400\)
 - 💬 Commented on [anomalyco/opencode#50823](https://github.com/anomalyco/opencode/issues/50823): opencode-go: mimo-v2.6-flash vision reads a stale image after ≥5 images in one session
 - 🐛 Opened issue [go: mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image \(400\)](https://github.com/anomalyco/opencode/issues/55785) in `anomalyco/opencode`
@@ -31,7 +32,6 @@ _Updated automatically: 2026-10-17_
 - 💬 Commented on [openchamber/openchamber#4111](https://github.com/openchamber/openchamber/issues/4111): Deleting a multi-run leaves orphaned MCP child processes; git worktree remove --force then fails with Permission denied
 - 💬 Commented on [openchamber/openchamber#4346](https://github.com/openchamber/openchamber/issues/4346): \[test\] SidebarHeader.test.tsx still passes onOpenMultiRun/canOpenMultiRun removed in d9fbf6b
 - 🐛 Opened issue [\[Bug\] Context panel breakdown bar divides whole-session estimates by the last message's input, so 其他 is always 0%](https://github.com/openchamber/openchamber/issues/4920) in `openchamber/openchamber`
-- 🐛 Opened issue [\[Bug\] Browser captures export at CSS pixel size \(1x\), so they are half the screen's resolution on a 200% display](https://github.com/openchamber/openchamber/issues/4899) in `openchamber/openchamber`
 
 </details>
 <!--END:activity-->
