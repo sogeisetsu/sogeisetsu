@@ -559,7 +559,8 @@ function extractContent(json, shape) {
  *   · 429/5xx → 等 ~2s 重试一次 → 仍失败换下一家
  *   · SenseNova chat 404/405 → 同 provider 换 responses 形态再试一次
  *   · JSON 提取/校验失败 → 逐次加严提醒，最多追加 3 次（共 4 次尝试）→ 换下一家
- *   · 截断（finish_reason=length）→ 打印 usage/reasoning 诊断并翻倍 max_tokens 重试（上限 65536）
+ *   · 截断（finish_reason=length）或空输出（200 但 content 为空，reasoning 吃光预算）
+ *     → 打印 usage/reasoning 诊断并翻倍 max_tokens 重试（上限 65536）
  *   · chat 默认发 reasoning_effort=none 关闭思考（避免 CoT 吃光 max_tokens 导致 content 为空）；400 时去掉重试
  *   · provider.headers（可选）原样追加进请求头（OpenCode Go 的 user-agent / 会话 id 走这里）
  *
@@ -681,8 +682,12 @@ async function attemptProvider(provider, system, user, validate, feedback = buil
       (shape === "chat" && json?.choices?.[0]?.finish_reason === "length") ||
       (shape === "responses" &&
         (json?.incomplete_details != null || json?.status === "incomplete"));
+    // 空输出检测：OpenCode Go 上的模型即使发 reasoning_effort=none 也计 reasoning tokens，
+    // max_tokens 被思考吃光时会回 200 + content 为空 + finish_reason=stop —— 截断那支逮不到，
+    // 只会被当成「提取不到 JSON」空转 4 轮纠正再换下一家。这类纯预算问题与截断同法处理。
+    const emptyContent = content.trim() === "";
     let checked;
-    if (truncated) {
+    if (truncated || emptyContent) {
       const finish = json?.choices?.[0]?.finish_reason ?? json?.status ?? "?";
       const usage = json?.usage ? JSON.stringify(json.usage) : "n/a";
       const reasoningLen =
@@ -690,15 +695,18 @@ async function attemptProvider(provider, system, user, validate, feedback = buil
           ? json.choices[0].message.reasoning.length
           : 0;
       console.error(
-        `${LOG} ${provider.name}: 输出被截断（finish_reason=${finish}, content_len=${content.length}, reasoning_len=${reasoningLen}, max_tokens=${maxTokens}, usage=${usage}）`
+        `${LOG} ${provider.name}: ${truncated ? "输出被截断" : "输出为空"}（finish_reason=${finish}, content_len=${content.length}, reasoning_len=${reasoningLen}, max_tokens=${maxTokens}, usage=${usage}）`
       );
-      // CoT 吃光 max_tokens 时 content 为空：先尝试抬高预算，到顶仍截断才算失败
+      // CoT 吃光 max_tokens 时 content 为空：先尝试抬高预算，到顶仍不行才算失败
       if (maxTokens < MAX_TOKENS_CAP) {
         maxTokens = Math.min(maxTokens * 2, MAX_TOKENS_CAP);
         console.error(`${LOG} ${provider.name}: 提高 max_tokens 至 ${maxTokens} 后重试`);
         continue;
       }
-      checked = { ok: false, reason: "输出被 max_tokens 截断" };
+      checked = {
+        ok: false,
+        reason: truncated ? "输出被 max_tokens 截断" : "输出为空（reasoning 可能吃光 max_tokens）",
+      };
     } else {
       const parsed = parseJsonPayload(content);
       checked = parsed

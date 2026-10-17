@@ -9,6 +9,7 @@
  *   · summary / headline 超长 → 代码确定性截断到上限后接受（不整段失败）
  *   · JSON 夹在散文里 / 字符串内有未转义换行 → 仍能提取解析
  *   · finish_reason=length 截断 → 翻倍 max_tokens 重试
+ *   · 200 但 content 为空（reasoning 吃光预算，finish_reason 仍是 stop）→ 同法翻倍重试
  *   · HTTP 400（带 reasoning_effort）→ 去掉该参数重试
  *   · HTTP 429 → 等待后重试
  *   · 只返回 1 句 summary → 追加“句数”纠正提示后重试
@@ -102,6 +103,13 @@ const cases = [
   { name: "json-wrapped-in-prose", script: [chatResp(`Here is the report:\n${JSON.stringify(validNarrative())}\nDone.`)], expect: { ok: true, calls: 1 } },
   { name: "json-unescaped-newline", script: [chatResp(JSON.stringify(validNarrative()).replace("One. Two. Three. Four.", "One.\nTwo. Three. Four."))], expect: { ok: true, calls: 1 } },
   { name: "truncation-then-double", script: [chatResp("", "length"), chatResp(JSON.stringify(validNarrative()))], expect: { ok: true, calls: 2, secondMaxTokens: 32768 } },
+  {
+    // Go 系模型（longcat / deepseek）常见：reasoning 吃光预算 → 200 + content 空 + finish_reason=stop，
+    // 与截断同样翻倍 max_tokens 重试，而不是空转 4 轮纠正提示
+    name: "empty-content-then-double",
+    script: [chatResp(""), chatResp(JSON.stringify(validNarrative()))],
+    expect: { ok: true, calls: 2, secondMaxTokens: 32768 },
+  },
   { name: "http-400-drops-reasoning", script: [{ status: 400, body: "{}" }, chatResp(JSON.stringify(validNarrative()))], expect: { ok: true, calls: 2, secondNoReasoning: true } },
   { name: "http-429-retry", script: [{ status: 429, body: "{}" }, chatResp(JSON.stringify(validNarrative()))], expect: { ok: true, calls: 2 } },
   {
