@@ -1,5 +1,7 @@
 .openchamber/
 .opencode/
+# Codemap 本地状态（codemap.mjs 的变更检测缓存；各目录的 codemap.md 仍会提交）
+.slim/
 scripts/preview-normal.svg
 scripts/preview-empty.svg
 scripts/preview-real.svg

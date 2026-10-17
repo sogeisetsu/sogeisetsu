@@ -86,3 +86,17 @@ git push
 - 站点 head 与字体受 `scripts/daily/verify.mjs` 硬约束（改 head / CSS / 渲染层后必跑 `check.mjs`）：必须有 Chomsky `@font-face`、`--headline` 必须以 `"Chomsky"` 开头、favicon 路径与 `docs/assets/fonts/chomsky.woff2` 实体（wOF2 魔数）都在；**`<head>` 里禁用字体名 `Newsreader` / `霞鹜文楷` / `lxgw`**（历史遗留，正文提到不算）。
 - 代码修改必须走分支：新建分支 → 提交 → 合并回 `main` → push；不要直接在 `main` 上修改。
 - 不擅自新增依赖；改 CI / 改权限前先确认。
+
+## Repository Map
+
+A full codemap is available at `codemap.md` in the project root.
+
+Before working on any task, read `codemap.md` to understand:
+- Project architecture and entry points
+- Directory responsibilities and design patterns
+- Data flow and integration points between modules
+
+For deep work on a specific folder, also read that folder's `codemap.md`
+（`scripts/`、`scripts/daily/`、`scripts/daily/lib/`、`scripts/summary/`、`ops/`、`ops/cloudflare-cron/`）。
+注意：`.slim/` 只是 codemap 工具的本地缓存（已在 `.gitignore` 忽略），不要提交。
+
