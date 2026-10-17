@@ -11,7 +11,8 @@
 - `scripts/daily/render.mjs` —— HTML/MD 渲染（内联 CSS，双语切换，段落切分，标题字体）；页面外壳 `pageStyle` / `htmlDoc` 等已导出，供总结页复用
 - `scripts/daily/lib/github.mjs` —— GitHub 采集（公开口径）；`collectHistoricalData` 是 Search API 历史回填通道（一次性，见下）
 - `scripts/daily/lib/ai.mjs` —— SenseNova 适配（JSON 模式 + 重试）；`generateStructured` 是通用结构化生成入口，日报与总结共用
-- `scripts/daily/lib/days.mjs` —— 已定稿日目录的共享助手（+08 日期推算、JSON 读写、内容哈希、docs/data 扫描）
+- `scripts/daily/lib/days.mjs` —— 已定稿日目录的共享助手（+08 日期推算、JSON 读写、内容哈希、docs/data 扫描）；+08 日期口径本体在 `scripts/cst.mjs`，这里原样转出
+- `scripts/cst.mjs` —— 三条产物线共用的 +08 自然日口径（零 import）；`cstDateOf` 是唯一正确的"时间戳 → 日期"，别用 `toISOString().slice(0,10)`（那是 UTC 日）
 - `scripts/daily/verify.mjs` —— 本地不变式自检（含 30 天总结的数字一致性）
 - `scripts/summary/collect.mjs` —— 30 天窗口聚合：数字条由代码逐日求和 + 压缩 AI 输入
 - `scripts/summary/prompt.mjs` / `validate-summary.mjs` —— 总结提示词与严格校验（条目必须真实存在；URL 由校验器从输入注入）
@@ -19,7 +20,7 @@
 - `scripts/summary/index.mjs` —— 总结编排：聚合 → 窗口哈希去重 → AI → 写 `docs/`
 - `scripts/summary/backfill.mjs` —— 一次性 Search API 回填 CLI（写 `data/backfill/`，不挂 workflow）
 - `scripts/summary/test-summary.mjs` —— 总结侧确定性回归（假数据 + 假 provider）
-- `scripts/generate-activity.mjs` / `scripts/render-svg.mjs` —— 近 30 天活动卡片线（GraphQL `contributionsCollection` + `events/public`）→ 写 `assets/30-day-activity.svg` 并替换 `README.md` 里 `<!--START:activity-->`…`<!--END:activity-->` 之间的内容；两个 marker 必须各出现且仅一次，否则脚本直接 fail
+- `scripts/generate-activity.mjs` / `scripts/render-svg.mjs` —— 近 30 天活动卡片线（GraphQL `contributionsCollection` + `events/public`）→ 写 `assets/30-day-activity.svg` 并替换 `README.md` 里 `<!--START:activity-->`…`<!--END:activity-->` 之间的内容；两个 marker 必须各出现且仅一次，否则脚本直接 fail；窗口与分桶同为 **+08 自然日**（含今天），逐仓 / 逐条按 `isPrivate` / `visibility` **只取公开**，`totals` 只由过滤后的公开明细求和
 - `scripts/preview.mjs` + `scripts/fixtures/*.json` —— 用 fixture 出本地预览 SVG（`scripts/preview-*.svg`、`assets/_preview.html` 已 gitignore）
 - `docs/` —— **生成物**（Pages Source = `main` / `docs`）：`index.html`、`data/<date>.json`、`report/<date>.{html,md}`、`summary.json`、`summary.html`
 - `data/backfill/<date>.json` —— 回填日数据（**不在 `docs/` 下，因此不站点可见**、不出现在归档列表）
@@ -85,6 +86,7 @@ git push
 - **总结页的数字条完全由代码求和**（Σ 各日 `totals` / `automatedCommits`），AI 只叙述、不计算；`verify.mjs` 逐项核对，偏了就 FAIL。
 - **总结的 AI 输出受严格校验**：`highlights` / `byRepo` 里出现的仓库与条目编号必须真实存在于输入数据，链接一律由校验器从输入注入（模型不许给 URL）；**AI 不许提任何条目的评论数**（`comments` 是采集那一刻的实时值）。
 - **`data/backfill/` 是一次性回填**：事件流（`/users/:u/events/public`）只保留最近 300 条 / 90 天，2026-09-16 ~ 10-01 的动作级事件已过期，只能用 Search API（`author:` / `commenter:` / `reviewed-by:` + 日期区间）+ 逐条 REST 校时重建，属**近似**：`stars` 无法重建（留空）、`releases` 只覆盖自有仓库、issue/评审可能偏低、评论数（`comments`）不回填；每个回填文件带 `source: "search-backfill"` 与 `backfillLimits`，页面如实标注。窗口每天前移，这批日期会逐日退出窗口（约 15 天后窗口完全由 `docs/data` 覆盖）。
+- **30 天活动卡片的窗口** = 最近 30 个 +08 自然日、**含今天**（`cstDayMinus(29)..cstDayMinus(0)`），与日报「今天滚动」同口径；`daily` 柱状也按 +08 自然日分桶（不能用 UTC 日期，否则 +08 的 00:00–08:00 会归错天）。卡片线的 `totals` 与日报同一条恒等式：只由**过滤后的公开明细**求和；`contributionsCollection` 的四项标量在 user-scoped token 下含私有贡献，故逐仓 / 逐条按 `isPrivate` / `visibility` 过滤（拿不准一律按不公开），标量只用于对账告警、不进产物。
 - 站点 head 与字体受 `scripts/daily/verify.mjs` 硬约束（改 head / CSS / 渲染层后必跑 `check.mjs`）：必须有 Chomsky `@font-face`、`--headline` 必须以 `"Chomsky"` 开头、favicon 路径与 `docs/assets/fonts/chomsky.woff2` 实体（wOF2 魔数）都在；**`<head>` 里禁用字体名 `Newsreader` / `霞鹜文楷` / `lxgw`**（历史遗留，正文提到不算）。
 - 代码修改必须走分支：新建分支 → 提交 → 合并回 `main` → push；不要直接在 `main` 上修改。
 - 不擅自新增依赖；改 CI / 改权限前先确认。

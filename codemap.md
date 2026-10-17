@@ -1,6 +1,6 @@
 # Repository Atlas: sogeisetsu
 
-> **映射基线**：`5c9eeab`（2026-10-17）· **覆盖范围**：`scripts/**` + `ops/**` 的代码与配置。
+> **映射基线**：`c1f30a3`（2026-10-17）· **覆盖范围**：`scripts/**` + `ops/**` 的代码与配置。
 > **判断是否过期**：`git log --oneline 5c9eeab..HEAD -- scripts ops` —— 有输出即说明映射覆盖的代码已变，动手前先复核受影响目录的 `codemap.md`。
 > **为什么不是「和 HEAD 比提交号」**：本仓每 2 小时就有 bot 自动提交生成物（`docs/` / `README.md` / `assets/`），那些提交与架构无关。裸比提交号会在两小时内必然报"过期"，等于没有信号——所以过期判断必须限定到 `scripts` 与 `ops` 这两条路径。
 
@@ -16,7 +16,7 @@
 
 全仓最重要的两条不变式：
 - **数字由代码算，AI 只叙述**：`totals` 等确定数字全部由代码求和；AI 输出经严格校验，URL 由校验器从真实数据注入，模型写不出链接。
-- **口径统一在 `scripts/daily/lib/days.mjs`**：所有日期都是 Asia/Shanghai（+08）自然日，所有内容哈希都走同一函数，保证日报与总结两处逐字一致。
+- **口径统一在 `scripts/cst.mjs`**：所有日期都是 Asia/Shanghai（+08）自然日，三条产物线共用同一份定义（`scripts/daily/lib/days.mjs` 只做转出）；日报与总结的内容哈希走同一函数，保证两处逐字一致。
 
 ## System Entry Points
 
@@ -25,7 +25,7 @@
 | 入口 | 作用 | 常用参数 |
 | --- | --- | --- |
 | `scripts/daily/index.mjs` | 日报编排：采集 → AI → 渲染 → 写 `docs/` | `--date=YYYY-MM-DD` / `--rerender` / `--force` / `--dry-run` / `--no-ai` |
-| `scripts/generate-activity.mjs` | 活动卡片：抓数 → 出 SVG → 回写 README marker 区块 | `--dry-run` / `--dump-data=FILE` |
+| `scripts/generate-activity.mjs` | 活动卡片：抓数 → 出 SVG → 回写 README marker 区块（+08 窗口、只取公开） | `--dry-run` / `--dump-data=FILE` |
 | `scripts/summary/index.mjs` | 30 天总结编排：聚合 → 去重 → AI → 写站点 | `--rerender` / `--force` / `--dry-run` / `--no-ai` |
 | `scripts/summary/backfill.mjs` | 一次性 Search API 历史回填（不挂 workflow） | `--from=` / `--to=` / `--force` / `--dry-run` |
 | `scripts/daily/check.mjs` | **本地预检总入口**（唯一的"测试命令"）：语法检查 + 三个确定性测试 + `docs/` 不变式自检 | `--quiet` |

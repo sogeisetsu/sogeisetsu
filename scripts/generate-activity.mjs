@@ -11,6 +11,15 @@
  *   → renderActivityCard(data) → 原子写入 assets/30-day-activity.svg
  *   → 替换 README.md 中 <!--START:activity--> / <!--END:activity--> 之间的内容
  *
+ * 口径（与日报 / 30 天总结同源，口径本体在 scripts/cst.mjs）：
+ *   · 窗口 = 最近 30 个 +08 自然日（含今天），窗口末日 = 北京今天；
+ *     一个「天」= 该日 00:00:00+08:00 ≤ ts < 次日 00:00:00+08:00。
+ *   · 只统计公开数据：contributionsCollection 在 user-scoped token 下会含私有贡献，
+ *     故逐仓 / 逐条一律按 repository 的 isPrivate / visibility 过滤，
+ *     拿不准一律按不公开处理（宁可少报，不可泄露）。REST /events/public 本身即公开口径。
+ *   · totals 只由过滤后实际展示的公开明细求和（恒等于 splits 之和）；
+ *     GitHub 的四项标量只用于对账告警，不进产物。
+ *
  * data schema（消费契约，与 render-svg.mjs 对齐）：
  *   {
  *     username, windowStart, windowEnd,
@@ -29,8 +38,9 @@
 
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
+import { cstDateNextStartMs, cstDateOf, cstDateShift, cstDateStartMs, dateRange } from "./cst.mjs";
 import { renderActivityCard } from "./render-svg.mjs";
 
 // ---------------------------------------------------------------- 环境与常量
@@ -73,14 +83,14 @@ query ($login: String!, $from: DateTime!, $to: DateTime!) {
       totalPullRequestContributions
       totalPullRequestReviewContributions
       commitContributionsByRepository(maxRepositories: 100) {
-        repository { nameWithOwner owner { login } }
+        repository { nameWithOwner isPrivate visibility owner { login } }
         contributions { totalCount }
       }
       issueContributions(first: 100) {
         totalCount
         nodes {
           issue {
-            repository { nameWithOwner owner { login } }
+            repository { nameWithOwner isPrivate visibility owner { login } }
             title
             url
             createdAt
@@ -91,7 +101,7 @@ query ($login: String!, $from: DateTime!, $to: DateTime!) {
         totalCount
         nodes {
           pullRequest {
-            repository { nameWithOwner owner { login } }
+            repository { nameWithOwner isPrivate visibility owner { login } }
             title
             url
             state
@@ -103,7 +113,7 @@ query ($login: String!, $from: DateTime!, $to: DateTime!) {
       pullRequestReviewContributions(first: 100) {
         totalCount
         nodes {
-          repository { nameWithOwner owner { login } }
+          repository { nameWithOwner isPrivate visibility owner { login } }
           pullRequest { title url createdAt mergedAt }
         }
       }
@@ -191,22 +201,22 @@ async function httpFetch(url, init = {}) {
 
 // ---------------------------------------------------------------- 窗口计算
 
-function computeWindow() {
-  const now = new Date();
-  const end = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
-  );
-  const start = new Date(end);
-  start.setUTCDate(start.getUTCDate() - (WINDOW_DAYS - 1));
-  const iso = (d) => d.toISOString().slice(0, 10);
-
-  const dates = [];
-  for (let i = 0; i < WINDOW_DAYS; i += 1) {
-    const d = new Date(start);
-    d.setUTCDate(d.getUTCDate() + i);
-    dates.push(iso(d));
-  }
-  return { start, end, startISO: iso(start), endISO: iso(end), dates };
+/**
+ * 近 30 天窗口：+08 自然日、含今天，末日 = 北京今天（不是 UTC 今天）。
+ * @param {number} nowMs 可注入的当前时刻（毫秒），便于确定性回归。
+ * @returns {{startISO:string, endISO:string, dates:string[], startMs:number, endMs:number}}
+ *   startMs = 窗口首日 00:00:00+08:00；endMs = 窗口末日次日 00:00:00+08:00（半开上界）。
+ */
+export function computeWindow(nowMs = Date.now()) {
+  const endISO = cstDateOf(nowMs);
+  const startISO = cstDateShift(endISO, -(WINDOW_DAYS - 1));
+  return {
+    startISO,
+    endISO,
+    dates: dateRange(startISO, endISO),
+    startMs: cstDateStartMs(startISO),
+    endMs: cstDateNextStartMs(endISO),
+  };
 }
 
 // ---------------------------------------------------------------- GraphQL
@@ -219,8 +229,8 @@ async function fetchContributions(window) {
       query: GRAPHQL_QUERY,
       variables: {
         login: OWNER,
-        from: `${window.startISO}T00:00:00Z`,
-        to: `${window.endISO}T23:59:59Z`,
+        from: `${window.startISO}T00:00:00+08:00`,
+        to: `${window.endISO}T23:59:59+08:00`,
       },
     }),
   });
@@ -294,13 +304,30 @@ function toRepoList(map) {
     .slice(0, REPO_TOP_N);
 }
 
-function buildData(collection, rawEvents, window) {
-  const totals = {
+/**
+ * 仓库引用是否确认公开。
+ * GraphQL 的 visibility 枚举是大写（PUBLIC），REST 是小写（public），故按大小写无关比较。
+ * 拿不准（字段缺失 / null / 空串）一律当不公开：宁可少报，不可泄露。
+ */
+export function isPublicRepoRef(repo) {
+  if (!repo) return false;
+  if (repo.isPrivate === true) return false;
+  return String(repo.visibility || "").toLowerCase() === "public";
+}
+
+export function buildData(collection, rawEvents, window) {
+  // GitHub 的四项权威标量：user-scoped token 下含私有贡献，只用于对账告警，不进产物。
+  const scalars = {
     commits: num(collection.totalCommitContributions),
     prs: num(collection.totalPullRequestContributions),
     issues: num(collection.totalIssueContributions),
     reviews: num(collection.totalPullRequestReviewContributions),
   };
+  // totals 只由过滤后「实际展示的公开明细」求和 —— 与日报同一条恒等式（恒等于 splits 之和）。
+  const totals = { commits: 0, prs: 0, issues: 0, reviews: 0 };
+  // 被剔掉的非公开量：仓库名只进 Set 做去重，绝不打印、绝不进产物；对外只暴露计数。
+  const hidden = { commits: 0, prs: 0, issues: 0, reviews: 0, repos: new Set() };
+
   const splits = {
     commits: { own: 0, others: 0 },
     prs: { own: 0, others: 0 },
@@ -323,11 +350,18 @@ function buildData(collection, rawEvents, window) {
 
   // --- 提交（逐仓库归属） ---
   for (const row of collection.commitContributionsByRepository || []) {
-    const repo = row && row.repository && row.repository.nameWithOwner;
+    const repoRef = row && row.repository;
+    const repo = repoRef && repoRef.nameWithOwner;
     if (!repo) continue;
     const count = num(row.contributions && row.contributions.totalCount);
-    const own = isOwnLogin(row.repository.owner && row.repository.owner.login);
+    if (!isPublicRepoRef(repoRef)) {
+      hidden.commits += count;
+      hidden.repos.add(repo);
+      continue;
+    }
+    const own = isOwnLogin(repoRef.owner && repoRef.owner.login);
     splits.commits[own ? "own" : "others"] += count;
+    totals.commits += count;
     details.commits.push({ name: repo, count, own });
     bump(own ? repoOwn : repoOther, repo, count);
   }
@@ -336,9 +370,16 @@ function buildData(collection, rawEvents, window) {
   for (const node of collection.issueContributions?.nodes || []) {
     const issue = node && node.issue;
     if (!issue) continue;
-    const repo = issue.repository && issue.repository.nameWithOwner;
-    const own = isOwnLogin(issue.repository && issue.repository.owner && issue.repository.owner.login);
+    const repoRef = issue.repository;
+    const repo = repoRef && repoRef.nameWithOwner;
+    if (!isPublicRepoRef(repoRef)) {
+      hidden.issues += 1;
+      if (repo) hidden.repos.add(repo);
+      continue;
+    }
+    const own = isOwnLogin(repoRef.owner && repoRef.owner.login);
     splits.issues[own ? "own" : "others"] += 1;
+    totals.issues += 1;
     details.issues.push({
       repo,
       title: issue.title || "",
@@ -351,9 +392,16 @@ function buildData(collection, rawEvents, window) {
   for (const node of collection.pullRequestContributions?.nodes || []) {
     const pr = node && node.pullRequest;
     if (!pr) continue;
-    const repo = pr.repository && pr.repository.nameWithOwner;
-    const own = isOwnLogin(pr.repository && pr.repository.owner && pr.repository.owner.login);
+    const repoRef = pr.repository;
+    const repo = repoRef && repoRef.nameWithOwner;
+    if (!isPublicRepoRef(repoRef)) {
+      hidden.prs += 1;
+      if (repo) hidden.repos.add(repo);
+      continue;
+    }
+    const own = isOwnLogin(repoRef.owner && repoRef.owner.login);
     splits.prs[own ? "own" : "others"] += 1;
+    totals.prs += 1;
     details.prs.push({
       repo,
       title: pr.title || "",
@@ -367,10 +415,17 @@ function buildData(collection, rawEvents, window) {
   }
   for (const node of collection.pullRequestReviewContributions?.nodes || []) {
     const pr = node && node.pullRequest;
-    const repo = node && node.repository && node.repository.nameWithOwner;
+    const repoRef = node && node.repository;
+    const repo = repoRef && repoRef.nameWithOwner;
     if (!pr || !repo) continue;
-    const own = isOwnLogin(node.repository.owner && node.repository.owner.login);
+    if (!isPublicRepoRef(repoRef)) {
+      hidden.reviews += 1;
+      hidden.repos.add(repo);
+      continue;
+    }
+    const own = isOwnLogin(repoRef.owner && repoRef.owner.login);
     splits.reviews[own ? "own" : "others"] += 1;
+    totals.reviews += 1;
     details.reviews.push({
       repo,
       title: pr.title || "",
@@ -392,7 +447,7 @@ function buildData(collection, rawEvents, window) {
   for (const event of rawEvents) {
     const ts = tsOf(event.created_at);
     if (ts && ts < earliestTs) earliestTs = ts;
-    const date = String(event.created_at || "").slice(0, 10);
+    const date = cstDateOf(ts); // +08 自然日分桶（不能用 UTC 日期：00:00–08:00 之间会差一天）
     if (!dailyByDate.has(date)) continue; // 只保留窗口内事件
     const own = isOwnRepoName(event.repo && event.repo.name);
     const weight = event.type === "PushEvent" ? pushWeight(event) : 1;
@@ -445,9 +500,9 @@ function buildData(collection, rawEvents, window) {
   // --- 截断标记 ---
   const reachedCap = rawEvents.length >= EVENT_MAX;
   const earliestAfterStart =
-    Number.isFinite(earliestTs) && earliestTs > window.start.getTime() + 24 * 3600 * 1000;
+    Number.isFinite(earliestTs) && earliestTs > window.startMs + 24 * 3600 * 1000;
   const truncated = reachedCap && earliestAfterStart;
-  const truncatedFrom = truncated ? new Date(earliestTs).toISOString().slice(0, 10) : null;
+  const truncatedFrom = truncated ? cstDateOf(earliestTs) : null;
 
   const data = {
     username: OWNER,
@@ -464,7 +519,19 @@ function buildData(collection, rawEvents, window) {
     truncatedFrom,
   };
 
-  return { data, details };
+  // audit 只用于日志与回归断言，不进任何产物（--dump-data 只写 data）。
+  const audit = {
+    scalars,
+    hidden: {
+      commits: hidden.commits,
+      prs: hidden.prs,
+      issues: hidden.issues,
+      reviews: hidden.reviews,
+      repos: hidden.repos.size,
+    },
+  };
+
+  return { data, details, audit };
 }
 
 // ---------------------------------------------------------------- README 区块
@@ -645,7 +712,7 @@ async function main() {
 
   const collection = await fetchContributions(window);
   const rawEvents = await fetchPublicEvents();
-  const { data, details } = buildData(collection, rawEvents, window);
+  const { data, details, audit } = buildData(collection, rawEvents, window);
   if (DUMP_DATA) {
     const dp = path.resolve(ROOT, DUMP_DATA);
     mkdirSync(path.dirname(dp), { recursive: true });
@@ -682,7 +749,8 @@ async function main() {
       ` · issues=${data.splits.issues.own}/${data.splits.issues.others}` +
       ` · reviews=${data.splits.reviews.own}/${data.splits.reviews.others}`
   );
-  // 对账：splits 之和必须等于 GitHub 权威总数，不等说明明细仍被截断
+  // 对账：公开口径的 totals 必须等于 splits 之和；与 GitHub 标量不等时说明
+  // 剔掉了非公开贡献或明细被 API 截断 —— 只告警，不阻断（lead 的是公开口径）。
   for (const { key, label } of [
     { key: "commits", label: "提交" },
     { key: "prs", label: "PR" },
@@ -693,9 +761,25 @@ async function main() {
     const total = num(data.totals[key]);
     if (splitSum !== total) {
       console.warn(
-        `警告: ${label}（${key}）明细对不上总数：own ${num(data.splits[key].own)} + others ${num(data.splits[key].others)} = ${splitSum}，但总数为 ${total}`
+        `警告: ${label}（${key}）公开明细对不上总数：own ${num(data.splits[key].own)} + others ${num(data.splits[key].others)} = ${splitSum}，但总数为 ${total}`
       );
     }
+    const scalar = num(audit.scalars[key]);
+    if (total !== scalar) {
+      const hiddenN = num(audit.hidden[key]);
+      console.warn(
+        `警告: ${label}（${key}）公开口径 ${total} ≠ GitHub 标量 ${scalar}` +
+          (hiddenN > 0
+            ? `（其中 ${hiddenN} 来自未公开仓库，已剔除）`
+            : "（明细可能被 API 上限截断）")
+      );
+    }
+  }
+  if (audit.hidden.repos > 0) {
+    // 只报计数，不打印仓库名（公开口径：不泄露私有仓库名 / 数量）
+    console.warn(
+      `提示: 已剔除 ${audit.hidden.repos} 个未公开仓库（commits ${audit.hidden.commits} / issues ${audit.hidden.issues} / PRs ${audit.hidden.prs} / reviews ${audit.hidden.reviews}）`
+    );
   }
   console.log(
     `empty: ${data.empty}${data.quip ? `（quip: ${data.quip}）` : ""}`
@@ -730,6 +814,10 @@ async function main() {
   }
 }
 
-main().catch((err) => {
-  fail(err && err.stack ? err.stack : String(err));
-});
+// 仅当本文件被直接执行时跑 CLI（被 import 时不跑，供 scripts/test-activity-window.mjs 复用纯函数）
+const invoked = process.argv[1] ? pathToFileURL(path.resolve(process.argv[1])).href : "";
+if (invoked === import.meta.url) {
+  main().catch((err) => {
+    fail(err && err.stack ? err.stack : String(err));
+  });
+}

@@ -4,10 +4,12 @@
  * ------------------------------------------------------------------
  * 本地预检（零依赖）：一次跑完全部检查，任一失败即退出码 1。
  *   1) node --check 语法检查：ai.mjs / render.mjs / github.mjs / index.mjs
- *      以及 30 天总结侧 scripts/summary/* 全部脚本
+ *      以及 30 天总结侧 scripts/summary/* 全部脚本，外加活动卡片线
+ *      （generate-activity.mjs / render-svg.mjs / preview.mjs / cst.mjs）
  *   2) scripts/daily/test-ai.mjs     —— AI 适配层确定性回归（假服务器，无需 key）
  *      scripts/daily/test-render.mjs —— 渲染/规范化确定性回归
  *      scripts/summary/test-summary.mjs —— 30 天总结确定性回归（假数据 + 假服务器）
+ *      scripts/test-activity-window.mjs —— 活动卡片线口径/可见性确定性回归
  *   3) scripts/daily/verify.mjs      —— docs/ 生成物不变式自检
  *
  * 用法：node scripts/daily/check.mjs [--quiet]
@@ -41,12 +43,17 @@ const syntaxTargets = [
   "render.mjs",
   "lib/github.mjs",
   "index.mjs",
+  "../cst.mjs",
+  "../generate-activity.mjs",
+  "../render-svg.mjs",
+  "../preview.mjs",
   "../summary/collect.mjs",
   "../summary/prompt.mjs",
   "../summary/validate-summary.mjs",
   "../summary/render.mjs",
   "../summary/backfill.mjs",
   "../summary/index.mjs",
+  "../test-activity-window.mjs",
 ];
 let failed = 0;
 
@@ -56,6 +63,7 @@ for (const t of syntaxTargets) {
 if (!run("test-ai.mjs（AI 适配层回归）", [path.join(DIR, "test-ai.mjs")])) failed += 1;
 if (!run("test-render.mjs（渲染/规范化回归）", [path.join(DIR, "test-render.mjs")])) failed += 1;
 if (!run("test-summary.mjs（30 天总结回归）", [path.join(DIR, "..", "summary", "test-summary.mjs")])) failed += 1;
+if (!run("test-activity-window.mjs（活动卡片口径/可见性回归）", [path.join(DIR, "..", "test-activity-window.mjs")])) failed += 1;
 if (!run("verify.mjs（docs 不变式）", [path.join(DIR, "verify.mjs"), "--quiet"])) failed += 1;
 
 console.log(failed === 0 ? "\npreflight OK" : `\npreflight FAILED（${failed} 项）`);
