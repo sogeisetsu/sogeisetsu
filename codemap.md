@@ -1,6 +1,6 @@
 # Repository Atlas: sogeisetsu
 
-> **映射基线**：`c1f30a3`（2026-10-17）· **覆盖范围**：`scripts/**` + `ops/**` 的代码与配置。
+> **映射基线**：`64f31eb`（2026-10-17）· **覆盖范围**：`scripts/**` + `ops/**` 的代码与配置。
 > **判断是否过期**：`git log --oneline 5c9eeab..HEAD -- scripts ops` —— 有输出即说明映射覆盖的代码已变，动手前先复核受影响目录的 `codemap.md`。
 > **为什么不是「和 HEAD 比提交号」**：本仓每 2 小时就有 bot 自动提交生成物（`docs/` / `README.md` / `assets/`），那些提交与架构无关。裸比提交号会在两小时内必然报"过期"，等于没有信号——所以过期判断必须限定到 `scripts` 与 `ops` 这两条路径。
 
