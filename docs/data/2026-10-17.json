@@ -3,10 +3,10 @@
   "windowStart": "2026-10-17T00:00:00+08:00",
   "windowEnd": "2026-10-18T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-17T14:51:10.880Z",
+  "generatedAt": "2026-10-17T15:43:05.785Z",
   "empty": false,
   "totals": {
-    "commits": 23,
+    "commits": 24,
     "prs": 0,
     "issues": 5,
     "reviews": 0
@@ -103,16 +103,21 @@
           "ts": "2026-10-17T09:57:24Z"
         }
       ],
-      "automated": 32,
+      "automated": 34,
       "automatedBots": [
         "github-actions[bot]"
       ]
     },
     {
       "repo": "sogeisetsu/opencode-go-model-picker",
-      "count": 4,
+      "count": 5,
       "own": true,
       "messages": [
+        {
+          "sha": "6cf2d02b9b338737900389b52f91b07ba87ef594",
+          "message": "chore: release v1.4.0",
+          "ts": "2026-10-17T14:56:05Z"
+        },
         {
           "sha": "397bcc9456dbfddadfb50056a483bd6f2608a175",
           "message": "fix(scripts): close the gaps a second opinion found in the round-1 changes",
@@ -157,7 +162,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 32,
+  "automatedCommits": 34,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -179,7 +184,7 @@
       "action": "commented",
       "ts": "2026-10-17T12:21:01.000Z",
       "own": false,
-      "comments": 7
+      "comments": 8
     },
     {
       "repo": "anomalyco/opencode",
@@ -210,10 +215,19 @@
       "action": "commented",
       "ts": "2026-10-17T09:49:06.000Z",
       "own": false,
-      "comments": 7
+      "comments": 8
     }
   ],
-  "releases": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "tag": "v1.4.0",
+      "name": "v1.4.0",
+      "url": "https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v1.4.0",
+      "publishedAt": "2026-10-17T14:57:05Z",
+      "notes": "## What's new\n\n- Our scripts now share two small helpers. One reads JSON that carries a BOM and writes it atomically (temp file, then rename over the target). The other re-runs a script with a proxy when your system has one. So all four network scripts respect a configured proxy, and a Node runtime that can't use one says so on stderr instead of looking like a network outage.\n- Agent discovery is more complete. `scripts/discover-agents.mjs` now reports `mode`, `hidden`, `traits` (worked out from the agent's description, name and mode, with known roles taking priority) and `provenance.fetchedAt`. Built-in names it skips show up under `skippedBuiltins` instead of disappearing, and the workflow now asks you about any entry that might be one of your own agents.\n- New flags: `--include-builtin-names`, `--builtin` and `--extra-builtin` for agent discovery, and `--rebuild` for the snapshot refresh.\n\n## Changed\n\n- Refreshes now write the snapshot safely. If the existing snapshot can't be parsed, the script stops with a clear message and leaves your file alone — including your remembered mode and cached scores. It used to quietly start from an empty cache. Use `refresh-snapshot.mjs --rebuild` to discard it on purpose.\n- The catalog fetcher and the snapshot summary use the shared helpers too, so what one script writes is what the next one expects.\n- The README version badge no longer dr…"
+    }
+  ],
   "stars": [],
   "starInventory": [
     {
@@ -324,16 +338,28 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "23 own commits plus 32 automated, 5 issue interactions on anomalyco/opencode",
-      "summary": "The user made **23 own commits** across three repositories, plus 32 automated commits by `github-actions[bot]`. In `sogeisetsu/sogeisetsu`, 17 commits advanced the codemap baseline, fixed the activity card to use a +08 natural-day window counting only public data, redrew `repo-overview.excalidraw` as a \"三问矩阵\", and added count pills to `docs/summary.html`. In `sogeisetsu/opencode-go-model-picker`, 4 commits fixed script gaps from a second review, derived the version badge from `SKILL.md`, added full inventory output for `discover-agents`, and made snapshot writes atomic. In `sogeisetsu/opencode-agent-sandbox`, 2 commits corrected outdated knowledge about subcommand lists, bundled skill counts, and Windows ports, and added remote-branch deletion checks. On `anomalyco/opencode`, the user commented on issues #50823 and #56113 (MiMo-V2.6-Flash vision and subagent failures), and closed #55785 (Go endpoint rejecting images) after commenting. No PRs, reviews, releases, or discussions were recorded.",
-      "releaseNotes": []
+      "headline": "24 own commits, 5 issue interactions, 1 release on 2026-10-17",
+      "summary": "`sogeisetsu` made **24 own commits** plus 34 automated commits by `github-actions[bot]` across 3 repos. In `sogeisetsu/sogeisetsu` (17 commits): advanced the codemap baseline to the activity-card scope fix, corrected the activity card window to +08 natural days and public-data-only, redrew `repo-overview.excalidraw` as a \"three-question matrix\" sketch, added repo-count pills to `docs/summary.html`, and improved AI retry logic for empty-content 200 responses. In `sogeisetsu/opencode-go-model-picker` (5 commits): prepared the `v1.4.0` release with shared BOM-aware JSON reading and atomic snapshot writes, enhanced `scripts/discover-agents.mjs` to emit full inventory records with `skippedBuiltins` reporting, and added version drift checks. In `sogeisetsu/opencode-agent-sandbox` (2 commits): corrected stale knowledge docs on subcommand lists, skill counts, Windows ports, and remote branch deletion checks. On `anomalyco/opencode`, commented on issue `#50823` (stale image after ≥5 images in a session), commented twice on `#56113` (subagent `model_coming_soon` errors), and closed `#55785` (Go endpoint returning 400 for all images).",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "tag": "v1.4.0",
+          "summary": "Scripts now share BOM-aware JSON reading with atomic snapshot writes and proxy-aware re-runs. `scripts/discover-agents.mjs` emits full inventory records including `mode`, `hidden`, `traits`, and `provenance.fetchedAt`, with skipped built-ins reported under `skippedBuiltins`."
+        }
+      ]
     },
     "zh": {
-      "headline": "23 次本人提交另有 32 次自动提交，在 anomalyco/opencode 上互动 5 个 issue",
-      "summary": "用户在三个仓库中共有 **23 次本人提交**，另有 32 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/sogeisetsu` 中，17 次提交推进了 codemap 基线，将活动卡片改为 +08 自然日窗口且只统计公开数据，重画 `repo-overview.excalidraw` 为「三问矩阵」，并为 `docs/summary.html` 添加条数 pill。在 `sogeisetsu/opencode-go-model-picker` 中，4 次提交修复了二次审查发现的脚本缺口，从 `SKILL.md` 派生版本徽章，为 `discover-agents` 输出完整清单，并使快照写入原子化。在 `sogeisetsu/opencode-agent-sandbox` 中，2 次提交修正了关于子命令列表、随包 skill 数量和 Windows 端口的过期结论，并补充了远程分支删除的检查与风险。在 `anomalyco/opencode` 上，用户评论了 #50823 和 #56113（MiMo-V2.6-Flash 视觉与子代理失败问题），并在评论后关闭了 #55785（Go 端点拒绝图片）。当日无 PR、review、release 或讨论活动。",
-      "releaseNotes": []
+      "headline": "24 次本人提交，5 个 issue 互动，发布 v1.4.0",
+      "summary": "`sogeisetsu` 今日在 3 个仓库完成了 **24 次本人提交**，另有 34 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/sogeisetsu`（17 次提交）：推进 codemap 映射基线至活动卡片口径修复、将活动卡片时间窗口修正为 +08 自然日且仅统计公开数据、重绘 `repo-overview.excalidraw` 为「三问矩阵」草图、为 `docs/summary.html` 补充仓库条数 pill、改进 AI 空 content 200 响应的重试逻辑。在 `sogeisetsu/opencode-go-model-picker`（5 次提交）：为 `v1.4.0` 发布做准备，脚本共享 BOM 感知 JSON 读取与原子快照写入、`scripts/discover-agents.mjs` 输出完整清单记录含 `skippedBuiltins` 报告、新增版本漂移检查。在 `sogeisetsu/opencode-agent-sandbox`（2 次提交）：修正知识文档中关于子命令列表、随包 skill 数量、Windows 端口及远程分支删除的过期结论。在 `anomalyco/opencode` 上，评论了 `#50823`（会话中 ≥5 张图片后读到过期图片）、两次评论 `#56113`（子代理 `model_coming_soon` 报错），并关闭了 `#55785`（Go 端点对所有图片返回 400）。",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "tag": "v1.4.0",
+          "summary": "脚本现在共享 BOM 感知 JSON 读取与原子快照写入，并支持代理感知的重新运行。`scripts/discover-agents.mjs` 输出完整清单记录，包含 `mode`、`hidden`、`traits` 和 `provenance.fetchedAt`，跳过的内置项在 `skippedBuiltins` 中报告。"
+        }
+      ]
     }
   },
   "aiProvider": "opencode-go-longcat",
-  "dataHash": "b506b7cc197451d67c7bc7a2a3d26790bac8e4e8976c2227c06d7920d8899e25"
+  "dataHash": "ce82c6a3654d424893cda0c5b616fc87d35caaf779b62bebdb56fb9cb3f98783"
 }
