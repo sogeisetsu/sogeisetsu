@@ -5,7 +5,7 @@
 零依赖：没有 `package.json`、没有任何 npm 脚本 —— 全部是 `node` 直跑的 ESM，CI 固定 Node 20（用内置 `fetch`）。别去找 `npm test` / `npm ci`，没有。
 
 ## 布局
-- `repo-overview.excalidraw` —— 一页速览草图：这个仓库是干什么的 + 三条 GitHub Actions 的运行规律（用 OpenChamber 的 Excalidraw 扩展打开，Files 视图里点开就是画布）
+- `repo-overview.excalidraw` —— 一页速览草图：这个仓库是干什么的 + 四条 Action 的运行规律矩阵（多久跑一次 / 更新哪些内容 / 依据哪些内容）（用 OpenChamber 的 Excalidraw 扩展打开，Files 视图里点开就是画布）
 - `codemap.md` + 各目录 `codemap.md` —— 架构映射（根 Atlas + 6 个分目录），见文末「Repository Map」
 - `scripts/daily/index.mjs` —— 日报编排：取数 → dataHash 去重 → AI → 写 `docs/`
 - `scripts/daily/render.mjs` —— HTML/MD 渲染（内联 CSS，双语切换，段落切分，标题字体）；页面外壳 `pageStyle` / `htmlDoc` 等已导出，供总结页复用
