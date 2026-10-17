@@ -3,10 +3,10 @@
   "windowStart": "2026-10-17T00:00:00+08:00",
   "windowEnd": "2026-10-18T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-17T13:34:57.234Z",
+  "generatedAt": "2026-10-17T14:51:10.880Z",
   "empty": false,
   "totals": {
-    "commits": 22,
+    "commits": 23,
     "prs": 0,
     "issues": 5,
     "reviews": 0
@@ -103,16 +103,21 @@
           "ts": "2026-10-17T09:57:24Z"
         }
       ],
-      "automated": 30,
+      "automated": 32,
       "automatedBots": [
         "github-actions[bot]"
       ]
     },
     {
       "repo": "sogeisetsu/opencode-go-model-picker",
-      "count": 3,
+      "count": 4,
       "own": true,
       "messages": [
+        {
+          "sha": "397bcc9456dbfddadfb50056a483bd6f2608a175",
+          "message": "fix(scripts): close the gaps a second opinion found in the round-1 changes",
+          "ts": "2026-10-17T13:50:58Z"
+        },
         {
           "sha": "0be367eed33c4b8b89ca9ea989c162a3e3f1254c",
           "message": "fix(docs): derive the version badge from SKILL.md and check version drift",
@@ -152,7 +157,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 30,
+  "automatedCommits": 32,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -319,16 +324,16 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "22 commits on 2026-10-17: codemap docs, activity-card fix, MiMo issue triage",
-      "summary": "On 2026-10-17 the user made **22 own commits** plus 30 automated commits by `github-actions[bot]`, with no pull requests and no reviews. `sogeisetsu/sogeisetsu` accounted for 17 own commits: initializing a repository codemap (per-directory maps, a root Atlas, AGENTS.md registration), documenting the mapping baseline and its staleness check, and moving that baseline to the activity-card fix. On the same repo, the activity card was switched to a +08 natural-day window restricted to public data, the AI retry path now doubles `max_tokens` when a 200 response carries empty content, and `docs/summary.html` was re-rendered with per-repo count pills; the `repo-overview.excalidraw` sketch was redrawn as a three-question matrix. `sogeisetsu/opencode-go-model-picker` got 3 commits: the version badge is derived from `SKILL.md` with a drift check, `discover-agents` emits the full inventory record and reports skipped built-ins, and snapshot writes are atomic with loud failure on unreadable snapshots. `sogeisetsu/opencode-agent-sandbox` got 2 doc commits correcting stale conclusions on subcommands, bundled skills and Windows ports, and adding remote-branch-deletion checks.",
+      "headline": "23 own commits plus 32 automated, 5 issue interactions on anomalyco/opencode",
+      "summary": "The user made **23 own commits** across three repositories, plus 32 automated commits by `github-actions[bot]`. In `sogeisetsu/sogeisetsu`, 17 commits advanced the codemap baseline, fixed the activity card to use a +08 natural-day window counting only public data, redrew `repo-overview.excalidraw` as a \"三问矩阵\", and added count pills to `docs/summary.html`. In `sogeisetsu/opencode-go-model-picker`, 4 commits fixed script gaps from a second review, derived the version badge from `SKILL.md`, added full inventory output for `discover-agents`, and made snapshot writes atomic. In `sogeisetsu/opencode-agent-sandbox`, 2 commits corrected outdated knowledge about subcommand lists, bundled skill counts, and Windows ports, and added remote-branch deletion checks. On `anomalyco/opencode`, the user commented on issues #50823 and #56113 (MiMo-V2.6-Flash vision and subagent failures), and closed #55785 (Go endpoint rejecting images) after commenting. No PRs, reviews, releases, or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "2026-10-17 共 22 次提交：codemap 文档、活动卡片修复、MiMo 问题跟进",
-      "summary": "2026-10-17 本人提交 **22 次**，另有 30 次由 `github-actions[bot]` 自动提交，当日无 PR、无评审。`sogeisetsu/sogeisetsu` 占 17 次本人提交：初始化仓库 codemap（分目录映射、根 Atlas、AGENTS.md 注册），记录映射基线及其过期判断方法，并把基线推进到活动卡片修复。同一仓库还把活动卡片改为 +08 自然日窗口并只统计公开数据；AI 调用在返回 200 但 content 为空时也翻倍 `max_tokens` 重试；`docs/summary.html` 重新渲染，按仓库板块补上条数 pill；`repo-overview.excalidraw` 草图重画为「三问矩阵」。`sogeisetsu/opencode-go-model-picker` 有 3 次提交：版本徽章改为由 `SKILL.md` 推导并检查版本漂移，`discover-agents` 输出完整清单并报告跳过的内置项，快照写入改为原子操作、快照不可读时显式失败。`sogeisetsu/opencode-agent-sandbox` 有 2 次文档提交：修正子命令列表、随包 skill 数量与 Windows 端口方面的过期结论，补充远程分支删除的检查与风险。issue 方面共 5 条活动，均在 `anomalyco/opencode`：在 #50823（单会话 ≥5 张图后读到过期图片）下评论，在 #56113（子代理报 `model_coming_soon`）下两次评论，并在 #55785（Go 端点对图片一律返回 400）下评论后将其关闭。当日无发布、无讨论、无新星标，各板块均未触及采集上限。",
+      "headline": "23 次本人提交另有 32 次自动提交，在 anomalyco/opencode 上互动 5 个 issue",
+      "summary": "用户在三个仓库中共有 **23 次本人提交**，另有 32 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/sogeisetsu` 中，17 次提交推进了 codemap 基线，将活动卡片改为 +08 自然日窗口且只统计公开数据，重画 `repo-overview.excalidraw` 为「三问矩阵」，并为 `docs/summary.html` 添加条数 pill。在 `sogeisetsu/opencode-go-model-picker` 中，4 次提交修复了二次审查发现的脚本缺口，从 `SKILL.md` 派生版本徽章，为 `discover-agents` 输出完整清单，并使快照写入原子化。在 `sogeisetsu/opencode-agent-sandbox` 中，2 次提交修正了关于子命令列表、随包 skill 数量和 Windows 端口的过期结论，并补充了远程分支删除的检查与风险。在 `anomalyco/opencode` 上，用户评论了 #50823 和 #56113（MiMo-V2.6-Flash 视觉与子代理失败问题），并在评论后关闭了 #55785（Go 端点拒绝图片）。当日无 PR、review、release 或讨论活动。",
       "releaseNotes": []
     }
   },
-  "aiProvider": "opencode-go-deepseek",
-  "dataHash": "ed3a1c67bd6a89bbb6e1341e1d4a0d21f1673a5dbf23c2e8eb444d5c60e5a37c"
+  "aiProvider": "opencode-go-longcat",
+  "dataHash": "b506b7cc197451d67c7bc7a2a3d26790bac8e4e8976c2227c06d7920d8899e25"
 }
