@@ -31,7 +31,7 @@
 | `scripts/daily/check.mjs` | **本地预检总入口**（唯一的"测试命令"）：语法检查 + 三个确定性测试 + `docs/` 不变式自检 | `--quiet` |
 | `scripts/preview.mjs` | 用 `scripts/fixtures/*.json` 出本地 SVG 预览目测 | — |
 
-根级资产：`README.md`（活动卡片回写目标 + 站点入口）、`AGENTS.md`（**权威规格书，改代码前先读**：跑法、口径、发布流程、冲突处理）、`.gitignore`、`.gitattributes`。根目录**没有可执行代码**——全部逻辑在 `scripts/` 与 `ops/`。
+根级资产：`README.md`（活动卡片回写目标 + 站点入口）、`AGENTS.md`（**权威规格书，改代码前先读**：跑法、口径、发布流程、冲突处理）、`repo-overview.excalidraw`（一页速览草图：仓库用途 + Actions 运行规律）、本 `codemap.md` 与 6 个分目录 `codemap.md`、`.gitignore`、`.gitattributes`。根目录**没有可执行代码**——全部逻辑在 `scripts/` 与 `ops/`。
 
 CI：`.github/workflows/` 下四个 workflow —— `update-daily-report.yml`（cron `17 */2 * * *`）、`update-activity.yml`（`30 */2 * * *`）、`update-summary.yml`（`17 22 * * *`，**无 push 触发，改 `scripts/summary/**` 后必须手动 dispatch**）、`check.yml`（push/PR 只跑 `check.mjs`）。三者共用 concurrency 组 `update-activity` 串行回推 `main`。
 
