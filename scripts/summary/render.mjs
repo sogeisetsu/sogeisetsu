@@ -13,7 +13,7 @@
  *   totals:   { commits, prs, issues, reviews },   // 确定数字，由代码求和
  *   automatedCommits,                              // 与 totals.commits「相加」，不是包含
  *   backfilled: [ "YYYY-MM-DD", ... ],             // Search 重建的较早日期（只展示起止）
- *   ai: { en: { headline, overview, highlights[], byRepo[] },
+ *   ai: { en: { headline, teaser, overview, highlights[], byRepo[] },
  *         zh: { 同构 } } | null,                   // null → 「AI 摘要暂不可用」
  *   aiProvider, dataHash, sources, backfillLimits  // 本渲染层不消费，仅透传语义
  * }
@@ -261,10 +261,37 @@ function backfillNotice(backfilled) {
 
 // ---------------------------------------------------------------- 首页卡片
 
+/** 首页卡片短文案上限（与 validate-summary 的 TEASER_MAX_CHARS 同口径）。 */
+const CARD_TEASER_MAX_CHARS = 240;
+
+/** 取第一段（空行分段），用于旧 summary.json 的 teaser 回退。 */
+function firstParagraph(text) {
+  const s = S(text).trim();
+  if (!s) return '';
+  const i = s.search(/\n\s*\n/);
+  return (i === -1 ? s : s.slice(0, i)).trim();
+}
+
+/**
+ * 首页卡片短文案：优先 AI teaser（结构里的 1–2 句短字段）。
+ * 旧 docs/summary.json（AI 输出无 teaser）回退成「overview 第一段截断」，
+ * 保证老数据也不会把 10–16 句的整段搬上首页，更不会开天窗。
+ */
+function cardTeaser(sec, fallbackSec) {
+  const t = S(O(sec).teaser).trim();
+  if (t) return t;
+  const p = firstParagraph(S(O(sec).overview) || S(O(fallbackSec).overview));
+  if (p.length <= CARD_TEASER_MAX_CHARS) return p;
+  return `${p.slice(0, CARD_TEASER_MAX_CHARS).trim()}…`;
+}
+
 /**
  * 首页顶部总结卡片片段：一个 `<section class="card ai">`，不带 html/head、
  * 不带 .wrap / hero，可直接嵌进 renderIndexPage 的 .wrap。
  * summary 为 null 或没有 ai 时返回 ''（首页照常渲染，不报错）。
+ *
+ * 卡片只放短文案（headline + teaser）+ 确定数字 + 按钮 —— 完整 overview 留在
+ * summary.html，首页不放，避免卡片被 10–16 句的整段撑得过长。
  *
  * 注意：index 页没有 extraCss 钩子，这里只允许用 pageStyle 已有的类
  * （card/ai-badge/ai-headline/ai-summary/row-meta/mono/ghbtn 等）。
@@ -283,14 +310,14 @@ export function summaryCard({ summary } = {}) {
   const zh = O(s.ai.zh);
   const hEn = S(en.headline);
   const hZh = S(zh.headline) || hEn;
-  const oEn = S(en.overview);
-  const oZh = S(zh.overview) || oEn;
+  const tEn = cardTeaser(en, zh);
+  const tZh = cardTeaser(zh, en);
   const hasHead = (hEn || hZh).trim() !== '';
-  const hasOver = (oEn || oZh).trim() !== '';
+  const hasTeaser = (tEn || tZh).trim() !== '';
   const head = hasHead
     ? `<h2 class="ai-headline">${i18n(hEn || hZh, hZh || hEn)}</h2>`
     : '';
-  const over = hasOver ? bilingualBlock(oEn, oZh, 'en', 'ai-summary') : '';
+  const teaser = hasTeaser ? bilingualBlock(tEn, tZh, 'en', 'ai-summary') : '';
 
   // 确定数字一行（简洁，不整块 statsStrip）
   const nums = `<div class="row-meta mono">${i18n(
@@ -319,8 +346,8 @@ export function summaryCard({ summary } = {}) {
     `<section class="card ai">` +
     `<div class="ai-top">${AI_BADGE}</div>` +
     head +
-    over +
-    (hasHead || hasOver ? nums + bot : AI_UNAVAILABLE()) +
+    teaser +
+    (hasHead || hasTeaser ? nums + bot : AI_UNAVAILABLE()) +
     btn +
     `</section>`
   );

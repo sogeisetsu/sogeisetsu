@@ -9,7 +9,7 @@
  *   · 数据源 = docs/data/ ∪ data/backfill/；同一天两份都有时以 docs/data 为准
  *     （docs/data 是定稿真相源，回填只是 Search 近似重建）。
  *   · 确定数字条（totals / automatedCommits）在这里逐日求和，绝不经 AI；
- *     AI 只拿压缩后的 aiPayload（聚合条目，无原始事件、无 comments）。
+ *     AI 只拿压缩后的 aiPayload（聚合条目 + 由代码统计的每仓库数字，无原始事件、无 comments）。
  *   · dataHash = sha256(windowStart|windowEnd|各存在日 "date:dataHash:source" 升序 "|" 连接)，
  *     只掺数据本身、不掺 generatedAt —— 同一批数据必须稳定复现。
  *   · daily 保留原始单日对象，buildItemIndex 用它建 repo/条目集合（校验器的唯一事实口径）。
@@ -95,6 +95,13 @@ function pickItem(e) {
 /** 按 ts 降序（最新在前）；ts 缺失排最后，同 ts 保持稳定顺序。 */
 const byTsDesc = (a, b) => String(b?.ts || "").localeCompare(String(a?.ts || ""));
 
+/** 每仓库条目计数（byRepo 段落引用的确定数字之一）；repo 为空的条目不计。 */
+function bump(map, e) {
+  const repo = String(e?.repo || "").trim();
+  if (!repo) return;
+  map.set(repo, (map.get(repo) || 0) + 1);
+}
+
 // ---------------------------------------------------------------- 聚合
 
 /**
@@ -103,7 +110,8 @@ const byTsDesc = (a, b) => String(b?.ts || "").localeCompare(String(a?.ts || "")
  *     sources, backfilled, backfillLimits, daily: [ { date, source, data } ], aiPayload, dataHash }
  *
  * totals / automatedCommits 是确定数字条（逐项 Number(...)||0 累加，绝不经 AI）；
- * aiPayload 只喂聚合条目（commits 按 repo 合并，其余段 30 天全量合并、按 ts 降序）。
+ * aiPayload 只喂聚合条目（commits 按 repo 合并，其余段 30 天全量合并、按 ts 降序）
+ * 外加由代码统计的每仓库数字 repos[]（byRepo 段落必须引用它，不许模型自己数）。
  *
  * dataDir / backfillDir 可覆盖：默认仓库里的 docs/data 与 data/backfill；
  * 确定性回归测试（scripts/summary/test-summary.mjs）指向临时假数据目录时用得上。
@@ -124,6 +132,10 @@ export function collectSummaryData({ username, start, end, dataDir, backfillDir 
   const totals = { commits: 0, prs: 0, issues: 0, reviews: 0 };
   const hashParts = []; // 每个存在日 "date:dataHash:source"（按窗口升序）
   const commitByRepo = new Map();
+  const repoPrs = new Map();
+  const repoIssues = new Map();
+  const repoReviews = new Map();
+  const repoReleases = new Map();
   const prItems = [];
   const issueItems = [];
   const reviewItems = [];
@@ -183,9 +195,18 @@ export function collectSummaryData({ username, start, end, dataDir, backfillDir 
       }
     }
 
-    for (const pr of norm.pullRequests) prItems.push(pickItem(pr));
-    for (const is of norm.issues) issueItems.push(pickItem(is));
-    for (const rv of norm.reviews) reviewItems.push(pickItem(rv));
+    for (const pr of norm.pullRequests) {
+      prItems.push(pickItem(pr));
+      bump(repoPrs, pr);
+    }
+    for (const is of norm.issues) {
+      issueItems.push(pickItem(is));
+      bump(repoIssues, is);
+    }
+    for (const rv of norm.reviews) {
+      reviewItems.push(pickItem(rv));
+      bump(repoReviews, rv);
+    }
     for (const dsc of norm.discussions) {
       discussionItems.push({
         repo: dsc?.repo,
@@ -222,6 +243,7 @@ export function collectSummaryData({ username, start, end, dataDir, backfillDir 
         notes: String(rel?.notes || "").slice(0, RELEASE_NOTES_LEN),
         publishedAt: rel?.publishedAt,
       });
+      bump(repoReleases, rel);
     }
   }
   missing.days = missing.dates.length;
@@ -237,6 +259,37 @@ export function collectSummaryData({ username, start, end, dataDir, backfillDir 
     .sort((a, b) => b.count - a.count || a.repo.localeCompare(b.repo));
 
   const finalUsername = username || dataUsername;
+
+  // 每仓库确定数字（全部由代码统计；AI 只许引用、不许自己数）。
+  // 收录范围：commits / PR / issue / review / release 段里出现过的仓库（discussion / reply /
+  // stateChange 不进 —— 这里只列有确定数字的仓库）。
+  // 排序：活跃度（本人提交 + 条目数）降序，同分按仓库名升序（保证稳定复现）。
+  const repoActivity = new Set([
+    ...commitByRepo.keys(),
+    ...repoPrs.keys(),
+    ...repoIssues.keys(),
+    ...repoReviews.keys(),
+    ...repoReleases.keys(),
+  ]);
+  const repos = [...repoActivity]
+    .map((repo) => {
+      const c = commitByRepo.get(repo);
+      return {
+        repo,
+        commits: c ? c.count : 0,
+        automated: c ? c.automated : 0,
+        prs: repoPrs.get(repo) || 0,
+        issues: repoIssues.get(repo) || 0,
+        reviews: repoReviews.get(repo) || 0,
+        releases: repoReleases.get(repo) || 0,
+      };
+    })
+    .sort((a, b) => {
+      const wa = a.commits + a.prs + a.issues + a.reviews + a.releases;
+      const wb = b.commits + b.prs + b.issues + b.reviews + b.releases;
+      return wb - wa || a.repo.localeCompare(b.repo);
+    });
+
   const aiPayload = {
     windowStart,
     windowEnd,
@@ -245,6 +298,7 @@ export function collectSummaryData({ username, start, end, dataDir, backfillDir 
     missing,
     totals,
     automatedCommits,
+    repos,
     commits,
     pullRequests: prItems.sort(byTsDesc),
     issues: issueItems.sort(byTsDesc),

@@ -8,12 +8,13 @@
  * 覆盖：
  *   A 聚合 collectSummaryData —— totals/automatedCommits 逐日手算 Σ、窗口 30 天、
  *     missing 4 天集合、sources/backfilled/backfillLimits 与放置一致、
- *     同日两份以 daily 为准、dataHash 确定性（同数据相同 / 改动后不同）
+ *     同日两份以 daily 为准、dataHash 确定性（同数据相同 / 改动后不同）、
+ *     aiPayload.repos 的每仓库确定数字与手算一致
  *   B buildItemIndex          —— repos 集合、repo#number 条目（kind/url）、repo@@tag releases
- *   C validateSummary         —— 合法接受（URL 逐条来自输入数据）、10 项拒绝矩阵、
- *     超长 overview / headline 截断不拒收
+ *   C validateSummary         —— 合法接受（URL 逐条来自输入数据）、11 项拒绝矩阵、
+ *     超长 overview / headline / teaser 截断不拒收
  *   D 端到端                  —— 假 provider → generateStructured（含纠正重试 2 次）→
- *     renderSummaryPage / summaryCard 的数字、双语、headline、缺日标注
+ *     renderSummaryPage / summaryCard 的数字、双语、headline、teaser（旧数据回退第一段）、缺日标注
  *   E 临时目录清理
  *
  * 用法：node scripts/summary/test-summary.mjs
@@ -354,6 +355,56 @@ await check("collect: dataHash 确定性", () => [
   ["hashNonEmpty", typeof c1.dataHash === "string" && c1.dataHash.length > 0],
 ]);
 
+await check("collect: aiPayload.repos = 每仓库确定数字（代码统计）", () => {
+  const want = new Map();
+  const row = (repo) => {
+    const name = String(repo || "").trim();
+    if (!name) return null;
+    if (!want.has(name)) {
+      want.set(name, { commits: 0, automated: 0, prs: 0, issues: 0, reviews: 0, releases: 0 });
+    }
+    return want.get(name);
+  };
+  for (const [, data] of chosen) {
+    for (const c of data.commits || []) {
+      const r = row(c.repo);
+      if (!r) continue;
+      r.commits += Number(c.count) || 0;
+      r.automated += Number(c.automated) || 0;
+    }
+    for (const [key, field] of [
+      ["pullRequests", "prs"],
+      ["issues", "issues"],
+      ["reviews", "reviews"],
+      ["releases", "releases"],
+    ]) {
+      for (const e of data[key] || []) {
+        const r = row(e.repo);
+        if (r) r[field] += 1;
+      }
+    }
+  }
+  const got = new Map(c1.aiPayload.repos.map((r) => [r.repo, r]));
+  const fields = ["commits", "automated", "prs", "issues", "reviews", "releases"];
+  const weights = c1.aiPayload.repos.map(
+    (r) => r.commits + r.prs + r.issues + r.reviews + r.releases
+  );
+  const a = got.get(REPO_A);
+  return [
+    ["keys", got.size === want.size && [...want.keys()].every((k) => got.has(k))],
+    [
+      "values",
+      [...want].every(([repo, w]) => {
+        const g = got.get(repo) || {};
+        return fields.every((f) => g[f] === w[f]);
+      }),
+    ],
+    ["sortedByActivity", weights.every((w, i) => i === 0 || weights[i - 1] >= w)],
+    ["repoA", Boolean(a && a.repo === REPO_A)],
+    ["numbersInts", [...got.values()].every((r) => fields.every((f) => Number.isInteger(r[f])))],
+  ];
+});
+
 // ---------------------------------------------------------------- B buildItemIndex
 
 const ctx = { ...buildItemIndex(c1.daily), missing: c1.missing };
@@ -440,17 +491,21 @@ const BY_ZH = [
   { repo: REPO_A, text: "主仓库：提交稳定，发布了一个版本并关闭了一个 issue。" },
   { repo: REPO_B, text: "上游工作：修复、一条讨论与若干回复。" },
 ];
+const TEASER_EN = "Two repositories moved forward: features, fixes and maintenance landed steadily, and v1.2.0 shipped on schedule.";
+const TEASER_ZH = "两个仓库稳步推进：功能、修复与维护按节奏落地，v1.2.0 也已发布。";
 
 /** 每次返回全新副本，避免用例间互相污染共享夹具。 */
 const baseRaw = () => ({
   en: {
     headline: "Steady shipping across two repositories",
+    teaser: TEASER_EN,
     overview: EN_OVERVIEW,
     highlights: HIGHLIGHTS_EN.map((h) => ({ ...h })),
     byRepo: BY_EN.map((b) => ({ ...b })),
   },
   zh: {
     headline: "两个仓库稳步推进",
+    teaser: TEASER_ZH,
     overview: ZH_OVERVIEW,
     highlights: HIGHLIGHTS_ZH.map((h) => ({ ...h })),
     byRepo: BY_ZH.map((b) => ({ ...b })),
@@ -471,6 +526,8 @@ await check("validate: 合法输出接受 + URL 逐条来自输入数据", () =>
     ["discUrl", urlsEn[2] === DISC4502_URL],
     ["relUrl", urlsEn[3] === REL_URL],
     ["zhSameUrls", JSON.stringify(urlsZh) === JSON.stringify(urlsEn)],
+    ["teaserEn", res.value.en.teaser === TEASER_EN],
+    ["teaserZh", res.value.zh.teaser === TEASER_ZH],
     ["missingMention", res.value.en.overview.includes("4") || res.value.zh.overview.includes("4")],
   ];
 });
@@ -494,6 +551,9 @@ await reject("validate: 拒绝-不存在的编号", "输入之外", (raw) => {
 });
 await reject("validate: 拒绝-缺 zh", "缺少 zh", (raw) => {
   delete raw.zh;
+});
+await reject("validate: 拒绝-teaser 为空", "teaser", (raw) => {
+  delete raw.en.teaser;
 });
 await reject("validate: 拒绝-overview 仅 1 句", "句数", (raw) => {
   raw.en.overview = "Only one sentence here.";
@@ -544,6 +604,19 @@ await check("validate: headline 超 80 截断不拒收", () => {
     ["ok", res.ok === true],
     ["lenEn", Boolean(res.ok && res.value.en.headline.length <= 80)],
     ["lenZh", Boolean(res.ok && res.value.zh.headline.length <= 80)],
+  ];
+});
+
+await check("validate: teaser 超 240 截断不拒收", () => {
+  const raw = baseRaw();
+  raw.en.teaser = "Home page teaser. ".repeat(40);
+  raw.zh.teaser = "首页短文案。".repeat(80);
+  const res = validateSummary(raw, ctx);
+  return [
+    ["ok", res.ok === true],
+    ["lenEn", Boolean(res.ok && res.value.en.teaser.length <= 240)],
+    ["lenZh", Boolean(res.ok && res.value.zh.teaser.length <= 240)],
+    ["nonEmpty", Boolean(res.ok && res.value.en.teaser && res.value.zh.teaser)],
   ];
 });
 
@@ -667,6 +740,43 @@ await check("e2e: summaryCard 按钮/headline，null 时返回空串", () => {
     ["noArgEmpty", summaryCard() === ""],
     ["objNullEmpty", summaryCard({ summary: null }) === ""],
     ["nullSigEmptyOrThrows", nullSig === "" || nullSig === "threw"],
+  ];
+});
+
+await check("e2e: 卡片只放 teaser（不带 overview 全文），旧数据回退第一段截断", () => {
+  if (!e2eSummary) return [["summaryReady", false]];
+  const fullEn = e2eSummary.ai.en.overview;
+  const fullZh = e2eSummary.ai.zh.overview;
+  const card = summaryCard({ summary: e2eSummary });
+
+  // 旧 docs/summary.json：AI 输出里还没有 teaser 字段 → 回退 overview 第一段
+  const legacy = JSON.parse(JSON.stringify(e2eSummary));
+  delete legacy.ai.en.teaser;
+  delete legacy.ai.zh.teaser;
+  const legacyCard = summaryCard({ summary: legacy });
+  const legacyFirstEn = fullEn.split(/\n\s*\n/)[0];
+  const legacyFirstZh = fullZh.split(/\n\s*\n/)[0];
+  // 卡片正文由 splitParagraphs 按句切段（含回退文案），取回纯文本比长度
+  const legacyEnBlock = /<div class="ai-summary i18n" data-lang="en">([\s\S]*?)<\/div>/.exec(
+    legacyCard
+  );
+  const legacyEnText = legacyEnBlock ? legacyEnBlock[1].replace(/<\/?p>/g, "").trim() : "";
+
+  return [
+    ["cardHasTeaserEn", card.includes(e2eSummary.ai.en.teaser)],
+    ["cardHasTeaserZh", card.includes(e2eSummary.ai.zh.teaser)],
+    ["cardWithoutFullOverview", !card.includes(fullEn) && !card.includes(fullZh)],
+    ["cardStillHasNums", card.includes(`${e2eSummary.totals.commits} commits`)],
+    [
+      "legacyFallsBackToFirstPara",
+      legacyCard.includes(legacyFirstEn.slice(0, 40)) &&
+        legacyCard.includes(legacyFirstZh.slice(0, 12)),
+    ],
+    [
+      "legacyTruncatedTo240",
+      legacyFirstEn.length <= 240 ||
+        (legacyEnText.length <= 241 && legacyEnText.endsWith("…")),
+    ],
   ];
 });
 

@@ -9,15 +9,15 @@
  *     （collect.mjs 的 buildItemIndex + collectSummaryData().missing），
  *     AI 输出里的 repo / 编号 / tag 必须能在集合里命中，命中不了就拒收让上层纠正重试。
  *   · URL 一律由本校验器从输入数据注入（模型给什么都不采纳）—— 模型编不出链接。
- *   · 硬长度不整段拒绝：headline 走 fitHeadline、overview 超 2600 走 fitText 按句界截断
+ *   · 硬长度不整段拒绝：headline 走 fitHeadline、teaser / overview 超长走 fitText 按句界截断
  *     （与日报 validateNarrative 同一手法）；纯文本违规 / 句数 / 段数 / 条目集合 / 评论数
- *     这些「改一次就能对」的问题才拒收。
+ *     这些「改一次就能对」的问题才拒收（teaser 缺失也拒收 —— 首页卡片必须有短文案）。
  *   · reason 用中文、简短可执行 —— 它会打进日志并被 summaryFeedback 消费。
  *
  * 导出：
  *   validateSummary(raw, ctx) → { ok: true, value } | { ok: false, reason }
  *   ctx = { repos: Set, items: Map, releases: Map, missing: { days, dates } }
- *   value = { en: { headline, overview, highlights, byRepo }, zh: { 同} }
+ *   value = { en: { headline, teaser, overview, highlights, byRepo }, zh: { 同} }
  *
  * 用法：validate: (parsed) => validateSummary(parsed, ctx)   // generateStructured 的同步校验器
  */
@@ -27,6 +27,7 @@ import { countSentences, fitHeadline, fitText } from "../daily/lib/ai.mjs";
 // ---------------------------------------------------------------- 常量
 
 const HEADLINE_MAX_CHARS = 80;
+const TEASER_MAX_CHARS = 240; // 首页卡片短文案（1–2 句）；超长按句界截断，不整段拒绝
 const OVERVIEW_MAX_CHARS = 2600;
 const OVERVIEW_MIN_SENTENCES = 6; // 提示词目标 10-16 句；校验放宽容差，避免把「8 句」好结果误拒
 const OVERVIEW_FIT_KEEP_MAX = 60;
@@ -94,6 +95,12 @@ export function validateSummary(raw, ctx) {
       };
     }
     const headline = fitHeadline(headlineRaw, HEADLINE_MAX_CHARS);
+
+    // --- teaser：首页卡片短文案，必填（缺了就拒收让上层纠正）；超长按句界截断（1–2 句上限）
+    const teaserRaw = String(sec.teaser ?? "").trim();
+    if (!teaserRaw) return { ok: false, reason: `${lang}.teaser 为空` };
+    const teaser = fitText(teaserRaw, TEASER_MAX_CHARS, 1, 2);
+    if (!teaser) return { ok: false, reason: `${lang}.teaser 为空` };
 
     // --- overview：非空 → 句数 → 空行分段 → 评论数禁令（看原文，不看截断后）→ 超长按句界截断
     const overviewRaw = String(sec.overview ?? "").trim();
@@ -214,7 +221,7 @@ export function validateSummary(raw, ctx) {
       return { ok: false, reason: `${lang}.byRepo 为空（有活动时至少 1 条）` };
     }
 
-    value[lang] = { headline, overview, highlights, byRepo };
+    value[lang] = { headline, teaser, overview, highlights, byRepo };
   }
 
   // --- 缺日必须写明：en 或 zh 的 overview 里至少一处出现 missing.days 这个数字（粗判）
