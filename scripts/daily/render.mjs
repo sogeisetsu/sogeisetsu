@@ -1200,6 +1200,11 @@ html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
 .badge-commented,.badge-reviewed{background:var(--secondary-container);color:var(--on-secondary-container)}
 .badge .badge-action{text-transform:uppercase}
 .badge .badge-who{text-transform:none;letter-spacing:normal}
+/* 中文版徽章/标签：.badge 的字号（.68rem）与字距（.06em）是按全大写拉丁字母调的，
+   汉字在同样 px 下偏小偏细，字距还会把「发布」「讨论」这类词拆散。只放大中文，
+   并收紧字距；text-transform:uppercase 对汉字无影响，无需单独覆盖。英文版一点不动。 */
+html[data-lang="zh"] .badge{font-size:.74rem;letter-spacing:.02em}
+html[data-lang="zh"] .chip{font-size:.76rem;letter-spacing:0}
 
 /* ---- truncation notice ---- */
 .trunc-notice{
