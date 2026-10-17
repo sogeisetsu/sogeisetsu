@@ -3,7 +3,7 @@
   "windowStart": "2026-10-18T00:00:00+08:00",
   "windowEnd": "2026-10-19T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-17T20:51:04.377Z",
+  "generatedAt": "2026-10-17T22:24:23.556Z",
   "empty": false,
   "totals": {
     "commits": 1,
@@ -31,13 +31,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 3,
+      "automated": 5,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 3,
+  "automatedCommits": 5,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -143,6 +143,17 @@
   "replies": [
     {
       "repo": "openchamber/openchamber",
+      "number": 4601,
+      "title": "[Bug] Switching model in the composer keeps the previous thinking level instead of the model's own default",
+      "url": "https://github.com/openchamber/openchamber/issues/4601",
+      "author": "btriapitsyn",
+      "excerpt": "Fixed in 7d037b07d. The thinking level now stays with the model it was set for. Switching models drops it, and the new model starts on its own level: whatever you picked for it earlier in the session…",
+      "kind": "issue_comment",
+      "ts": "2026-10-17T22:06:51.000Z",
+      "own": false
+    },
+    {
+      "repo": "openchamber/openchamber",
       "number": 4899,
       "title": "[Bug] Browser captures export at CSS pixel size (1x), so they are half the screen's resolution on a 200% display",
       "url": "https://github.com/openchamber/openchamber/issues/4899",
@@ -153,7 +164,18 @@
       "own": false
     }
   ],
-  "stateChanges": [],
+  "stateChanges": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4601,
+      "title": "[Bug] Switching model in the composer keeps the previous thinking level instead of the model's own default",
+      "url": "https://github.com/openchamber/openchamber/issues/4601",
+      "action": "closed",
+      "actor": "btriapitsyn",
+      "ts": "2026-10-17T22:06:52.000Z",
+      "own": false
+    }
+  ],
   "truncated": {
     "events": {
       "cap": 300,
@@ -185,18 +207,7 @@
       "own": false
     }
   ],
-  "ai": {
-    "en": {
-      "headline": "1 commit, 1 issue comment, 1 discussion started, 3 automated commits",
-      "summary": "On 2026-10-18, the user made **1 own commit** in `sogeisetsu/opencode-agent-sandbox`, adding documentation for the `opencode-provider` category covering catalog three-tier sources, credential ownership, endpoints, and OpenChamber jurisdiction. There were also **3 automated commits** by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The user commented on issue #4939 in `openchamber/openchamber` regarding text selection inside `openchamber_render` pages not opening the comment menu. They also started a new discussion #5114 in the same repo proposing to split the rendered-page selection-menu fix into a frame-to-host selection bridge approach. A reply was received on issue #4899 from `yulia-ivashko` discussing browser capture resolution at different display scaling levels. No pull requests, reviews, or releases were recorded for the day.",
-      "releaseNotes": []
-    },
-    "zh": {
-      "headline": "1 次提交、1 条 issue 评论、1 个讨论、3 次自动提交",
-      "summary": "2026-10-18，用户在 `sogeisetsu/opencode-agent-sandbox` 中提交了 **1 次本人提交**，为 `opencode-provider` 类别新增文档，涵盖 catalog 三层来源、凭据归属、端点与 OpenChamber 管辖。此外，`sogeisetsu/sogeisetsu` 中有 **3 次由 `github-actions[bot]` 自动提交**。用户在 `openchamber/openchamber` 的 issue #4939 上留言，讨论 `openchamber_render` 页面内文本选择无法打开评论菜单的问题。用户还在同一仓库发起了新讨论 #5114，提议将渲染页面选择菜单修复拆分为 frame 到 host 的选择桥接方案。issue #4899 收到来自 `yulia-ivashko` 的回复，讨论不同显示缩放级别下的浏览器截图分辨率问题。当日无 pull request、review 或 release 记录。",
-      "releaseNotes": []
-    }
-  },
-  "aiProvider": "sensenova",
-  "dataHash": "3ce298a9fcb501506ee8035d76ffad6143468367f6e94221cb04dfdbb4859f28"
+  "ai": null,
+  "aiProvider": null,
+  "dataHash": "14208bd9f79bce66e3a9981eb715399c4ed972a6734771e6d5bdb9f26b4f9768"
 }
