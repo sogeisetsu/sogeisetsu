@@ -12,6 +12,9 @@
  *   · 硬长度不整段拒绝：headline 走 fitHeadline、teaser / overview 超长走 fitText 按句界截断
  *     （与日报 validateNarrative 同一手法）；纯文本违规 / 句数 / 段数 / 条目集合 / 评论数
  *     这些「改一次就能对」的问题才拒收（teaser 缺失也拒收 —— 首页卡片必须有短文案）。
+ *   · 段数上限不砍真实内容：highlights 固定 8 条；byRepo 的上限随 ctx.repos 放大
+ *     （提示词要求「每个有活动的仓库都要有一条」，固定 8 条会把真实仓库悄悄截掉），
+ *     只在 24 条硬顶上收口。缺仓库仍不拒收 —— 按约定只在提示词里要求。
  *   · reason 用中文、简短可执行 —— 它会打进日志并被 summaryFeedback 消费。
  *
  * 导出：
@@ -34,7 +37,8 @@ const OVERVIEW_FIT_KEEP_MAX = 60;
 const HIGHLIGHTS_MIN = 3;
 const HIGHLIGHTS_MAX = 8;
 const HIGHLIGHT_TEXT_MAX = 400;
-const BY_REPO_MAX = 8;
+const BY_REPO_MAX = 8; // 保底条数（窗口里仓库少时也不放宽，保持页面紧凑）
+const BY_REPO_CEIL = 24; // 硬顶：只防模型刷长尾，不替它砍掉真实出现过的仓库
 const BY_REPO_TEXT_MAX = 800;
 const KINDS = new Set(["pr", "issue", "discussion", "release"]);
 // 评论数禁令：中英都要逮（大小写不敏感）
@@ -192,6 +196,10 @@ export function validateSummary(raw, ctx) {
     }
 
     // --- byRepo：数组 → 逐条集合校验 → 截断
+    // 条数上限随输入里真实出现过的仓库数放大：提示词要求「每个有活动的仓库都要有一条」，
+    // 8 条固定上限会把真实仓库悄悄砍掉（2026-09 窗口实测 16 个仓库只剩 8 条）。
+    // 仍保留 8 条保底与 24 条硬顶防长尾；缺仓库不拒收（按约定不加硬约束）。
+    const byRepoCap = Math.min(BY_REPO_CEIL, Math.max(BY_REPO_MAX, repos.size));
     const byRepoRaw = sec.byRepo;
     if (!Array.isArray(byRepoRaw)) {
       return { ok: false, reason: `${lang}.byRepo 不是数组` };
@@ -215,7 +223,7 @@ export function validateSummary(raw, ctx) {
         return { ok: false, reason: `不许提评论数: ${at}.text 出现 "${badText}"` };
       }
       byRepo.push({ repo, text: textRaw.slice(0, BY_REPO_TEXT_MAX) });
-      if (byRepo.length >= BY_REPO_MAX) break;
+      if (byRepo.length >= byRepoCap) break;
     }
     if (byRepo.length === 0 && repos.size > 0) {
       return { ok: false, reason: `${lang}.byRepo 为空（有活动时至少 1 条）` };

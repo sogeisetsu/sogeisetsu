@@ -11,8 +11,8 @@
  *     同日两份以 daily 为准、dataHash 确定性（同数据相同 / 改动后不同）、
  *     aiPayload.repos 的每仓库确定数字与手算一致
  *   B buildItemIndex          —— repos 集合、repo#number 条目（kind/url）、repo@@tag releases
- *   C validateSummary         —— 合法接受（URL 逐条来自输入数据）、11 项拒绝矩阵、
- *     超长 overview / headline / teaser 截断不拒收
+ *   C validateSummary         —— 合法接受（URL 逐条来自输入数据）、12 项拒绝矩阵、
+ *     超长 overview / headline / teaser 截断不拒收、byRepo 条数随真实仓库数放宽
  *   D 端到端                  —— 假 provider → generateStructured（含纠正重试 2 次）→
  *     renderSummaryPage / summaryCard 的数字、双语、headline、teaser（旧数据回退第一段）、缺日标注
  *   E 临时目录清理
@@ -617,6 +617,26 @@ await check("validate: teaser 超 240 截断不拒收", () => {
     ["lenEn", Boolean(res.ok && res.value.en.teaser.length <= 240)],
     ["lenZh", Boolean(res.ok && res.value.zh.teaser.length <= 240)],
     ["nonEmpty", Boolean(res.ok && res.value.en.teaser && res.value.zh.teaser)],
+  ];
+});
+
+await check("validate: byRepo 按真实仓库数放宽（不再固定 8 条砍掉仓库）", () => {
+  // ctx 里本来就有的两个仓库必须保留（highlights 引用它们），再补 10 个凑到 12 条
+  const repos12 = new Set([
+    ...ctx.repos,
+    ...Array.from({ length: 12 - ctx.repos.size }, (_, i) => `owner/repo-${i}`),
+  ]);
+  const raw = baseRaw();
+  const mk = (repo) => ({ repo, text: `Concrete work landed in ${repo} during the window.` });
+  const list = [...repos12];
+  raw.en.byRepo = list.map(mk);
+  raw.zh.byRepo = list.map(mk);
+  const res = validateSummary(raw, { ...ctx, repos: repos12 });
+  return [
+    ["ok", res.ok === true],
+    ["repos12", list.length === 12],
+    ["kept12", Boolean(res.ok && res.value.en.byRepo.length === 12)],
+    ["zh12", Boolean(res.ok && res.value.zh.byRepo.length === 12)],
   ];
 });
 
