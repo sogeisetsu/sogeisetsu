@@ -14,6 +14,8 @@
  *   · 只返回 1 句 summary → 追加“句数”纠正提示后重试
  *   · empty:true（totals 全 0）但 discussion 非空 → 仍会调用 provider
  *     （锁住「可见性判断只在调用方，generateNarrative 不按 empty 自行拦截」）
+ *   · provider.headers 原样进请求头（OpenCode Go 的 user-agent / 会话 id 走这条）
+ *   · defaultProviders 的列表与顺序（sensenova → OpenCode Go longcat → deepseek，不触网）
  *
  * 用法：node scripts/daily/test-ai.mjs
  * 输出：每个用例一行 PASS/FAIL，结尾 N/M；有失败时退出码 1。
@@ -21,7 +23,7 @@
 
 import http from "node:http";
 
-const { generateNarrative } = await import(new URL("./lib/ai.mjs", import.meta.url).href);
+const { generateNarrative, defaultProviders } = await import(new URL("./lib/ai.mjs", import.meta.url).href);
 
 // ---------------------------------------------------------------- 受控输入
 
@@ -76,7 +78,7 @@ const server = http.createServer((req, res) => {
   req.on("end", () => {
     let parsed = null;
     try { parsed = JSON.parse(body); } catch { /* 非 JSON 请求体 */ }
-    requests.push({ url: req.url, body: parsed });
+    requests.push({ url: req.url, body: parsed, headers: req.headers });
     const next = queue.shift();
     if (!next) { res.writeHead(500); res.end("exhausted"); return; }
     if (next.status && next.status !== 200) {
@@ -125,6 +127,56 @@ const cases = [
     script: [chatResp(JSON.stringify(validNarrative()))],
     expect: { ok: true, calls: 1 },
   },
+  {
+    // provider.headers（OpenCode Go 要求的自报 UA + 稳定会话 id）必须原样出现在请求头里
+    name: "provider-custom-headers-sent",
+    provider: {
+      ...provider,
+      name: "mock-go",
+      headers: { "user-agent": "sogeisetsu-daily-report/1.0", "x-opencode-session": "sess-test-1" },
+    },
+    script: [chatResp(JSON.stringify(validNarrative()))],
+    expect: {
+      ok: true,
+      calls: 1,
+      headerUA: "sogeisetsu-daily-report/1.0",
+      headerSession: "sess-test-1",
+    },
+  },
+  {
+    // 不触网：只验 defaultProviders 的列表、顺序与 Go 侧请求头约定
+    name: "default-providers-order-and-go-headers",
+    fn: () => {
+      const none = defaultProviders({});
+      const senseOnly = defaultProviders({ SENSENOVA_API_KEY: "k" });
+      const both = defaultProviders({ SENSENOVA_API_KEY: "k", OPENCODE_API_KEY: "go-key" });
+      const go = both.slice(1);
+      const ua = String(go[0]?.headers?.["user-agent"] || "");
+      const sessions = new Set(go.map((p) => p.headers?.["x-opencode-session"]));
+      return [
+        ["noKeysEmpty", none.length === 0],
+        ["senseOnlyFirst", senseOnly.length === 1 && senseOnly[0].name === "sensenova"],
+        ["order", both.map((p) => p.name).join(",") === "sensenova,opencode-go-longcat,opencode-go-deepseek"],
+        [
+          "goModels",
+          go[0]?.model === "longcat-2.5-preview-free" && go[1]?.model === "deepseek-v4.1-flash",
+        ],
+        [
+          "goShape",
+          go.every(
+            (p) =>
+              p.baseUrl === "https://opencode.ai/inference/go/openai/v1" &&
+              p.shape === "chat" &&
+              p.apiKey === "go-key"
+          ),
+        ],
+        // 自报 UA：形如 name/版本，且不是 SDK / HTTP 库的默认名
+        ["selfIdentifiedUA", /^[A-Za-z0-9._-]+\/[\d.]+/.test(ua) && !/undici|axios|node-fetch|^node\//i.test(ua)],
+        ["stableSession", sessions.size === 1 && String([...sessions][0] || "").length > 8],
+        ["noZen", !both.some((p) => p.name === "zen" || /zen/i.test(String(p.baseUrl)))],
+      ];
+    },
+  },
 ];
 
 // ---------------------------------------------------------------- 执行
@@ -133,9 +185,18 @@ const origErr = console.error;
 console.error = () => {}; // 屏蔽 ai.mjs 的调试日志
 let passed = 0;
 for (const c of cases) {
+  // 不触网的用例：自己返回 [key, ok] 断言数组（如 defaultProviders 的列表/顺序）
+  if (typeof c.fn === "function") {
+    const checks = c.fn();
+    const ok = checks.every(([, v]) => v);
+    if (ok) passed += 1;
+    console.log(`${ok ? "PASS" : "FAIL"} ${c.name}  [${checks.map(([k, v]) => `${k}=${v}`).join(", ")}]`);
+    continue;
+  }
+
   requests.length = 0;
   queue = [...c.script];
-  const res = await generateNarrative({ data: c.data || data, providers: [provider] });
+  const res = await generateNarrative({ data: c.data || data, providers: [c.provider || provider] });
   const checks = [["ok", !!res === c.expect.ok]];
   if (c.expect.calls !== undefined) checks.push(["calls", requests.length === c.expect.calls]);
   if (c.expect.userPrompt) {
@@ -148,6 +209,8 @@ for (const c of cases) {
   }
   if (c.expect.secondMaxTokens !== undefined) checks.push(["secondMaxTokens", requests[1]?.body?.max_tokens === c.expect.secondMaxTokens]);
   if (c.expect.secondNoReasoning) checks.push(["secondNoReasoning", !("reasoning_effort" in (requests[1]?.body || {}))]);
+  if (c.expect.headerUA !== undefined) checks.push(["headerUA", (requests.at(-1)?.headers?.["user-agent"] || "") === c.expect.headerUA]);
+  if (c.expect.headerSession !== undefined) checks.push(["headerSession", (requests.at(-1)?.headers?.["x-opencode-session"] || "") === c.expect.headerSession]);
   if (c.expect.maxSummaryLen !== undefined) checks.push(["summaryLen", res && res.en.summary.length <= c.expect.maxSummaryLen]);
   if (c.expect.maxHeadlineLen !== undefined) checks.push(["headlineLen", res && res.en.headline.length <= c.expect.maxHeadlineLen]);
   const ok = checks.every(([, v]) => v);

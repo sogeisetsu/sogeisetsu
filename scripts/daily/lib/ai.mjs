@@ -6,7 +6,7 @@
  *
  * 数据流：
  *   data（每日数据 schema，见下）→ 压缩成紧凑 prompt（只喂聚合条目，不喂原始事件）
- *   → 按顺序尝试 providers（chat / responses 两种形态）→ 一次调用产出严格 JSON（en + zh 双语）
+ *   → 按顺序尝试 providers（sensenova → OpenCode Go；chat / responses 两种形态）→ 一次调用产出严格 JSON（en + zh 双语）
  *   → 提取 / 解析 / 校验（不合格追加“只输出 JSON”后重试一次）→ { en, zh, provider }
  *
  * data schema（输入契约）：
@@ -32,13 +32,15 @@
  *   defaultProviders(env = process.env)      // 同步返回 provider 列表（没 key 的跳过）
  *   resolveSenseNovaModel(apiKey, baseUrl?)  // GET {baseUrl}/models 挑模型，进程内缓存
  *
- * provider 结构：{ name, baseUrl, apiKey, model, shape }
+ * provider 结构：{ name, baseUrl, apiKey, model, shape, headers? }
  *   shape = "chat"      → POST {baseUrl}/chat/completions
  *   shape = "responses" → POST {baseUrl}/responses
+ *   headers（可选）      → 追加到请求头（OpenCode Go 要求自报 user-agent / 会话 id）
  *
  * 用法：node scripts/daily/lib/ai.mjs --data=path.json
  */
 
+import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -47,6 +49,11 @@ import { pathToFileURL } from "node:url";
 
 const LOG = "[daily-report]";
 const SENSENOVA_BASE = "https://token.sensenova.cn/v1";
+// OpenCode Go 订阅端点（与 chat/completions 同形态）：https://opencode.ai/docs/go
+const OPENCODE_GO_BASE = "https://opencode.ai/inference/go/openai/v1";
+// Go 明确要求客户端自报身份，别用 SDK / HTTP 库的默认 UA（见 Go 文档「Where can I use it?」）
+const OPENCODE_GO_USER_AGENT =
+  "sogeisetsu-daily-report/1.0 (+https://github.com/sogeisetsu/sogeisetsu)";
 const SECTION_CAP = 30; // 每个板块最多喂 30 条
 const COMMIT_MSG_CAP = 10; // 每个仓库最多喂 10 条 commit message
 const COMMIT_MSG_LEN = 200; // 每条 commit message 截断到 200 字符
@@ -174,11 +181,14 @@ export async function resolveSenseNovaModel(apiKey, baseUrl = SENSENOVA_BASE) {
 
 // ---------------------------------------------------------------- provider 列表
 
-/** 按优先级返回可用 provider；没有 key 的直接跳过。SenseNova 的 model 留空，由 generateNarrative 惰性解析。 */
+/**
+ * 按优先级返回可用 provider；没有 key 的直接跳过。SenseNova 的 model 留空，由 generateNarrative 惰性解析。
+ * OpenCode Go 的两条共用同一把 key（OPENCODE_API_KEY），顺序：免费模型 → 付费额度内模型。
+ */
 export function defaultProviders(env = process.env) {
   const list = [];
 
-  // 商汤 SenseNova（首选：Zen 免费层只能在 OpenCode 应用内使用，CI 里必然失败）
+  // 商汤 SenseNova（首选：额度独立于 OpenCode 账号，OpenCode Go 侧的限流 / 滥用监控影响不到它）
   if (env.SENSENOVA_API_KEY) {
     list.push({
       name: "sensenova",
@@ -189,14 +199,29 @@ export function defaultProviders(env = process.env) {
     });
   }
 
-  // Zen（OpenCode，垫底可选回退：仅当用户将来有付费 Zen credit 才可能可用）
+  // OpenCode Go（备选，垫底）：端点仍是 chat/completions 形态，直接可用。
+  // Go 要求客户端自报 user-agent，并带稳定会话 ID（一次运行 = 一个会话）：既满足文档，
+  // 也让路由与提示缓存有依据 —— 降低被它「针对第三方客户端」的滥用监控挡下的概率。
   if (env.OPENCODE_API_KEY) {
+    const headers = {
+      "user-agent": OPENCODE_GO_USER_AGENT,
+      "x-opencode-session": `sogeisetsu-daily-report-${randomUUID()}`,
+    };
     list.push({
-      name: "zen",
-      baseUrl: "https://opencode.ai/zen/v1",
+      name: "opencode-go-longcat",
+      baseUrl: OPENCODE_GO_BASE,
       apiKey: env.OPENCODE_API_KEY,
-      model: env.OPENCODE_MODEL || "mimo-v2.6-flash-free",
+      model: "longcat-2.5-preview-free", // 限时免费、不限量
       shape: "chat",
+      headers,
+    });
+    list.push({
+      name: "opencode-go-deepseek",
+      baseUrl: OPENCODE_GO_BASE,
+      apiKey: env.OPENCODE_API_KEY,
+      model: "deepseek-v4.1-flash", // 计入 Go 套餐月度额度
+      shape: "chat",
+      headers,
     });
   }
 
@@ -536,6 +561,7 @@ function extractContent(json, shape) {
  *   · JSON 提取/校验失败 → 逐次加严提醒，最多追加 3 次（共 4 次尝试）→ 换下一家
  *   · 截断（finish_reason=length）→ 打印 usage/reasoning 诊断并翻倍 max_tokens 重试（上限 65536）
  *   · chat 默认发 reasoning_effort=none 关闭思考（避免 CoT 吃光 max_tokens 导致 content 为空）；400 时去掉重试
+ *   · provider.headers（可选）原样追加进请求头（OpenCode Go 的 user-agent / 会话 id 走这里）
  *
  * `validate(parsed)` 是同步校验器，返回 { ok:true, value } 或 { ok:false, reason }；
  * `feedback(reason, n)` 按失败原因生成可执行的纠正提示（默认 buildRetryFeedback，日报专用）。
@@ -587,6 +613,8 @@ async function attemptProvider(provider, system, user, validate, feedback = buil
           headers: {
             "content-type": "application/json",
             authorization: `Bearer ${provider.apiKey}`,
+            // provider 自定义头（OpenCode Go 要求自报 user-agent + 稳定会话 id）
+            ...(provider.headers && typeof provider.headers === "object" ? provider.headers : {}),
           },
           body: JSON.stringify(body),
         },
