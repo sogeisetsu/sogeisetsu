@@ -3,20 +3,25 @@
   "windowStart": "2026-10-17T00:00:00+08:00",
   "windowEnd": "2026-10-18T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-17T12:14:33.406Z",
+  "generatedAt": "2026-10-17T12:23:37.678Z",
   "empty": false,
   "totals": {
-    "commits": 12,
+    "commits": 13,
     "prs": 0,
-    "issues": 1,
+    "issues": 5,
     "reviews": 0
   },
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 10,
+      "count": 11,
       "own": true,
       "messages": [
+        {
+          "sha": "5c9eeab54501bb50287b8e49590628c8d9822f0f",
+          "message": "docs(codemap): 初始化仓库 codemap（分目录映射 + 根 Atlas + AGENTS.md 注册）",
+          "ts": "2026-10-17T12:22:47Z"
+        },
         {
           "sha": "211aa26fc4faad077471556da8d9f8204d34224d",
           "message": "fix(ai): 200 但 content 为空时也翻倍 max_tokens 重试，别空转纠正提示",
@@ -68,7 +73,7 @@
           "ts": "2026-10-17T09:57:24Z"
         }
       ],
-      "automated": 26,
+      "automated": 28,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -93,10 +98,51 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 26,
+  "automatedCommits": 28,
   "pullRequests": [],
   "reviews": [],
   "issues": [
+    {
+      "repo": "anomalyco/opencode",
+      "number": 50823,
+      "title": "opencode-go: mimo-v2.6-flash vision reads a stale image after ≥5 images in one session",
+      "url": "https://github.com/anomalyco/opencode/issues/50823",
+      "action": "commented",
+      "ts": "2026-10-17T12:21:02.000Z",
+      "own": false,
+      "comments": 2
+    },
+    {
+      "repo": "anomalyco/opencode",
+      "number": 56113,
+      "title": "Subagent runs fail with 'model_coming_soon' on MiMo-V2.6-Flash while the main session on the same model works fine",
+      "url": "https://github.com/anomalyco/opencode/issues/56113",
+      "action": "commented",
+      "ts": "2026-10-17T12:21:01.000Z",
+      "own": false,
+      "comments": 7
+    },
+    {
+      "repo": "anomalyco/opencode",
+      "number": 55785,
+      "title": "go: mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image (400)",
+      "url": "https://github.com/anomalyco/opencode/issues/55785",
+      "action": "closed",
+      "ts": "2026-10-17T12:20:52.000Z",
+      "own": false,
+      "state": "closed",
+      "comments": 5
+    },
+    {
+      "repo": "anomalyco/opencode",
+      "number": 55785,
+      "title": "go: mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image (400)",
+      "url": "https://github.com/anomalyco/opencode/issues/55785",
+      "action": "commented",
+      "ts": "2026-10-17T12:20:51.000Z",
+      "own": false,
+      "comments": 5
+    },
     {
       "repo": "anomalyco/opencode",
       "number": 56113,
@@ -105,7 +151,7 @@
       "action": "commented",
       "ts": "2026-10-17T09:49:06.000Z",
       "own": false,
-      "comments": 6
+      "comments": 7
     }
   ],
   "releases": [],
@@ -219,16 +265,16 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "12 commits across 2 repos, 1 issue comment on opencode subagent bug",
-      "summary": "On 2026-10-17, the user made **12 commits** across two repositories. In `sogeisetsu/sogeisetsu`, 10 own commits covered AI retry logic for empty content responses, summary rendering fixes including per-repo count pills and expanded `byRepo` limits, a CI rebase-retry for push failures, Chinese badge font sizing, a homepage teaser with per-repo statistics, a provider switch from `Zen` to `OpenCode Go`, and an `AGENTS.md` update. An additional 26 automated commits by `github-actions[bot]` were recorded in that repo. In `sogeisetsu/opencode-agent-sandbox`, 2 own commits corrected outdated documentation on subcommand lists, bundled skill counts, and Windows ports, and added notes on remote branch deletion checks. The user also commented on issue #56113 in `anomalyco/opencode`, which reports subagent `model_coming_soon` failures on `MiMo-V2.6-Flash` while the main session works fine; the issue has 6 total comments. No pull requests, reviews, releases, or discussions were recorded that day.",
+      "headline": "13 commits across 2 repos, 5 issue actions on opencode",
+      "summary": "On 2026-10-17, the user made **13 own commits** across two repositories, plus 28 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/sogeisetsu`, the 11 commits covered codemap initialization, an AI retry fix for empty content responses, summary page improvements including per-repo count pills and a teaser section, a CI rebase retry for push failures, a render font-size fix for Chinese badges, and a backup provider swap from Zen to OpenCode Go. In `sogeisetsu/opencode-agent-sandbox`, 2 commits corrected outdated knowledge docs about subcommand lists, bundled skill counts, and Windows ports, and added a remote branch deletion check. The user also performed 5 issue actions on `anomalyco/opencode`: commenting on #50823 about stale image reads after 5+ images in a session, commenting twice on #56113 about subagent `model_coming_soon` failures on MiMo-V2.6-Flash, and both commenting on and closing #55785 about the Go endpoint rejecting all image inputs with 400 errors. No pull requests, reviews, releases, or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "2 个仓库 12 次提交，1 条 opencode 子代理 bug 评论",
-      "summary": "2026-10-17，用户在两个仓库共提交 **12 次**。在 `sogeisetsu/sogeisetsu` 中，10 次本人提交涵盖 AI 空内容重试逻辑、摘要渲染修复（按仓库条数 pill、`byRepo` 上限放宽）、CI 推送失败 rebase 重试、中文徽章字号调整、首页 teaser 与每仓库统计、provider 从 `Zen` 切换至 `OpenCode Go`，以及 `AGENTS.md` 更新。该仓库另有 26 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/opencode-agent-sandbox` 中，2 次本人提交修正了子命令列表、随包 skill 数量、Windows 端口等过期文档，并补充了远程分支删除的检查与风险说明。用户还在 `anomalyco/opencode` 的 issue #56113 上留言，该 issue 报告 `MiMo-V2.6-Flash` 子代理出现 `model_coming_soon` 失败而主会话正常，该 issue 共有 6 条评论。当日无 PR、review、release 或讨论记录。",
+      "headline": "2 个仓库 13 次提交，opencode 上 5 次 issue 操作",
+      "summary": "2026-10-17，用户在两个仓库共完成 **13 次本人提交**，另有 28 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。`sogeisetsu/sogeisetsu` 的 11 次提交涵盖 codemap 初始化、AI 空内容重试修复、摘要页改进（含每仓库条数 pill 和首页 teaser）、CI 推送失败 rebase 重试、中文徽章字号修复，以及备用 provider 从 Zen 切换为 OpenCode Go。`sogeisetsu/opencode-agent-sandbox` 的 2 次提交修正了过期的知识文档（子命令列表、随包 skill 数量、Windows 端口），并补充了远程分支删除的检查。用户还在 `anomalyco/opencode` 上完成了 5 次 issue 操作：在 #50823 上评论了会话中 5 张以上图片后读取到旧图片的问题，在 #56113 上两次评论了 MiMo-V2.6-Flash 子代理 `model_coming_soon` 失败的问题，并在 #55785 上评论后关闭了 Go 端点拒绝所有图片输入（400 错误）的问题。当日无 PR、review、release 或 discussion 记录。",
       "releaseNotes": []
     }
   },
   "aiProvider": "sensenova",
-  "dataHash": "4fb0139157ee344b4421b38f04619725811f88a22100103d79c34fcf8071a92b"
+  "dataHash": "505ade711aa3d628c1553607d5a77bb6c458e29a533b9341a8c845a0e8eae372"
 }
