@@ -3,30 +3,72 @@
   "windowStart": "2026-10-17T00:00:00+08:00",
   "windowEnd": "2026-10-18T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-17T08:52:38.711Z",
-  "empty": true,
+  "generatedAt": "2026-10-17T10:05:17.665Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 6,
     "prs": 0,
-    "issues": 0,
+    "issues": 1,
     "reviews": 0
   },
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 0,
+      "count": 6,
       "own": true,
-      "messages": [],
-      "automated": 19,
+      "messages": [
+        {
+          "sha": "975d4751e31896df7f0d77c5d6c5bff5412ef2be",
+          "message": "chore(docs): 按新样式重新生成站点产物",
+          "ts": "2026-10-17T09:57:26Z"
+        },
+        {
+          "sha": "86eb7dbe4576e0a1d244c996ba78746df41a8bab",
+          "message": "ci(activity): 推送失败按日报同法 rebase 重试（并取完整历史）",
+          "ts": "2026-10-17T09:57:25Z"
+        },
+        {
+          "sha": "988b2191a8eb3e8864cbe57b2a9ae2019ce38dd6",
+          "message": "fix(render): 中文版徽章/标签放大字号、收紧字距",
+          "ts": "2026-10-17T09:57:25Z"
+        },
+        {
+          "sha": "cf2170bd2d6cc21cdd7843b1e499cd24a20eae2f",
+          "message": "feat(summary): 首页 teaser + 每仓库确定数字，byRepo 覆盖全部仓库并讲清做了什么",
+          "ts": "2026-10-17T09:57:24Z"
+        },
+        {
+          "sha": "62d86f10c29b4d79945fa0dc02862bd55c529269",
+          "message": "fix(ai): 备用 provider 由 Zen 换成 OpenCode Go（longcat → deepseek）",
+          "ts": "2026-10-17T09:57:24Z"
+        },
+        {
+          "sha": "27d28ad5a7c546448c39950899e7a3a65b5b8eab",
+          "message": "docs(agents): 落定 AGENTS.md（工作区既有更新 + provider 顺序改成 OpenCode Go）",
+          "ts": "2026-10-17T09:57:24Z"
+        }
+      ],
+      "automated": 20,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 19,
+  "automatedCommits": 20,
   "pullRequests": [],
   "reviews": [],
-  "issues": [],
+  "issues": [
+    {
+      "repo": "anomalyco/opencode",
+      "number": 56113,
+      "title": "Subagent runs fail with 'model_coming_soon' on MiMo-V2.6-Flash while the main session on the same model works fine",
+      "url": "https://github.com/anomalyco/opencode/issues/56113",
+      "action": "commented",
+      "ts": "2026-10-17T09:49:06.000Z",
+      "own": false,
+      "comments": 6
+    }
+  ],
   "releases": [],
   "stars": [],
   "starInventory": [
@@ -136,7 +178,18 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "dataHash": "8743ce0396e7cece83ef47af4e261d2e8153257e8adc81288848ecce542a8032"
+  "ai": {
+    "en": {
+      "headline": "6 commits to sogeisetsu/sogeisetsu, 1 issue comment on opencode",
+      "summary": "On 2026-10-17, the user made **6 own commits** to `sogeisetsu/sogeisetsu`, plus 20 automated commits by `github-actions[bot]`. The commits covered documentation regeneration with a new style, a CI fix for push-failure rebase retries with full history, a render fix enlarging Chinese badge and tag fonts, a summary feature adding a homepage teaser and per-repo deterministic numbers covering all repositories, an AI provider switch from Zen to OpenCode Go (longcat to deepseek), and finalizing `AGENTS.md` with workspace updates and provider ordering. The user also commented on issue `#56113` in `anomalyco/opencode`, which reports subagent runs failing with `model_coming_soon` on MiMo-V2.6-Flash while the main session on the same model works fine; the issue has 6 total comments. No pull requests, reviews, releases, or discussions were recorded for the day.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "6 次提交至 sogeisetsu/sogeisetsu，1 条 issue 评论",
+      "summary": "2026-10-17，用户在 `sogeisetsu/sogeisetsu` 完成了 **6 次本人提交**，另有 20 次由 `github-actions[bot]` 自动提交。提交内容涵盖按新样式重新生成站点文档、CI 推送失败时按日报同法 rebase 重试并取完整历史、中文版徽章和标签放大字号收紧字距、首页 teaser 及每仓库确定数字覆盖全部仓库、备用 provider 由 Zen 换成 OpenCode Go（longcat 改为 deepseek），以及落定 `AGENTS.md` 并更新工作区与 provider 顺序。用户还在 `anomalyco/opencode` 的 issue `#56113` 上发表了评论，该 issue 报告了 MiMo-V2.6-Flash 上子代理运行失败（`model_coming_soon`）而主会话正常的问题，共有 6 条评论。当日无 PR、评审、发布或讨论记录。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "sensenova",
+  "dataHash": "a2229fd441e037079351e2dd86d8feb4898a22220bbec8eb71d5aaa7dcce2e72"
 }

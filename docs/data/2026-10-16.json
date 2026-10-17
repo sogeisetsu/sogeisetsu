@@ -3,7 +3,7 @@
   "windowStart": "2026-10-16T00:00:00+08:00",
   "windowEnd": "2026-10-17T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-17T08:51:03.521Z",
+  "generatedAt": "2026-10-17T10:02:24.425Z",
   "empty": false,
   "totals": {
     "commits": 14,
@@ -347,7 +347,18 @@
       "own": false
     }
   ],
-  "ai": null,
-  "aiProvider": null,
+  "ai": {
+    "en": {
+      "headline": "14 own commits plus 33 automated, 2 issues opened, 4 replies received",
+      "summary": "The user made **14 own commits** across two repositories, plus 33 automated commits by `github-actions[bot]`. In `sogeisetsu/opencode-agent-sandbox`, 7 commits focused on documentation: archiving OpenCode V2 distribution/architecture/auth knowledge and Windows path pitfalls, generalizing the `knowledge/` base beyond Git/GitHub, adding Excalidraw sketches, and creating `AGENTS.md`. In `sogeisetsu/sogeisetsu`, 7 commits added a `--force` flag to the daily CLI to bypass comment-count snapshot freezing, introduced a 30-day GitHub activity AI summary (homepage card + standalone page), refactored shared helpers into `lib/days.mjs`, fixed +08 timezone reply collection gaps, and tightened comment-count criteria per review feedback. The user opened 2 issues in `anomalyco/opencode` — #55785 (Go endpoint rejecting all images for mimo-v2.6-flash and mimo-v2.5) and #55772 (Windows desktop CLI has no way to run it) — and commented on 4 items including #50823, PR #51281, and `openchamber/openchamber` #4111. Four replies were received: two from `micahgerges` on #55785 with updated bisection results, and two from `opencode-agent[bot]` on #55785 and #55772. The user also started discussion #4982 in `openchamber/openchamber` titled \"Share session archive state with OpenCode's own clients\". Issue #51263 in `anomalyco/opencode` was closed by `Tarquinen`.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "14 次本人提交，另有 33 次自动提交，新开 2 个 issue，收到 4 条回复",
+      "summary": "用户在两个仓库中进行了 **14 次本人提交**，另有 33 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/opencode-agent-sandbox` 中，7 次提交聚焦于文档：归档 OpenCode V2 分发/架构/认证知识与 Windows 路径坑，将 `knowledge/` 基础从 Git/GitHub 泛化，添加 Excalidraw 草图，并创建 `AGENTS.md`。在 `sogeisetsu/sogeisetsu` 中，7 次提交为 daily CLI 添加了 `--force` 标志以跳过评论数快照冻结，新增近 30 天 GitHub 活动 AI 总结（首页卡片 + 独立页），将共享助手重构至 `lib/days.mjs`，修复 +08 时区凌晨漏采回复问题，并按复审意见收紧评论数口径。用户在 `anomalyco/opencode` 中打开了 2 个 issue——#55785（Go 端点拒绝 mimo-v2.6-flash 和 mimo-v2.5 的所有图片）和 #55772（Windows 桌面 CLI 无法运行），并对 4 个项目发表了评论，包括 #50823、PR #51281 和 `openchamber/openchamber` #4111。收到 4 条回复：`micahgerges` 在 #55785 上提供了更新的二分结果，`opencode-agent[bot]` 在 #55785 和 #55772 上各回复一条。用户还在 `openchamber/openchamber` 中发起了讨论 #4982，标题为 \"Share session archive state with OpenCode's own clients\"。`anomalyco/opencode` 的 #51263 被 `Tarquinen` 关闭。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "opencode-go-longcat",
   "dataHash": "18159261d8da73b4f4955f9034d1d9c87bd7d421187376db81e5386aea0c9e82"
 }
