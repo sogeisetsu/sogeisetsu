@@ -3,7 +3,7 @@
   "windowStart": "2026-10-18T00:00:00+08:00",
   "windowEnd": "2026-10-19T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-18T15:35:11.802Z",
+  "generatedAt": "2026-10-18T15:55:47.180Z",
   "empty": false,
   "totals": {
     "commits": 14,
@@ -92,7 +92,7 @@
           "ts": "2026-10-18T10:46:56Z"
         }
       ],
-      "automated": 26,
+      "automated": 27,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -112,7 +112,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 26,
+  "automatedCommits": 27,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -308,18 +308,18 @@
   ],
   "ai": {
     "en": {
-      "headline": "14 commits across 3 repos, comment on OpenChamber issue, new idea discussion",
-      "summary": "Today `sogeisetsu` made **14 own commits** across three repositories. In `sogeisetsu/opencode-skill-management`, 7 commits implemented the `skill_management` plugin with list/inspect/disable/enable acceptance, corrected the `plugin add` entry conclusion, and revised the spec to be self-contained. In `sogeisetsu/sogeisetsu`, 6 commits fixed repeated resident-issue creation, degraded notifier failure behavior, unified title fonts, and redesigned AI failure visibility and the 30-day summary; another **26 automated commits by `github-actions[bot]`** also touched the repo. In `sogeisetsu/opencode-agent-sandbox`, 1 commit added an `opencode-provider` knowledge category covering catalog sources, credential ownership, and OpenChamber jurisdiction. The user commented on issue `#4939` in `openchamber/openchamber` about text selection never opening the comment menu, and started discussion `#5114` proposing a split of that fix. Two replies arrived on issues `#4601` and `#4899`, and three issues in `openchamber/openchamber` were closed by `btriapitsyn` that day.",
+      "headline": "Built skill_management plugin, shipped fixes, commented on #4939",
+      "summary": "Sogeisetsu made **14 own commits** across three repositories, plus **27 automated commits** by `github-actions[bot]`. In `sogeisetsu/opencode-skill-management`, seven commits implemented the `skill_management` plugin with list/inspect/disable/enable operations, revised its specification, and moved plans to `.openchamber/plans`. In `sogeisetsu/sogeisetsu`, six own commits refreshed `AGENTS.md`, fixed duplicate issue creation and notifier failure degradation, added AI failure visibility with model labels and a 30-day summary redesign, and unified site title fonts. One commit in `sogeisetsu/opencode-agent-sandbox` added `opencode-provider` knowledge docs covering catalog layers and credential ownership. Sogeisetsu commented on `openchamber/openchamber` issue #4939 about text selection not opening the comment menu, and started discussion #5114 proposing a frame→host selection bridge fix. Two replies arrived on issues #4601 (thinking level fix confirmed) and #4899 (export size not reproduced).",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "三个仓库共 14 次提交，在 OpenChamber issue 留言并发起新讨论",
-      "summary": "今天 `sogeisetsu` 在三个仓库提交了 **14 次本人提交**。在 `sogeisetsu/opencode-skill-management` 中，7 次提交实现了 `skill_management` 插件（含 list/inspect/disable/enable 验收）、更正了 `plugin add` 入口结论并将规范改为自含。在 `sogeisetsu/sogeisetsu` 中，6 次提交修复了常住 issue 重复创建、notifier 失败退化、统一标题字体，并改版了 AI 失败可见性与 30 天总结；另有 **26 次由 `github-actions[bot]` 自动提交**。在 `sogeisetsu/opencode-agent-sandbox` 中，1 次提交新增了 `opencode-provider` 知识类别，涵盖 catalog 三层来源、凭据归属与 OpenChamber 管辖。用户在 `openchamber/openchamber` 的 issue `#4939` 上留言，讨论文本选中不弹出评论菜单的问题，并发起讨论 `#5114` 提议拆分该修复。收到 `#4601` 和 `#4899` 两条回复，`btriapitsyn` 当天关闭了三个 issue。",
+      "headline": "Built skill_management plugin, shipped fixes, commented on #4939",
+      "summary": "sogeisetsu 在三个仓库提交了 **14 次本人提交**，另有 **27 次由 `github-actions[bot]` 自动提交**。在 `sogeisetsu/opencode-skill-management` 中，七次提交实现了 `skill_management` 插件（含 list/inspect/disable/enable 操作），修订了规范，并将计划移至 `.openchamber/plans`。在 `sogeisetsu/sogeisetsu` 中，六次本人提交刷新了 `AGENTS.md`，修复了 issue 重复创建与 notifier 失败时的页面退化，新增 AI 失败可见性、模型标注与 30 天总结改版，并统一了站点标题字体。`sogeisetsu/opencode-agent-sandbox` 中一次提交新增了 `opencode-provider` 知识文档，涵盖 catalog 三层来源与凭据归属。sogeisetsu 评论了 `openchamber/openchamber` 的 #4939（文本选中未唤起评论菜单），并发起讨论 #5114，提议以 frame→host 选择桥接方案修复。收到两条回复：#4601（思考等级修复已确认）与 #4899（导出尺寸问题未能复现）。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "161529953c32a4ca57b97ee23623efd1815a52d0c0586449a9719ab7f03590ed"
+  "dataHash": "2732ec5415f9fd6f3d41b77948ae6155ad0900b481a1cd2e34b5e9f54f4a192d"
 }
