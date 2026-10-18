@@ -965,15 +965,18 @@ function aiProviderNote(provider, model) {
 /**
  * AI 全失败时的可见性块：逐条 `<provider> / <model>：<原因>` + 常驻 issue 链接。
  *
+ * 只要这一天带了 aiFailure 记录就渲染本块（哪怕 attempts 为空、issue 未回填）——
+ * notifier 自己挂掉时必须退化成「未取到 issue 链接」，否则页面会静默地只剩
+ * 「AI 摘要暂不可用」，这正是本轮要消灭的不可见状态。
+ *
  * provider / model 是代码里的字面量（可信），只过 esc；reason 来自网络/服务端，渲染前再过一次
  * sanitizeReason 兜底（采集时已脱敏，这里是第二道保险）。注意不要把 sanitizeReason 套在 model 上 ——
  * 它的「≥24 位长串一律替换」会把 `longcat-2.5-preview-free`（24 字符）误伤成 <redacted>。
- * 既没有条目也没有 issue 时返回 ''（退回原来的「暂不可用」单段）。
  */
 function aiFailureBlock(failure) {
-  const f = failure && typeof failure === 'object' ? failure : {};
-  const attempts = A(f.attempts);
-  const issue = f.issue && typeof f.issue === 'object' ? f.issue : {};
+  if (!failure || typeof failure !== 'object' || Array.isArray(failure)) return '';
+  const attempts = A(failure.attempts);
+  const issue = failure.issue && typeof failure.issue === 'object' ? failure.issue : {};
   const num = Number(issue.number);
   const href = safeHref(issue.url);
   const lines = attempts
@@ -993,8 +996,11 @@ function aiFailureBlock(failure) {
           `View failure details #${num} →`,
           `查看失败详情 #${num} →`
         )}</a>`
-      : '';
-  if (!lines && !link) return '';
+      : // notifier 没跑成 / 回写失败：明说拿不到链接，而不是假装没有失败详情
+        `<span class="ai-failure-note">${i18n(
+          'Failure details: issue link unavailable',
+          '失败详情：未取到 issue 链接'
+        )}</span>`;
   return `<div class="ai-failure">${lines}${link}</div>`;
 }
 
@@ -1349,6 +1355,7 @@ html[data-lang="zh"] .chip{font-size:.76rem;letter-spacing:0}
   color:var(--on-surface-variant);overflow-wrap:anywhere;
 }
 .ai-failure .link{font-size:.8rem;font-weight:650}
+.ai-failure-note{font-size:.78rem;color:var(--on-surface-variant)}
 .ai-headline{margin:0 0 8px;font-size:clamp(1.15rem,3.6vw,1.5rem);line-height:1.25;font-weight:800;letter-spacing:-.015em}
 .ai-summary{margin:0;font-size:.98rem;color:var(--on-surface-variant)}
 .ai-summary.i18n[data-lang]{display:block}

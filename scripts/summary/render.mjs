@@ -195,13 +195,14 @@ function providerNote(provider, model) {
  * 逐条 `<provider> / <model>：<原因>` + 常驻 issue 链接。attempt 的 model 为空
  * → 只显示 `<provider>：<原因>`。provider / model / reason 都过 sanitizeReason
  * （reason 来自网络层；provider / model 是代码字段，同样过一道做深度防御）再 esc。
- * issue 缺失 → 只渲染原因行、没有链接；既无有效行也无链接 → 返回 ''（维持原降级形态）。
- * .ai-failure / .ai-failure-line 类由 scripts/daily/render.mjs 提供。
+ * 只要带了 aiFailure 记录就渲染（attempts 为空也要渲染）——issue 缺失时明说
+ * 「未取到 issue 链接」而不是静默降级；failure 本身缺席才返回 ''。
+ * .ai-failure / .ai-failure-line / .ai-failure-note 类由 scripts/daily/render.mjs 提供。
  */
 function failureBlock(failure) {
-  const f = O(failure);
-  const attempts = A(f.attempts);
-  const issue = O(f.issue);
+  if (!failure || typeof failure !== 'object' || Array.isArray(failure)) return '';
+  const attempts = A(failure.attempts);
+  const issue = O(failure.issue);
   const issueNum = Number(issue.number);
   const href = safeHref(issue.url);
   const lines = attempts
@@ -222,8 +223,10 @@ function failureBlock(failure) {
           `View failure details #${issueNum} →`,
           `查看失败详情 #${issueNum} →`
         )}</a>`
-      : '';
-  if (!lines && !link) return '';
+      : `<span class="ai-failure-note">${i18n(
+          'Failure details: issue link unavailable',
+          '失败详情：未取到 issue 链接'
+        )}</span>`;
   return `<div class="ai-failure">${lines}${link}</div>`;
 }
 

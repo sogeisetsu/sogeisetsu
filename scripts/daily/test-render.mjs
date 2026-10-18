@@ -671,6 +671,36 @@ check("aiSummaryBlock: 无 aiFailure 时不出失败块（退回单段「暂不�
   ];
 });
 
+check("aiSummaryBlock: notifier 没跑成（有 aiFailure 但没 issue）→ 退化成「未取到 issue 链接」", () => {
+  const withReasons = renderReportPage({
+    data: aiDay({
+      aiFailure: {
+        generatedAt: "2026-10-09T12:00:00.000Z",
+        pageState: "no-narrative",
+        attempts: [{ provider: "sensenova", model: "glm-5.2", reason: "HTTP 503" }],
+        issue: null,
+      },
+    }),
+    ai: null,
+  });
+  // attempts 为空的极端情况（例如一个 key 都没配 → generateStructured 早退）也要保留降级提示
+  const noAttempts = renderReportPage({
+    data: aiDay({
+      aiFailure: { generatedAt: "2026-10-09T12:00:00.000Z", pageState: "no-narrative", attempts: [], issue: null },
+    }),
+    ai: null,
+  });
+  const unavailable = renderReportPage({ data: aiDay(), ai: null });
+  return [
+    ["reasonsBlock", withReasons.includes('<div class="ai-failure">')],
+    ["reasonsLine", withReasons.includes("sensenova / glm-5.2：HTTP 503")],
+    ["noLink", !/<a class="link"[^>]*href="https:\/\/github\.com\//.test(withReasons)],
+    ["noteShown", withReasons.includes("失败详情：未取到 issue 链接")],
+    ["emptyAttemptsStillShows", noAttempts.includes('<div class="ai-failure">') && noAttempts.includes("失败详情：未取到 issue 链接")],
+    ["aiFailureAbsentNoNote", !unavailable.includes("未取到 issue 链接")],
+  ];
+});
+
 check("pageStyle: 失败可见性 / provider 旁注样式在基础样式里（index 卡片没有 extraCss 钩子）", () => {
   const html = renderReportPage({ data: aiDay(), ai: null });
   return [

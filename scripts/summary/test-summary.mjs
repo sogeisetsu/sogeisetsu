@@ -954,6 +954,27 @@ await check("render: ai 缺失且无失败明细时卡片仍返回空串（维�
   ["emptyCard", summaryCard({ summary: { windowStart: START, windowEnd: END, totals: { commits: 1 } } }) === ""],
 ]);
 
+await check("render: notifier 没跑成（有 aiFailure 但没 issue）→ 退化成「未取到 issue 链接」", () => {
+  if (!e2eSummary) return [["summaryReady", false]];
+  const s = {
+    ...e2eSummary,
+    ai: null,
+    aiFailure: { attempts: [{ provider: "sensenova", model: "glm-5.2", reason: "HTTP 503" }], issue: null },
+  };
+  const html = renderSummaryPage({ summary: s });
+  const card = summaryCard({ summary: s });
+  const noAttempts = renderSummaryPage({
+    summary: { ...s, aiFailure: { attempts: [], issue: null } },
+  });
+  return [
+    ["pageNote", html.includes("失败详情：未取到 issue 链接")],
+    ["cardNote", card.includes("失败详情：未取到 issue 链接")],
+    ["pageNoLink", !/<a class="link"[^>]*href="https:\/\//.test(html.slice(html.indexOf('class="ai-failure"'), html.indexOf('class="ai-failure"') + 800))],
+    ["pageStillShowsReason", html.includes("HTTP 503")],
+    ["emptyAttemptsStillShows", noAttempts.includes('<div class="ai-failure">') && noAttempts.includes("失败详情：未取到 issue 链接")],
+  ];
+});
+
 // 纠正重试：第一份引用不存在的 repo → summaryFeedback 生成纠正提示 → 第二份合法
 requests.length = 0;
 const invalid = baseRaw();

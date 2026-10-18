@@ -542,7 +542,8 @@ function main() {
       }
     }
 
-    // AI 全失败可见性：有可见段、无叙述、且当天记了失败 → 报告必须渲染失败卡（原因 + issue 链接）
+    // AI 全失败可见性：有可见段、无叙述、且当天记了失败 → 报告必须渲染失败卡（原因 + issue 链接）；
+    // notifier 没跑成（拿不到 issue）时必须退化成「未取到 issue 链接」，不许静默只剩「暂不可用」
     const failAttempts =
       data.aiFailure && Array.isArray(data.aiFailure.attempts) ? data.aiFailure.attempts : [];
     if (!data.ai && failAttempts.length > 0 && hasVisibleActivity(data)) {
@@ -550,6 +551,17 @@ function main() {
         `${label}: AI 失败卡`,
         html.includes('class="ai-failure"'),
         `aiFailure 有 ${failAttempts.length} 条原因但报告缺少失败卡`
+      );
+    }
+    const failIssue =
+      data.aiFailure && data.aiFailure.issue && typeof data.aiFailure.issue === "object"
+        ? Number(data.aiFailure.issue.number)
+        : NaN;
+    if (!data.ai && data.aiFailure && !(Number.isFinite(failIssue) && failIssue > 0) && hasVisibleActivity(data)) {
+      check(
+        `${label}: AI 失败卡降级提示`,
+        html.includes("ai-failure-note"),
+        "拿不到 issue 链接时报告未给出「未取到 issue 链接」降级提示"
       );
     }
 
@@ -925,7 +937,7 @@ function main() {
         );
       }
 
-      // 总结页降级（ai=null 且记录了失败）时必须渲染失败卡
+      // 总结页降级（ai=null 且记录了失败）时必须渲染失败卡；拿不到 issue 时必须给出降级提示
       const sumFailAttempts =
         summary.aiFailure && Array.isArray(summary.aiFailure.attempts) ? summary.aiFailure.attempts : [];
       if ((summary.ai === null || summary.ai === undefined) && sumFailAttempts.length > 0) {
@@ -933,6 +945,21 @@ function main() {
           "summary.html: AI 失败卡",
           summaryHtml.includes('class="ai-failure"'),
           `summary.aiFailure 有 ${sumFailAttempts.length} 条原因但页面缺少失败卡`
+        );
+      }
+      const sumIssue =
+        summary.aiFailure && summary.aiFailure.issue && typeof summary.aiFailure.issue === "object"
+          ? Number(summary.aiFailure.issue.number)
+          : NaN;
+      if (
+        (summary.ai === null || summary.ai === undefined) &&
+        summary.aiFailure &&
+        !(Number.isFinite(sumIssue) && sumIssue > 0)
+      ) {
+        check(
+          "summary.html: AI 失败卡降级提示",
+          summaryHtml.includes("ai-failure-note"),
+          "拿不到 issue 链接时页面未给出「未取到 issue 链接」降级提示"
         );
       }
     }
