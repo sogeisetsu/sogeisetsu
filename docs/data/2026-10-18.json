@@ -3,10 +3,10 @@
   "windowStart": "2026-10-18T00:00:00+08:00",
   "windowEnd": "2026-10-19T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-18T10:51:13.043Z",
+  "generatedAt": "2026-10-18T10:56:38.404Z",
   "empty": false,
   "totals": {
-    "commits": 7,
+    "commits": 8,
     "prs": 0,
     "issues": 1,
     "reviews": 0
@@ -47,6 +47,27 @@
       "automatedBots": []
     },
     {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "70e8af4d68015da54686a1fd86cb2824a89abe9a",
+          "message": "fix(ai): notifier 失败时页面退化为「未取到 issue 链接」",
+          "ts": "2026-10-18T10:55:58Z"
+        },
+        {
+          "sha": "493c21bf703b89e5274d24c9aa78d3f345830280",
+          "message": "feat(ai): AI 失败可见性、模型标注与 30 天总结改版",
+          "ts": "2026-10-18T10:46:56Z"
+        }
+      ],
+      "automated": 18,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    },
+    {
       "repo": "sogeisetsu/opencode-agent-sandbox",
       "count": 1,
       "own": true,
@@ -59,25 +80,9 @@
       ],
       "automated": 0,
       "automatedBots": []
-    },
-    {
-      "repo": "sogeisetsu/sogeisetsu",
-      "count": 1,
-      "own": true,
-      "messages": [
-        {
-          "sha": "493c21bf703b89e5274d24c9aa78d3f345830280",
-          "message": "feat(ai): AI 失败可见性、模型标注与 30 天总结改版",
-          "ts": "2026-10-18T10:46:56Z"
-        }
-      ],
-      "automated": 16,
-      "automatedBots": [
-        "github-actions[bot]"
-      ]
     }
   ],
-  "automatedCommits": 16,
+  "automatedCommits": 18,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -273,18 +278,18 @@
   ],
   "ai": {
     "en": {
-      "headline": "7 own commits across three repos, plus 16 automated commits by",
-      "summary": "Work centered on three repositories, with **7 own commits** plus 16 automated commits by `github-actions[bot]`. In `sogeisetsu/opencode-skill-management` (5 commits), docs were updated to drop references to removed documents, plans were moved into `.openchamber/plans`, a Steps checklist was added with fixed cross-references, line endings were unified to LF, and the `skill_management` spec got a revision plus a feasibility evaluation. `sogeisetsu/opencode-agent-sandbox` received 1 commit adding an `opencode-provider` knowledge category covering catalog three-tier sources, credential ownership, endpoints, and OpenChamber governance. `sogeisetsu/sogeisetsu` received 1 commit on AI failure visibility, model labeling, and a redesigned 30-day summary. On `openchamber/openchamber` I commented on issue #4939 about the selection menu not opening on rendered pages, and started discussion #5114 proposing to split that fix into a frame→host selection bridge first. Three issues there were closed by btriapitsyn (#4896, #4920, #4601), and I received replies on #4601 (fix confirmed in 7d037b07d) and #4899 (not reproduced). Totals: 7 commits, 0 PRs, 1 issue touched, 0 reviews; no releases were published.",
+      "headline": "8 own commits across three repos; 18 automated commits by github-actions[bot]",
+      "summary": "Across three repositories the user made **8 own commits**, and `github-actions[bot]` also produced 18 automated commits. In `sogeisetsu/opencode-skill-management`, 5 commits tidied documentation: dropping references to a removed doc, moving plans into `.openchamber/plans`, adding a Steps checklist with corrected cross-references, normalizing line endings to LF, and revising the `skill_management` spec plus a feasibility evaluation. The 2 commits in `sogeisetsu/sogeisetsu` improved AI-failure visibility and model labeling, adding a 30-day summary redesign and degrading pages to an \"issue link not retrieved\" state when the notifier fails. A single commit in `sogeisetsu/opencode-agent-sandbox` added an `opencode-provider` knowledge category covering catalog sources, credential ownership, endpoints, and OpenChamber governance. The only issue activity was a comment on `openchamber/openchamber` issue #4939 about text selected inside an `openchamber_render` page never opening the comment menu, which carried 2 comments in total. Two replies arrived in existing issues: `btriapitsyn` confirmed #4601's thinking-level bug was fixed in `7d037b07d`, and `yulia-ivashko` reported #4899's export-resolution bug as unreproducible. Three issues in `openchamber/openchamber` were closed by `btriapitsyn` (#4896, #4920, #4601).",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "3 个仓库共 7 次本人提交，另有 16 次自动提交",
-      "summary": "当天工作集中在三个仓库，共 **7 次本人提交**，另有 16 次由 `github-actions[bot]` 自动提交。`sogeisetsu/opencode-skill-management` 有 5 次提交：删除已移除文档的引用，计划改存到 `.openchamber/plans`，补充 Steps 清单并修正交叉引用，统一换行符为 LF，`skill_management` 规范修订版加上可行性评测。`sogeisetsu/opencode-agent-sandbox` 1 次提交新增 `opencode-provider` 知识类别，涵盖 catalog 三层来源、凭据归属、端点与 OpenChamber 管辖。`sogeisetsu/sogeisetsu` 1 次提交改进 AI 失败可见性、模型标注与 30 天总结改版。在 `openchamber/openchamber`，我对 issue #4939（渲染页面内选中文字不弹出评论菜单）发表了评论，并发起讨论 #5114，建议先把该修复拆成 frame→host 选择桥。该仓库另有 3 个 issue 由 btriapitsyn 关闭（#4896、#4920、#4601），我在 #4601（已在 7d037b07d 修复）和 #4899（未能复现）收到回复。总计 7 次提交、0 个 PR、1 个 issue 参与、0 次评审，无新发布。",
+      "headline": "三个仓库共 8 次本人提交，另有 18 次 github-actions[bot] 自动提交",
+      "summary": "用户在三个仓库共完成 **8 次本人提交**，此外 `github-actions[bot]` 还产生了 18 次自动提交。在 `sogeisetsu/opencode-skill-management` 中，5 次提交用于整理文档：删除对已移除文档的引用、把计划改存到 `.openchamber/plans`、补充 Steps 清单并修正交叉引用、统一换行符为 LF，以及修订 `skill_management` 规范并做可行性评测。`sogeisetsu/sogeisetsu` 的 2 次提交提升了 AI 失败的可见性与模型标注，加入 30 天总结改版，并在 notifier 失败时让页面退化为「未取到 issue 链接」。`sogeisetsu/opencode-agent-sandbox` 的 1 次提交新增了 `opencode-provider` 知识类别，涵盖 catalog 三层来源、凭据归属、端点与 OpenChamber 管辖。唯一的 issue 动态是在 `openchamber/openchamber` 的 issue #4939 上留言，内容是关于 `openchamber_render` 页面内选中文本始终不弹出评论菜单，该 issue 共有 2 条评论。另有 2 条回复出现在既有 issue 中：`btriapitsyn` 确认 #4601 的思考等级问题已在 `7d037b07d` 修复，`yulia-ivashko` 则表示 #4899 的导出分辨率问题无法复现。`openchamber/openchamber` 中有 3 个 issue 被 `btriapitsyn` 关闭（#4896、#4920、#4601）。用户还发起了讨论 #5114，建议把渲染页面选择菜单的修复拆开，先落地 frame→host 的选择桥接。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "a7eccabe932027530f84625754a8b724ba7ff1aa4c089435ce9ddf2e5a6e49a8"
+  "dataHash": "efe683f43ec7a3fef52f73b4c1889e4639227bb3f0acb49f7f0c2103fd4eed5c"
 }
