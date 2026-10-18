@@ -3,18 +3,18 @@
   "windowStart": "2026-10-19T00:00:00+08:00",
   "windowEnd": "2026-10-20T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-18T18:16:27.740Z",
+  "generatedAt": "2026-10-18T18:30:03.613Z",
   "empty": false,
   "totals": {
-    "commits": 7,
+    "commits": 9,
     "prs": 0,
-    "issues": 3,
+    "issues": 5,
     "reviews": 0
   },
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 7,
+      "count": 9,
       "own": true,
       "messages": [
         {
@@ -43,6 +43,16 @@
           "ts": "2026-10-18T18:01:03Z"
         },
         {
+          "sha": "6d8c2ad4dd263e92f8ef234194d97f37694896fc",
+          "message": "chore(codemap): 刷新映射基线到 46667bc（verify 窗口断言修正后复核）",
+          "ts": "2026-10-18T16:59:32Z"
+        },
+        {
+          "sha": "46667bc57fa9114b18a2ff62d0ff45f188ea4e12",
+          "message": "fix(verify): summary 窗口断言不再与「此刻的今天」硬比（check.yml 半夜必红的根因）",
+          "ts": "2026-10-18T16:59:00Z"
+        },
+        {
           "sha": "b49fffa2adbbde1022e8322bbdd573bed7c682d5",
           "message": "chore(codemap): 刷新映射基线到 4719825（活动线事件分页修复后复核）",
           "ts": "2026-10-18T16:44:54Z"
@@ -53,13 +63,13 @@
           "ts": "2026-10-18T16:44:31Z"
         }
       ],
-      "automated": 5,
+      "automated": 6,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 5,
+  "automatedCommits": 6,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -68,10 +78,31 @@
       "number": 9,
       "title": "[test] opencode /oc smoke（临时，验完即关）",
       "url": "https://github.com/sogeisetsu/sogeisetsu/issues/9",
+      "action": "closed",
+      "ts": "2026-10-18T18:20:39.000Z",
+      "own": true,
+      "state": "closed",
+      "comments": 5
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "number": 9,
+      "title": "[test] opencode /oc smoke（临时，验完即关）",
+      "url": "https://github.com/sogeisetsu/sogeisetsu/issues/9",
+      "action": "commented",
+      "ts": "2026-10-18T18:20:38.000Z",
+      "own": true,
+      "comments": 5
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "number": 9,
+      "title": "[test] opencode /oc smoke（临时，验完即关）",
+      "url": "https://github.com/sogeisetsu/sogeisetsu/issues/9",
       "action": "commented",
       "ts": "2026-10-18T18:14:33.000Z",
       "own": true,
-      "comments": 3
+      "comments": 5
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
@@ -81,7 +112,7 @@
       "action": "commented",
       "ts": "2026-10-18T18:12:56.000Z",
       "own": true,
-      "comments": 3
+      "comments": 5
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
@@ -92,7 +123,7 @@
       "ts": "2026-10-18T18:12:55.000Z",
       "own": true,
       "state": "open",
-      "comments": 3
+      "comments": 5
     }
   ],
   "releases": [],
@@ -194,6 +225,17 @@
       "title": "[test] opencode /oc smoke（临时，验完即关）",
       "url": "https://github.com/sogeisetsu/sogeisetsu/issues/9",
       "author": "github-actions[bot]",
+      "excerpt": "### 哪条腿失效 证据（`data/ai-diagnosis.md`）里**没有任何失败记录**：第 1 段明确写「本次没读到 `data/ai-failure.json`」（`data/ai-diagnosis.md:10`），即这次诊断运行时根本没有发生过 AI 尝试（本地演练 / 手动 `/oc` / 无变化跳过）。因此**没有任何一条腿被记录为失败**，也就无法判定「哪条腿失效」。 逐…",
+      "kind": "issue_comment",
+      "ts": "2026-10-18T18:21:34.000Z",
+      "own": true
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "number": 9,
+      "title": "[test] opencode /oc smoke（临时，验完即关）",
+      "url": "https://github.com/sogeisetsu/sogeisetsu/issues/9",
+      "author": "github-actions[bot]",
       "excerpt": "pong [github run](/sogeisetsu/sogeisetsu/actions/runs/39153131747)",
       "kind": "issue_comment",
       "ts": "2026-10-18T18:13:21.000Z",
@@ -222,18 +264,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu: 7 own commits plus 5 automated, 3 issue actions on opencode smoke",
-      "summary": "On 2026-10-19 activity centered on the `sogeisetsu/sogeisetsu` repository, with **7** own commits plus 5 automated commits by `github-actions[bot]`. The own work reverted temporary acceptance changes, restoring the real model id and the `/oc` login gate, after first probing with a nonexistent account to confirm that a non-owner comment results in skipped. A separate test changed the three-leg model id to an invalid value to force a real failure. Fixes followed: `opencode.yml` could not use `toLower` because GitHub expressions lack that function, and activity event pagination no longer treats an HTTP 422 as fatal, relying on the Link header instead. A new feature added automatic diagnosis when all AI legs fail, plus a manual `/oc` re-check entry point, and the codemap baseline was refreshed to `4719825` after the pagination fix. On the issue side, 3 actions were logged on `sogeisetsu/sogeisetsu` issue #9, titled `[test] opencode /oc smoke（临时，验完即关）`: it was opened, then commented on later; no issues were closed. A reply came from `github-actions[bot]` on that same issue with the excerpt `pong` linked to a GitHub Actions run, and the thread had 3 comments overall. No pull requests, reviews, releases, discussions, or stars occurred. No section hit its collection cap.",
+      "headline": "AI diagnosis and /oc fixes; 9 commits, 5 issue events on sogeisetsu/sogeisetsu",
+      "summary": "On 2026-10-19 `sogeisetsu` made 9 own commits to `sogeisetsu/sogeisetsu`, plus 6 automated commits by `github-actions[bot]`. Work centered on the AI diagnosis pipeline: a new feature adds automatic diagnosis when all AI legs fail and a manual `/oc` recheck entry, while `opencode.yml` was fixed because its `if` cannot use `toLower`. Two temporary test commits broke things: the `/oc` login gate was pointed at a nonexistent account to check that non-owner comments are skipped, and the three legs' model ids were set to invalid values to force a real failure; a revert restored both. Two fixes stopped the summary window assertion from hard-comparing against the current day (the cause of `check.yml` failing at midnight) and made event pagination treat HTTP 422 as non-fatal via the Link header. Codemap baselines were refreshed twice, to `46667bc` and `4719825`. Issue activity was confined to `#9` ([test] opencode /oc smoke（临时，验完即关）), opened, commented on three times, and closed — **5 issue events** with 5 comments on the thread. Two replies came from `github-actions[bot]`, including a `pong` from a workflow run; no pull requests, reviews, releases, or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu：本人 7 次提交、自动提交 5 次，opencode 冒烟测试涉 3 个 issue 动作",
-      "summary": "2026-10-19 的活动集中在 `sogeisetsu/sogeisetsu` 仓库，本人提交 **7** 次，另有 5 次由 `github-actions[bot]` 自动提交。本人工作先是回退临时验收改动，恢复真实 model id 与 `/oc` 的 login 门；此前曾用不存在的账号实测「非本人评论 → skipped」。另一项测试把三条腿的 model id 改成不存在的值，以制造一次真失败。随后修复两处问题：`opencode.yml` 的 if 不能使用 `toLower`（GitHub 表达式没有该函数），活动事件分页不再把 HTTP 422 当致命错误，改为以 Link 头为准。新增功能包括 AI 全失败时自动诊断以及 `/oc` 手动补查入口，并将 codemap 映射基线刷新到 `4719825`。issue 方面，`sogeisetsu/sogeisetsu` 的 #9（标题「[test] opencode /oc smoke（临时，验完即关）」）记录了 3 个动作：先新开，随后评论，没有关闭。该 issue 收到 `github-actions[bot]` 的一条回复，摘要为 `pong`，附 GitHub Actions 运行链接，整个讨论共 3 条评论。当日没有 pull request、review、release、discussion 或 star 活动。各板块均未触及采集上限。",
+      "headline": "AI 诊断与 /oc 修复：sogeisetsu/sogeisetsu 9 次提交、5 个 issue 事件",
+      "summary": "2026-10-19，`sogeisetsu` 在 `sogeisetsu/sogeisetsu` 完成 9 次本人提交，另有 6 次由 `github-actions[bot]` 自动提交。当天工作集中在 AI 诊断链路：新增「三条腿全部失败时自动诊断」以及 `/oc` 手动补查入口，并修复 `opencode.yml` 中 `if` 不能使用 `toLower` 的问题。两次临时测试提交故意制造异常：把 `/oc` 的 login 门指向不存在的账号，以验证「非本人评论 → skipped」；再把三条腿的 model id 改成不存在的值，以造出一次真实失败；随后一次 revert 把这两处恢复。两处修复让 summary 窗口断言不再与「此刻的今天」硬比（`check.yml` 半夜必红的根因），并让事件分页不再把 HTTP 422 当致命错误、改以 Link 头为准。codemap 映射基线刷新了两次，分别到 `46667bc` 和 `4719825`。issue 活动只涉及 `#9`（[test] opencode /oc smoke（临时，验完即关）），该 issue 被新开、收到三次评论后关闭，共 **5 个 issue 事件**，线程内共 5 条评论。`github-actions[bot]` 在该 issue 下回复了两次，其中一条是工作流运行返回的 `pong`；当天没有 pull request、review、release 或 discussion 记录。",
       "releaseNotes": []
     }
   },
-  "aiProvider": "opencode-go-deepseek",
-  "aiModel": "deepseek-v4.1-flash",
+  "aiProvider": "opencode-go-longcat",
+  "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "625dc9a72ec73e48fc24bb9c4caa5fdf6f31293225ee3744e827b1c97a89c19a"
+  "dataHash": "2f16f1f752dbe317280bbbaf4aad6a2bcbe3ee81486e1959e71df61f01552651"
 }
