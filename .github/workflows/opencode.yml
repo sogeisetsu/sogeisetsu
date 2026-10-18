@@ -4,7 +4,7 @@ name: opencode
 # 「诊断三件套」（失败即自动诊断）；本 workflow 是补充：失败持续数天、模型今天好了明天又坏、
 # 或想追问「为什么商汤那条 401」时，在 ai-failure issue（或任何 issue/PR）上补一句 `/oc …` 再查一次。
 #
-# 硬要求：评论触发**只认本人**（github.event.comment.user.login == 'not-the-owner-diagtest'）。
+# 硬要求：评论触发**只认本人**（github.event.comment.user.login == 'sogeisetsu'）。
 #   · 用 login 相等，比 author_association == 'OWNER' 更严（后者会放行其他 OWNER/MEMBER/COLLABORATOR）。
 #   · contains 大小写敏感，而 GitHub 表达式**没有 toLower**（计划里写的 toLower 会让 workflow 直接
 #     判为非法：Unrecognized function: 'toLower'，实测 2026-10-19 踩到），所以四种大小写各列一遍。
@@ -36,7 +36,7 @@ concurrency:
 jobs:
   opencode:
     if: |
-      github.event.comment.user.login == 'not-the-owner-diagtest' &&
+      github.event.comment.user.login == 'sogeisetsu' &&
       (contains(github.event.comment.body, '/oc') ||
        contains(github.event.comment.body, '/OC') ||
        contains(github.event.comment.body, '/Oc') ||
