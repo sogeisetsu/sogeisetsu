@@ -3,10 +3,10 @@
   "windowStart": "2026-10-18T00:00:00+08:00",
   "windowEnd": "2026-10-19T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-18T11:29:18.207Z",
+  "generatedAt": "2026-10-18T12:51:11.595Z",
   "empty": false,
   "totals": {
-    "commits": 10,
+    "commits": 12,
     "prs": 0,
     "issues": 1,
     "reviews": 0
@@ -14,9 +14,19 @@
   "commits": [
     {
       "repo": "sogeisetsu/opencode-skill-management",
-      "count": 5,
+      "count": 7,
       "own": true,
       "messages": [
+        {
+          "sha": "386091deef56847a76049bd3111b13a5a3090914",
+          "message": "docs: 更正 plugin add 入口结论（不需 server 壳）+ 新增下一步计划",
+          "ts": "2026-10-18T12:34:40Z"
+        },
+        {
+          "sha": "585fec5caa358b926f58082cacf049b2a0672456",
+          "message": "feat: 实现 skill_management 插件与验收（list/inspect/disable/enable）",
+          "ts": "2026-10-18T12:08:02Z"
+        },
         {
           "sha": "187903f599670e6e282fea2f521f5614448a120c",
           "message": "docs: 删除已移除文档的引用，规范改为自含",
@@ -72,7 +82,7 @@
           "ts": "2026-10-18T10:46:56Z"
         }
       ],
-      "automated": 22,
+      "automated": 23,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -92,7 +102,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 22,
+  "automatedCommits": 23,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -288,18 +298,18 @@
   ],
   "ai": {
     "en": {
-      "headline": "sogeisetsu: 10 own commits across 3 repos, plus 22 automated commits",
-      "summary": "Across three repositories, `sogeisetsu` made **10 own commits** on 2026-10-18. In `sogeisetsu/opencode-skill-management`, 5 commits made the `skill_management` spec self-contained, added a Steps checklist, moved plans to `.openchamber/plans`, and unified line endings to LF. In `sogeisetsu/sogeisetsu`, 4 commits fixed duplicate resident-issue creation, narrowed the `verify` invariant scan, made notifier failures degrade gracefully, and shipped AI failure visibility, model labeling, and a 30-day summary revision; `github-actions[bot]` added 22 automated commits on top. In `sogeisetsu/opencode-agent-sandbox`, 1 commit documented a new `opencode-provider` category covering catalog sources, credentials, endpoints, and OpenChamber jurisdiction. The user commented on `openchamber/openchamber#4939` about the selection-menu bug, and started discussion #5114 \"[Idea] Split the rendered-page selection-menu fix: frame→host selection bridge first (#4939)\". Two replies were received in upstream issues #4601 and #4899 from `btriapitsyn` and `yulia-ivashko`. Upstream maintainer `btriapitsyn` also closed issues #4896, #4920, and #4601. No PRs, reviews, releases, or star events occurred.",
+      "headline": "12 own commits, 23 automated, one issue comment and one discussion started",
+      "summary": "On 2026-10-18 sogeisetsu made **12 own commits** across three repositories, plus 23 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. Seven commits in `sogeisetsu/opencode-skill-management` implemented the `skill_management` plugin with list/inspect/disable/enable acceptance checks, revised the spec, and moved plans into `.openchamber/plans`. Four commits in `sogeisetsu/sogeisetsu` fixed duplicate resident-issue creation, notifier failure fallback, the verify invariant for additive phrasing, and reworked AI failure visibility and the 30-day summary. One commit in `sogeisetsu/opencode-agent-sandbox` added an `opencode-provider` knowledge category on catalog sources, credentials and endpoints. Issue activity covered 1 issue (opened or closed 1): the user commented on `openchamber/openchamber` #4939 about the render-page selection menu, which had 2 comments. The user also started discussion #5114 in `openchamber/openchamber` to split that fix into a frame-to-host selection bridge first. Two replies arrived on `openchamber/openchamber` issues #4601 and #4899, and btriapitsyn closed #4896, #4920 and #4601. No pull requests, reviews or releases were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 当日 10 次本人提交，另有 22 次 github-actions 自动提交",
-      "summary": "当天 `sogeisetsu` 在三个仓库共有 **10 次本人提交**。在 `sogeisetsu/opencode-skill-management` 中，5 次提交把 `skill_management` 规范改为自含文档、补充 Steps 清单、将计划移入 `.openchamber/plans` 并统一换行符为 LF。在 `sogeisetsu/sogeisetsu` 中，4 次提交修复了常住 issue 重复创建问题、收窄 `verify` 不变式的扫描范围、让 notifier 失败时优雅降级，并带来 AI 失败可见性、模型标注与 30 天总结改版；`github-actions[bot]` 另有 22 次自动提交。在 `sogeisetsu/opencode-agent-sandbox` 中，1 次提交新增了 `opencode-provider` 类别文档，涵盖 catalog 三层来源、凭据归属、端点与 OpenChamber 管辖。该用户评论了 `openchamber/openchamber#4939`（选中文本无法打开评论菜单的问题），并发起讨论 #5114「[Idea] Split the rendered-page selection-menu fix: frame→host selection bridge first (#4939)」。收到 2 条上游 issue 回复，分别来自 `btriapitsyn`（#4601）与 `yulia-ivashko`（#4899）；维护者 `btriapitsyn` 还关闭了 #4896、#4920 与 #4601。当天无 PR、无 review、无 release、无 star 事件。",
+      "headline": "本人提交 12 次、自动提交 23 次，评论 1 个 issue 并新开 1 个讨论",
+      "summary": "2026-10-18，sogeisetsu 在三个仓库完成 **12 次本人提交**，另有 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 的 23 次自动提交。`sogeisetsu/opencode-skill-management` 的 7 次提交实现了 `skill_management` 插件及 list/inspect/disable/enable 验收，修订了规范，并把计划迁到 `.openchamber/plans`。`sogeisetsu/sogeisetsu` 的 4 次提交修复了常住 issue 重复创建、notifier 失败时的降级处理、自动提交「相加表述」不变式的扫描范围，并改版了 AI 失败可见性与 30 天总结。`sogeisetsu/opencode-agent-sandbox` 的 1 次提交新增 `opencode-provider` 知识类别，涉及 catalog 来源、凭据与端点。issue 方面共 1 个（新开或关闭 1 个）：在 `openchamber/openchamber` 的 #4939（渲染页选中文本无法打开评论菜单）下留言，该 issue 共 2 条评论。当天还新开了 `openchamber/openchamber` 的讨论 #5114，建议先把该修复拆成 frame→host 选区桥接。收到 `openchamber/openchamber` issue #4601 和 #4899 的两条回复，btriapitsyn 关闭了 #4896、#4920 和 #4601。当天没有 PR、评审或发布。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "978e27903053ec3dbdeb4b27d2871a0396f77cf17b6b10762114a8ce14a551e8"
+  "dataHash": "090c6eec32ce9d4d591742cbe89bdf4085c443b2b0b664d63a4aed5063cc7beb"
 }
