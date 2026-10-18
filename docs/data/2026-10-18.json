@@ -3,7 +3,7 @@
   "windowStart": "2026-10-18T00:00:00+08:00",
   "windowEnd": "2026-10-19T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-17T22:24:23.556Z",
+  "generatedAt": "2026-10-18T00:51:07.067Z",
   "empty": false,
   "totals": {
     "commits": 1,
@@ -31,13 +31,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 5,
+      "automated": 6,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 5,
+  "automatedCommits": 6,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -167,6 +167,26 @@
   "stateChanges": [
     {
       "repo": "openchamber/openchamber",
+      "number": 4896,
+      "title": "[Bug] An agent-linked issue or PR cannot be unlinked - no removal affordance in the UI",
+      "url": "https://github.com/openchamber/openchamber/issues/4896",
+      "action": "closed",
+      "actor": "btriapitsyn",
+      "ts": "2026-10-17T23:11:45.000Z",
+      "own": false
+    },
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4920,
+      "title": "[Bug] Context panel breakdown bar divides whole-session estimates by the last message's input, so 其他 is always 0%",
+      "url": "https://github.com/openchamber/openchamber/issues/4920",
+      "action": "closed",
+      "actor": "btriapitsyn",
+      "ts": "2026-10-17T23:09:21.000Z",
+      "own": false
+    },
+    {
+      "repo": "openchamber/openchamber",
       "number": 4601,
       "title": "[Bug] Switching model in the composer keeps the previous thinking level instead of the model's own default",
       "url": "https://github.com/openchamber/openchamber/issues/4601",
@@ -209,5 +229,5 @@
   ],
   "ai": null,
   "aiProvider": null,
-  "dataHash": "14208bd9f79bce66e3a9981eb715399c4ed972a6734771e6d5bdb9f26b4f9768"
+  "dataHash": "3f9448fdd90abd6d6d93a0444ae209914f6c812f1e76672c0ff2a8fa5d48de2d"
 }
