@@ -3,10 +3,10 @@
   "windowStart": "2026-10-19T00:00:00+08:00",
   "windowEnd": "2026-10-20T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-18T16:47:41.389Z",
+  "generatedAt": "2026-10-18T18:01:40.069Z",
   "empty": false,
   "totals": {
-    "commits": 2,
+    "commits": 3,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 2,
+      "count": 3,
       "own": true,
       "messages": [
+        {
+          "sha": "f07d3f24a23c760dc820e69c01634d1fbd5095c8",
+          "message": "feat(ai): AI 全失败自动诊断 + /oc 手动补查入口",
+          "ts": "2026-10-18T18:01:03Z"
+        },
         {
           "sha": "b49fffa2adbbde1022e8322bbdd573bed7c682d5",
           "message": "chore(codemap): 刷新映射基线到 4719825（活动线事件分页修复后复核）",
@@ -28,11 +33,13 @@
           "ts": "2026-10-18T16:44:31Z"
         }
       ],
-      "automated": 0,
-      "automatedBots": []
+      "automated": 2,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
     }
   ],
-  "automatedCommits": 0,
+  "automatedCommits": 2,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -151,18 +158,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu made 2 commits fixing activity pagination and refreshing codemap",
-      "summary": "The user made **2 own commits** to `sogeisetsu/sogeisetsu`. The first commit was `fix(activity): 事件分页不再把 HTTP 422 当致命错误（以 Link 头为准）`, which fixed the activity event pagination logic so that HTTP 422 responses are no longer treated as fatal errors, using the `Link` header as the source of truth. The second commit was `chore(codemap): 刷新映射基线到 4719825（活动线事件分页修复后复核）`, refreshing the codemap baseline to commit `4719825` after verifying the pagination fix. No pull requests, issues, reviews, releases, or discussions were recorded during this window. No automated commits were made.",
+      "headline": "sogeisetsu 2026-10-19: 3 own commits + 2 automated in sogeisetsu/sogeisetsu",
+      "summary": "On 2026-10-19, `sogeisetsu` made **3 own commits** in `sogeisetsu/sogeisetsu`, plus 2 automated commits by `github-actions[bot]`. The first commit `feat(ai)` added automatic diagnosis for total AI failure scenarios and a `/oc` manual re-query entry point. The second commit `chore(codemap)` refreshed the codemap baseline to 4719825 for re-verification after an activity-line pagination fix. The third commit `fix(activity)` changed event pagination to no longer treat HTTP 422 as a fatal error, relying instead on the Link header. No pull requests, issue activity, code reviews, releases, or discussion participation were recorded for the day.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 提交 2 次，修复事件分页并刷新 codemap 基线",
-      "summary": "用户在 `sogeisetsu/sogeisetsu` 仓库完成了 **2 次本人提交**。第一次提交 `fix(activity): 事件分页不再把 HTTP 422 当致命错误（以 Link 头为准）` 修复了活动事件分页逻辑，不再将 HTTP 422 视为致命错误，改为以 `Link` 头为准。第二次提交 `chore(codemap): 刷新映射基线到 4719825（活动线事件分页修复后复核）` 将 codemap 基线刷新到提交 `4719825`，完成分页修复后的复核。本时间窗口内没有 pull request、issue、review、release 或 discussion 活动。没有自动提交。",
+      "headline": "sogeisetsu 2026-10-19: 3 own commits + 2 automated in sogeisetsu/sogeisetsu",
+      "summary": "2026-10-19，`sogeisetsu` 在 `sogeisetsu/sogeisetsu` 提交了 **3 次本人提交**，另有 2 次由 `github-actions[bot]` 自动提交。首次提交 `feat(ai)` 新增了 AI 全失败场景的自动诊断功能及 `/oc` 手动补查入口。第二次提交 `chore(codemap)` 将映射基线刷新至 4719825，用于活动线事件分页修复后的复核。第三次提交 `fix(activity)` 修改了事件分页逻辑，不再将 HTTP 422 视为致命错误，改为以 Link 头为准。当天无 pull request、issue 操作、代码评审、发布或讨论活动。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "d9fd20e9675bcbcea5ee16c36ca14936c9ac88895164afcf71da61798fe6bd84"
+  "dataHash": "d8e03fd3499a8d8ef18df3e6f3375f14063574cb5dcaca47b98c00f848d54371"
 }
