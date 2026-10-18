@@ -1,0 +1,80 @@
+name: opencode
+
+# 手动补查入口（入口 B）。自动化那条线是 update-daily-report.yml / update-summary.yml 里的
+# 「诊断三件套」（失败即自动诊断）；本 workflow 是补充：失败持续数天、模型今天好了明天又坏、
+# 或想追问「为什么商汤那条 401」时，在 ai-failure issue（或任何 issue/PR）上补一句 `/oc …` 再查一次。
+#
+# 硬要求：评论触发**只认本人**（github.event.comment.user.login == 'sogeisetsu'）。
+#   · 用 login 相等，比 author_association == 'OWNER' 更严（后者会放行其他 OWNER/MEMBER/COLLABORATOR）。
+#   · contains 大小写敏感，所以先 toLower —— `/OC`、`/Oc` 也认（mentions 本身不敏感，但我们的 if 自己保证）。
+#   · 门只认 `/oc`（不认 `/opencode`）：action 的默认 mentions 是 `/opencode,/oc`，但我们的门是安全边界，
+#     宁可窄 —— `/opencode …` 的评论会被 skip，需要时写 `/oc …`。
+#   · if 为假时 job 是 **skipped**（不是失败）：别人的评论表现为「什么都不会发生」。
+#
+# 与自动档共用的两样东西（避免两处漂移）：
+#   · 同一份证据：先跑 scripts/diagnose-providers.mjs —— 纯脚本，产出 data/ai-diagnosis.md，
+#     交给 agent 读（`node scripts/diagnose-providers.mjs --prompt` 是那套提示词）。
+#   · 同一套提示词：`prompt` 输入取自 diagnose-providers.mjs 的提示词常量，并把评论正文接在后面
+#     （所以 `/oc 为什么商汤那条 401` 的追问不会丢）。注：当前安装到的 CLI（v1 通道）在
+#     issue_comment 事件下不消费 PROMPT，prompt 是「将来会生效」的前置声明，不改变今天的行为。
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+# 同一个 issue 串行（同一时间只跑一条 /oc），不取消进行中的。
+concurrency:
+  group: opencode-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  opencode:
+    if: |
+      github.event.comment.user.login == 'sogeisetsu' &&
+      contains(toLower(github.event.comment.body), '/oc')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      # 与自动档同源的证据：纯脚本，零依赖，不需要 LLM（agent 起不来时它就派上用场）
+      - name: 生成诊断证据 + 取共用提示词（纯脚本）
+        id: diag
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
+        run: |
+          node scripts/diagnose-providers.mjs
+          {
+            echo 'prompt<<OC_DIAG_PROMPT_EOF'
+            node scripts/diagnose-providers.mjs --prompt
+            echo 'OC_DIAG_PROMPT_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Run opencode
+        uses: anomalyco/opencode/github@latest
+        env:
+          OPENCODE_AUTH_CONTENT: ${{ secrets.OPENCODE_AUTH_CONTENT }}
+          # 凭据不依赖 auth.json：与自动档同法，用仓库已有的两个 key 经 OPENCODE_CONFIG_CONTENT 注入
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
+          OPENCODE_CONFIG_CONTENT: |
+            {"$schema":"https://opencode.ai/config.json","provider":{"opencode-go":{"options":{"apiKey":"{env:OPENCODE_API_KEY}"}},"sensenova":{"npm":"@ai-sdk/openai-compatible","name":"SenseNova","options":{"baseURL":"https://token.sensenova.cn/v1","apiKey":"{env:SENSENOVA_API_KEY}"},"models":{"glm-5.2":{"name":"GLM-5.2"}}}}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # 首选免费腿（限时免费不限量）；不够用再换 opencode-go/deepseek-v4.1-flash（改这一行）
+          model: opencode-go/longcat-2.5-preview-free
+          use_github_token: true # 不装 OpenCode App、不要 id-token: write
+          share: false # 公开仓库默认 true（会把会话做成可分享链接），这里明确关掉
+          prompt: |
+            ${{ steps.diag.outputs.prompt }}
+
+            追加要求（来自 issue/PR 评论）：${{ github.event.comment.body }}

@@ -5,7 +5,8 @@
  * 本地预检（零依赖）：一次跑完全部检查，任一失败即退出码 1。
  *   1) node --check 语法检查：ai.mjs / render.mjs / github.mjs / index.mjs
  *      以及 30 天总结侧 scripts/summary/* 全部脚本、AI 失败通知器
- *      （notify-ai-failure.mjs），外加活动卡片线
+ *      （notify-ai-failure.mjs）与失败诊断两件套
+ *      （diagnose-providers.mjs / diagnose-narrate.mjs），外加活动卡片线
  *      （generate-activity.mjs / render-svg.mjs / preview.mjs / cst.mjs）
  *   2) scripts/daily/test-ai.mjs     —— AI 适配层确定性回归（假服务器，无需 key）
  *      scripts/daily/test-render.mjs —— 渲染/规范化确定性回归
@@ -49,6 +50,8 @@ const syntaxTargets = [
   "../render-svg.mjs",
   "../preview.mjs",
   "../notify-ai-failure.mjs",
+  "../diagnose-providers.mjs",
+  "../diagnose-narrate.mjs",
   "../summary/collect.mjs",
   "../summary/prompt.mjs",
   "../summary/validate-summary.mjs",

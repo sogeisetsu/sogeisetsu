@@ -58,6 +58,10 @@ node scripts/test-activity-window.mjs  # 活动卡片口径 / 可见性
 - `MAX_TOKENS = 49152`（截断时翻倍到上限 65536）；`CHAT_TIMEOUT_MS = 180000`。abort / 网络异常**不重试**，直接换下一条。
 - **全失败的可见性**：编排器写 `data/ai-failure.json`（**gitignore 的 run 状态，不发布、不提交**）+ 把 `aiFailure` 写进 `docs/data/<date>.json` / `docs/summary.json`；`node scripts/notify-ai-failure.mjs` 开 / 追加**常驻** issue（label `ai-failure`）、把 issue 号回写进数据文件并重渲染页面。两个 workflow 都保持 0 退出（生成物照常提交），可见性靠 issue + `::warning::` + `$GITHUB_STEP_SUMMARY` —— 为此这两个 workflow 需要 `issues: write`。
 - **动 notifier 之前先读它的头注释**，两条都是实测踩过的坑，别"简化"掉：① 记录里的 `state:"ok"|"failed"` 才是恢复信号 —— **「没有记录」不等于已恢复**（CI 每次全新 checkout，文件在运行开始时必然不存在，一次跳过 AI 的运行会误关仍然有效的 issue）；② issue 列表（search 与 REST 也一样）在新建后有几秒可见延迟 —— 所以它走 REST `/issues`、只在"准备创建"前多确认几次，并在看到多条 open 时保留编号最小的一条、其余追加说明后关闭（自愈）。
+- **AI 全失败后的自动诊断（触发点）**：只有**本次新建**了常驻 issue（＝ ok→failed 的首次转换）才诊断 —— notifier 在那条分支往 `$GITHUB_OUTPUT` 写 `should_diagnose` / `issue_number`，两个生成 workflow 于是在**「提交并推送」之后**跑三件套：安装 opencode CLI → `scripts/diagnose-providers.mjs`（纯脚本证据：失败记录 + 各 provider `/models` 现状 + 机械对账，**不依赖 LLM**）→ `scripts/diagnose-narrate.mjs`（`opencode run` 读证据与 `lib/ai.mjs` 追加结论，LLM 起不来就只留证据）→ `gh issue comment`（回帖是 workflow 的动作；agent 那步不注入任何 GitHub token，并先摘掉 checkout 的 git 凭据）。追加评论的路径不诊断 → 天然去重；同一失败事件另按产物首行的 `<!-- ai-diagnosis … -->` 标记再查一次重。
+- **`DIAGNOSE=1`（workflow_dispatch 勾 `diagnose`）是逃生口**：强制写 `should_diagnose`，让「追加评论」的路径也再诊断一次（手动补查 / 本地演练用）。诊断模型走仓库变量 `DIAG_MODEL`（默认 `opencode-go/longcat-2.5-preview-free`；Go 整体挂掉时换 `sensenova/glm-5.2`）。**凭据不依赖 auth.json**：`OPENCODE_CONFIG_CONTENT` 用 `{env:OPENCODE_API_KEY}` / `{env:SENSENOVA_API_KEY}` 注入仓库已有的两个 secret（实测 auth.json 为空也能调通），`OPENCODE_AUTH_CONTENT` 配了也只当额外来源。
+- **`/oc` 手动入口（`.github/workflows/opencode.yml`）**：门是 `comment.user.login == 'sogeisetsu'`（比 `author_association` 严）且评论含 `/oc`（先 `toLower`）—— **别人评论的表现是 job `skipped`，不是失败、不产生 run 计费**。它先跑同一个证据脚本，再把 `diagnose-providers.mjs --prompt` 的共用提示词 + 评论正文交给 `anomalyco/opencode/github@latest`。
+- 诊断产物 `data/ai-diagnosis.md` 与 `data/ai-failure.json` 同类：**gitignore 的 run 状态**，不发布、不提交；回帖正文里不出现 key / token（证据层异常文本一律过 `sanitizeReason`）。
 
 ## 发布流程
 

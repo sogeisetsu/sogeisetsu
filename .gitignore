@@ -8,3 +8,5 @@ scripts/preview-real.svg
 assets/_preview.html
 # AI 全失败的 run 级状态（data/ai-failure.json）：本地/CI 工作区临时状态，不发布、不提交（由 notify-ai-failure.mjs 消费后回填 issue 号）
 data/ai-failure.json
+# 失败诊断产物（data/ai-diagnosis.md）：纯脚本证据 + LLM 叙述，作为 issue 回帖正文 —— 同样是运行状态，不发布、不提交
+data/ai-diagnosis.md

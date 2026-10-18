@@ -23,6 +23,11 @@
  *     4. 重渲染受影响页面（日报：report/<date>.html/.md + index.html；
  *        总结：summary.html + index.html），让线上页面挂上 issue 链接。
  *        整段重渲染裹在 try/catch 里：失败只打 ::warning:: 继续走
+ *     5. 只有「本次新建了常住 issue」（＝ ok→failed 的首次转换）才写 step output
+ *        `should_diagnose=true` / `issue_number=<n>` —— 两个生成 workflow 的后续
+ *        「诊断三件套」（诊断-证据 → 诊断-叙述 → 诊断-回帖，全在发布之后）据此触发。
+ *        追加评论的路径**不写**这个输出，所以「一次失败事件只诊断一次」是天然去重，不需要冷却表。
+ *        逃生口：`DIAGNOSE=1`（workflow_dispatch 的 diagnose 输入）—— 手动重跑时强制再诊断一次。
  *
  *   state=ok → 恢复路径
  *     本次运行 AI 明确成功：若还有 open 的 ai-failure issue → 每条追加「已恢复」评论并关闭
@@ -46,7 +51,8 @@
  *
  * 用法：node scripts/notify-ai-failure.mjs
  * （由 update-daily-report.yml / update-summary.yml 在生成步骤后、提交步骤前调用；
- *   Actions 里 gh 由 GITHUB_TOKEN 认证，本地用 gh 自身的登录态。）
+ *   Actions 里 gh 由 GITHUB_TOKEN 认证，本地用 gh 自身的登录态。
+ *   DIAGNOSE=1 强制写 should_diagnose 输出，用于本地演练 / 手动补查。）
  */
 
 import { spawnSync } from "node:child_process";
@@ -76,6 +82,12 @@ const REPO = process.env.GITHUB_REPOSITORY || "sogeisetsu/sogeisetsu";
 const USERNAME = process.env.GITHUB_REPOSITORY_OWNER || "sogeisetsu";
 const LABEL = "ai-failure";
 const ISSUE_TITLE = "[ai-failure] AI 叙述生成失败";
+
+/**
+ * 逃生口：DIAGNOSE=1（/true/yes）时，即使本次只是「往已有 issue 追加评论」也照样写
+ * should_diagnose 输出，让后续诊断步骤再跑一次。默认关闭 —— 首次转换才诊断（天然去重）。
+ */
+const DIAGNOSE = /^(1|true|yes)$/i.test(String(process.env.DIAGNOSE || "").trim());
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -295,6 +307,7 @@ async function failurePath(record) {
   const body = buildFailureBody(record);
   const found = await listOpenIssuesSettled();
   let issue;
+  let created = false; // 本次是不是「新建了常住 issue」（ok→failed 的首次转换）
   if (found.length > 0) {
     issue = found[0];
     // 自愈：历史上可能因为可见延迟建出多条，保留编号最小的一条，其余追加说明后关闭
@@ -329,6 +342,17 @@ async function failurePath(record) {
       issue = again[0];
     }
     console.log(`${LOG} 已创建 issue #${issue.number}`);
+    created = true;
+  }
+
+  // 诊断触发信号：只在「本次新建了常住 issue」（ok→failed 首次转换）时写 ——
+  // 追加路径不写，所以「一次失败事件只诊断一次」不需要任何冷却状态。
+  // DIAGNOSE=1 是逃生口（手动重跑 / 本地演练）。
+  if (created || DIAGNOSE) {
+    writeStepOutput({ should_diagnose: "true", issue_number: String(issue.number) });
+    console.log(
+      `${LOG} 已写 step output should_diagnose=true issue_number=${issue.number}${created ? "" : "（DIAGNOSE 逃生口）"}`
+    );
   }
 
   writeBackIssue(record, issue);
@@ -374,6 +398,32 @@ function appendStepSummary(markdown) {
     appendFileSync(file, `${markdown}\n`, "utf8");
   } catch {
     // step summary 只是锦上添花，失败静默
+  }
+}
+
+/**
+ * Actions step output（$GITHUB_OUTPUT）：供后续「诊断三件套」步骤读 should_diagnose / issue_number。
+ * 本地没有该环境变量（与 appendStepSummary 同惯例）时跳过；写失败也只 warning ——
+ * 它只决定后续诊断步骤跑不跑，绝不影响 issue 与发布。
+ */
+function writeStepOutput(pairs) {
+  const file = process.env.GITHUB_OUTPUT;
+  if (!file) {
+    console.log(`${LOG} 无 GITHUB_OUTPUT（本地运行），跳过 step output`);
+    return;
+  }
+  try {
+    appendFileSync(
+      file,
+      Object.entries(pairs)
+        .map(([k, v]) => `${k}=${v}\n`)
+        .join(""),
+      "utf8"
+    );
+  } catch (err) {
+    console.log(
+      `::warning::AI 失败可见性：写 GITHUB_OUTPUT 失败（${errMessage(err)}），后续诊断步骤会被跳过`
+    );
   }
 }
 

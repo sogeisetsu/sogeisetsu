@@ -26,6 +26,11 @@ on:
         required: false
         type: boolean
         default: false
+      diagnose:
+        description: "强制再跑一次失败诊断（跳过「只有首次失败才诊断」的去重）"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -59,9 +64,12 @@ jobs:
           SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
 
       - name: AI 失败可见性（开/关 issue + 回写 + 重渲染）
+        id: notify
         run: node scripts/notify-ai-failure.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 逃生口：仅在 workflow_dispatch 勾了 diagnose 时非空 → 追加评论的路径也强制再诊断一次
+          DIAGNOSE: ${{ inputs.diagnose && '1' || '' }}
 
       - name: 提交并推送更新
         run: |
@@ -77,3 +85,68 @@ jobs:
           done
           echo "推送失败：重试 3 次后仍未成功" >&2
           exit 1
+
+      # ── AI 失败诊断（自动档）：只在「本次新建了常驻 ai-failure issue」（ok→failed 的首次转换）
+      #    时跑，且整段在「提交并推送」之后 —— 诊断再怎么坏也绝不阻塞生成物发布。
+      #    三层：纯脚本证据 → LLM 叙述（可缺席）→ workflow 自己回帖（写权限只在这一步）。
+      - name: 安装 opencode CLI（仅诊断-叙述用，不进生成链路）
+        if: steps.notify.outputs.should_diagnose == 'true'
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          # 与 anomalyco/opencode/github action 同源的官方安装脚本（装最新版到 ~/.opencode/bin）。
+          # 只在真要诊断时装，cron 正常路径不付这个代价；不加 actions/cache（诊断本身低频）。
+          curl -fsSL https://opencode.ai/install | bash
+          echo "$HOME/.opencode/bin" >> "$GITHUB_PATH"
+
+      - name: 诊断-证据（纯脚本，不依赖 LLM）
+        id: diag
+        if: steps.notify.outputs.should_diagnose == 'true'
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
+        run: node scripts/diagnose-providers.mjs
+
+      - name: 诊断-叙述（LLM，追加结论；LLM 起不来就只留证据）
+        if: steps.diag.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          OPENCODE_AUTH_CONTENT: ${{ secrets.OPENCODE_AUTH_CONTENT }}
+          # 凭据不依赖 auth.json：直接用仓库已有的两个 key（下面 OPENCODE_CONFIG_CONTENT 用 {env:…} 注入），
+          # 所以 OPENCODE_AUTH_CONTENT 没配也能叙述（实测：auth.json 为空 + 本配置 → 调用成功）
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
+          # 首选免费腿；Go 整体不可用时把仓库变量 DIAG_MODEL 换成 sensenova/glm-5.2（下面已备好该 provider）
+          DIAG_MODEL: ${{ vars.DIAG_MODEL || 'opencode-go/longcat-2.5-preview-free' }}
+          # opencode-go 只覆盖 apiKey（npm / api / 模型目录仍取 models.dev），sensenova 作为 Go 挂掉时的 fallback 腿
+          OPENCODE_CONFIG_CONTENT: |
+            {"$schema":"https://opencode.ai/config.json","provider":{"opencode-go":{"options":{"apiKey":"{env:OPENCODE_API_KEY}"}},"sensenova":{"npm":"@ai-sdk/openai-compatible","name":"SenseNova","options":{"baseURL":"https://token.sensenova.cn/v1","apiKey":"{env:SENSENOVA_API_KEY}"},"models":{"glm-5.2":{"name":"GLM-5.2"}}}}}
+        run: |
+          # 发布已经推送完毕：先摘掉 checkout 留下的 git 凭据，让 agent 连「推 main」的能力都没有
+          # （本步不注入任何 GitHub token；回帖由下一步用 GH_TOKEN 自己做）
+          git config --local --unset-all http.https://github.com/.extraheader || true
+          node scripts/diagnose-narrate.mjs
+
+      - name: 诊断-回帖（正文来自文件；只有 workflow 会写 issue）
+        if: steps.diag.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          N="${{ steps.notify.outputs.issue_number }}"
+          if [ -z "$N" ]; then
+            echo "::warning::AI 诊断：没拿到 issue 编号（step output 传递失败），跳过回帖 —— 绝不猜编号"
+            exit 0
+          fi
+          # 去重：同一次失败事件（同一 run + 同一 generatedAt）的诊断只贴一遍（纯 REST，不经 LLM）
+          MARKER=$(grep -m1 '^<!-- ai-diagnosis ' data/ai-diagnosis.md || true)
+          if [ -n "$MARKER" ] && gh api "repos/${GITHUB_REPOSITORY}/issues/${N}/comments?per_page=100" --jq '.[].body' | grep -qF "$MARKER"; then
+            echo "::notice::AI 诊断：同一失败事件的诊断已存在，跳过重复回帖"
+            exit 0
+          fi
+          gh issue comment "$N" --repo "$GITHUB_REPOSITORY" --body-file data/ai-diagnosis.md
