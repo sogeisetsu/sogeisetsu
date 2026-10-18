@@ -9,7 +9,10 @@
  *   · buildData 事件分桶   — 事件按 +08 自然日归档，含 16:00Z 这个换日边界
  *   · buildData 可见性     — 非公开仓库整体剔除（totals / splits / reposOwn / reposOther / details）
  *   · totals 恒等式        — totals 恒等于公开明细求和（= splits 之和），标量只用于对账
- *   · truncatedFrom        — 截断起点用 +08 日期
+ *   · decideEventPage      — 翻页只认 Link 头（满页不等于还有下一页）、422 不是致命错误、
+ *                            后续页不可用降级停、第 1 页失败仍 fail、窗口边界正常停
+ *   · truncatedFrom        — 截断起点用 +08 日期；stoppedByLimit 也要进 truncated；
+ *                            窗口外的远古事件不得污染"最早事件"
  *   · isPublicRepoRef      — 拿不准一律按不公开
  *
  * 用法：node scripts/test-activity-window.mjs
@@ -20,7 +23,7 @@
 process.env.GITHUB_REPOSITORY_OWNER = "sogeisetsu";
 delete process.env.GITHUB_TOKEN; // 纯函数用例不该碰网络
 
-const { buildData, computeWindow, isPublicRepoRef } = await import(
+const { buildData, computeWindow, decideEventPage, isPublicRepoRef } = await import(
   new URL("./generate-activity.mjs", import.meta.url).href
 );
 
@@ -198,18 +201,160 @@ check("buildData: totals 恒等于公开明细求和（= splits 之和）", () =
   ];
 });
 
+// ---------------------------------------------------------------- 事件分页判定（Link 为准）
+
+const WINDOW_START_MS = Date.parse("2026-09-20T00:00:00+08:00");
+const LINK_NEXT =
+  '<https://api.github.com/user/1/events/public?per_page=100&page=2>; rel="next", ' +
+  '<https://api.github.com/user/1/events/public?per_page=100&page=3>; rel="last"';
+const LINK_LAST =
+  '<https://api.github.com/user/1/events/public?per_page=100&page=2>; rel="prev", ' +
+  '<https://api.github.com/user/1/events/public?per_page=100&page=1>; rel="first"';
+// 页面内的事件时间都晚于窗口起点（09-20 之后），故停不因窗口边界
+const inWindowTs = Date.parse("2026-09-25T00:00:00Z");
+
+const decide = (over = {}) =>
+  decideEventPage({
+    page: 1,
+    ok: true,
+    status: 200,
+    chunkLength: 0,
+    link: "",
+    oldestTs: 0,
+    windowStartMs: WINDOW_START_MS,
+    ...over,
+  });
+
+check('decideEventPage: Link 有 rel="next" → 继续（满页 / 短页都继续）', () => {
+  return [
+    ["fullPageContinues", decide({ page: 1, chunkLength: 100, link: LINK_NEXT, oldestTs: inWindowTs }).action === "continue"],
+    ["shortPageContinues", decide({ page: 1, chunkLength: 77, link: LINK_NEXT, oldestTs: inWindowTs }).action === "continue"],
+    ["hasNext", decide({ chunkLength: 100, link: LINK_NEXT, oldestTs: inWindowTs }).hasNext === true],
+    ["notStoppedByLimit", decide({ chunkLength: 100, link: LINK_NEXT, oldestTs: inWindowTs }).stoppedByLimit === false],
+  ];
+});
+
+check('decideEventPage: Link 无 rel="next" + 满页 → 停且标记可能没抓全（今天的 422 坑）', () => {
+  const d = decide({ page: 3, chunkLength: 100, link: LINK_LAST, oldestTs: inWindowTs });
+  return [
+    ["stop", d.action === "stop"],
+    ["hasNextFalse", d.hasNext === false],
+    ["stoppedByLimit", d.stoppedByLimit === true],
+  ];
+});
+
+check('decideEventPage: Link 无 rel="next" + 短页 → 停，且不算截断', () => {
+  const d = decide({ page: 3, chunkLength: 77, link: LINK_LAST, oldestTs: inWindowTs });
+  return [
+    ["stop", d.action === "stop"],
+    ["notStoppedByLimit", d.stoppedByLimit === false],
+  ];
+});
+
+check("decideEventPage: 空数组 → 停（不算截断）", () => {
+  const d = decide({ page: 1, chunkLength: 0, link: LINK_NEXT });
+  return [
+    ["stop", d.action === "stop"],
+    ["notFail", d.action !== "fail"],
+    ["notStoppedByLimit", d.stoppedByLimit === false],
+  ];
+});
+
+check("decideEventPage: 本页最旧事件早于窗口起点 → 正常停（不算截断）", () => {
+  const oldest = Date.parse("2026-09-19T00:00:00Z"); // 早于 09-20 00:00+08
+  const d = decide({ page: 2, chunkLength: 100, link: LINK_NEXT, oldestTs: oldest });
+  return [
+    ["stop", d.action === "stop"],
+    ["notStoppedByLimit", d.stoppedByLimit === false],
+  ];
+});
+
+check("decideEventPage: 422 → 停 + stoppedByLimit，不 fail（分页到底不是错误）", () => {
+  const d = decide({ page: 4, ok: false, status: 422 });
+  return [
+    ["notFail", d.action !== "fail"],
+    ["stop", d.action === "stop"],
+    ["stoppedByLimit", d.stoppedByLimit === true],
+  ];
+});
+
+check("decideEventPage: 第 1 页非 2xx → fail（没有事件样本会让卡片与 totals 自相矛盾）", () => {
+  const http = decide({ page: 1, ok: false, status: 500 });
+  const net = decide({ page: 1, ok: false, status: 0 });
+  return [
+    ["httpFail", http.action === "fail"],
+    ["netFail", net.action === "fail"],
+    ["failNotStoppedByLimit", http.stoppedByLimit === false],
+  ];
+});
+
+check("decideEventPage: 第 2 页起非 422 错误 → 降级停 + stoppedByLimit（不致命）", () => {
+  const d = decide({ page: 2, ok: false, status: 500 });
+  return [
+    ["stop", d.action === "stop"],
+    ["notFail", d.action !== "fail"],
+    ["stoppedByLimit", d.stoppedByLimit === true],
+  ];
+});
+
 // ---------------------------------------------------------------- 截断标记
 
-check("buildData: truncatedFrom 用 +08 日期（UTC 09-18T20:00Z = 北京 09-19）", () => {
+check("buildData: truncatedFrom 用 +08 日期（UTC 09-17T20:00Z = 北京 09-18）", () => {
   const w = computeWindow(Date.parse("2026-09-17T20:00:00Z"));
-  const base = Date.parse("2026-09-18T20:00:00Z");
+  // 事件必须落在窗口内（08-20 → 09-18）：取满 300 条触发 reachedCap，最早一条在北京 09-18 04:00
+  const base = Date.parse("2026-09-17T20:00:00Z");
   const events = Array.from({ length: 300 }, (_, i) => push(new Date(base + i * 1000).toISOString()));
   const { data } = buildData(emptyCollection(), events, w);
   return [
     ["truncated", data.truncated === true],
-    ["cstDate", data.truncatedFrom === "2026-09-19"],
-    ["notUtcDate", data.truncatedFrom !== "2026-09-18"],
+    ["cstDate", data.truncatedFrom === "2026-09-18"],
+    ["notUtcDate", data.truncatedFrom !== "2026-09-17"],
   ];
+});
+
+check("buildData: 窗口外的远古事件不污染 truncatedFrom（实测事件流会混进 2019 年事件）", () => {
+  const w = computeWindow(Date.parse("2026-09-17T20:00:00Z")); // 窗口 2026-08-20 → 2026-09-18
+  const base = Date.parse("2026-09-17T20:00:00Z");
+  const events = [
+    push("2019-08-09T09:09:53Z"), // 窗口外的远古事件：不得参与"最早事件"判定
+    ...Array.from({ length: 299 }, (_, i) => push(new Date(base + i * 1000).toISOString())),
+  ];
+  const { data } = buildData(emptyCollection(), events, w, true);
+  return [
+    ["windowsOutsideIgnored", data.truncatedFrom === "2026-09-18"],
+    ["truncated", data.truncated === true],
+  ];
+});
+
+check("buildData: 分页提前停止 + 最早事件晚于窗口起点 → truncated=true（今天 277 条 < 300 却漏了前两天）", () => {
+  const w = computeWindow(Date.parse("2026-09-17T20:00:00Z")); // 窗口 2026-08-20 → 2026-09-18
+  const events = [
+    push("2026-09-17T19:47:25Z"), // 北京 09-18 03:47，晚于窗口起点 +24h（08-21 00:00+08）
+    push("2026-09-17T20:00:00Z"),
+  ];
+  const { data } = buildData(emptyCollection(), events, w, true);
+  return [
+    ["truncated", data.truncated === true],
+    ["truncatedFrom", data.truncatedFrom === "2026-09-18"],
+    ["underMax", events.length < 300],
+  ];
+});
+
+check("buildData: 分页提前停止但最早事件落在窗口首日 → 不标截断（窗口前段本来就没数据）", () => {
+  const w = computeWindow(Date.parse("2026-09-17T20:00:00Z"));
+  const events = [push("2026-08-20T02:00:00Z")]; // 北京 08-20 10:00 = 窗口首日
+  const { data } = buildData(emptyCollection(), events, w, true);
+  return [
+    ["notTruncated", data.truncated === false],
+    ["noFrom", data.truncatedFrom === null],
+  ];
+});
+
+check("buildData: 未提前停止且未取满 → truncated=false（默认行为不变）", () => {
+  const w = computeWindow(Date.parse("2026-09-17T20:00:00Z"));
+  const events = [push("2026-09-17T19:47:25Z")];
+  const { data } = buildData(emptyCollection(), events, w);
+  return [["notTruncated", data.truncated === false]];
 });
 
 // ---------------------------------------------------------------- isPublicRepoRef

@@ -60,8 +60,11 @@ const START_MARK = "<!--START:activity-->";
 const END_MARK = "<!--END:activity-->";
 
 const WINDOW_DAYS = 30;
-const EVENT_MAX_PAGES = 5; // 分页上限（per_page=100）
-const EVENT_MAX = 300; // 事件总条数上限（取满则 truncated 可能为 true）
+// 分页页数上限（per_page=100）。注意这个上限由 API 决定而非我们：本端点从 page 1 起
+// 就带 rel="last"（实测 = page 3，正好 EVENT_MAX/EVENT_PER_PAGE），真正"还有没有下一页"
+// 一律以 Link 头为准（见 decideEventPage），页数只是个防失控的兜底。
+const EVENT_MAX_PAGES = 3;
+const EVENT_MAX = 300; // 事件总条数上限（取满、或撞分页上限，都让 truncated 可能为 true）
 const EVENT_PER_PAGE = 100;
 const REPO_TOP_N = 100; // 上限放宽到 API 上限，明细不再先截断；渲染层仍按两栏条数自适应折叠（3~5 条 + 「其他 n 个仓库」）
 const DETAIL_MAX = 10; // README 每个 <details> 最多 10 条
@@ -131,6 +134,11 @@ function fail(message, detail) {
   console.error(`[generate-activity] 错误: ${message}`);
   if (detail) console.error(detail);
   process.exit(1);
+}
+
+/** 非致命告警：只打印一行，不改变退出码（与 fail 相对）。 */
+function warn(message) {
+  console.warn(`[generate-activity] 警告: ${message}`);
 }
 
 function countOccurrences(haystack, needle) {
@@ -260,34 +268,157 @@ async function fetchContributions(window) {
 
 // ---------------------------------------------------------------- REST 事件
 
-async function fetchPublicEvents() {
+/**
+ * 单页事件的翻页决策（纯函数：无 IO、无全局状态，供 scripts/test-activity-window.mjs 确定性回归）。
+ *
+ * 「还有没有下一页」只认 Link 头：本端点从 page 1 起就带 rel="last"，
+ * 而「满页 100 条」推不出还有下一页 —— 最后一页恰好满页是合法形态，
+ * 拿它当 next 会去请求并不存在的下一页，得到 HTTP 422
+ * （"pagination is limited for this resource"）。
+ *
+ * @param {object} p
+ * @param {number} p.page             1-based 页码
+ * @param {boolean} p.ok              是否拿到合法的事件数组（HTTP < 400 且响应体是数组）
+ * @param {number} p.status           HTTP 状态码；网络异常 / JSON 解析失败用 0
+ * @param {number} [p.chunkLength]    本页条数（失败时为 0）
+ * @param {string} [p.link]           Link 头原文（无则空串）
+ * @param {number} [p.oldestTs]       本页最旧事件的毫秒时间戳（0 = 未知）
+ * @param {number} p.windowStartMs    窗口起点（毫秒）；本页最旧事件早于它即可正常停
+ * @param {number} [p.perPage]        每页条数（满页判定）
+ * @returns {{action:"continue"|"stop"|"fail", reason:string, hasNext:boolean, stoppedByLimit:boolean}}
+ *   action=fail 只有一种情形：第 1 页没取到（一条事件都没有的话，daily 时间轴会全零、
+ *   reposOwn 会空，而 totals 来自 GraphQL 非零 —— 卡片会「自己跟自己矛盾」，宁可红）。
+ *   stoppedByLimit=true 表示「停不是因为数据自然读完，而是撞上了 API 的分页 / 可用性上限」，
+ *   窗口内事件可能没抓全：不静默低报，交给调用方体现在 truncated 上。
+ */
+export function decideEventPage({
+  page,
+  ok,
+  status,
+  chunkLength = 0,
+  link = "",
+  oldestTs = 0,
+  windowStartMs,
+  perPage = EVENT_PER_PAGE,
+}) {
+  const stop = (reason, stoppedByLimit) => ({
+    action: "stop",
+    reason,
+    hasNext: false,
+    stoppedByLimit,
+  });
+
+  if (!ok) {
+    if (page === 1) {
+      return {
+        action: "fail",
+        reason: `第 1 页取数失败（HTTP ${status || "网络异常"}）`,
+        hasNext: false,
+        stoppedByLimit: false,
+      };
+    }
+    if (status === 422) return stop(`公开事件分页上限（page ${page}）`, true);
+    // 后续页是增量数据：拿不到只影响时间轴尾部，不值得让整条线红着不产出卡片 —— 降级停 + 如实标记
+    return stop(`第 ${page} 页不可用（HTTP ${status || "网络异常"}）`, true);
+  }
+
+  if (chunkLength === 0) return stop("本页为空，事件已读完", false);
+  // 事件按时间倒序：本页最旧一条已早于窗口起点，后面不可能再有窗口内事件
+  if (oldestTs && oldestTs < windowStartMs) {
+    return stop("本页最旧事件早于窗口起点", false); // 正常停，不算截断
+  }
+
+  if (!/rel="next"/.test(link)) {
+    // Link 说没有下一页：可能是数据确实到此为止，也可能是撞上了 API 的分页上限
+    // （本端点只给 3 页 / 300 条）。两者无法区分，满页时按「可能没抓全」诚实标记。
+    return stop('Link 头没有 rel="next"', chunkLength >= perPage);
+  }
+  return {
+    action: "continue",
+    reason: 'Link 头有 rel="next"',
+    hasNext: true,
+    stoppedByLimit: false,
+  };
+}
+
+/**
+ * 抓取公开事件：翻页只认 Link 头（判定见 decideEventPage），另有页数 / 条数两道硬上限。
+ * 失败策略：第 1 页失败仍然 fail；第 2 页起的 422 / 4xx / 5xx 重试耗尽 → 告警 + 停 +
+ * 保留已取部分，并置 stoppedByLimit。
+ * @returns {Promise<{events: object[], stoppedByLimit: boolean}>}
+ */
+async function fetchPublicEvents(window) {
   const all = [];
   let hasNext = true;
-  for (let page = 1; page <= EVENT_MAX_PAGES && all.length < EVENT_MAX && hasNext; page += 1) {
+  let stoppedByLimit = false;
+  let lastPage = 0;
+
+  for (let page = 1; page <= EVENT_MAX_PAGES && hasNext; page += 1) {
+    if (all.length >= EVENT_MAX) {
+      stoppedByLimit = true; // 条数上限：窗口内事件可能被截
+      break;
+    }
+    lastPage = page;
     const url = `https://api.github.com/users/${encodeURIComponent(
       OWNER
     )}/events/public?per_page=${EVENT_PER_PAGE}&page=${page}`;
-    const res = await httpFetch(url, { headers: apiHeaders() });
-    const text = await res.text();
-    if (res.status >= 400) {
-      fail(`获取事件失败 HTTP ${res.status} (${url})`, text.slice(0, 1000));
-    }
-    let chunk;
+
+    let status = 0;
+    let link = "";
+    let body = "";
+    let chunk = [];
+    let ok = false;
     try {
-      chunk = JSON.parse(text);
+      const res = await httpFetch(url, { headers: apiHeaders() });
+      status = res.status;
+      link = res.headers.get("link") || "";
+      body = await res.text();
+      if (res.status < 400) {
+        const parsed = JSON.parse(body); // 非法 JSON 会抛，落到下面的 catch
+        if (Array.isArray(parsed)) {
+          chunk = parsed;
+          ok = true;
+        } else {
+          warn(`事件响应不是数组（page ${page}）`);
+        }
+      }
     } catch (err) {
-      fail(`事件响应不是合法 JSON: ${err.message}`, text.slice(0, 500));
+      // httpFetch 重试耗尽（5xx / 网络异常），或响应体不是合法 JSON
+      warn(`事件第 ${page} 页取数失败：${err && err.message}`);
     }
-    if (!Array.isArray(chunk)) {
-      fail("事件响应不是数组", text.slice(0, 500));
+
+    const decision = decideEventPage({
+      page,
+      ok,
+      status,
+      chunkLength: chunk.length,
+      link,
+      oldestTs: chunk.length > 0 ? tsOf(chunk[chunk.length - 1].created_at) : 0,
+      windowStartMs: window.startMs,
+    });
+    // 每页一行：页码 / 状态码 / 条数 / Link 是否给出下一页 / 判定结果，便于事后复盘中止原因
+    console.log(
+      `事件 page ${page}: status=${status || "-"} items=${chunk.length}` +
+        ` linkHasNext=${/rel="next"/.test(link)} → ${decision.action}（${decision.reason}）`
+    );
+
+    if (decision.action === "fail") {
+      fail(`获取事件失败 HTTP ${status} (${url})`, body.slice(0, 1000));
     }
     all.push(...chunk);
-    if (chunk.length === 0) break;
-    const link = res.headers.get("link") || "";
-    // 跟随 Link header；没有 Link 时按“满页即还有下一页”推断
-    hasNext = /rel="next"/.test(link) ? true : chunk.length === EVENT_PER_PAGE;
+    hasNext = decision.hasNext;
+    if (decision.stoppedByLimit) stoppedByLimit = true;
   }
-  return all.slice(0, EVENT_MAX);
+
+  // 页数用尽而仍有下一页 → 窗口内事件可能被丢（正常形态下 Link 会先把它置 false）
+  if (hasNext) stoppedByLimit = true;
+
+  if (stoppedByLimit) {
+    warn(
+      `公开事件在第 ${lastPage} 页停止（已取 ${all.length} 条），窗口内时间轴可能不完整`
+    );
+  }
+  return { events: all.slice(0, EVENT_MAX), stoppedByLimit };
 }
 
 // ---------------------------------------------------------------- 汇总
@@ -315,7 +446,7 @@ export function isPublicRepoRef(repo) {
   return String(repo.visibility || "").toLowerCase() === "public";
 }
 
-export function buildData(collection, rawEvents, window) {
+export function buildData(collection, rawEvents, window, stoppedByLimit = false) {
   // GitHub 的四项权威标量：user-scoped token 下含私有贡献，只用于对账告警，不进产物。
   const scalars = {
     commits: num(collection.totalCommitContributions),
@@ -443,12 +574,14 @@ export function buildData(collection, rawEvents, window) {
     return payload.size ?? payload.commits?.length ?? 1;
   };
 
-  let earliestTs = Infinity;
+  // 窗口内最早事件：只算落在窗口里的事件 —— 窗口外的旧事件会污染 truncatedFrom
+  // （实测公开事件流会混进远古事件，如 2019 年的 PullRequestEvent，min 会被它带偏）
+  let earliestInWindowTs = Infinity;
   for (const event of rawEvents) {
     const ts = tsOf(event.created_at);
-    if (ts && ts < earliestTs) earliestTs = ts;
     const date = cstDateOf(ts); // +08 自然日分桶（不能用 UTC 日期：00:00–08:00 之间会差一天）
     if (!dailyByDate.has(date)) continue; // 只保留窗口内事件
+    if (ts < earliestInWindowTs) earliestInWindowTs = ts;
     const own = isOwnRepoName(event.repo && event.repo.name);
     const weight = event.type === "PushEvent" ? pushWeight(event) : 1;
     const bucket = dailyByDate.get(date);
@@ -498,11 +631,13 @@ export function buildData(collection, rawEvents, window) {
   const quip = empty ? QUIPS[Math.floor(Math.random() * QUIPS.length)] : null;
 
   // --- 截断标记 ---
+  // reachedCap：取满 EVENT_MAX 条；stoppedByLimit：因分页上限 / 后续页不可用而停（见 decideEventPage）。
+  // 两条都只在「窗口内最早事件仍晚于窗口起点 +24h」时才置 truncated —— 那说明窗口前段确实没采到数据。
   const reachedCap = rawEvents.length >= EVENT_MAX;
   const earliestAfterStart =
-    Number.isFinite(earliestTs) && earliestTs > window.startMs + 24 * 3600 * 1000;
-  const truncated = reachedCap && earliestAfterStart;
-  const truncatedFrom = truncated ? cstDateOf(earliestTs) : null;
+    Number.isFinite(earliestInWindowTs) && earliestInWindowTs > window.startMs + 24 * 3600 * 1000;
+  const truncated = (reachedCap || stoppedByLimit === true) && earliestAfterStart;
+  const truncatedFrom = truncated ? cstDateOf(earliestInWindowTs) : null;
 
   const data = {
     username: OWNER,
@@ -711,8 +846,14 @@ async function main() {
   const window = computeWindow();
 
   const collection = await fetchContributions(window);
-  const rawEvents = await fetchPublicEvents();
-  const { data, details, audit } = buildData(collection, rawEvents, window);
+  const eventsResult = await fetchPublicEvents(window);
+  const rawEvents = eventsResult.events;
+  const { data, details, audit } = buildData(
+    collection,
+    rawEvents,
+    window,
+    eventsResult.stoppedByLimit
+  );
   if (DUMP_DATA) {
     const dp = path.resolve(ROOT, DUMP_DATA);
     mkdirSync(path.dirname(dp), { recursive: true });

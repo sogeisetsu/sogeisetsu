@@ -248,8 +248,9 @@ async function fetchPublicEvents(token, username, win) {
       hasNext = false;
       break;
     }
-    // 跟随 Link header；没有 Link 时按“满页即还有下一页”推断
-    hasNext = /rel="next"/.test(got.link) ? true : chunk.length === EVENT_PER_PAGE;
+    // 跟随 Link header：Link 是唯一权威（本端点从 page 1 起就带 rel="last"）。
+    // 不用「满页即有下一页」兜底：最后一页恰好满页是合法形态，那样会去请求不存在的下一页（HTTP 422）。
+    hasNext = /rel="next"/.test(got.link);
     // 事件按时间倒序：本页最后一条已早于窗口起点，后面不可能再有窗口内事件
     const oldest = tsOf(chunk[chunk.length - 1].created_at);
     if (oldest && oldest < win.startMs) {
