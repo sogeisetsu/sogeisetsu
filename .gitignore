@@ -6,3 +6,5 @@ scripts/preview-normal.svg
 scripts/preview-empty.svg
 scripts/preview-real.svg
 assets/_preview.html
+# AI 全失败的 run 级状态（data/ai-failure.json）：本地/CI 工作区临时状态，不发布、不提交（由 notify-ai-failure.mjs 消费后回填 issue 号）
+data/ai-failure.json

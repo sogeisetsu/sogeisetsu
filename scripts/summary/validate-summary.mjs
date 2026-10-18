@@ -9,9 +9,14 @@
  *     （collect.mjs 的 buildItemIndex + collectSummaryData().missing），
  *     AI 输出里的 repo / 编号 / tag 必须能在集合里命中，命中不了就拒收让上层纠正重试。
  *   · URL 一律由本校验器从输入数据注入（模型给什么都不采纳）—— 模型编不出链接。
- *   · 硬长度不整段拒绝：headline 走 fitHeadline、teaser / overview 超长走 fitText 按句界截断
- *     （与日报 validateNarrative 同一手法）；纯文本违规 / 句数 / 段数 / 条目集合 / 评论数
- *     这些「改一次就能对」的问题才拒收（teaser 缺失也拒收 —— 首页卡片必须有短文案）。
+ *   · 硬长度不整段拒绝：headline 走 fitHeadline、teaser 超长走 fitText 按句界截断
+ *     （与日报 validateNarrative 同一手法）；overview 超 4200 按「空行块」整块截断
+ *     （保序、至少留 2 块，见 fitOverviewByBlock）。纯文本违规 / 句数 / 段数 /
+ *     markdown 标记 / 条目集合 / 评论数这些「改一次就能对」的问题才拒收
+ *     （teaser 缺失也拒收 —— 首页卡片必须有短文案）。
+ *   · overview 是章节式：3–6 段正文（### 小标题不计入段数），行首 `### ` 唯一放行的
+ *     块级标记（渲染层切成 <h3 class="ai-h3">），其余 markdown（列表 / 链接 / 表格 /
+ *     代码块 / 斜体 / 其他层级标题 / 引用）一律拒收，reason 带 "markdown" 供纠正提示命中。
  *   · 段数上限不砍真实内容：highlights 固定 8 条；byRepo 的上限随 ctx.repos 放大
  *     （提示词要求「每个有活动的仓库都要有一条」，固定 8 条会把真实仓库悄悄截掉），
  *     只在 24 条硬顶上收口。缺仓库仍不拒收 —— 按约定只在提示词里要求。
@@ -31,9 +36,9 @@ import { countSentences, fitHeadline, fitText } from "../daily/lib/ai.mjs";
 
 const HEADLINE_MAX_CHARS = 80;
 const TEASER_MAX_CHARS = 240; // 首页卡片短文案（1–2 句）；超长按句界截断，不整段拒绝
-const OVERVIEW_MAX_CHARS = 2600;
+const OVERVIEW_MAX_CHARS = 4200; // 章节式 overview（3–6 段 + ### 小标题）的硬上限
 const OVERVIEW_MIN_SENTENCES = 6; // 提示词目标 10-16 句；校验放宽容差，避免把「8 句」好结果误拒
-const OVERVIEW_FIT_KEEP_MAX = 60;
+const OVERVIEW_FIT_KEEP_BLOCKS = 80; // 超长时按空行块截断的块数硬顶（原句向常量 OVERVIEW_FIT_KEEP_MAX=60 作废）
 const HIGHLIGHTS_MIN = 3;
 const HIGHLIGHTS_MAX = 8;
 const HIGHLIGHT_TEXT_MAX = 400;
@@ -47,16 +52,75 @@ const COMMENT_COUNT_RE = /\d+\s*条评论|\d+\s*comments?\b/i;
 // 井号、方括号在 HTML 里是普通字符（渲染层会 esc、不做 markdown 解析），放行以免
 // 让「issue #42」这种正当措辞把好结果误拒成重试循环。
 const HEADLINE_BAD_CHARS = { "`": "反引号", "*": "星号" };
+// overview 的 markdown 拒收矩阵（只管 overview；teaser / highlights / byRepo 不在此列）。
+// 口径：提示词只放行三样 —— 行首 `### ` 小标题（渲染层 splitBlocks 切成 <h3 class="ai-h3">）、
+// 行内 `code`、`**bold**`（aiInlineToHtml 只渲染这两种内联），其余标记一律拒收让模型改。
+// 防误伤（每条都刻意收窄）：
+//   · 列表 / 有序列表 / 引用 / 表格只看「行首」（行中出现不算）；表格行要求同一行首尾都是 |；
+//   · 标题只拦 `# ` / `## ` / `#### `… 层级，`### ` 因 `#{4,}` 与 `#{1,2}` 都接不上而放行；
+//   · 斜体用 (?<!\*)\*(?!\*) 夹住两端：`**bold**` 的四个星位全被 lookaround 挡掉，
+//     词内孤立单星（不成对）也不命中；再要求开星后 / 闭星前不是空白，避免「A * B * C」
+//     这类乘号写法被当成斜体。
+const OVERVIEW_MD_CHECKS = [
+  ["列表", /^[ \t]*[-*+][ \t]/m],
+  ["有序列表", /^[ \t]*\d+[.)][ \t]/m],
+  ["代码块", /```/],
+  ["表格行", /^[ \t]*\|[^\n]*\|[ \t]*$/m],
+  ["引用", /^[ \t]*>[ \t]/m],
+  ["链接", /\]\(/],
+  ["斜体", /(?<!\*)\*(?!\*)(?!\s)([^*\n]+?)(?<!\s)\*(?!\*)/],
+  ["其他标题", /^[ \t]*(?:#{1,2}|#{4,})[ \t]/m],
+];
 
 // ---------------------------------------------------------------- 小工具
 
-/** 空行分段（去掉空白段）。 */
-function countParagraphs(text) {
+/**
+ * 空行分块，只数「正文块」：`### ` 开头的小标题块是分节标题、不计入段数
+ * （章节式 overview 允许 3–6 段正文 + 若干小标题，段数下限仍是 2）。
+ */
+function countBodyBlocks(text) {
   return String(text)
     .split(/\n\s*\n/)
     .map((s) => s.trim())
-    .filter(Boolean)
+    .filter((s) => s && !s.startsWith("### "))
     .length;
+}
+
+/** 在文本里找第一个被禁的 markdown 标记，返回「列表/链接/…」标签或 null。 */
+function findOverviewMarkdown(text) {
+  const s = String(text);
+  for (const [label, re] of OVERVIEW_MD_CHECKS) {
+    if (re.test(s)) return label;
+  }
+  return null;
+}
+
+/**
+ * overview 超长时按「空行块」截断（不是按句）：整块保留、顺序不变，直到再加
+ * 下一块会把文本顶过 maxChars 为止；至少留 2 块（与段数下限对齐，别把正文截成
+ * 单块又被校验打回）。首块自己就超预算时，退回 fitText 按句截断；保底 2 块
+ * 拼起来仍超预算（第二块巨大）也退回 fitText —— 硬上限 4200 优先于保块。
+ * OVERVIEW_FIT_KEEP_BLOCKS 是块数硬顶，防模型刷长尾小块绕过字符预算。
+ */
+function fitOverviewByBlock(text, maxChars) {
+  const blocks = String(text)
+    .split(/\n\s*\n/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (!blocks.length) return "";
+  const fallback = () => fitText(text, maxChars, OVERVIEW_MIN_SENTENCES, OVERVIEW_FIT_KEEP_BLOCKS);
+  if (blocks[0].length > maxChars) return fallback();
+  const kept = [];
+  let len = 0;
+  for (const b of blocks) {
+    if (kept.length >= OVERVIEW_FIT_KEEP_BLOCKS) break;
+    const add = b.length + (kept.length ? 2 : 0); // 块间的空行分隔符
+    if (kept.length >= 2 && len + add > maxChars) break;
+    kept.push(b);
+    len += add;
+  }
+  const out = kept.join("\n\n");
+  return out.length > maxChars ? fallback() : out;
 }
 
 /** 在文本里找第一个评论数表述，返回匹配串或 null。 */
@@ -106,16 +170,28 @@ export function validateSummary(raw, ctx) {
     const teaser = fitText(teaserRaw, TEASER_MAX_CHARS, 1, 2);
     if (!teaser) return { ok: false, reason: `${lang}.teaser 为空` };
 
-    // --- overview：非空 → 句数 → 空行分段 → 评论数禁令（看原文，不看截断后）→ 超长按句界截断
+    // --- overview：非空 → 句数 → 正文块数（### 小标题不计）→ markdown 拒收 →
+    //     评论数禁令（看原文，不看截断后）→ 超长按空行块截断
     const overviewRaw = String(sec.overview ?? "").trim();
     if (!overviewRaw) return { ok: false, reason: `${lang}.overview 为空` };
     const sentences = countSentences(overviewRaw);
     if (sentences < OVERVIEW_MIN_SENTENCES) {
       return { ok: false, reason: `${lang}.overview 句数不足（${sentences} < ${OVERVIEW_MIN_SENTENCES}）` };
     }
-    const paragraphs = countParagraphs(overviewRaw);
-    if (paragraphs < 2) {
-      return { ok: false, reason: `${lang}.overview 必须用空行分成 2–3 段（当前 ${paragraphs} 段）` };
+    const blocks = countBodyBlocks(overviewRaw);
+    if (blocks < 2) {
+      return {
+        ok: false,
+        reason: `${lang}.overview 段数不足（须用空行分成 3–6 段正文、至少 2 段，### 小标题不计入；当前 ${blocks} 段）`,
+      };
+    }
+    const badMd = findOverviewMarkdown(overviewRaw);
+    if (badMd) {
+      // reason 必须含 "markdown" —— summaryFeedback 按这个子串给纠正提示
+      return {
+        ok: false,
+        reason: `${lang}.overview 含未允许的 markdown（${badMd}），只允许行首 ### 小标题、行内 \`code\` 与 **bold**`,
+      };
     }
     const badOverview = findCommentCount(overviewRaw);
     if (badOverview) {
@@ -123,7 +199,7 @@ export function validateSummary(raw, ctx) {
     }
     const overview =
       overviewRaw.length > OVERVIEW_MAX_CHARS
-        ? fitText(overviewRaw, OVERVIEW_MAX_CHARS, OVERVIEW_MIN_SENTENCES, OVERVIEW_FIT_KEEP_MAX)
+        ? fitOverviewByBlock(overviewRaw, OVERVIEW_MAX_CHARS)
         : overviewRaw;
 
     // --- highlights：数组 → 条数 → 逐条集合校验（URL 由校验器注入）

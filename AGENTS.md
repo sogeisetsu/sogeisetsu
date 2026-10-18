@@ -44,7 +44,9 @@ node scripts/summary/index.mjs --no-ai [--dry-run]
 node scripts/summary/backfill.mjs --from=YYYY-MM-DD --to=YYYY-MM-DD [--force] [--dry-run]  # 一次性回填（需要 GITHUB_TOKEN；已存在的日期默认跳过，只有 --force 才会重抓）
 node scripts/daily/check.mjs                   # 一次跑完语法检查 + 全部确定性测试 + verify
 ```
-- AI provider 顺序：sensenova → OpenCode Go 的 `longcat-2.5-preview-free`（限时免费、不限量）→ `deepseek-v4.1-flash`（计入 Go 套餐额度），后两条共用 `OPENCODE_API_KEY`；SenseNova 的模型名是运行时从 `GET /models` 动态挑的（`SENSENOVA_MODEL` 可钉死），改提示词后行为可能随模型变。
+- AI provider 顺序：**OpenCode Go 的 `longcat-2.5-preview-free`（限时免费、不限量）→ `deepseek-v4.1-flash`（计入 Go 套餐额度）→ sensenova `glm-5.2`**（商汤殿后），Go 两条共用 `OPENCODE_API_KEY`。商汤的模型名写死 `glm-5.2`（不再从 `GET /models` 动态挑；`SENSENOVA_MODEL` 可覆盖），并带 `thinking:{type:"disabled"}` 关思考（不关则 reasoning 吃光预算、content 恒为空）。**总结线单独重排**：`orderProvidersForSummary` 把 deepseek 提到最前（`longcat-2.5-preview-free` 结构上做不了 30 天总结，deepseek 是唯一稳定腿），日报仍保持免费腿优先。
+- `MAX_TOKENS = 49152`（三模型共用，截断时翻倍到上限 65536）；`CHAT_TIMEOUT_MS = 180000`。
+- **AI 全失败的可见性**：编排器把失败记录写进 `data/ai-failure.json`（run 状态，**已 gitignore、不发布**），并把 `aiFailure` 写进 `docs/data/<date>.json` / `docs/summary.json`；`node scripts/notify-ai-failure.mjs` 负责开/追加常驻 issue（label `ai-failure`）、把 issue 号回写进数据文件、重渲染页面；AI 恢复时自动追加「已恢复」评论并 close。两个 workflow 都以 0 退出（生成物照常提交），可见性靠 issue + `::warning::` + step summary。
 - `--force`：绕过 dataHash 跳过，强制重取 + 重调 AI（改了提示词 / 数据口径后用）。
 - 无变化时脚本**自行跳过 AI 与写入**——这是设计，不是 bug。
 - `check.mjs` 变红先看是不是 `verify.mjs` 的 summary 窗口那项：它拿 `docs/summary.json` 的窗口跟「今天」重算的窗口硬比（`cstDayMinus(30)~cstDayMinus(1)`），所以**本地 docs/ 落后远端、或当天总结还没成功跑**（AI 全失败时按设计不写文件）都会 FAIL 这一项 —— 先 `git pull --rebase --autostash` 再看，别当成自己的改动。
@@ -84,6 +86,8 @@ git push
 - Issue/PR 行的评论数（REST 取，含机器人与本人，仅展示用，不进 `totals`；仓库非公开或读取失败则不显示）：**Issue＝会话评论**（`/issues/:n` 的 `comments`），**PR＝会话评论＋行内评审评论**（`/pulls/:n` 的 `comments + review_comments`，与 Replies 段 `issue_comment + review_comment` 口径对齐）；**窗口已关闭的定稿日冻结已存 `docs/data/<date>.json` 里的快照**，重采集不取实时值，避免计数漂移改写定稿页面（「今天」滚动报仍取实时值；`--force` 会一并重取实时值，是口径变更后的逃生口）。重跑已关闭日期时 `replies` / `stateChanges` 可能比原产物多（历史漏采被补录，属修复而非漂移），被冻结的只有评论数这一项。
 - **30 天总结的窗口** = 最近 30 个「已定稿」的 +08 自然日（`cstDayMinus(30)..cstDayMinus(1)`，不含今天）；数据源 = `docs/data` ∪ `data/backfill`，同日两份都有时以 `docs/data` 为准。
 - **总结页的数字条完全由代码求和**（Σ 各日 `totals` / `automatedCommits`），AI 只叙述、不计算；`verify.mjs` 逐项核对，偏了就 FAIL。
+- **总结正文是章节式**：`overview` 3–6 段、约 4200 字符上限，允许行首 `### 小标题`（渲染成 `<h3 class="ai-h3">`），其余 markdown（列表 / 链接 / 表格 / 代码块 / 斜体）继续拒收；**卡片与 hero 标题由代码拼** `窗口区间 · headline`（`2026-09-18 – 2026-10-17 · …`，日期走 `.mono`），AI 只给 headline。
+- **AI 块旁注 provider / model**：日报 / 总结页 / 首页卡片都在 AI 徽章右侧显示 `provider / model`（历史数据只有 `aiProvider` 时退化成只有 provider）。
 - **总结的 AI 输出受严格校验**：`highlights` / `byRepo` 里出现的仓库与条目编号必须真实存在于输入数据，链接一律由校验器从输入注入（模型不许给 URL）；**AI 不许提任何条目的评论数**（`comments` 是采集那一刻的实时值）。
 - **`data/backfill/` 是一次性回填**：事件流（`/users/:u/events/public`）只保留最近 300 条 / 90 天，2026-09-16 ~ 10-01 的动作级事件已过期，只能用 Search API（`author:` / `commenter:` / `reviewed-by:` + 日期区间）+ 逐条 REST 校时重建，属**近似**：`stars` 无法重建（留空）、`releases` 只覆盖自有仓库、issue/评审可能偏低、评论数（`comments`）不回填；每个回填文件带 `source: "search-backfill"` 与 `backfillLimits`，页面如实标注。窗口每天前移，这批日期会逐日退出窗口（约 15 天后窗口完全由 `docs/data` 覆盖）。
 - **30 天活动卡片的窗口** = 最近 30 个 +08 自然日、**含今天**（`cstDayMinus(29)..cstDayMinus(0)`），与日报「今天滚动」同口径；`daily` 柱状也按 +08 自然日分桶（不能用 UTC 日期，否则 +08 的 00:00–08:00 会归错天）。卡片线的 `totals` 与日报同一条恒等式：只由**过滤后的公开明细**求和；`contributionsCollection` 的四项标量在 user-scoped token 下含私有贡献，故逐仓 / 逐条按 `isPrivate` / `visibility` 过滤（拿不准一律按不公开），标量只用于对账告警、不进产物。

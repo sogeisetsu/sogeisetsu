@@ -30,7 +30,7 @@ export const SUMMARY_SYSTEM = [
   "Rules:",
   "- headline: one line, at most 80 characters (count them; NEVER exceed 80) and PLAIN TEXT — no backticks, no asterisks, no hashes, no square brackets.",
   "- teaser: 1-2 sentences and AT MOST 240 characters (hard limit — count them; stay well below), written for the home-page card: the short hook above the numbers. Plain and factual, no filler, no lists, no repeating the headline.",
-  "- overview: 2-3 paragraphs separated by a single blank line, about 10-16 sentences, and UNDER 2600 characters (hard limit — count characters; stay well below). Neutral and factual: only describe things that really happened in the input, no hype, no speculation, no filler, no repeating the headline. Beyond the grand totals it MUST say what was mainly worked on during the window — the concrete features, fixes, releases and review work per project, synthesized from the input — never a pile of numbers: an overview that only counts is a failure.",
+  "- overview: 3-6 paragraphs separated by a single blank line, about 10-16 sentences, and UNDER 4200 characters (hard limit — count characters; stay well below). A block may start with a `### ` line used as an in-overview sub-heading (that is the ONLY heading allowed, and only at the start of a block); everything else stays forbidden — no lists, no links, no tables, no code fences, no italic, no plain headings (no `# ` / `## ` / `#### `…). Neutral and factual: only describe things that really happened in the input, no hype, no speculation, no filler, no repeating the headline. Beyond the grand totals it MUST say what was mainly worked on during the window — the concrete features, fixes, releases and review work per project, synthesized from the input — never a pile of numbers: an overview that only counts is a failure.",
   "- highlights: 3-8 entries, each one concrete fact from the input. `repo` must be a repository that appears in the input; when `number` is present it must be an item number that really exists for that repo in the input; `kind` must be one of pr / issue / discussion / release. Release entries carry only `repo` (plus optional `tag`). NEVER invent URLs — you are not given any URL and must not write any.",
   "- byRepo: ONE entry for EVERY repository in `repos` (in the order given there — do not pick a subset, do not drop a repo, do not repeat one). `repo` must match the input exactly. Every entry must do BOTH: (a) state that repository's definite numbers from its `repos[]` row VERBATIM — own commits (`commits`), `automated` as a separate ADDITIONAL count of bot commits, and `prs` / `issues` / `reviews` / `releases` — never recount or recompute; and (b) explain concretely WHAT was done in that repository during the window — the features, fixes, refactors and releases, synthesized from that repo's commit messages, PR/issue titles and release notes. An entry that only lists numbers, or that could describe any repository, is a failure.",
   "- Grand totals: use the numbers in `totals` (`commits` / `prs` / `issues` / `reviews`) VERBATIM for any overall count — never recompute, round, adjust, or derive them from detail lists.",
@@ -40,7 +40,7 @@ export const SUMMARY_SYSTEM = [
   "- If `backfillLimits` is present, earlier dates were reconstructed via GitHub Search and are approximate: star counts may be unavailable and releases cover only the user's own repositories. Do not pretend the data is complete; state it honestly but briefly.",
   "- en and zh must state exactly the same facts.",
   "- zh must be natural Simplified Chinese, not a literal machine translation.",
-  "- Inline formatting: inside `overview`, `teaser` and `byRepo[].text` use EXACTLY two Markdown markers and nothing else — inline code with a single backtick `like-this` for literal identifiers, and bold with double asterisks **like this** (1-3 bolded spans total, in `overview` and/or `byRepo[].text` only). The headline must be PLAIN TEXT — no backticks, no asterisks, no other markup of any kind. Do NOT use any other Markdown anywhere (no headings, no lists, no links, no italic, no tables, no code fences). Keep raw HTML out. The JSON envelope itself must stay pure JSON with no markdown.",
+  "- Inline formatting: inside `overview`, `teaser` and `byRepo[].text` use EXACTLY two Markdown markers and nothing else — inline code with a single backtick `like-this` for literal identifiers, and bold with double asterisks **like this** (1-3 bolded spans total, in `overview` and/or `byRepo[].text` only). The single exception: a `### ` sub-heading line at the start of an `overview` block is allowed (block-level, rendered as a small heading). The headline must be PLAIN TEXT — no backticks, no asterisks, no other markup of any kind. Do NOT use any other Markdown anywhere (no other headings, no lists, no links, no italic, no tables, no code fences). Keep raw HTML out. The JSON envelope itself must stay pure JSON with no markdown.",
 ].join("\n");
 
 // ---------------------------------------------------------------- prompts
@@ -84,11 +84,14 @@ export function summaryFeedback(reason, n = 0) {
   if (/纯文本/.test(r) || /headline 含/.test(r)) {
     return "REJECTED: the headline must be PLAIN TEXT. Rewrite it with no backticks, no asterisks, no hashes and no square brackets, still one line and at most 80 characters.";
   }
+  if (/markdown/.test(r)) {
+    return "REJECTED: the overview contains markdown that is NOT allowed. Rewrite it using ONLY `### ` sub-heading lines at block starts, inline `code` and **bold** — remove every list, link, code fence, italic, table, blockquote and any heading level other than `### `; keep 3-6 paragraphs under 4200 characters.";
+  }
   if (/段数|分成 2[–-]3 段/.test(r)) {
-    return "REJECTED: overview must be split into 2-3 paragraphs separated by a SINGLE BLANK LINE. Insert empty lines between paragraphs and keep total length under 2600 characters.";
+    return "REJECTED: overview must be split into 3-6 paragraphs separated by a SINGLE BLANK LINE (`### ` sub-heading lines do not count as paragraphs). Insert empty lines between paragraphs and keep total length under 4200 characters.";
   }
   if (/句数/.test(r)) {
-    return "REJECTED: overview has too few sentences. Rewrite it with 10-16 sentences covering totals, main repos and notable items, still under 2600 characters.";
+    return "REJECTED: overview has too few sentences. Rewrite it with 10-16 sentences covering totals, main repos and notable items, still under 4200 characters.";
   }
   if (/缺几天|缺失.*天|missing/.test(r)) {
     return "REJECTED: you must state explicitly how many window days have no data and list those dates (see missing.days and missing.dates in the input).";

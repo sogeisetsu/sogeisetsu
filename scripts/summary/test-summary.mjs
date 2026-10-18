@@ -11,11 +11,13 @@
  *     同日两份以 daily 为准、dataHash 确定性（同数据相同 / 改动后不同）、
  *     aiPayload.repos 的每仓库确定数字与手算一致
  *   B buildItemIndex          —— repos 集合、repo#number 条目（kind/url）、repo@@tag releases
- *   C validateSummary         —— 合法接受（URL 逐条来自输入数据）、12 项拒绝矩阵、
- *     超长 overview / headline / teaser 截断不拒收、byRepo 条数随真实仓库数放宽
+ *   C validateSummary         —— 合法接受（URL 逐条来自输入数据）、拒绝矩阵（含 overview
+ *     的 markdown 拒收：列表 / 链接 / 代码块 / 斜体，### 小标题与 **bold** 放行）、
+ *     超长 overview 按空行块截断 / headline / teaser 截断不拒收、byRepo 条数随真实仓库数放宽
  *   D 端到端                  —— 假 provider → generateStructured（含纠正重试 2 次）→
  *     renderSummaryPage / summaryCard 的数字、双语、headline、teaser（旧数据回退第一段）、
- *     两个板块标题的条数 pill、缺日标注
+ *     两个板块标题的条数 pill、缺日标注、窗口前缀标题、### → h3.ai-h3、
+ *     provider/model 旁注、AI 全失败的失败卡（reason 脱敏）
  *   E 临时目录清理
  *
  * 用法：node scripts/summary/test-summary.mjs
@@ -559,7 +561,7 @@ await reject("validate: 拒绝-teaser 为空", "teaser", (raw) => {
 await reject("validate: 拒绝-overview 仅 1 句", "句数", (raw) => {
   raw.en.overview = "Only one sentence here.";
 });
-await reject("validate: 拒绝-overview 单段不分段", "2–3 段", (raw) => {
+await reject("validate: 拒绝-overview 单段不分段", "段数", (raw) => {
   raw.en.overview = "One. Two. Three. Four. Five. Six. Seven.";
 });
 await reject("validate: 拒绝-headline 含反引号", "反引号", (raw) => {
@@ -582,16 +584,60 @@ await reject("validate: 拒绝-未写缺几天", "缺几天", (raw) => {
   raw.zh.overview = ZH_OVERVIEW_NO4;
 });
 
-await check("validate: overview 超 2600 截断不拒收", () => {
+// --- 章节式 overview：### 小标题放行；其余 markdown（列表/链接/代码块/斜体）拒收
+await check("validate: overview 接受行首 ### 小标题（段数不计、内容原样保留）", () => {
+  const raw = baseRaw();
+  raw.en.overview = `### Window overview\n\n${EN_OVERVIEW}`;
+  raw.zh.overview = `### 窗口总览\n\n${ZH_OVERVIEW}`;
+  const res = validateSummary(raw, ctx);
+  return [
+    ["ok", res.ok === true],
+    ["keptHeadingEn", Boolean(res.ok && res.value.en.overview.startsWith("### Window overview"))],
+    ["keptHeadingZh", Boolean(res.ok && res.value.zh.overview.startsWith("### 窗口总览"))],
+  ];
+});
+
+await reject("validate: 拒绝-overview 项目符号列表", "markdown", (raw) => {
+  raw.en.overview = `${EN_OVERVIEW}\n- one more bullet line`;
+});
+await reject("validate: 拒绝-overview markdown 链接", "markdown", (raw) => {
+  raw.en.overview = EN_OVERVIEW.replace(
+    "The overall pace was even.",
+    "The overall pace was even. See [the repo](https://example.com/x)."
+  );
+});
+await reject("validate: 拒绝-overview 代码块", "markdown", (raw) => {
+  raw.en.overview = `${EN_OVERVIEW}\n\n\`\`\`\nconst x = 1;\n\`\`\``;
+});
+await reject("validate: 拒绝-overview 斜体（**bold** 不误伤）", "markdown", (raw) => {
+  raw.en.overview = EN_OVERVIEW.replace(
+    "The overall pace was even.",
+    "The overall pace was even. The pace was *quite steady*."
+  );
+});
+
+// **bold** / 行内 code 是被放行的内联子集（aiInlineToHtml 只渲染这两种）
+await check("validate: overview 接受 **bold** 与行内 code（斜体规则不误伤）", () => {
+  const raw = baseRaw();
+  raw.en.overview = EN_OVERVIEW.replace(
+    "The overall pace was even.",
+    "The overall pace was even. The pace was **steady** throughout `sogeisetsu/sogeisetsu`."
+  );
+  const res = validateSummary(raw, ctx);
+  return [["ok", res.ok === true], ["keptBold", Boolean(res.ok && res.value.en.overview.includes("**steady**"))]];
+});
+
+await check("validate: overview 超 4200 按空行块截断不拒收", () => {
   const raw = baseRaw();
   const filler =
-    "Detailed maintenance work continued across repositories with careful review and steady follow-up. ".repeat(30);
+    "Detailed maintenance work continued across repositories with careful review and steady follow-up. ".repeat(60);
   raw.en.overview = `${EN_OVERVIEW}\n\n${filler}`;
   const res = validateSummary(raw, ctx);
   return [
     ["ok", res.ok === true],
-    ["lenEn", Boolean(res.ok && res.value.en.overview.length <= 2600)],
-    ["lenZh", Boolean(res.ok && res.value.zh.overview.length <= 2600)],
+    ["lenEn", Boolean(res.ok && res.value.en.overview.length <= 4200)],
+    ["lenZh", Boolean(res.ok && res.value.zh.overview.length <= 4200)],
+    ["truncated", Boolean(res.ok && res.value.en.overview.length < raw.en.overview.length)],
     ["stillMentionsMissing", Boolean(res.ok && res.value.en.overview.includes("4"))],
   ];
 });
@@ -638,6 +684,18 @@ await check("validate: byRepo 按真实仓库数放宽（不再固定 8 条砍�
     ["repos12", list.length === 12],
     ["kept12", Boolean(res.ok && res.value.en.byRepo.length === 12)],
     ["zh12", Boolean(res.ok && res.value.zh.byRepo.length === 12)],
+  ];
+});
+
+await check("prompt: summaryFeedback 按原因给章节式纠正提示（3-6 段 / 4200 / markdown）", () => {
+  const seg = summaryFeedback("en.overview 段数不足（当前 1 段）", 0);
+  const sent = summaryFeedback("en.overview 句数不足（4 < 6）", 0);
+  const md = summaryFeedback("en.overview 含未允许的 markdown（列表）", 0);
+  return [
+    ["segParas3to6", /3-6 paragraphs/.test(seg)],
+    ["segChars4200", seg.includes("4200")],
+    ["sentChars4200", sent.includes("10-16 sentences") && sent.includes("4200")],
+    ["mdOnlySubset", md.includes("### ") && md.includes("markdown")],
   ];
 });
 
@@ -811,6 +869,90 @@ await check("e2e: 卡片只放 teaser（不带 overview 全文），旧数据回
     ],
   ];
 });
+
+// --- 新增回归：窗口前缀标题 / 章节式 h3 / provider 旁注 / 失败卡（均为代码字段，非 AI 文本）
+
+await check("render: 标题带窗口前缀（页面 h1 + 卡片 h2，代码拼装非 AI 文本）", () => {
+  if (!e2eSummary) return [["summaryReady", false]];
+  const html = renderSummaryPage({ summary: e2eSummary });
+  const card = summaryCard({ summary: e2eSummary });
+  const needle = `${c1.windowStart} – ${c1.windowEnd}`; // U+2013 连接两端日期
+  return [
+    ["pageHasNeedle", html.includes(needle)],
+    ["cardHasNeedle", card.includes(needle)],
+    ["pageH1", html.includes(`<h1><span class="mono">${needle}</span> · `)],
+    ["cardH2", card.includes(`<h2 class="ai-headline"><span class="mono">${needle}</span> · `)],
+    ["pageH1NotTilde", !html.includes(`<h1><span class="mono">${c1.windowStart} ~ `)],
+  ];
+});
+
+await check("render: overview 的 ### 小标题渲染成 h3.ai-h3（双语结构保留）", () => {
+  if (!e2eSummary) return [["summaryReady", false]];
+  const s = JSON.parse(JSON.stringify(e2eSummary));
+  s.ai.en.overview = `### What shipped\n\n${s.ai.en.overview}`;
+  s.ai.zh.overview = `### 本期进展\n\n${s.ai.zh.overview}`;
+  const html = renderSummaryPage({ summary: s });
+  return [
+    ["h3En", html.includes('<h3 class="ai-h3">What shipped</h3>')],
+    ["h3Zh", html.includes('<h3 class="ai-h3">本期进展</h3>')],
+    ["langBlocks", html.includes('<div class="ai-summary i18n" data-lang="en">') && html.includes('<div class="ai-summary i18n" data-lang="zh">')],
+    ["h3Css", html.includes('.ai-h3{margin:14px 0 6px')],
+  ];
+});
+
+await check("render: provider/model 旁注（卡片与页面都有；仅 provider 时无 / model 后缀）", () => {
+  if (!e2eSummary) return [["summaryReady", false]];
+  const both = { ...e2eSummary, aiProvider: "sensenova", aiModel: "glm-5.2" };
+  const html = renderSummaryPage({ summary: both });
+  const card = summaryCard({ summary: both });
+  const only = { ...e2eSummary, aiProvider: "sensenova", aiModel: "" };
+  const cardOnly = summaryCard({ summary: only });
+  const noProvider = { ...e2eSummary, aiProvider: "", aiModel: "glm-5.2" };
+  const cardNone = summaryCard({ summary: noProvider });
+  return [
+    ["cardBoth", card.includes("via sensenova / glm-5.2") && card.includes("由 sensenova / glm-5.2 生成")],
+    ["pageBoth", html.includes("via sensenova / glm-5.2") && html.includes("由 sensenova / glm-5.2 生成")],
+    ["pageHasClass", html.includes('class="ai-provider"') && card.includes('class="ai-provider"')],
+    ["onlyProvider", cardOnly.includes("via sensenova") && !cardOnly.includes(" / ")],
+    ["noProviderNothing", !cardNone.includes('class="ai-provider"')],
+  ];
+});
+
+await check("render: AI 全失败时失败卡（卡片 + 页面）+ reason 脱敏", () => {
+  if (!e2eSummary) return [["summaryReady", false]];
+  const s = {
+    ...e2eSummary,
+    ai: null,
+    aiProvider: "sensenova",
+    aiModel: "glm-5.2",
+    aiFailure: {
+      attempts: [
+        { provider: "sensenova", model: "glm-5.2", reason: "HTTP 401: Bearer sk-abcdef123456 rejected" },
+      ],
+      issue: { number: 9, url: `https://github.com/${REPO_A}/issues/9` },
+    },
+  };
+  const html = renderSummaryPage({ summary: s });
+  const card = summaryCard({ summary: s });
+  const leak = "Bearer sk-abcdef123456";
+  return [
+    ["cardBlock", card.includes('class="ai-failure"')],
+    ["pageBlock", html.includes('class="ai-failure"')],
+    ["cardLine", card.includes('class="ai-failure-line"') && card.includes("sensenova / glm-5.2")],
+    ["cardReason", card.includes("HTTP 401")],
+    ["pageReason", html.includes("HTTP 401")],
+    ["cardLink", card.includes(`href="https://github.com/${REPO_A}/issues/9"`) && card.includes("#9")],
+    ["pageLink", html.includes(`href="https://github.com/${REPO_A}/issues/9"`) && html.includes("#9")],
+    ["noLeakCard", !card.includes(leak)],
+    ["noLeakPage", !html.includes(leak)],
+    ["cardUnavailable", card.includes("ai-unavailable")],
+    ["pageUnavailable", html.includes("ai-unavailable")],
+  ];
+});
+
+await check("render: ai 缺失且无失败明细时卡片仍返回空串（维持原行为）", () => [
+  ["emptyCard", summaryCard({ summary: { windowStart: START, windowEnd: END, totals: { commits: 1 } } }) === ""],
+]);
 
 // 纠正重试：第一份引用不存在的 repo → summaryFeedback 生成纠正提示 → 第二份合法
 requests.length = 0;

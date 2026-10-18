@@ -20,6 +20,8 @@
  *     flips data-lang on <html>, updates lang, and remembers the choice.
  */
 
+import { sanitizeReason } from './lib/ai.mjs';
+
 const FONT_STACK =
   '-apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif';
 
@@ -901,16 +903,18 @@ export function statsStrip(totals) {
   return `<div class="stats">${chips}</div>`;
 }
 
-function aiSummaryBlock(ai) {
+function aiSummaryBlock(ai, meta = {}) {
   const badge = `<span class="ai-badge">${icon('spark')}${i18n('AI summary', 'AI 摘要')}</span>`;
+  const providerNote = aiProviderNote(meta.provider, meta.model);
   if (!ai || typeof ai !== 'object') {
     return (
       `<section class="card ai">` +
-      `<div class="ai-top">${badge}</div>` +
+      `<div class="ai-top">${badge}${providerNote}</div>` +
       `<p class="ai-unavailable">${i18n(
         'AI summary temporarily unavailable.',
         'AI 摘要暂不可用。'
       )}</p>` +
+      aiFailureBlock(meta.failure) +
       `</section>`
     );
   }
@@ -931,7 +935,7 @@ function aiSummaryBlock(ai) {
   const hasSummary = String(en.summary || zh.summary || '').trim() !== '';
   return (
     `<section class="card ai">` +
-    `<div class="ai-top">${badge}</div>` +
+    `<div class="ai-top">${badge}${providerNote}</div>` +
     (hasHeadline ? `<h2 class="ai-headline">${headline}</h2>` : '') +
     (hasSummary ? summaryHtml : '') +
     (hasHeadline || hasSummary
@@ -942,6 +946,56 @@ function aiSummaryBlock(ai) {
         )}</p>`) +
     `</section>`
   );
+}
+
+/**
+ * AI 块的 provider / model 旁注（.ai-top 内的右上角小字）。
+ * provider 为空时整段不渲染；model 缺失时退化成只有 provider（历史数据没有 aiModel）。
+ */
+function aiProviderNote(provider, model) {
+  const p = String(provider == null ? '' : provider).trim();
+  if (!p) return '';
+  const m = String(model == null ? '' : model).trim();
+  return `<span class="ai-provider">${i18n(
+    m ? `via ${p} / ${m}` : `via ${p}`,
+    m ? `由 ${p} / ${m} 生成` : `由 ${p} 生成`
+  )}</span>`;
+}
+
+/**
+ * AI 全失败时的可见性块：逐条 `<provider> / <model>：<原因>` + 常驻 issue 链接。
+ *
+ * provider / model 是代码里的字面量（可信），只过 esc；reason 来自网络/服务端，渲染前再过一次
+ * sanitizeReason 兜底（采集时已脱敏，这里是第二道保险）。注意不要把 sanitizeReason 套在 model 上 ——
+ * 它的「≥24 位长串一律替换」会把 `longcat-2.5-preview-free`（24 字符）误伤成 <redacted>。
+ * 既没有条目也没有 issue 时返回 ''（退回原来的「暂不可用」单段）。
+ */
+function aiFailureBlock(failure) {
+  const f = failure && typeof failure === 'object' ? failure : {};
+  const attempts = A(f.attempts);
+  const issue = f.issue && typeof f.issue === 'object' ? f.issue : {};
+  const num = Number(issue.number);
+  const href = safeHref(issue.url);
+  const lines = attempts
+    .map((a) => {
+      const provider = String((a && a.provider) || '').trim();
+      const model = String((a && a.model) || '').trim();
+      const head = model ? `${provider} / ${model}` : provider;
+      if (!head) return '';
+      const reason = sanitizeReason(a && a.reason);
+      return `<span class="ai-failure-line">${esc(head)}：${esc(reason)}</span>`;
+    })
+    .filter(Boolean)
+    .join('');
+  const link =
+    Number.isFinite(num) && num > 0 && href
+      ? `<a class="link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${i18n(
+          `View failure details #${num} →`,
+          `查看失败详情 #${num} →`
+        )}</a>`
+      : '';
+  if (!lines && !link) return '';
+  return `<div class="ai-failure">${lines}${link}</div>`;
 }
 
 function emptyState() {
@@ -1286,6 +1340,15 @@ html[data-lang="zh"] .chip{font-size:.76rem;letter-spacing:0}
   font-size:.73rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);
 }
 .ai-badge svg{width:16px;height:16px}
+/* provider / model 旁注：靠右，与左侧 badge 同一行 */
+.ai-provider{margin-left:auto;font-size:.75rem;color:var(--on-surface-variant)}
+/* AI 全失败时的可见性块（原因 + 常驻 issue 链接），夹在「暂不可用」段之后 */
+.ai-failure{margin:10px 0 0;display:flex;flex-direction:column;gap:4px}
+.ai-failure-line{
+  font-family:var(--mono);font-size:.78rem;line-height:1.5;
+  color:var(--on-surface-variant);overflow-wrap:anywhere;
+}
+.ai-failure .link{font-size:.8rem;font-weight:650}
 .ai-headline{margin:0 0 8px;font-size:clamp(1.15rem,3.6vw,1.5rem);line-height:1.25;font-weight:800;letter-spacing:-.015em}
 .ai-summary{margin:0;font-size:.98rem;color:var(--on-surface-variant)}
 .ai-summary.i18n[data-lang]{display:block}
@@ -1457,7 +1520,11 @@ export function renderReportPage({ data, ai } = {}) {
   if (!hasVisibleActivity(d)) {
     parts.push(emptyState());
   } else {
-    parts.push(aiSummaryBlock(ai));
+    parts.push(aiSummaryBlock(ai, {
+      provider: d.aiProvider,
+      model: d.aiModel,
+      failure: d.aiFailure,
+    }));
     parts.push(statsStrip(totals));
     if (commits.length) parts.push(commitsSection(commits, totals));
     if (pullRequests.length) parts.push(prSection(pullRequests, totals, truncationNotice(t, 'events', false)));

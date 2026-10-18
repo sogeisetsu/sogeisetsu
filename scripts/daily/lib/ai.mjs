@@ -6,8 +6,8 @@
  *
  * 数据流：
  *   data（每日数据 schema，见下）→ 压缩成紧凑 prompt（只喂聚合条目，不喂原始事件）
- *   → 按顺序尝试 providers（sensenova → OpenCode Go；chat / responses 两种形态）→ 一次调用产出严格 JSON（en + zh 双语）
- *   → 提取 / 解析 / 校验（不合格追加“只输出 JSON”后重试一次）→ { en, zh, provider }
+ *   → 按顺序尝试 providers（OpenCode Go 两条 → sensenova；chat / responses 两种形态）→ 一次调用产出严格 JSON（en + zh 双语）
+ *   → 提取 / 解析 / 校验（不合格追加“只输出 JSON”后重试一次）→ { en, zh, provider, model }
  *
  * data schema（输入契约）：
  *   {
@@ -27,15 +27,17 @@
  *
  * 导出：
  *   generateNarrative({ data, providers })   // 是否有内容值得叙述由调用方判断；本函数不按 empty 自行拦截
- *   generateStructured({ system, user, validate, providers, feedback })
+ *   generateStructured({ system, user, validate, providers, feedback, onProviderFailure })
  *                                            // 通用结构化生成入口：日报与 30 天总结共用同一套重试/校验循环
  *   defaultProviders(env = process.env)      // 同步返回 provider 列表（没 key 的跳过）
- *   resolveSenseNovaModel(apiKey, baseUrl?)  // GET {baseUrl}/models 挑模型，进程内缓存
+ *   orderProvidersForSummary(list)           // 总结线重排：deepseek 提前（longcat 结构上做不了 30 天总结）
+ *   sanitizeReason(text, maxLen?)            // 失败原因脱敏：key / Bearer / 长 token / URL 一律替换 + 截断
  *
- * provider 结构：{ name, baseUrl, apiKey, model, shape, headers? }
+ * provider 结构：{ name, baseUrl, apiKey, model, shape, headers?, extraBody? }
  *   shape = "chat"      → POST {baseUrl}/chat/completions
  *   shape = "responses" → POST {baseUrl}/responses
  *   headers（可选）      → 追加到请求头（OpenCode Go 要求自报 user-agent / 会话 id）
+ *   extraBody（可选）    → 合并进 chat 请求体（sensenova 借它发 thinking:{type:"disabled"} 关思考）
  *
  * 用法：node scripts/daily/lib/ai.mjs --data=path.json
  */
@@ -58,8 +60,8 @@ const SECTION_CAP = 30; // 每个板块最多喂 30 条
 const COMMIT_MSG_CAP = 10; // 每个仓库最多喂 10 条 commit message
 const COMMIT_MSG_LEN = 200; // 每条 commit message 截断到 200 字符
 const RELEASE_NOTES_CAP = 800; // 每条 release notes 最多 800 字符
-const MAX_TOKENS = 16384; // chat max_tokens / responses 共用；sensenova 的 max_tokens 计入 reasoning，故同时发 reasoning_effort=none（见下）
-const MAX_TOKENS_CAP = 65536; // 截断时自适应扩容上限（SenseNova API 上限 65536）
+const MAX_TOKENS = 49152; // chat max_tokens / responses 共用；实测最坏 17213 completion tokens（含 reasoning），16384 会被截断，49152 ≈ 2.9x 余量
+const MAX_TOKENS_CAP = 65536; // 截断时自适应扩容上限（各家 output 上限远高于此）
 const SUMMARY_MIN_SENTENCES = 2; // 提示词目标 4-8 句；校验放宽容差，避免把「9 句」这种好结果误拒
 const SUMMARY_MAX_SENTENCES = 12;
 const SUMMARY_MAX_CHARS = 1400; // summary 目标 ~900 字符；模型偶写到 ~1800，超出部分按句界截断而非拒绝
@@ -67,9 +69,7 @@ const HEADLINE_MAX_CHARS = 80; // headline 硬上限；超出按分隔符/词界
 const RELEASE_NOTE_MAX_SENTENCES = 3;
 const RETRY_WAIT_MS = 2000; // 429/5xx 重试前等待 ~2s
 const MAX_ROUNDS = 12; // 单 provider 内部循环安全上限（json 重试×3 + rf-400 退让 + 429 重试 + 形态切换 + 截断重试）
-const DEFAULT_SENSENOVA_MODEL = "sensenova-6.8-flash-lite"; // /models 解析失败时的兜底模型（绝不因此跳过 provider）
-const MODELS_TIMEOUT_MS = 10000; // GET /models 超时
-const CHAT_TIMEOUT_MS = 90000; // chat/responses POST 超时
+const CHAT_TIMEOUT_MS = 180000; // chat/responses POST 超时；总结线唯一的稳定腿实测 51.8–83.0s，90s 太贴边
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -84,10 +84,7 @@ async function fetchWithTimeout(url, opts, ms) {
   }
 }
 
-// ---------------------------------------------------------------- SenseNova 模型解析
-
-// baseUrl → 已解析 model；只缓存成功结果（失败不缓存，允许下次重试）
-const senseNovaModelCache = new Map();
+// ---------------------------------------------------------------- provider 进程内状态
 
 // 进程内记住不支持 response_format 的 provider（key: name+baseUrl），后续调用直接跳过
 const jsonModeUnsupported = new Set();
@@ -121,85 +118,37 @@ function buildRetryFeedback(reason, n) {
 }
 
 /**
- * GET {baseUrl}/models，按优先级挑模型：
- *   /6\.8.*flash.*lite/i → /flash.*lite/i → /flash/i → 第一个 id
- * 抛错 / 非 2xx / 空 id 都会重试（最多 3 次，退避 500ms → 1500ms）；
- * 全部失败时回退 DEFAULT_SENSENOVA_MODEL（绝不返回 null，避免整家 provider 被跳过）。
- * 只有真正解析成功才写缓存。
+ * 失败原因脱敏（写进 issue 正文 / 页面失败卡前必过）。
+ *
+ * 口径：宁可多替换，绝不漏 key。依次抹掉
+ *   · `Bearer <token>` 授权头
+ *   · `sk-…` / `oc_…` 形态的 API key
+ *   · 任意 ≥24 位的 `[A-Za-z0-9_-]` 串（长 token / 长 session id / commit sha 一律算敏感）
+ *   · `http(s)://…` URL（baseUrl / query 都可能藏在里面）
+ * 最后单条截断到 maxLen 字符（默认 300，模型返回的 snippet 上限也在这量级）。
  */
-export async function resolveSenseNovaModel(apiKey, baseUrl = SENSENOVA_BASE) {
-  const base = String(baseUrl || SENSENOVA_BASE).replace(/\/+$/, "");
-  if (senseNovaModelCache.has(base)) return senseNovaModelCache.get(base);
-
-  const backoffMs = [0, 500, 1500]; // 第 1 次立即，第 2/3 次分别退避 500ms / 1500ms
-  const maxAttempts = 3;
-  let lastError = "";
-  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    if (backoffMs[attempt - 1] > 0) await sleep(backoffMs[attempt - 1]);
-    try {
-      const res = await fetchWithTimeout(
-        `${base}/models`,
-        { headers: { accept: "application/json", authorization: `Bearer ${apiKey}` } },
-        MODELS_TIMEOUT_MS
-      );
-      if (!res.ok) {
-        lastError = `HTTP ${res.status}`;
-        console.error(`${LOG} sensenova: GET /models 失败 ${lastError}（第 ${attempt}/${maxAttempts} 次）`);
-        continue;
-      }
-      const json = await res.json().catch(() => null);
-      // 兼容 data: [ { id } ] 与 models: [ "id" ] 两种返回形态
-      const raw = Array.isArray(json?.data)
-        ? json.data
-        : Array.isArray(json?.models)
-          ? json.models
-          : [];
-      const ids = raw
-        .map((m) => (typeof m === "string" ? m : m && m.id))
-        .filter((id) => typeof id === "string" && id.length > 0);
-      if (ids.length === 0) {
-        lastError = "/models 未返回任何模型 id";
-        console.error(`${LOG} sensenova: ${lastError}（第 ${attempt}/${maxAttempts} 次）`);
-        continue;
-      }
-      const pick = (re) => ids.find((id) => re.test(id));
-      const model =
-        pick(/6\.8.*flash.*lite/i) || pick(/flash.*lite/i) || pick(/flash/i) || ids[0];
-      console.error(`${LOG} sensenova: 已解析模型 ${model}`);
-      senseNovaModelCache.set(base, model);
-      return model;
-    } catch (err) {
-      lastError = err && err.message ? err.message : String(err);
-      console.error(`${LOG} sensenova: GET /models 异常 ${lastError}（第 ${attempt}/${maxAttempts} 次）`);
-    }
-  }
-  console.error(
-    `${LOG} sensenova: GET /models 重试 ${maxAttempts} 次仍失败（${lastError}），回退默认模型 ${DEFAULT_SENSENOVA_MODEL}（不跳过 provider）`
-  );
-  return DEFAULT_SENSENOVA_MODEL;
+export function sanitizeReason(text, maxLen = 300) {
+  let s = String(text ?? "");
+  s = s.replace(/Bearer\s+\S+/gi, "<redacted>");
+  s = s.replace(/\b(?:sk-|oc_)[A-Za-z0-9_-]{6,}/g, "<redacted>");
+  s = s.replace(/[A-Za-z0-9_-]{24,}/g, "<redacted>");
+  s = s.replace(/https?:\/\/\S+/gi, "<redacted-url>");
+  s = s.trim();
+  return s.length > maxLen ? `${s.slice(0, maxLen)}…` : s;
 }
 
 // ---------------------------------------------------------------- provider 列表
 
 /**
- * 按优先级返回可用 provider；没有 key 的直接跳过。SenseNova 的 model 留空，由 generateNarrative 惰性解析。
- * OpenCode Go 的两条共用同一把 key（OPENCODE_API_KEY），顺序：免费模型 → 付费额度内模型。
+ * 按优先级返回可用 provider；没有 key 的直接跳过。
+ * 顺序（本轮改序）：OpenCode Go 两条在前（免费模型 → 付费额度内模型）、sensenova 殿后。
+ * 商汤的模型不再动态解析（/models 挑出来的模型在长提示词下把预算全烧在思考上、永不产出），
+ * 写死 glm-5.2 并关掉思考（extraBody 仅这一条带）。
  */
 export function defaultProviders(env = process.env) {
   const list = [];
 
-  // 商汤 SenseNova（首选：额度独立于 OpenCode 账号，OpenCode Go 侧的限流 / 滥用监控影响不到它）
-  if (env.SENSENOVA_API_KEY) {
-    list.push({
-      name: "sensenova",
-      baseUrl: SENSENOVA_BASE,
-      apiKey: env.SENSENOVA_API_KEY,
-      model: env.SENSENOVA_MODEL || "", // 空 → generateNarrative 内调 resolveSenseNovaModel
-      shape: "chat",
-    });
-  }
-
-  // OpenCode Go（备选，垫底）：端点仍是 chat/completions 形态，直接可用。
+  // OpenCode Go（首选）：端点仍是 chat/completions 形态，直接可用。
   // Go 要求客户端自报 user-agent，并带稳定会话 ID（一次运行 = 一个会话）：既满足文档，
   // 也让路由与提示缓存有依据 —— 降低被它「针对第三方客户端」的滥用监控挡下的概率。
   if (env.OPENCODE_API_KEY) {
@@ -225,7 +174,33 @@ export function defaultProviders(env = process.env) {
     });
   }
 
+  // 商汤 SenseNova（殿后：额度独立于 OpenCode 账号，OpenCode Go 侧的限流 / 滥用监控影响不到它）
+  if (env.SENSENOVA_API_KEY) {
+    list.push({
+      name: "sensenova",
+      baseUrl: SENSENOVA_BASE,
+      apiKey: env.SENSENOVA_API_KEY,
+      model: env.SENSENOVA_MODEL || "glm-5.2", // 写死：不再动态挑模型
+      shape: "chat",
+      extraBody: { thinking: { type: "disabled" } }, // 关思考：不关则 reasoning 吃光预算、content 恒为空
+    });
+  }
+
   return list;
+}
+
+/**
+ * 总结线专用重排：把 deepseek 提到最前，其余保持原顺序。
+ *
+ * 原因（实测）：`longcat-2.5-preview-free` 结构上做不了 30 天总结（≈306s 后连接被掐），
+ * 而 `deepseek-v4.1-flash` 是唯一稳定过校验的腿。重排只作用于总结线，
+ * `defaultProviders` 保持 Go 内部的「免费优先」顺序 —— 日报是每 2 小时的高频任务，
+ * 不该因为总结线的需要而放弃免费腿。
+ */
+export function orderProvidersForSummary(list) {
+  const arr = Array.isArray(list) ? list : [];
+  const isDeepseek = (p) => /deepseek/i.test(String((p && p.name) || ""));
+  return [...arr.filter(isDeepseek), ...arr.filter((p) => !isDeepseek(p))];
 }
 
 // ---------------------------------------------------------------- prompt 构建
@@ -563,6 +538,7 @@ function extractContent(json, shape) {
  *     → 打印 usage/reasoning 诊断并翻倍 max_tokens 重试（上限 65536）
  *   · chat 默认发 reasoning_effort=none 关闭思考（避免 CoT 吃光 max_tokens 导致 content 为空）；400 时去掉重试
  *   · provider.headers（可选）原样追加进请求头（OpenCode Go 的 user-agent / 会话 id 走这里）
+ *   · provider.extraBody（可选）合并进 chat 请求体（sensenova 的 thinking:{type:"disabled"} 走这里）
  *
  * `validate(parsed)` 是同步校验器，返回 { ok:true, value } 或 { ok:false, reason }；
  * `feedback(reason, n)` 按失败原因生成可执行的纠正提示（默认 buildRetryFeedback，日报专用）。
@@ -603,6 +579,9 @@ async function attemptProvider(provider, system, user, validate, feedback = buil
             max_tokens: maxTokens,
             ...(reasoningOff ? { reasoning_effort: "none" } : {}),
             ...(useJsonMode ? { response_format: { type: "json_object" } } : {}),
+            // provider 自定义请求体片段（sensenova 的 thinking:{type:"disabled"} 走这里）；
+            // 只作用于 chat 形态，responses 形态不带（那边的参数名不同）
+            ...(provider.extraBody && typeof provider.extraBody === "object" ? provider.extraBody : {}),
           };
 
     let res;
@@ -736,8 +715,8 @@ async function attemptProvider(provider, system, user, validate, feedback = buil
   return { ok: false, reason: `超过内部重试上限 ${MAX_ROUNDS} 次` };
 }
 
-/** 规范化 provider：补 shape、惰性解析 SenseNova 模型；无效则返回 null（并记日志）。 */
-async function normalizeProvider(raw) {
+/** 规范化 provider：补 shape；无效则返回 null（并记日志）。模型一律由 provider 自身写死，不再动态解析。 */
+function normalizeProvider(raw) {
   if (!raw || typeof raw !== "object") {
     console.error(`${LOG} 跳过无效 provider 条目`);
     return null;
@@ -747,14 +726,6 @@ async function normalizeProvider(raw) {
   if (!provider.baseUrl || !provider.apiKey) {
     console.error(`${LOG} ${name}: 缺 baseUrl/apiKey，跳过`);
     return null;
-  }
-  if (provider.name === "sensenova" && !provider.model) {
-    const model = await resolveSenseNovaModel(provider.apiKey, provider.baseUrl);
-    if (!model) {
-      console.error(`${LOG} ${name}: 无法解析模型，跳过`);
-      return null;
-    }
-    provider.model = model;
   }
   if (!provider.model) {
     console.error(`${LOG} ${name}: 缺 model，跳过`);
@@ -766,14 +737,26 @@ async function normalizeProvider(raw) {
 // ---------------------------------------------------------------- 主入口
 
 /**
- * 通用结构化生成入口：按顺序尝试 providers，成功返回 { value, provider }；以下返回 null：
- *   没有可用 provider／全部 provider 失败。
+ * 通用结构化生成入口：按顺序尝试 providers。
+ *   成功 → { value, provider, model, attempts }
+ *   没有可用 provider / 全部 provider 失败 → null（attempts 只在成功时随返回值给出；
+ *   需要在失败时拿到逐条原因就传 onProviderFailure）
  *
  * `validate(parsed)`（同步）决定「这份 JSON 能不能收」，`feedback(reason, n)`（可选）
  * 给出针对性的纠正提示；日报的 generateNarrative 与 30 天总结都走这里，
  * 重试/JSON 模式/截断/退让行为完全一致。
+ *
+ * `onProviderFailure({ provider, model, reason })`（可选）：每有一条 provider 失败就回调一次 —
+ * 调用方（日报 / 总结编排）据此收集 attempts，写失败记录并开常驻 issue。
  */
-export async function generateStructured({ system, user, validate, providers, feedback } = {}) {
+export async function generateStructured({
+  system,
+  user,
+  validate,
+  providers,
+  feedback,
+  onProviderFailure,
+} = {}) {
   const list = Array.isArray(providers) ? providers : [];
   if (list.length === 0) {
     console.error(`${LOG} 没有可用 provider（未配置 API key）`);
@@ -784,6 +767,7 @@ export async function generateStructured({ system, user, validate, providers, fe
     return null;
   }
 
+  const attempts = [];
   for (const raw of list) {
     const provider = await normalizeProvider(raw);
     if (!provider) continue;
@@ -791,9 +775,19 @@ export async function generateStructured({ system, user, validate, providers, fe
     const outcome = await attemptProvider(provider, system, user, validate, feedback);
     if (outcome.ok) {
       console.error(`${LOG} ${provider.name}: 成功`);
-      return { value: outcome.value, provider: provider.name };
+      return { value: outcome.value, provider: provider.name, model: provider.model, attempts };
     }
     console.error(`${LOG} ${provider.name}: 失败 — ${outcome.reason}`);
+    const failed = { provider: provider.name, model: provider.model, reason: outcome.reason };
+    attempts.push(failed);
+    if (typeof onProviderFailure === "function") {
+      try {
+        onProviderFailure(failed);
+      } catch (err) {
+        // 回调是调用方的可见性旁路，它的异常不该影响生成流程
+        console.error(`${LOG} onProviderFailure 回调异常: ${err && err.message ? err.message : String(err)}`);
+      }
+    }
   }
 
   console.error(`${LOG} 所有 provider 均失败`);
@@ -801,7 +795,7 @@ export async function generateStructured({ system, user, validate, providers, fe
 }
 
 /**
- * 生成每日叙事。成功返回 { en, zh, provider }；以下情况返回 null：
+ * 生成每日叙事。成功返回 { en, zh, provider, model, attempts }；以下情况返回 null：
  *   没有可用 provider／全部 provider 失败。
  *
  * 注意：本函数不判断「今天是否值得生成」——那是调用方（index.mjs）的职责，
@@ -809,7 +803,7 @@ export async function generateStructured({ system, user, validate, providers, fe
  * 与 totals 口径的 data.empty 并不等价。历史上在这里按 data.empty 二次拦截，
  * 导致「只发了 discussion 的一天」永远拿不到叙述，并让上游每轮空转重试。
  */
-export async function generateNarrative({ data, providers }) {
+export async function generateNarrative({ data, providers, onProviderFailure }) {
   if (data == null) {
     console.error(`${LOG} data 为空，跳过`);
     return null;
@@ -821,9 +815,16 @@ export async function generateNarrative({ data, providers }) {
     user,
     validate: (parsed) => validateNarrative(parsed, data),
     providers,
+    onProviderFailure,
   });
   if (!res) return null;
-  return { en: res.value.en, zh: res.value.zh, provider: res.provider };
+  return {
+    en: res.value.en,
+    zh: res.value.zh,
+    provider: res.provider,
+    model: res.model,
+    attempts: res.attempts,
+  };
 }
 
 // ---------------------------------------------------------------- CLI

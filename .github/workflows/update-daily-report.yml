@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - "scripts/daily/**"
+      - "scripts/notify-ai-failure.mjs"
       - ".github/workflows/update-daily-report.yml"
   schedule:
     # 每 2 小时（UTC）：每次定稿「昨天」+ 滚动刷新「今天」。
@@ -28,7 +29,7 @@ on:
 
 permissions:
   contents: write
-  issues: read
+  issues: write
   pull-requests: read
 
 # Shared with update-activity.yml so the two workflows never race on push.
@@ -56,6 +57,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
+
+      - name: AI 失败可见性（开/关 issue + 回写 + 重渲染）
+        run: node scripts/notify-ai-failure.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 提交并推送更新
         run: |

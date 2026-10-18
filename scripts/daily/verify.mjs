@@ -11,7 +11,8 @@
  *     中文 h1 规则、禁用字体名（只看 <head>，正文叙述提到字体名不算）；
  *     以及 favicon.svg / chomsky.woff2 实体与 wOF2 魔数
  *   D 报告正文：无 "merge:" 提交标题、页脚「不含合并提交」、自动提交说明按
- *     Σ automated 出现（>0 必须有，=0 必须无）、有 AI 叙述时双语 ai-summary 各 ≥1 段
+ *     Σ automated 出现（>0 必须有，=0 必须无）、有 AI 叙述时双语 ai-summary 各 ≥1 段、
+ *     AI 全失败（ai=null 且 aiFailure 有原因）且有可见段时必须有失败卡
  *   F 回填数据 data/backfill（仓库根固定，与 --dir 无关）：文件数 >0、逐文件
  *     schema（date 与文件名一致 / source=search-backfill / backfillLimits / totals /
  *     明细数组 / dataHash / totals = Σ）
@@ -19,8 +20,10 @@
  *   H 数字一致：窗口 = cstDayMinus(30)~cstDayMinus(1)、totals 与 automatedCommits
  *     等于逐日（docs/data ∪ data/backfill，daily 优先）求和、missing 与实际缺日集合相等
  *   I docs/summary.html：文档结构 + head + 确定数字条与 totals 一致、自动提交相加表述、
- *     缺日标注、有 AI 叙述时双语 ai-summary 块与 headline 逐字
- *   J 首页卡片一致性：index 是否含 href="./summary.html" 与双语 headline（随 ai 而定）
+ *     缺日标注、有 AI 叙述时双语 ai-summary 块与 headline 逐字、
+ *     hero 标题必须含 "windowStart – windowEnd" 区间、ai=null 且有失败记录时有失败卡
+ *   J 首页卡片一致性：index 是否含 href="./summary.html"（有 ai 叙述或有可渲染的失败明细）、
+ *     双语 headline 逐字、卡片标题含窗口区间、降级时的失败卡
  *   E 打印检查过的数据文件 / 报告 / 回填数量
  *
  * 用法：
@@ -539,6 +542,17 @@ function main() {
       }
     }
 
+    // AI 全失败可见性：有可见段、无叙述、且当天记了失败 → 报告必须渲染失败卡（原因 + issue 链接）
+    const failAttempts =
+      data.aiFailure && Array.isArray(data.aiFailure.attempts) ? data.aiFailure.attempts : [];
+    if (!data.ai && failAttempts.length > 0 && hasVisibleActivity(data)) {
+      check(
+        `${label}: AI 失败卡`,
+        html.includes('class="ai-failure"'),
+        `aiFailure 有 ${failAttempts.length} 条原因但报告缺少失败卡`
+      );
+    }
+
     // 截断提示：data 声明某段 hits=true 且该段有渲染 → 报告必须出现截断提示。
     // targets 命中会级联影响 replies / stateChanges（两者只覆盖前 N 个 target）。
     if (data.truncated && typeof data.truncated === "object") {
@@ -900,6 +914,27 @@ function main() {
           `页面未逐字出现: ${missHead.map((h) => JSON.stringify(h)).join(", ")}`
         );
       }
+
+      // 30 天标题必须由代码写死窗口区间（不来自 AI）：hero h1 里必须出现 "WS – WE"
+      if (typeof summary.windowStart === "string" && typeof summary.windowEnd === "string") {
+        const winLabel = `${summary.windowStart} – ${summary.windowEnd}`;
+        check(
+          "summary.html: 标题含窗口区间",
+          summaryHtml.includes(winLabel),
+          `页面未出现 ${JSON.stringify(winLabel)}`
+        );
+      }
+
+      // 总结页降级（ai=null 且记录了失败）时必须渲染失败卡
+      const sumFailAttempts =
+        summary.aiFailure && Array.isArray(summary.aiFailure.attempts) ? summary.aiFailure.attempts : [];
+      if ((summary.ai === null || summary.ai === undefined) && sumFailAttempts.length > 0) {
+        check(
+          "summary.html: AI 失败卡",
+          summaryHtml.includes('class="ai-failure"'),
+          `summary.aiFailure 有 ${sumFailAttempts.length} 条原因但页面缺少失败卡`
+        );
+      }
     }
   }
 
@@ -910,16 +945,23 @@ function main() {
       ? [String(ai.en && ai.en.headline ? ai.en.headline : "").trim(),
          String(ai.zh && ai.zh.headline ? ai.zh.headline : "").trim()]
       : ["", ""];
-    const wantLink = Boolean(ai && (heads[0] !== "" || heads[1] !== ""));
+    const hasHeadline = heads.some((h) => h !== "");
+    // 卡片的渲染契约（summaryCard）：summary 是对象 &&（有 ai，或有可渲染的失败明细）
+    // —— ai 缺失但 aiFailure 有原因/issue 时也要摆出「暂不可用 + 失败卡」，链接同样在
+    const fail = summary.aiFailure && typeof summary.aiFailure === "object" ? summary.aiFailure : {};
+    const failRenderable =
+      (Array.isArray(fail.attempts) && fail.attempts.length > 0) ||
+      Boolean(fail.issue && Number(fail.issue.number) > 0);
+    const cardRenders = Boolean(ai) || failRenderable;
     const hasLink = indexHtml.includes('href="./summary.html"');
     check(
       "index: summary.html 链接",
-      hasLink === wantLink,
-      wantLink
-        ? '有 AI headline 但 index 缺少 href="./summary.html"'
-        : 'ai 为空但 index 含 href="./summary.html"（卡片与页面都不出叙述）'
+      hasLink === cardRenders,
+      cardRenders
+        ? 'index 应渲染总结卡片（AI 叙述或缺叙述时的失败明细）却缺少 href="./summary.html"'
+        : 'ai 为空且无失败明细但 index 含 href="./summary.html"（卡片与页面都不出叙述）'
     );
-    if (wantLink) {
+    if (hasHeadline) {
       const miss = heads.filter(
         (h) => h !== "" && !(indexHtml.includes(h) || indexHtml.includes(htmlEsc(h)))
       );
@@ -927,6 +969,23 @@ function main() {
         "index: 卡片 headline 双语逐字",
         miss.length === 0,
         `index 未逐字出现: ${miss.map((h) => JSON.stringify(h)).join(", ")}`
+      );
+      // 卡片标题同样必须写死窗口区间
+      if (typeof summary.windowStart === "string" && typeof summary.windowEnd === "string") {
+        const winLabel = `${summary.windowStart} – ${summary.windowEnd}`;
+        check(
+          "index: 卡片标题含窗口区间",
+          indexHtml.includes(winLabel),
+          `index 卡片未出现 ${JSON.stringify(winLabel)}`
+        );
+      }
+    }
+    // 卡片降级（ai=null 且有失败明细）时必须渲染失败卡
+    if (!ai && failRenderable) {
+      check(
+        "index: AI 失败卡",
+        indexHtml.includes('class="ai-failure"'),
+        "summary.aiFailure 可渲染但首页卡片缺少失败卡"
       );
     }
   }

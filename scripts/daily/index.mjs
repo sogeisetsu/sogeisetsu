@@ -20,16 +20,23 @@
  *   --dry-run   只打印摘要，不写任何文件
  *   --no-ai     跳过 AI 调用，直接产出「无叙述」确定版（联调用）
  *
- * 无变化跳过：每次先抓数据、算内容哈希（忽略 generatedAt/ai/aiProvider/dataHash），
+ * 无变化跳过：每次先抓数据、算内容哈希（忽略 generatedAt/ai/aiProvider/aiModel/aiFailure/dataHash），
  * 与已存 JSON 的 dataHash 相同则不调用 AI、不写文件、不提交，避免浪费 token。
+ *
+ * AI 全失败：脚本仍以 0 退出（失败不是脚本错误），但会把本次 AI 结果写进 run 级记录
+ * data/ai-failure.json（state=failed/ok，gitignore 的运行状态，不发布）+ 逐日 aiFailure 字段，
+ * 失败时另打 ::warning:: / 追加 GITHUB_STEP_SUMMARY，由 scripts/notify-ai-failure.mjs
+ * 开/追加常驻 issue（state=ok 时改为关闭已恢复的 issue）；--dry-run 不写该记录。
  */
 
 import path from "node:path";
+import { appendFileSync } from "node:fs";
 
 import { collectDailyData } from "./lib/github.mjs";
 import { defaultProviders, generateNarrative } from "./lib/ai.mjs";
 import { renderIndexPage, renderMarkdown, renderReportPage, hasVisibleActivity } from "./render.mjs";
 import {
+  AI_FAILURE_PATH,
   DATA_DIR,
   DATE_RE,
   INDEX_PATH,
@@ -41,6 +48,8 @@ import {
   listDays,
   prevDateOf,
   readJsonIfExists,
+  runUrlFromEnv,
+  workflowFromEnv,
   writeAtomic,
 } from "./lib/days.mjs";
 import { summaryCard } from "../summary/render.mjs";
@@ -78,9 +87,43 @@ function summaryCardHtml() {
   return summary ? summaryCard({ summary }) : null;
 }
 
+/**
+ * 写 run 级 AI 结果记录 data/ai-failure.json（gitignore 的运行状态，不发布、不提交），
+ * 供 scripts/notify-ai-failure.mjs 读取后开/追加常驻 issue（state=failed）或关闭已恢复的
+ * issue（state=ok），并把 issue 号回写进 targets 文件。
+ *
+ * 为什么记录里必须带 state：CI 每次都是全新 checkout，这个文件在运行开始时必然不存在，
+ * 所以「文件不存在」不能当作「AI 已恢复」——一次「没做 AI 尝试」的运行（数据无变化跳过）
+ * 会因此误关掉仍然有效的失败 issue。恢复的唯一依据是本次运行明确写下 state:"ok"。
+ *
+ * state=failed 时同时打一行 ::warning::（Actions 日志可见）并向 GITHUB_STEP_SUMMARY 追加一行
+ * —— 该 env 指向「本步追加写」的 markdown 文件，只能 append、绝不覆盖。
+ * 只在确实做过 AI 尝试时调用（--dry-run 在 main() 里先 return）。
+ */
+function writeAiRunRecord(record) {
+  writeAtomic(AI_FAILURE_PATH, JSON.stringify(record, null, 2));
+  if (record.state !== "failed") return; // 成功记录只作恢复信号，不打警告
+  const label = record.dates.length > 0 ? record.dates.join(", ") : "近 30 天窗口";
+  console.log(
+    `::warning::AI 叙述生成失败（${record.scope} ${label}，pageState=${record.pageState}），已写 data/ai-failure.json 待开 issue`
+  );
+  const stepSummary = process.env.GITHUB_STEP_SUMMARY;
+  if (stepSummary) {
+    appendFileSync(
+      stepSummary,
+      `- ⚠️ AI 叙述失败（${record.scope} ${label}，pageState=${record.pageState}）：详见 \`data/ai-failure.json\`\n`,
+      "utf8"
+    );
+  }
+}
+
 // ---------------------------------------------------------------- 单日处理
 
-/** 处理一个自然日；返回 { date, changed }。 */
+/**
+ * 处理一个自然日；返回 { date, changed, failed, attempted, pageState, attempts }。
+ * changed 是既有语义（是否写盘，消费方不变）；attempted / failed / pageState / attempts 供
+ * main() 汇总 run 级 AI 结果记录（attempted=true 表示本次真的调了 AI；failed=true 表示调了且全失败）。
+ */
 async function processDate(date) {
   if (!DATE_RE.test(date)) {
     console.error(`[daily-report] 错误：日期必须是 YYYY-MM-DD，收到 "${date}"`);
@@ -106,7 +149,7 @@ async function processDate(date) {
   const missingAi = hasVisibleActivity(data) && !NO_AI && !(existing && existing.ai);
   if (!DRY_RUN && !FORCE && existing && existing.dataHash === hash && !missingAi) {
     console.log(`[daily-report] ${date} 内容无变化，跳过 AI 与写入`);
-    return { date, changed: false };
+    return { date, changed: false, attempted: false, failed: false, pageState: null, attempts: [] };
   }
   if (!DRY_RUN && !FORCE && existing && existing.dataHash === hash && missingAi) {
     console.log(`[daily-report] ${date} 内容无变化但缺少 AI 叙述，重试生成`);
@@ -114,6 +157,11 @@ async function processDate(date) {
 
   let ai = null;
   let aiProvider = null;
+  let aiModel = null;
+  let aiFailure = null; // 只在「AI 真调了且返回 null」时非 null（写进 docs/data/<date>.json）
+  let attempted = false; // 本次是否真的调了 AI（run 级记录要不要写的唯一依据）
+  // 本次 AI 调用里逐个失败的 provider（onProviderFailure 填充）——失败记录的唯一权威来源
+  const attempts = [];
   if (!hasVisibleActivity(data)) {
     // 空白天（连 discussion / release / star / 回复都没有）：不调用 AI、不写假叙述；
     // 页面由渲染层空状态卡承担。注意这里必须用可见段口径，不能只看 totals 的 empty。
@@ -121,22 +169,33 @@ async function processDate(date) {
   } else if (NO_AI) {
     console.log("[daily-report] 跳过 AI（--no-ai）");
   } else {
-    const res = await generateNarrative({ data, providers: defaultProviders() });
+    attempted = true;
+    const res = await generateNarrative({
+      data,
+      providers: defaultProviders(),
+      onProviderFailure: (a) => attempts.push(a),
+    });
     if (res) {
       ai = { en: res.en, zh: res.zh };
       aiProvider = res.provider;
-      console.log(`[daily-report] AI 叙述: 成功（provider=${aiProvider}）`);
+      aiModel = res.model ?? null;
+      console.log(`[daily-report] AI 叙述: 成功（provider=${aiProvider}${aiModel ? `, model=${aiModel}` : ""}）`);
     } else if (existing && existing.ai && existing.dataHash === hash) {
       // 数据未变、只是 AI 临时失败：保留上一次叙述，避免把已发布页面降级成「无叙述」
       ai = existing.ai;
       aiProvider = existing.aiProvider ?? null;
+      aiModel = existing.aiModel ?? null;
+      aiFailure = { generatedAt: new Date().toISOString(), pageState: "kept-previous", attempts, issue: null };
       console.warn("[daily-report] AI 叙述: 失败，数据未变，保留上一次叙述");
     } else {
+      aiFailure = { generatedAt: new Date().toISOString(), pageState: "no-narrative", attempts, issue: null };
       console.warn("[daily-report] AI 叙述: 全部 provider 失败，产出无叙述确定版");
     }
   }
   data.ai = ai;
   data.aiProvider = aiProvider;
+  data.aiModel = aiModel; // 成功才有值（渲染层 AI 徽章旁注 provider / model）
+  data.aiFailure = aiFailure; // 成功 / --no-ai / 空白天一律 null —— 成功必须清掉失败标记
   data.dataHash = hash;
 
   const html = renderReportPage({ data, ai });
@@ -144,14 +203,28 @@ async function processDate(date) {
 
   if (DRY_RUN) {
     console.log(`[daily-report] --dry-run：html=${html.length} 字节 · md=${md.length} 字节 · ai=${ai ? "有" : "无"}（未写入）`);
-    return { date, changed: false };
+    return {
+      date,
+      changed: false,
+      attempted,
+      failed: Boolean(aiFailure),
+      pageState: aiFailure ? aiFailure.pageState : null,
+      attempts,
+    };
   }
 
   writeAtomic(path.join(DATA_DIR, `${date}.json`), JSON.stringify(data, null, 2));
   writeAtomic(path.join(REPORT_DIR, `${date}.html`), html);
   writeAtomic(path.join(REPORT_DIR, `${date}.md`), md);
   console.log(`[daily-report] 已写入 docs/data/${date}.json、docs/report/${date}.html、docs/report/${date}.md`);
-  return { date, changed: true };
+  return {
+    date,
+    changed: true,
+    attempted,
+    failed: Boolean(aiFailure),
+    pageState: aiFailure ? aiFailure.pageState : null,
+    attempts,
+  };
 }
 
 // ---------------------------------------------------------------- 主流程
@@ -185,6 +258,54 @@ async function main() {
   if (DRY_RUN) {
     console.log("[daily-report] --dry-run：未写入任何文件");
     return;
+  }
+
+  // run 级 AI 结果记录：本次做过 AI 尝试才写（state=failed 供 notify 开/追加 issue，
+  // state=ok 供 notify 关闭已恢复的 issue）；一次 AI 都没调时不动这个文件
+  // ——「没尝试」不等于「已恢复」，不能拿它当关闭信号（见 writeAiRunRecord 的注释）。
+  // --dry-run 已在上面先 return（不写任何文件）。
+  {
+    const attemptedDates = results.filter((r) => r.attempted);
+    const failed = attemptedDates.filter((r) => r.failed); // 按处理顺序即升序（昨天 → 今天）
+    if (attemptedDates.length === 0) {
+      console.log("[daily-report] 本次未做 AI 尝试，不写 data/ai-failure.json（也不动旧文件）");
+    } else if (failed.length > 0) {
+      // 多日同时失败时 attempts 取「最后一个失败日」的：各日 provider 链相同，差异只在 reason，
+      // 记录保留最近一次的逐条原因即可。
+      const last = failed[failed.length - 1];
+      writeAiRunRecord({
+        scope: "daily",
+        state: "failed",
+        dates: failed.map((r) => r.date),
+        windowStart: null,
+        windowEnd: null,
+        username: USERNAME,
+        generatedAt: new Date().toISOString(),
+        workflow: workflowFromEnv(),
+        runUrl: runUrlFromEnv(),
+        // 任一失败日保留了上一版叙述 → kept-previous；否则 no-narrative
+        pageState: failed.some((r) => r.pageState === "kept-previous") ? "kept-previous" : "no-narrative",
+        attempts: last.attempts,
+        issue: null,
+        targets: failed.map((r) => `docs/data/${r.date}.json`),
+      });
+    } else {
+      writeAiRunRecord({
+        scope: "daily",
+        state: "ok",
+        dates: attemptedDates.map((r) => r.date),
+        windowStart: null,
+        windowEnd: null,
+        username: USERNAME,
+        generatedAt: new Date().toISOString(),
+        workflow: workflowFromEnv(),
+        runUrl: runUrlFromEnv(),
+        pageState: null,
+        attempts: [],
+        issue: null,
+        targets: [],
+      });
+    }
   }
 
   if (!results.some((r) => r.changed)) {

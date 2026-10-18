@@ -55,6 +55,10 @@ export const INDEX_PATH = path.join(DOCS_DIR, "index.html");
 export const SUMMARY_JSON_PATH = path.join(DOCS_DIR, "summary.json");
 export const SUMMARY_HTML_PATH = path.join(DOCS_DIR, "summary.html");
 export const BACKFILL_DIR = path.join(ROOT, "data", "backfill");
+// AI 执行结果的 run 级状态（state=failed/ok：哪次 run、哪些日期、provider 逐条失败原因、issue 回填号）：
+// 这是运行状态而非站点产物 —— 已 gitignore，不发布、不提交；
+// scripts/notify-ai-failure.mjs 读它开/追加常驻 issue（failed）或关闭已恢复的 issue（ok）。
+export const AI_FAILURE_PATH = path.join(ROOT, "data", "ai-failure.json");
 
 // ---------------------------------------------------------------- 文件
 
@@ -75,9 +79,27 @@ export function writeAtomic(file, text) {
   renameSync(tmp, file);
 }
 
-/** 内容哈希：忽略 generatedAt / ai / aiProvider / dataHash，其余参与比较。 */
+/** 从 Actions 环境变量拼 run URL；本地无 env 时返回 ""（本地演练不写假链接）。 */
+export function runUrlFromEnv(env = process.env) {
+  const server = env.GITHUB_SERVER_URL;
+  const repo = env.GITHUB_REPOSITORY;
+  const runId = env.GITHUB_RUN_ID;
+  if (!server || !repo || !runId) return "";
+  return `${server}/${repo}/actions/runs/${runId}`;
+}
+
+/** 当前 workflow 名（Actions 注入 GITHUB_WORKFLOW）；本地为空串。 */
+export function workflowFromEnv(env = process.env) {
+  return String(env.GITHUB_WORKFLOW || "");
+}
+
+/**
+ * 内容哈希：忽略 generatedAt / ai / aiProvider / aiModel / aiFailure / dataHash，其余参与比较。
+ * aiModel / aiFailure 是 AI 运行状态（成败与所用模型），不属于「数据内容」——
+ * 同一份数据重跑一次 AI 就可能翻转，不能因此判定「内容有变化」触发重采集。
+ */
 export function contentHash(data) {
-  const { generatedAt, ai, aiProvider, dataHash, ...rest } = data;
+  const { generatedAt, ai, aiProvider, aiModel, aiFailure, dataHash, ...rest } = data;
   return createHash("sha256").update(JSON.stringify(rest)).digest("hex");
 }
 

@@ -16,7 +16,11 @@
  *   · empty:true（totals 全 0）但 discussion 非空 → 仍会调用 provider
  *     （锁住「可见性判断只在调用方，generateNarrative 不按 empty 自行拦截」）
  *   · provider.headers 原样进请求头（OpenCode Go 的 user-agent / 会话 id 走这条）
- *   · defaultProviders 的列表与顺序（sensenova → OpenCode Go longcat → deepseek，不触网）
+ *   · defaultProviders 的列表与顺序（OpenCode Go longcat → deepseek → sensenova，不触网）
+ *   · orderProvidersForSummary 把 deepseek 提前（总结线重排，不触网）
+ *   · sanitizeReason 脱敏（Bearer / sk-·oc_ / 长串 / URL + 300 字符截断，不触网）
+ *   · 全 provider 失败 → generateNarrative 返回 null，且 onProviderFailure 逐条收到
+ *     { provider, model, reason }（失败可见性链路的输入）
  *
  * 用法：node scripts/daily/test-ai.mjs
  * 输出：每个用例一行 PASS/FAIL，结尾 N/M；有失败时退出码 1。
@@ -24,7 +28,9 @@
 
 import http from "node:http";
 
-const { generateNarrative, defaultProviders } = await import(new URL("./lib/ai.mjs", import.meta.url).href);
+const { generateNarrative, defaultProviders, orderProvidersForSummary, sanitizeReason } = await import(
+  new URL("./lib/ai.mjs", import.meta.url).href
+);
 
 // ---------------------------------------------------------------- 受控输入
 
@@ -102,13 +108,32 @@ const cases = [
   { name: "trims-overlong-headline", script: [chatResp(JSON.stringify(jsonWith({ enHeadline: "x".repeat(96) })))], expect: { ok: true, calls: 1, maxHeadlineLen: 80 } },
   { name: "json-wrapped-in-prose", script: [chatResp(`Here is the report:\n${JSON.stringify(validNarrative())}\nDone.`)], expect: { ok: true, calls: 1 } },
   { name: "json-unescaped-newline", script: [chatResp(JSON.stringify(validNarrative()).replace("One. Two. Three. Four.", "One.\nTwo. Three. Four."))], expect: { ok: true, calls: 1 } },
-  { name: "truncation-then-double", script: [chatResp("", "length"), chatResp(JSON.stringify(validNarrative()))], expect: { ok: true, calls: 2, secondMaxTokens: 32768 } },
+  { name: "truncation-then-double", script: [chatResp("", "length"), chatResp(JSON.stringify(validNarrative()))], expect: { ok: true, calls: 2, secondMaxTokens: 65536 } },
   {
     // Go 系模型（longcat / deepseek）常见：reasoning 吃光预算 → 200 + content 空 + finish_reason=stop，
     // 与截断同样翻倍 max_tokens 重试，而不是空转 4 轮纠正提示
     name: "empty-content-then-double",
     script: [chatResp(""), chatResp(JSON.stringify(validNarrative()))],
-    expect: { ok: true, calls: 2, secondMaxTokens: 32768 },
+    expect: { ok: true, calls: 2, secondMaxTokens: 65536 },
+  },
+  {
+    // 统一 MAX_TOKENS=49152 必须真的进请求体（16384 实测会被截断）
+    name: "unified-max-tokens-applied",
+    script: [chatResp(JSON.stringify(validNarrative()))],
+    expect: { ok: true, calls: 1, firstMaxTokens: 49152, model: "mock-model" },
+  },
+  {
+    // 全失败 → null，且 onProviderFailure 逐条给出 { provider, model, reason }（失败可见性的输入）
+    name: "all-fail-collects-attempts",
+    script: [{ status: 500, body: "{}" }, { status: 500, body: "{}" }],
+    expect: {
+      ok: false,
+      calls: 2,
+      attempts: 1,
+      attemptReason: "已重试仍失败",
+      attemptModel: "mock-model",
+      attemptProvider: "mock",
+    },
   },
   { name: "http-400-drops-reasoning", script: [{ status: 400, body: "{}" }, chatResp(JSON.stringify(validNarrative()))], expect: { ok: true, calls: 2, secondNoReasoning: true } },
   { name: "http-429-retry", script: [{ status: 429, body: "{}" }, chatResp(JSON.stringify(validNarrative()))], expect: { ok: true, calls: 2 } },
@@ -152,19 +177,20 @@ const cases = [
     },
   },
   {
-    // 不触网：只验 defaultProviders 的列表、顺序与 Go 侧请求头约定
+    // 不触网：只验 defaultProviders 的列表、顺序（Go 两条在前、商汤殿后）与商汤腿写死 glm-5.2 + 关思考
     name: "default-providers-order-and-go-headers",
     fn: () => {
       const none = defaultProviders({});
-      const senseOnly = defaultProviders({ SENSENOVA_API_KEY: "k" });
+      const goOnly = defaultProviders({ OPENCODE_API_KEY: "go-key" });
       const both = defaultProviders({ SENSENOVA_API_KEY: "k", OPENCODE_API_KEY: "go-key" });
-      const go = both.slice(1);
+      const go = goOnly;
+      const sense = both.at(-1);
       const ua = String(go[0]?.headers?.["user-agent"] || "");
       const sessions = new Set(go.map((p) => p.headers?.["x-opencode-session"]));
       return [
         ["noKeysEmpty", none.length === 0],
-        ["senseOnlyFirst", senseOnly.length === 1 && senseOnly[0].name === "sensenova"],
-        ["order", both.map((p) => p.name).join(",") === "sensenova,opencode-go-longcat,opencode-go-deepseek"],
+        ["goOnlyTwo", goOnly.length === 2 && goOnly.every((p) => p.name.startsWith("opencode-go-"))],
+        ["order", both.map((p) => p.name).join(",") === "opencode-go-longcat,opencode-go-deepseek,sensenova"],
         [
           "goModels",
           go[0]?.model === "longcat-2.5-preview-free" && go[1]?.model === "deepseek-v4.1-flash",
@@ -182,6 +208,51 @@ const cases = [
         ["selfIdentifiedUA", /^[A-Za-z0-9._-]+\/[\d.]+/.test(ua) && !/undici|axios|node-fetch|^node\//i.test(ua)],
         ["stableSession", sessions.size === 1 && String([...sessions][0] || "").length > 8],
         ["noZen", !both.some((p) => p.name === "zen" || /zen/i.test(String(p.baseUrl)))],
+        // 商汤腿：写死 glm-5.2（不再动态解析）+ thinking 关闭；Go 两条不带 extraBody
+        ["senseModel", sense?.model === "glm-5.2"],
+        ["senseThinkingOff", sense?.extraBody?.thinking?.type === "disabled"],
+        ["senseNoExtraBodyOnGo", go.every((p) => p.extraBody === undefined)],
+        ["senseBase", sense?.baseUrl === "https://token.sensenova.cn/v1" && sense?.shape === "chat"],
+      ];
+    },
+  },
+  {
+    // 不触网：总结线重排 —— deepseek 提前，其余保持原顺序；不改动入参数组
+    name: "order-providers-for-summary",
+    fn: () => {
+      const list = defaultProviders({ SENSENOVA_API_KEY: "k", OPENCODE_API_KEY: "go-key" });
+      const before = list.map((p) => p.name).join(",");
+      const ordered = orderProvidersForSummary(list);
+      return [
+        ["beforeIsDailyOrder", before === "opencode-go-longcat,opencode-go-deepseek,sensenova"],
+        [
+          "summaryOrder",
+          ordered.map((p) => p.name).join(",") ===
+            "opencode-go-deepseek,opencode-go-longcat,sensenova",
+        ],
+        ["sameLength", ordered.length === list.length],
+        ["noMutation", list.map((p) => p.name).join(",") === before],
+        ["emptySafe", orderProvidersForSummary(undefined).length === 0],
+      ];
+    },
+  },
+  {
+    // 不触网：失败原因脱敏（写进 issue 正文 / 页面失败卡前必过）
+    name: "sanitize-reason-redacts-secrets",
+    fn: () => {
+      const out = sanitizeReason(
+        "HTTP 401 Bearer gho_ABCDEFGHIJKLMNOPQRSTUVWXYZ012345 sk-ABCDEFGH12345678 https://token.sensenova.cn/v1/chat?x=1 done"
+      );
+      const longRun = sanitizeReason(`head ${"a".repeat(40)} tail`);
+      const longText = sanitizeReason(Array.from({ length: 200 }, () => "ab").join(" "));
+      return [
+        ["noBearer", !out.includes("gho_ABCDEFGHIJKLMNOPQRSTUVWXYZ012345")],
+        ["noSk", !out.includes("sk-ABCDEFGH12345678")],
+        ["noUrl", !out.includes("token.sensenova.cn")],
+        ["hasRedacted", out.includes("<redacted>")],
+        ["longRunRedacted", !longRun.includes("a".repeat(40))],
+        ["truncated", longText.length <= 301 && longText.endsWith("…")],
+        ["emptySafe", sanitizeReason(null) === ""],
       ];
     },
   },
@@ -192,6 +263,7 @@ const cases = [
 const origErr = console.error;
 console.error = () => {}; // 屏蔽 ai.mjs 的调试日志
 let passed = 0;
+let collectedAttempts = [];
 for (const c of cases) {
   // 不触网的用例：自己返回 [key, ok] 断言数组（如 defaultProviders 的列表/顺序）
   if (typeof c.fn === "function") {
@@ -204,7 +276,12 @@ for (const c of cases) {
 
   requests.length = 0;
   queue = [...c.script];
-  const res = await generateNarrative({ data: c.data || data, providers: [c.provider || provider] });
+  collectedAttempts = [];
+  const res = await generateNarrative({
+    data: c.data || data,
+    providers: [c.provider || provider],
+    onProviderFailure: (a) => collectedAttempts.push(a),
+  });
   const checks = [["ok", !!res === c.expect.ok]];
   if (c.expect.calls !== undefined) checks.push(["calls", requests.length === c.expect.calls]);
   if (c.expect.userPrompt) {
@@ -216,11 +293,21 @@ for (const c of cases) {
     checks.push(["systemPrompt", s.includes(c.expect.systemPrompt)]);
   }
   if (c.expect.secondMaxTokens !== undefined) checks.push(["secondMaxTokens", requests[1]?.body?.max_tokens === c.expect.secondMaxTokens]);
+  if (c.expect.firstMaxTokens !== undefined) checks.push(["firstMaxTokens", requests[0]?.body?.max_tokens === c.expect.firstMaxTokens]);
   if (c.expect.secondNoReasoning) checks.push(["secondNoReasoning", !("reasoning_effort" in (requests[1]?.body || {}))]);
   if (c.expect.headerUA !== undefined) checks.push(["headerUA", (requests.at(-1)?.headers?.["user-agent"] || "") === c.expect.headerUA]);
   if (c.expect.headerSession !== undefined) checks.push(["headerSession", (requests.at(-1)?.headers?.["x-opencode-session"] || "") === c.expect.headerSession]);
   if (c.expect.maxSummaryLen !== undefined) checks.push(["summaryLen", res && res.en.summary.length <= c.expect.maxSummaryLen]);
   if (c.expect.maxHeadlineLen !== undefined) checks.push(["headlineLen", res && res.en.headline.length <= c.expect.maxHeadlineLen]);
+  if (c.expect.model !== undefined) checks.push(["model", Boolean(res && res.model === c.expect.model)]);
+  if (c.expect.attempts !== undefined) checks.push(["attempts", collectedAttempts.length === c.expect.attempts]);
+  if (c.expect.attemptReason !== undefined) {
+    checks.push(["attemptReason", String(collectedAttempts[0]?.reason || "").includes(c.expect.attemptReason)]);
+  }
+  if (c.expect.attemptModel !== undefined) checks.push(["attemptModel", collectedAttempts[0]?.model === c.expect.attemptModel]);
+  if (c.expect.attemptProvider !== undefined) {
+    checks.push(["attemptProvider", collectedAttempts[0]?.provider === c.expect.attemptProvider]);
+  }
   const ok = checks.every(([, v]) => v);
   if (ok) passed += 1;
   console.log(`${ok ? "PASS" : "FAIL"} ${c.name}  [${checks.map(([k, v]) => `${k}=${v}`).join(", ")}]`);

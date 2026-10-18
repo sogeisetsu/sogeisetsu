@@ -23,19 +23,29 @@
  * 聚合哈希与已存 summary.json 相同且非 --force 时不调 AI、不写文件，避免浪费 token。
  *
  * 失败策略（与日报同思路）：
- *   · AI 全失败且已有一份带叙述的 summary.json → 打印警告，**不写任何文件**（沿用上一次，页面不降级）
+ *   · AI 全失败且已有一份带叙述的 summary.json → 打印警告，**不写任何文件**（沿用上一次，页面不降级）；
+ *     但 run 级失败记录 data/ai-failure.json 照写（pageState=kept-previous，targets 空 —— 常驻 issue
+ *     就是这类「页面不降级但 AI 已坏」状态的唯一可见出口）
  *   · AI 全失败但还没有任何可用叙述（首次运行）→ 仍写出「只有确定数字」的页面（数字不经 AI，
- *     缺日标注照常），AI 块显示「暂不可用」；这比一份都不写更接近「数字条始终可用」的目标
+ *     缺日标注照常），AI 块显示「暂不可用」；这比一份都不写更接近「数字条始终可用」的目标，
+ *     同时把 aiFailure 写进 summary.json + run 级记录
  *   · --no-ai 同理：有上一次叙述且窗口未变时保留，否则产出无叙述版
+ *   · 成功 → summary.aiFailure 置 null 并删 run 级旧记录；失败不改退出码（仍以 0 退出，
+ *     生成物照常提交），可见性靠 issue + ::warning:: + GITHUB_STEP_SUMMARY（--dry-run 一律不写不删）
  */
 
-import { defaultProviders, generateStructured } from "../daily/lib/ai.mjs";
+import { appendFileSync } from "node:fs";
+
+import { defaultProviders, generateStructured, orderProvidersForSummary } from "../daily/lib/ai.mjs";
 import {
+  AI_FAILURE_PATH,
   INDEX_PATH,
   SUMMARY_HTML_PATH,
   SUMMARY_JSON_PATH,
   listDays,
   readJsonIfExists,
+  runUrlFromEnv,
+  workflowFromEnv,
   writeAtomic,
 } from "../daily/lib/days.mjs";
 import { renderIndexPage } from "../daily/render.mjs";
@@ -98,6 +108,37 @@ function totalsLine(summary) {
   );
 }
 
+/**
+ * 写 run 级 AI 结果记录 data/ai-failure.json（gitignore 的运行状态，不发布、不提交），
+ * 供 scripts/notify-ai-failure.mjs 读取后开/追加常驻 issue（state=failed）或关闭已恢复的
+ * issue（state=ok），并把 issue 号回写进 targets 文件。
+ *
+ * 为什么记录里必须带 state：CI 每次都是全新 checkout，这个文件在运行开始时必然不存在，
+ * 所以「文件不存在」不能当作「AI 已恢复」——一次跳过 AI 的运行（窗口未变化早退）会因此
+ * 误关掉仍然有效的失败 issue。恢复的唯一依据是本次运行明确写下 state:"ok"。
+ *
+ * state=failed 时同时打一行 ::warning::（Actions 日志可见）并向 GITHUB_STEP_SUMMARY 追加一行
+ * —— 该 env 指向「本步追加写」的 markdown 文件，只能 append、绝不覆盖。
+ * 只在确实做过 AI 尝试时调用（--dry-run 与无变化早退都不走这条路径）。
+ */
+function writeAiRunRecord(record) {
+  writeAtomic(AI_FAILURE_PATH, JSON.stringify(record, null, 2));
+  if (record.state !== "failed") return; // 成功记录只作恢复信号，不打警告
+  const label =
+    record.windowStart && record.windowEnd ? `窗口 ${record.windowStart} ~ ${record.windowEnd}` : "30 天窗口";
+  console.log(
+    `::warning::AI 叙述生成失败（${record.scope} ${label}，pageState=${record.pageState}），已写 data/ai-failure.json 待开 issue`
+  );
+  const stepSummary = process.env.GITHUB_STEP_SUMMARY;
+  if (stepSummary) {
+    appendFileSync(
+      stepSummary,
+      `- ⚠️ AI 叙述失败（${record.scope} ${label}，pageState=${record.pageState}）：详见 \`data/ai-failure.json\`\n`,
+      "utf8"
+    );
+  }
+}
+
 // ---------------------------------------------------------------- --rerender
 
 function rerender() {
@@ -147,6 +188,27 @@ async function main() {
 
   let ai = null;
   let aiProvider = null;
+  let aiModel = null;
+  let aiFailure = null; // 只在「AI 真调了且全失败、又没有可保留的叙述」时非 null（写进 docs/summary.json）
+  let attempted = false; // 本次是否真的调了 AI（run 级记录要不要写的唯一依据）
+  // 本次 AI 调用里逐个失败的 provider（onProviderFailure 填充）——失败记录的唯一权威来源
+  const attempts = [];
+  // run 级记录的公共字段（三条出口只差 state / pageState / attempts / targets）
+  const runRecord = (state, pageState, targetList) => ({
+    scope: "summary",
+    state,
+    dates: [], // 总结是窗口口径，不是日期口径
+    windowStart: collected.windowStart,
+    windowEnd: collected.windowEnd,
+    username: USERNAME,
+    generatedAt: new Date().toISOString(),
+    workflow: workflowFromEnv(),
+    runUrl: runUrlFromEnv(),
+    pageState,
+    attempts,
+    issue: null,
+    targets: targetList,
+  });
   const emptyWindow = !hasAnyActivity(collected);
   if (NO_AI || emptyWindow) {
     if (emptyWindow) console.log(`${LOG} 窗口内没有任何可叙述的活动，跳过 AI（只出确定数字）`);
@@ -154,29 +216,44 @@ async function main() {
     if (sameHash && existing && existing.ai) {
       ai = existing.ai;
       aiProvider = existing.aiProvider ?? null;
+      aiModel = existing.aiModel ?? null;
       console.log(`${LOG} 窗口未变，保留上一次 AI 叙述`);
     }
   } else {
+    attempted = true;
     const index = buildItemIndex(collected.daily);
     const { system, user } = buildSummaryPrompts({ collected });
     const res = await generateStructured({
       system,
       user,
       validate: (raw) => validateSummary(raw, { ...index, missing: collected.missing }),
-      providers: defaultProviders(),
+      // 总结线的 provider 顺序与日报不同（重排只在这条线上做，绝不推回 defaultProviders——
+      // 日报仍是免费腿优先）：longcat-2.5-preview-free 结构上做不了 30 天总结任务
+      // （连接约 306s 后被掐断），deepseek-v4.1-flash 是唯一稳定腿 → 总结先 deepseek。
+      providers: orderProvidersForSummary(defaultProviders()),
       feedback: summaryFeedback,
+      onProviderFailure: (a) => attempts.push(a),
     });
     if (res) {
       ai = res.value;
       aiProvider = res.provider;
-      console.log(`${LOG} AI 叙述: 成功（provider=${aiProvider}）`);
+      aiModel = res.model;
+      console.log(`${LOG} AI 叙述: 成功（provider=${aiProvider}${aiModel ? `, model=${aiModel}` : ""}）`);
     } else if (existing && existing.ai) {
       ai = existing.ai;
       aiProvider = existing.aiProvider ?? null;
+      aiModel = existing.aiModel ?? null;
       console.warn(`${LOG} AI 叙述: 全部 provider 失败，保留上一次叙述；不写任何文件`);
-      if (!DRY_RUN) return;
+      // 页面不降级（不写站点文件），但失败必须有可见出口：写 run 级记录 + ::warning:: + step summary。
+      // --dry-run 例外：不写不删任何文件（含失败记录），继续往下走只打印摘要。
+      if (!DRY_RUN) {
+        // targets 为空：页面未降级、无文件需要回填；常驻 issue 就是这类状态的可见出口
+        writeAiRunRecord(runRecord("failed", "kept-previous", []));
+        return;
+      }
     } else {
       console.warn(`${LOG} AI 叙述: 全部 provider 失败，且没有上一次叙述，产出只有确定数字的页面`);
+      aiFailure = { generatedAt: new Date().toISOString(), pageState: "no-narrative", attempts, issue: null };
     }
   }
 
@@ -195,6 +272,8 @@ async function main() {
     dataHash: collected.dataHash,
     ai,
     aiProvider,
+    aiModel,
+    aiFailure,
   };
 
   const cards = summaryCard({ summary });
@@ -212,6 +291,16 @@ async function main() {
     `${LOG} 已写入 docs/summary.json、docs/summary.html（${out.htmlLength} 字节）、` +
       `docs/index.html（归档 ${out.days} 天，卡片 ${out.cardLength} 字节）`
   );
+
+  // run 级 AI 结果记录：本次做过 AI 尝试才写（state=failed 供 notify 开/追加 issue，
+  // state=ok 供 notify 关闭已恢复的 issue）；一次 AI 都没调（--no-ai / 窗口内无可叙述活动 /
+  // 无变化早退）时不动这个文件 ——「没尝试」不等于「已恢复」，不能拿它当关闭信号。
+  // --dry-run 已先 return（不写任何文件）；kept-previous 分支在上面已写记录并 return。
+  if (attempted) {
+    writeAiRunRecord(
+      aiFailure ? runRecord("failed", "no-narrative", ["docs/summary.json"]) : runRecord("ok", null, [])
+    );
+  }
 }
 
 main().catch((err) => {

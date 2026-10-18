@@ -289,6 +289,15 @@ html[data-lang="zh"] .chip{font-size:.76rem;letter-spacing:0}
   font-size:.73rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);
 }
 .ai-badge svg{width:16px;height:16px}
+/* provider / model 旁注：靠右，与左侧 badge 同一行 */
+.ai-provider{margin-left:auto;font-size:.75rem;color:var(--on-surface-variant)}
+/* AI 全失败时的可见性块（原因 + 常驻 issue 链接），夹在「暂不可用」段之后 */
+.ai-failure{margin:10px 0 0;display:flex;flex-direction:column;gap:4px}
+.ai-failure-line{
+  font-family:var(--mono);font-size:.78rem;line-height:1.5;
+  color:var(--on-surface-variant);overflow-wrap:anywhere;
+}
+.ai-failure .link{font-size:.8rem;font-weight:650}
 .ai-headline{margin:0 0 8px;font-size:clamp(1.15rem,3.6vw,1.5rem);line-height:1.25;font-weight:800;letter-spacing:-.015em}
 .ai-summary{margin:0;font-size:.98rem;color:var(--on-surface-variant)}
 .ai-summary.i18n[data-lang]{display:block}

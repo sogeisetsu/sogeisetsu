@@ -17,6 +17,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 # 与 update-daily-report.yml / update-activity.yml 同组：三个 workflow 都会往 main 推
 # 生成物，同组排队（cancel-in-progress: false，只串行不取消）避免 push 撞车。
@@ -44,6 +45,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+
+      - name: AI 失败可见性（开/关 issue + 回写 + 重渲染）
+        run: node scripts/notify-ai-failure.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 提交并推送更新
         run: |

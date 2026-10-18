@@ -593,6 +593,92 @@ check("attachCommentCounts: frozen 短路（禁网也写出快照值）", async 
   }
 });
 
+// ---------------------------------------------------------------- AI 块旁注 + 失败可见性
+
+/** 一天的最小可见数据（一条本人提交），用于 AI 块相关用例。 */
+const aiDay = (extra = {}) => ({
+  date: "2026-10-09",
+  username: "sogeisetsu",
+  generatedAt: "2026-10-09T12:00:00.000Z",
+  empty: false,
+  totals: { commits: 1, prs: 0, issues: 0, reviews: 0 },
+  commits: [
+    { repo: "sogeisetsu/sogeisetsu", count: 1, own: true, messages: [{ message: "feat: x" }], automated: 0, automatedBots: [] },
+  ],
+  pullRequests: [],
+  reviews: [],
+  issues: [],
+  stateChanges: [],
+  discussions: [],
+  releases: [],
+  stars: [],
+  replies: [],
+  ...extra,
+});
+
+check("aiSummaryBlock: provider / model 旁注（有 model 显示两者，缺 model 只显示 provider，缺 provider 不渲染）", () => {
+  const withModel = renderReportPage({
+    data: aiDay({ aiProvider: "sensenova", aiModel: "glm-5.2" }),
+    ai: { en: { headline: "H", summary: "One. Two." }, zh: { headline: "标", summary: "一。二。" } },
+  });
+  const providerOnly = renderReportPage({
+    data: aiDay({ aiProvider: "sensenova" }),
+    ai: { en: { headline: "H", summary: "One. Two." }, zh: { headline: "标", summary: "一。二。" } },
+  });
+  const noProvider = renderReportPage({
+    data: aiDay(),
+    ai: { en: { headline: "H", summary: "One. Two." }, zh: { headline: "标", summary: "一。二。" } },
+  });
+  return [
+    ["hasProviderClass", withModel.includes('<span class="ai-provider">')],
+    ["withModel", withModel.includes("由 sensenova / glm-5.2 生成") && withModel.includes("via sensenova / glm-5.2")],
+    ["providerOnlyNoSlash", providerOnly.includes("由 sensenova 生成") && !providerOnly.includes("由 sensenova / ")],
+    ["noProviderNoSpan", !noProvider.includes('class="ai-provider"')],
+  ];
+});
+
+check("aiSummaryBlock: 无叙述 + aiFailure → 原因逐条脱敏 + issue 链接", () => {
+  const html = renderReportPage({
+    data: aiDay({
+      aiFailure: {
+        generatedAt: "2026-10-09T12:00:00.000Z",
+        pageState: "no-narrative",
+        attempts: [
+          { provider: "opencode-go-longcat", model: "longcat-2.5-preview-free", reason: "HTTP 429（已重试仍失败）" },
+          { provider: "sensenova", model: "glm-5.2", reason: "网络异常 fetch failed Bearer gho_SECRETTOKEN1234567890" },
+        ],
+        issue: { number: 12, url: "https://github.com/sogeisetsu/sogeisetsu/issues/12" },
+      },
+    }),
+    ai: null,
+  });
+  return [
+    ["hasFailureBlock", html.includes('<div class="ai-failure">')],
+    ["twoLines", (html.match(/class="ai-failure-line"/g) || []).length === 2],
+    ["keepsLongModelName", html.includes("longcat-2.5-preview-free")],
+    ["reasonShown", html.includes("HTTP 429（已重试仍失败）")],
+    ["bearerRedacted", !html.includes("gho_SECRETTOKEN1234567890") && html.includes("&lt;redacted&gt;")],
+    ["issueLink", html.includes("https://github.com/sogeisetsu/sogeisetsu/issues/12") && html.includes("查看失败详情 #12")],
+    ["stillUnavailable", html.includes("AI 摘要暂不可用")],
+  ];
+});
+
+check("aiSummaryBlock: 无 aiFailure 时不出失败块（退回单段「暂不可用」）", () => {
+  const html = renderReportPage({ data: aiDay(), ai: null });
+  return [
+    ["unavailable", html.includes("AI 摘要暂不可用")],
+    ["noFailureBlock", !html.includes('<div class="ai-failure">')],
+  ];
+});
+
+check("pageStyle: 失败可见性 / provider 旁注样式在基础样式里（index 卡片没有 extraCss 钩子）", () => {
+  const html = renderReportPage({ data: aiDay(), ai: null });
+  return [
+    ["providerCss", html.includes(".ai-provider{")],
+    ["failureCss", html.includes(".ai-failure{") && html.includes(".ai-failure-line{")],
+  ];
+});
+
 // ---------------------------------------------------------------- 汇总
 
 await Promise.all(pending); // 等异步用例收口，保证汇总数字正确
