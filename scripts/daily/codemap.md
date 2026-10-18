@@ -35,7 +35,7 @@
 
 **`--rerender` 分支**（改渲染代码后用）：对 `listDateStrings()`（或 `--date` 指定日）只读已有 JSON 重渲染 report 的 html/md，最后**无条件**重写 index —— 不抓数据、不调 AI、不改 JSON。
 
-**`verify.mjs` 检查链**（A–J）：A `docs/data/<date>.json` schema / `totals = Σ` / `empty` 互斥 / `automated` / `comments` / `truncated` → B data ↔ report 一一对应、index 报告链接均可落盘 → C head + 字体（favicon 路径、Chomsky `@font-face`（资产保留但标题栈不得引用）、`--headline` 与 `--headline-zh` 同字族、zh h1 用 `var(--headline-zh)`、`<head>` 内禁用字体名 `Newsreader`/`lxgw`/`霞鹜文楷`、`chomsky.woff2` 的 `wOF2` 魔数）→ D 报告正文（无 `merge:` 标题、页脚「不含合并提交」、自动提交说明按 Σ 有无、**卡片角标 = totals（0 也显示 0）**、讨论已渲染、评论数逐行渲染、空状态与可见段互斥、有 `ai` 时双语 `ai-summary` 各 ≥1 段、截断提示）→ F `data/backfill/` schema（`source=search-backfill` + `backfillLimits`）→ G/H `docs/summary.json` schema + 窗口按今天重算 `cstDayMinus(30)..cstDayMinus(1)` + totals/`automatedCommits` 逐日 Σ（`docs/data` ∪ `data/backfill`，daily 优先）+ `missing` 集合相等 → I `summary.html` 结构/head/数字条一致/自动提交「相加」表述/缺日标注/双语块 → J index 卡片 `href="./summary.html"` 与双语 headline 逐字 → E 打印覆盖面；`failed > 0` → exit 1。
+**`verify.mjs` 检查链**（A–J）：A `docs/data/<date>.json` schema / `totals = Σ` / `empty` 互斥 / `automated` / `comments` / `truncated` → B data ↔ report 一一对应、index 报告链接均可落盘 → C head + 字体（favicon 路径、Chomsky `@font-face`（资产保留但标题栈不得引用）、`--headline` 与 `--headline-zh` 同字族、zh h1 用 `var(--headline-zh)`、`<head>` 内禁用字体名 `Newsreader`/`lxgw`/`霞鹜文楷`、`chomsky.woff2` 的 `wOF2` 魔数）→ D 报告正文（无 `merge:` 标题、页脚「不含合并提交」、自动提交说明按 Σ 有无、**卡片角标 = totals（0 也显示 0）**、讨论已渲染、评论数逐行渲染、空状态与可见段互斥、有 `ai` 时双语 `ai-summary` 各 ≥1 段、截断提示）→ F `data/backfill/` schema（`source=search-backfill` + `backfillLimits`）→ G/H `docs/summary.json` schema + 窗口 = 最近一次该写出的窗口（`cstDayMinus(30)..cstDayMinus(1)`；今天那次总结的写入时点之前也接受前一天那次，见 `SUMMARY_CRON_UTC`）+ totals/`automatedCommits` 逐日 Σ（`docs/data` ∪ `data/backfill`，daily 优先）+ `missing` 集合相等 → I `summary.html` 结构/head/数字条一致/自动提交「相加」表述/缺日标注/双语块 → J index 卡片 `href="./summary.html"` 与双语 headline 逐字 → E 打印覆盖面；`failed > 0` → exit 1。
 
 **数据离开本目录**：`docs/data/<date>.json` 是 30 天总结的逐日输入（`scripts/summary/collect.mjs` 聚合）；`docs/index.html` 的顶部卡片由 `scripts/summary/render.mjs` 的 `summaryCard()` 片段注入。
 
@@ -58,6 +58,6 @@
 - **AI 全失败不写假叙述**：数据未变 → 沿用上一次 `ai`（不把已发布页面降级）；数据变了 → 产「无叙述确定版」，页面出「AI 摘要暂不可用」。空白天根本不调 AI、不造叙述。
 - **`--rerender` 只重渲染**：不抓数据、不调 AI、不改 JSON，但会无条件重写 `docs/index.html`；`--dry-run` 则一个字节都不写（含 index）。
 - **`--force` 是口径变更的逃生口**：绕过 `dataHash` 跳过，且重取定稿日评论数快照——否则旧口径的 `comments` 会被永久冻结在 JSON 里。
-- **verify 的 summary 窗口项会「误报」**：它拿 `docs/summary.json` 的窗口跟「今天」重算的 `cstDayMinus(30)..cstDayMinus(1)` 硬比，本地检出落后远端、或当天总结尚未成功生成（AI 全失败按设计不写文件）时该 FAIL——先同步/重跑总结，别当成代码回归。
+- **verify 的 summary 窗口项比的是「最近一次该写出的窗口」**：`docs/summary.json` 的窗口要么是今天的 `cstDayMinus(30)..cstDayMinus(1)`，要么（在今天那次总结的写入时点之前，见 `SUMMARY_CRON_UTC` = cron `22:17` UTC + 1h 余量）是前一天那次的窗口。所以本地检出落后一天、或当天总结还没到点都不算回归；只在窗口停在两天前（总结连续没写出）时 FAIL。
 - **字体/head 硬约束只看 `<head>`**：正文叙述里提到 `Newsreader` 等禁用字体名不算违规；`--headline` 与 `--headline-zh` 必须同字族、且都不得引用 Chomsky（改版后标题统一系统衬线），改渲染层后必跑 `check.mjs`。
 - **评论数是采集快照不是实时值**：定稿日从已存 JSON 冻结，`--force` 才重取；渲染层对缺失/非有限数字一律不显示（不出 `0 comments`/`NaN`）。

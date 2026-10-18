@@ -19,8 +19,10 @@
  *     schema（date 与文件名一致 / source=search-backfill / backfillLimits / totals /
  *     明细数组 / dataHash / totals = Σ）
  *   G 30 天总结 docs/summary.json：JSON/schema、ai 结构（ai 非 null 时）
- *   H 数字一致：窗口 = cstDayMinus(30)~cstDayMinus(1)、totals 与 automatedCommits
- *     等于逐日（docs/data ∪ data/backfill，daily 优先）求和、missing 与实际缺日集合相等
+ *   H 数字一致：窗口 = 最近一次该写出的总结窗口（今天那次总结的写入时点之前允许停在
+ *     前一天那次 —— 不能拿"此刻的今天"硬比，否则每天 +08 00:00–06:17 必然误报）、
+ *     totals 与 automatedCommits 等于逐日（docs/data ∪ data/backfill，daily 优先）求和、
+ *     missing 与实际缺日集合相等
  *   I docs/summary.html：文档结构 + head + 确定数字条与 totals 一致、自动提交相加表述、
  *     缺日标注、有 AI 叙述时双语 ai-summary 块与 headline 逐字、
  *     正文含窗口区间且 hero 标题**不含**它（用户 2026-10-18 要求）、ai=null 且有失败记录时有失败卡
@@ -70,6 +72,29 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const BANNED_FONTS = /Newsreader|newsreader|lxgw|LXGW|霞鹜文楷/;
 const COMMIT_MSG_RE = /<li class="commit-msg">([\s\S]*?)<\/li>/g;
 const REPORT_HREF_RE = /href="\.\/report\/(\d{4}-\d{2}-\d{2})\.html[^"]*"/g;
+
+// 30 天总结的写入时点：update-summary.yml 的 cron 是 22:17 UTC（= 次日 06:17 +08）。
+// 总结每天只写一次，所以「今天那次还没跑完」的时段里，docs/summary.json 合法地还是
+// 前一天那次的窗口 —— 窗口断言必须按这个时点区分，否则每天 +08 00:00–06:17 之间
+// 任何 push 都会把 check.yml 打红（那是时钟必然性，不是数据回归）。
+const SUMMARY_CRON_UTC = { hour: 22, minute: 17 };
+// cron 触发到生成物推回要几分钟（抓数 + AI + 渲染 + rebase 重试），给 1h 余量：
+// 超过这个点还没写入，就说明今天那次的产物缺失/失败，必须报错而不是容忍。
+const SUMMARY_CRON_SLACK_MS = 60 * 60 * 1000;
+
+/** 今天（UTC）那次总结「该写完」的时刻（毫秒）。nowMs 可注入，便于确定性验证。 */
+function summaryDueMs(nowMs = Date.now()) {
+  const d = new Date(nowMs);
+  return (
+    Date.UTC(
+      d.getUTCFullYear(),
+      d.getUTCMonth(),
+      d.getUTCDate(),
+      SUMMARY_CRON_UTC.hour,
+      SUMMARY_CRON_UTC.minute
+    ) + SUMMARY_CRON_SLACK_MS
+  );
+}
 
 // ---------------------------------------------------------------- 记录与工具
 
@@ -780,13 +805,22 @@ function main() {
       check("summary.json: ai 结构", badAi.length === 0, badAi.join("; "));
     }
 
-    // 窗口重算（闭区间 30 天，今天不含）
-    const wantStart = cstDayMinus(30);
-    const wantEnd = cstDayMinus(1);
+    // 窗口重算（闭区间 30 天，今天不含）。
+    // 今天那次总结已到写入时点 → 必须是今天的窗口；还没到点 → 允许仍是昨天那次的窗口
+    // （总结每天 22:17 UTC 才写一次，见 SUMMARY_CRON_UTC；不能拿"此刻的今天"硬比）。
+    const strictStart = cstDayMinus(30);
+    const strictEnd = cstDayMinus(1);
+    const pendingStart = cstDayMinus(31);
+    const pendingEnd = cstDayMinus(2);
+    const hitStrict = ws === strictStart && we === strictEnd;
+    const hitPending = ws === pendingStart && we === pendingEnd;
+    const dueReached = Date.now() >= summaryDueMs();
     check(
-      "summary: 窗口 = cstDayMinus(30)~cstDayMinus(1)",
-      ws === wantStart && we === wantEnd,
-      `summary.json=${ws}..${we}，按今天重算=${wantStart}..${wantEnd}`
+      "summary: 窗口 = 最近一次该写出的总结窗口",
+      dueReached ? hitStrict : hitStrict || hitPending,
+      dueReached
+        ? `summary.json=${ws}..${we}，按今天重算=${strictStart}..${strictEnd}（今天那次已到写入时点，必须是它）`
+        : `summary.json=${ws}..${we}，应为 ${strictStart}..${strictEnd}（今天那次）或 ${pendingStart}..${pendingEnd}（昨天那次，今天那次还没到写入时点）`
     );
 
     const winOk =
