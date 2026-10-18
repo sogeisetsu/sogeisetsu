@@ -48,7 +48,7 @@ node scripts/test-activity-window.mjs  # 活动卡片口径 / 可见性
 - 无变化时脚本**自行跳过 AI 与写入** —— 这是设计，不是 bug。
 - `--force`：绕过 dataHash 跳过，强制重取 + 重调 AI（改了提示词 / 数据口径后用）。日报侧会顺带重取定稿日的评论数**实时值**，属口径变更，慎用。
 - 两个 provider key 都没有时，日报 / 总结只能出「确定数字 + AI 暂不可用」版（`--no-ai` 的行为）；真实叙述由 CI 生成。
-- `check.mjs` 变红先看 `verify.mjs` 的 summary 窗口那项：它拿 `docs/summary.json` 的窗口跟「今天」重算的窗口硬比（`cstDayMinus(30)..cstDayMinus(1)`），所以**本地 `docs/` 落后远端、或当天总结还没成功跑**（AI 全失败时按设计不写文件）都会 FAIL —— 先 `git pull --rebase --autostash` 再看，别当成自己的改动。
+- `check.mjs` 变红先看 `verify.mjs` 的 summary 窗口那项：它比的是「**最近一次该写出的**总结窗口」（`cstDayMinus(30)..cstDayMinus(1)`；在今天那次总结的写入时点之前 —— cron `22:17` UTC = `06:17` +08，另留 1h 余量 —— 也接受前一天那次的窗口），所以**本地 `docs/` 落后一天、或当天总结还没到点都不算回归**；只有窗口停在两天前（总结连续没写出）才 FAIL。仍先 `git pull --rebase --autostash` 排除本地落后。
 
 ## AI 生成：provider 链与失败可见性
 
