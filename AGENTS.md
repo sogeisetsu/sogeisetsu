@@ -1,83 +1,95 @@
 # AGENTS.md — sogeisetsu/sogeisetsu
 
-个人主页仓库。核心产物：**每日 GitHub 活动日报**（Pages: https://sogeisetsu.github.io/sogeisetsu/，英文默认 / 中文可切换）、**近 30 天 AI 总结**（首页卡片 + `docs/summary.html`），以及**近 30 天活动卡片**（回写 README）。
+个人主页仓库。产物三个：**每日 GitHub 活动日报**（Pages: https://sogeisetsu.github.io/sogeisetsu/ ，英文默认 / 中文可切换）、**近 30 天 AI 总结**（首页卡片 + `docs/summary.html`）、**近 30 天活动卡片**（回写 `README.md`）。
 
-零依赖：没有 `package.json`、没有任何 npm 脚本 —— 全部是 `node` 直跑的 ESM，CI 固定 Node 20（用内置 `fetch`）。别去找 `npm test` / `npm ci`，没有。
+零依赖：**没有 `package.json`、没有 npm 脚本、没有构建步骤、没有测试框架** —— 全部是 `node` 直跑的 ESM，CI 固定 Node 20（用内置 `fetch`）。别去找 `npm test` / `npm ci`；唯一的全量"测试命令"是 `node scripts/daily/check.mjs`。
 
-## 布局
-- `repo-overview.excalidraw` —— 一页速览草图：这个仓库是干什么的 + 四条 Action 的运行规律矩阵（多久跑一次 / 更新哪些内容 / 依据哪些内容）（用 OpenChamber 的 Excalidraw 扩展打开，Files 视图里点开就是画布）
-- `codemap.md` + 各目录 `codemap.md` —— 架构映射（根 Atlas + 6 个分目录），见文末「Repository Map」
-- `scripts/daily/index.mjs` —— 日报编排：取数 → dataHash 去重 → AI → 写 `docs/`
-- `scripts/daily/render.mjs` —— HTML/MD 渲染（内联 CSS，双语切换，段落切分，标题字体）；页面外壳 `pageStyle` / `htmlDoc` 等已导出，供总结页复用
-- `scripts/daily/lib/github.mjs` —— GitHub 采集（公开口径）；`collectHistoricalData` 是 Search API 历史回填通道（一次性，见下）
-- `scripts/daily/lib/ai.mjs` —— SenseNova 适配（JSON 模式 + 重试）；`generateStructured` 是通用结构化生成入口，日报与总结共用
-- `scripts/daily/lib/days.mjs` —— 已定稿日目录的共享助手（+08 日期推算、JSON 读写、内容哈希、docs/data 扫描）；+08 日期口径本体在 `scripts/cst.mjs`，这里原样转出
-- `scripts/cst.mjs` —— 三条产物线共用的 +08 自然日口径（零 import）；`cstDateOf` 是唯一正确的"时间戳 → 日期"，别用 `toISOString().slice(0,10)`（那是 UTC 日）
-- `scripts/daily/verify.mjs` —— 本地不变式自检（含 30 天总结的数字一致性）
-- `scripts/summary/collect.mjs` —— 30 天窗口聚合：数字条由代码逐日求和 + 压缩 AI 输入
-- `scripts/summary/prompt.mjs` / `validate-summary.mjs` —— 总结提示词与严格校验（条目必须真实存在；URL 由校验器从输入注入）
-- `scripts/summary/render.mjs` —— 总结页与首页卡片渲染
-- `scripts/summary/index.mjs` —— 总结编排：聚合 → 窗口哈希去重 → AI → 写 `docs/`
-- `scripts/summary/backfill.mjs` —— 一次性 Search API 回填 CLI（写 `data/backfill/`，不挂 workflow）
-- `scripts/summary/test-summary.mjs` —— 总结侧确定性回归（假数据 + 假 provider）
-- `scripts/generate-activity.mjs` / `scripts/render-svg.mjs` —— 近 30 天活动卡片线（GraphQL `contributionsCollection` + `events/public`）→ 写 `assets/30-day-activity.svg` 并替换 `README.md` 里 `<!--START:activity-->`…`<!--END:activity-->` 之间的内容；两个 marker 必须各出现且仅一次，否则脚本直接 fail；窗口与分桶同为 **+08 自然日**（含今天），逐仓 / 逐条按 `isPrivate` / `visibility` **只取公开**，`totals` 只由过滤后的公开明细求和
-- `scripts/preview.mjs` + `scripts/fixtures/*.json` —— 用 fixture 出本地预览 SVG（`scripts/preview-*.svg`、`assets/_preview.html` 已 gitignore）
-- `docs/` —— **生成物**（Pages Source = `main` / `docs`）：`index.html`、`data/<date>.json`、`report/<date>.{html,md}`、`summary.json`、`summary.html`
-- `data/backfill/<date>.json` —— 回填日数据（**不在 `docs/` 下，因此不站点可见**、不出现在归档列表）
-- `.github/workflows/update-daily-report.yml` —— cron `17 */2 * * *`：定稿「昨天」+ 滚动「今天」
-- `.github/workflows/update-activity.yml` —— cron `30 */2 * * *`：30 天活动卡片（无 AI）
-- `.github/workflows/update-summary.yml` —— cron `17 22 * * *`（UTC，= 北京次日 06:17）：30 天 AI 总结
-- `.github/workflows/check.yml` —— push / PR 上只跑 `scripts/daily/check.mjs`（零 secret）
-- `ops/cloudflare-cron/` —— 定时任务 watchdog（Cloudflare Worker，补 GitHub 丢掉的 schedule 触发）；**推 `ops/cloudflare-cron/**` 到 main 会被 Cloudflare Workers Builds 自动构建 + 部署**，与日报生成逻辑无关，细节见 `ops/README.md`
+## 三条产物线（各一个自包含 `node` 入口）
+
+| 产物 | 入口 | 触发 |
+| --- | --- | --- |
+| 日报 → `docs/data/`、`docs/report/`、`docs/index.html` | `scripts/daily/index.mjs` | `update-daily-report.yml`：cron `17 */2 * * *`，另有 push 触发（白名单 `scripts/daily/**`、`scripts/notify-ai-failure.mjs`、它自己） |
+| 近 30 天总结 → `docs/summary.{json,html}` + 首页卡片 | `scripts/summary/index.mjs` | `update-summary.yml`：cron `17 22 * * *`（UTC）—— **没有 push 触发，改完必须手动 dispatch** |
+| 近 30 天活动卡片 → `assets/30-day-activity.svg` + `README.md` | `scripts/generate-activity.mjs` | `update-activity.yml`：cron `30 */2 * * *`（无 AI） |
+
+`check.yml`（push + PR）只跑 `node scripts/daily/check.mjs`：零 secret、只读、不碰 `docs/`。
+
+## 动手前要先知道的几条
+
+- `scripts/cst.mjs` 是三条线共用的 **+08 自然日**口径（零 import）。`cstDateOf` 是唯一正确的「时间戳 → 日期」；**别用 `toISOString().slice(0,10)`**（那是 UTC 日，会把 +08 的 00:00–08:00 归错天）。
+- `scripts/daily/render.mjs` 里是**全站 CSS**（`pageStyle`），也定义了首页卡片能用的全部类名；总结页专属样式只能经 `htmlDoc({ extraCss })` 注入，而 **index 页没有这个钩子** —— 卡片上只能用 `pageStyle` 里已有的类。
+- `docs/` 是**生成物但必须提交**（Pages Source = `main` / `docs`）：绝不手改、绝不手工合并 HTML/JSON；改了渲染层 / CSS 后要重跑两条 `--rerender` 并提交，否则 CI 的 `verify.mjs` 会红（它拿仓库里的 `docs/` 跟不变式比对）。
+- 往 `scripts/**` 加新脚本，记得同时加进 `scripts/daily/check.mjs` 的 `syntaxTargets`，否则永远不会被语法检查。
+- `data/backfill/<date>.json` 在 `docs/` 之外 → **不站点可见**、不出现在归档列表。
+- `ops/**` 推 `main` 会被 Cloudflare Workers Builds 自动构建 + 部署（watchdog，补 GitHub 丢掉的 schedule 触发）；与内容生成无关，细节见 `ops/README.md`。
+- 每文件职责、数据流、模块边界以 `codemap.md` 为准（文末有「映射是否过期」的判断方法）；本文件只留会改变你行为的部分。
 
 ## 本地运行
-环境变量：`GITHUB_TOKEN`（`gh auth token`；**可省**——无 token 只跑公开段，stars / discussions 等 GraphQL 段静默降级为空）、`SENSENOVA_API_KEY`（同名仓库 secret；**不得提交明文 / 不得轮换用户 key**）、`OPENCODE_API_KEY`（可选兜底 provider）。`GITHUB_REPOSITORY_OWNER` 可覆盖默认的 `sogeisetsu`（本地/异地复跑用）。
+
+环境变量：`GITHUB_TOKEN`（`gh auth token`；**可省** —— 无 token 只跑公开段，stars / discussions 等 GraphQL 段静默降级为空）、`OPENCODE_API_KEY` / `SENSENOVA_API_KEY`（provider key；**不得提交明文、不得轮换用户的 key**）、`SENSENOVA_MODEL`（可选，覆盖商汤模型名）、`GITHUB_REPOSITORY_OWNER`（默认 `sogeisetsu`，异地复跑用）。
+
 ```
-node scripts/daily/index.mjs                 # 昨天（定稿）+ 今天（滚动）
-node scripts/daily/index.mjs --date=YYYY-MM-DD [--force]
-node scripts/daily/index.mjs --rerender       # 只按已存 JSON 重渲染，不抓数据、不调 AI（改渲染代码后用）
-node scripts/daily/index.mjs --no-ai [--dry-run]
-node scripts/daily/verify.mjs                 # 不变式自检
-node scripts/summary/index.mjs                # 近 30 天 AI 总结：聚合 → 去重 → AI → 写 docs/
-node scripts/summary/index.mjs --rerender      # 只按已存 docs/summary.json 重渲染 summary.html + index.html
-node scripts/summary/index.mjs --no-ai [--dry-run]
-node scripts/summary/backfill.mjs --from=YYYY-MM-DD --to=YYYY-MM-DD [--force] [--dry-run]  # 一次性回填（需要 GITHUB_TOKEN；已存在的日期默认跳过，只有 --force 才会重抓）
-node scripts/daily/check.mjs                   # 一次跑完语法检查 + 全部确定性测试 + verify
+node scripts/daily/index.mjs                      # 昨天（定稿）+ 今天（滚动）；--date=YYYY-MM-DD 只跑一天
+node scripts/daily/index.mjs --rerender            # 只按已存 JSON 重渲染，不抓数据、不调 AI（改渲染 / CSS 后用）
+node scripts/daily/index.mjs --no-ai [--dry-run]   # 跳过 AI / 只打印不写文件
+node scripts/summary/index.mjs                     # 近 30 天总结（--rerender / --no-ai / --dry-run / --force 同理）
+node scripts/summary/backfill.mjs --from=… --to=… [--force] [--dry-run]   # 一次性 Search 回填，不挂 workflow
+node scripts/preview.mjs                           # fixtures → scripts/preview-*.svg（活动卡片目测）
+node scripts/daily/check.mjs                       # 全量预检：语法检查 + 4 套测试 + verify（提交前必跑）
+node scripts/daily/verify.mjs [--quiet]            # 只跑 docs/ 不变式自检
+# 单套测试（改哪块跑哪块，比全量快；都是零依赖、不触网、不需要 key）：
+node scripts/daily/test-ai.mjs         # AI 适配层（假 HTTP 服务器）
+node scripts/daily/test-render.mjs     # 渲染 / 规范化
+node scripts/summary/test-summary.mjs  # 30 天总结链路
+node scripts/test-activity-window.mjs  # 活动卡片口径 / 可见性
 ```
-- AI provider 顺序：**OpenCode Go 的 `longcat-2.5-preview-free`（限时免费、不限量）→ `deepseek-v4.1-flash`（计入 Go 套餐额度）→ sensenova `glm-5.2`**（商汤殿后），Go 两条共用 `OPENCODE_API_KEY`。商汤的模型名写死 `glm-5.2`（不再从 `GET /models` 动态挑；`SENSENOVA_MODEL` 可覆盖），并带 `thinking:{type:"disabled"}` 关思考（不关则 reasoning 吃光预算、content 恒为空）。**总结线单独重排**：`orderProvidersForSummary` 把 deepseek 提到最前（`longcat-2.5-preview-free` 结构上做不了 30 天总结，deepseek 是唯一稳定腿），日报仍保持免费腿优先。
-- `MAX_TOKENS = 49152`（三模型共用，截断时翻倍到上限 65536）；`CHAT_TIMEOUT_MS = 180000`。
-- **AI 全失败的可见性**：编排器把失败记录写进 `data/ai-failure.json`（run 状态，**已 gitignore、不发布**），并把 `aiFailure` 写进 `docs/data/<date>.json` / `docs/summary.json`；`node scripts/notify-ai-failure.mjs` 负责开/追加常驻 issue（label `ai-failure`）、把 issue 号回写进数据文件、重渲染页面；AI 恢复时自动追加「已恢复」评论并 close。两个 workflow 都以 0 退出（生成物照常提交），可见性靠 issue + `::warning::` + step summary。
-- `--force`：绕过 dataHash 跳过，强制重取 + 重调 AI（改了提示词 / 数据口径后用）。
-- 无变化时脚本**自行跳过 AI 与写入**——这是设计，不是 bug。
-- `check.mjs` 变红先看是不是 `verify.mjs` 的 summary 窗口那项：它拿 `docs/summary.json` 的窗口跟「今天」重算的窗口硬比（`cstDayMinus(30)~cstDayMinus(1)`），所以**本地 docs/ 落后远端、或当天总结还没成功跑**（AI 全失败时按设计不写文件）都会 FAIL 这一项 —— 先 `git pull --rebase --autostash` 再看，别当成自己的改动。
-- 没有 `SENSENOVA_API_KEY` 时总结只能出「确定数字 + AI 暂不可用」版（`--no-ai` 的行为）；真实 AI 叙述在 CI 里生成。
+
+- 本地看页面：没有 dev server。`python -m http.server <port> --directory docs`，再开 `http://localhost:<port>/index.html`。**`.wrap > *` 有入场动画（最多约 1.1s），刚打开就截图会拍到空白** —— 中间插一次 snapshot / scroll 再 capture。
+- 无变化时脚本**自行跳过 AI 与写入** —— 这是设计，不是 bug。
+- `--force`：绕过 dataHash 跳过，强制重取 + 重调 AI（改了提示词 / 数据口径后用）。日报侧会顺带重取定稿日的评论数**实时值**，属口径变更，慎用。
+- 两个 provider key 都没有时，日报 / 总结只能出「确定数字 + AI 暂不可用」版（`--no-ai` 的行为）；真实叙述由 CI 生成。
+- `check.mjs` 变红先看 `verify.mjs` 的 summary 窗口那项：它拿 `docs/summary.json` 的窗口跟「今天」重算的窗口硬比（`cstDayMinus(30)..cstDayMinus(1)`），所以**本地 `docs/` 落后远端、或当天总结还没成功跑**（AI 全失败时按设计不写文件）都会 FAIL —— 先 `git pull --rebase --autostash` 再看，别当成自己的改动。
+
+## AI 生成：provider 链与失败可见性
+
+- 链顺序（`defaultProviders`，`scripts/daily/lib/ai.mjs`）：`opencode-go-longcat`（限时免费）→ `opencode-go-deepseek`（计入 Go 套餐额度）→ sensenova `glm-5.2`；Go 两条共用 `OPENCODE_API_KEY`。
+- 商汤腿写死 `glm-5.2`（不再从 `GET /models` 动态挑）且带 `extraBody:{thinking:{type:"disabled"}}` 关思考 —— 不关则 reasoning 吃光预算、content 恒为空；`SENSENOVA_MODEL` 可覆盖。
+- **总结线单独重排**：`orderProvidersForSummary` 把 deepseek 提到最前（`longcat-2.5-preview-free` 结构上做不了 30 天总结），日报保持免费腿优先。重排只加在总结线，别推回 `defaultProviders`。
+- `MAX_TOKENS = 49152`（截断时翻倍到上限 65536）；`CHAT_TIMEOUT_MS = 180000`。abort / 网络异常**不重试**，直接换下一条。
+- **全失败的可见性**：编排器写 `data/ai-failure.json`（**gitignore 的 run 状态，不发布、不提交**）+ 把 `aiFailure` 写进 `docs/data/<date>.json` / `docs/summary.json`；`node scripts/notify-ai-failure.mjs` 开 / 追加**常驻** issue（label `ai-failure`）、把 issue 号回写进数据文件并重渲染页面。两个 workflow 都保持 0 退出（生成物照常提交），可见性靠 issue + `::warning::` + `$GITHUB_STEP_SUMMARY` —— 为此这两个 workflow 需要 `issues: write`。
+- **动 notifier 之前先读它的头注释**，两条都是实测踩过的坑，别"简化"掉：① 记录里的 `state:"ok"|"failed"` 才是恢复信号 —— **「没有记录」不等于已恢复**（CI 每次全新 checkout，文件在运行开始时必然不存在，一次跳过 AI 的运行会误关仍然有效的 issue）；② issue 列表（search 与 REST 也一样）在新建后有几秒可见延迟 —— 所以它走 REST `/issues`、只在"准备创建"前多确认几次，并在看到多条 open 时保留编号最小的一条、其余追加说明后关闭（自愈）。
 
 ## 发布流程
+
 1. 生成 / 重渲染（见上）。
-2. `node scripts/daily/check.mjs` 全绿（= 语法检查 + test-ai + test-render + test-summary + verify）。
-3. `git add scripts docs assets README.md data/backfill .github AGENTS.md` → 提交（中文信息用 `git commit -F <msgfile>`，不要用 `-m` 传中文）→ `git pull --rebase --autostash origin main` → `git push`。（代码修改按口径段的分支规则走分支）
+2. `node scripts/daily/check.mjs` 全绿（= 语法检查 + test-ai + test-render + test-summary + test-activity-window + verify）。
+3. `git add scripts docs assets README.md data/backfill .github AGENTS.md` → 提交（**中文提交信息用 `git commit -F <msgfile>`，不要用 `-m` 传中文**）→ `git pull --rebase --autostash origin main` → `git push`。（代码修改走分支：新建分支 → 合并回 `main` → push）
 4. push 后**手动触发 Action，不要等 cron**：
    - 日报：`gh workflow run update-daily-report.yml --ref main`
-   - 30 天总结：`gh workflow run update-summary.yml --ref main [ -f force=true ]`
-   - 各自的 `gh run watch <run-id> --exit-status` 等完成；CI 会把生成物提交推回 main，本地记得 `git pull --rebase --autostash`。
-   - 只有日报 workflow 挂了 push 触发（白名单 `scripts/daily/**` + 它自己），所以改日报脚本时推 main 本来就会带一次 run；**改 `scripts/summary/**` 后必须手动 dispatch**，它没有 push 触发。
+   - 总结：`gh workflow run update-summary.yml --ref main [ -f force=true ]`
+   - 各自 `gh run watch <run-id> --exit-status` 等完成；CI 会把生成物提交推回 main，本地记得 `git pull --rebase --autostash`。
 5. `gh api repos/sogeisetsu/sogeisetsu/pages/builds/latest` 确认 `status: built`。
-6. 用 openchamber_web 打开线上页（带 `?v=<短哈希>` 击穿缓存）截图确认。
+6. 用 `openchamber_web` 打开线上页（带 `?v=<短哈希>` 击穿缓存）截图确认。
 
 ## 与 Action 产物冲突（重要）
+
 两个 workflow 每 2 小时、总结 workflow 每天一次会自动提交 `docs/`（活动卡片另提交 `README.md`），手动 `git pull --rebase` 常在生成物上报 CONFLICT。
 **生成物可丢弃，一律以本地最新代码重新生成为准，绝不手工合并 HTML/JSON：**
+
 ```
 git rebase --abort
 git fetch origin
-git reset --soft origin/main      # HEAD 移到远端，保留本地脚本与已生成 docs
-node scripts/daily/index.mjs ...  # 必要时重新生成 / 重渲染
-git add scripts/daily docs
+git reset --soft origin/main   # HEAD 移到远端，脚本改动仍留在 index / 工作区
+git checkout HEAD -- docs      # 丢掉本地生成物，改用远端那份当基线
+node scripts/daily/index.mjs --rerender    # 按新基线重新生成
+node scripts/summary/index.mjs --rerender
+git add scripts docs
 git commit -F <msgfile>
 git push
 ```
 
 ## 口径与约束
+
 - 公开口径：只用公开活动；**不泄露私有仓库名 / 数量**。
 - 提交按 **commit date** 统计；本人与机器人（`[bot]`）**分开且相加**（`count` 与 `automated` 互不相交）；**不含合并提交**（parents>1）。
 - 提交归属＝`login` 或 `commit.author.name` 命中 `sogeisetsu` 或别名（`COMMIT_AUTHOR_ALIASES`，见 `scripts/daily/lib/github.mjs`，如 `suyue`），大小写不敏感；GitHub 按提交邮箱关联账号，未关联的署名（如本地邮箱 `suyue@localhost`）须列别名才计入本人。
@@ -86,16 +98,21 @@ git push
 - Issue/PR 行的评论数（REST 取，含机器人与本人，仅展示用，不进 `totals`；仓库非公开或读取失败则不显示）：**Issue＝会话评论**（`/issues/:n` 的 `comments`），**PR＝会话评论＋行内评审评论**（`/pulls/:n` 的 `comments + review_comments`，与 Replies 段 `issue_comment + review_comment` 口径对齐）；**窗口已关闭的定稿日冻结已存 `docs/data/<date>.json` 里的快照**，重采集不取实时值，避免计数漂移改写定稿页面（「今天」滚动报仍取实时值；`--force` 会一并重取实时值，是口径变更后的逃生口）。重跑已关闭日期时 `replies` / `stateChanges` 可能比原产物多（历史漏采被补录，属修复而非漂移），被冻结的只有评论数这一项。
 - **30 天总结的窗口** = 最近 30 个「已定稿」的 +08 自然日（`cstDayMinus(30)..cstDayMinus(1)`，不含今天）；数据源 = `docs/data` ∪ `data/backfill`，同日两份都有时以 `docs/data` 为准。
 - **总结页的数字条完全由代码求和**（Σ 各日 `totals` / `automatedCommits`），AI 只叙述、不计算；`verify.mjs` 逐项核对，偏了就 FAIL。
-- **总结正文是章节式**：`overview` 3–6 段、约 4200 字符上限，允许行首 `### 小标题`（渲染成 `<h3 class="ai-h3">`），其余 markdown（列表 / 链接 / 表格 / 代码块 / 斜体）继续拒收。
-- **窗口区间由代码拼**（AI 只给 headline）：**首页卡片**里区间单独成一行、渲染成 chip（`<p class="ai-range"><span class="mono">2026-09-18 – 2026-10-17</span></p>`，样式同 `.chip`）；**总结页 hero 标题不含区间**（用户 2026-10-18 要求：eyebrow 有「近 30 天」、hero-sub 有 `2026-09-18 ~ 2026-10-17 · UTC+8`，标题里再来一遍是重复），区间只在 hero-sub 里加粗（`.hero-win`）。两处文本都必须保持**单元素内连续**（`verify.mjs` 逐字查：卡片查 en-dash 形式、总结页查 `~` 形式且 hero `h1` 不得含区间）。
-- **标题字体**：中英文标题同一字族（`--headline` == `--headline-zh`，系统衬线栈），**不再使用 Chomsky 黑体**；中英文可按语言给不同的字重 / 字号 / 行高（CJK 需要更大的字号与行高）。`verify.mjs` 会挡住"把 Chomsky 加回标题栈"的回退。
-- **AI 块旁注 provider / model**：日报 / 总结页 / 首页卡片都在 AI 徽章右侧显示 `provider / model`（历史数据只有 `aiProvider` 时退化成只有 provider）。
+- **总结正文是章节式**：`overview` 3–6 段、约 4200 字符上限，允许行首 `### 小标题`（渲染成 `<h3 class="ai-h3">`），其余 markdown（列表 / 链接 / 表格 / 代码块 / 斜体）**拒收并触发重试** —— 放宽提示词前先想清楚会不会让模型反复被判违规。
+- **窗口区间由代码拼**（AI 只给 headline）：**首页卡片**里区间单独成一行、渲染成 chip（`<p class="ai-range"><span class="mono">2026-09-18 – 2026-10-17</span></p>`，样式同 `.chip`）；**总结页 hero 标题不含区间**（eyebrow 已有「近 30 天」、hero-sub 已有 `2026-09-18 ~ 2026-10-17 · UTC+8`，标题里再来一遍是重复），区间只在 hero-sub 里加粗（`.hero-win`）。两处文本都必须保持**单元素内连续** —— `verify.mjs` 逐字查：卡片查 en-dash 形式，总结页查 `~` 形式且 hero `h1` 不得含区间。
+- **标题字体**：中英文标题同一字族（`--headline` == `--headline-zh`，系统衬线栈），**不再使用 Chomsky 黑体**；中英文可按语言给不同字重 / 字号 / 行高（CJK 需要更大的字号与行高）。`verify.mjs` 会挡住"把 Chomsky 加回标题栈"的回退。
+- **AI 块旁注 provider / model**：日报 / 总结页 / 首页卡片都在 AI 徽章右侧显示 `provider / model`（历史数据只有 `aiProvider` 时退化成只有 provider）。`.ai-badge` 不参与收缩（`flex:none`），窄屏由旁注换行吸收。
 - **总结的 AI 输出受严格校验**：`highlights` / `byRepo` 里出现的仓库与条目编号必须真实存在于输入数据，链接一律由校验器从输入注入（模型不许给 URL）；**AI 不许提任何条目的评论数**（`comments` 是采集那一刻的实时值）。
 - **`data/backfill/` 是一次性回填**：事件流（`/users/:u/events/public`）只保留最近 300 条 / 90 天，2026-09-16 ~ 10-01 的动作级事件已过期，只能用 Search API（`author:` / `commenter:` / `reviewed-by:` + 日期区间）+ 逐条 REST 校时重建，属**近似**：`stars` 无法重建（留空）、`releases` 只覆盖自有仓库、issue/评审可能偏低、评论数（`comments`）不回填；每个回填文件带 `source: "search-backfill"` 与 `backfillLimits`，页面如实标注。窗口每天前移，这批日期会逐日退出窗口（约 15 天后窗口完全由 `docs/data` 覆盖）。
-- **30 天活动卡片的窗口** = 最近 30 个 +08 自然日、**含今天**（`cstDayMinus(29)..cstDayMinus(0)`），与日报「今天滚动」同口径；`daily` 柱状也按 +08 自然日分桶（不能用 UTC 日期，否则 +08 的 00:00–08:00 会归错天）。卡片线的 `totals` 与日报同一条恒等式：只由**过滤后的公开明细**求和；`contributionsCollection` 的四项标量在 user-scoped token 下含私有贡献，故逐仓 / 逐条按 `isPrivate` / `visibility` 过滤（拿不准一律按不公开），标量只用于对账告警、不进产物。
-- 站点 head 与字体受 `scripts/daily/verify.mjs` 硬约束（改 head / CSS / 渲染层后必跑 `check.mjs`）：必须有 Chomsky `@font-face`（资产保留，但**标题栈不得再引用 Chomsky** —— 2026-10-18 改版去掉了黑体标题）、**`--headline` 与 `--headline-zh` 必须同字族**（中英标题同一字族，粗细/字号允许分语言）、zh h1 规则用 `var(--headline-zh)`、favicon 路径与 `docs/assets/fonts/chomsky.woff2` 实体（wOF2 魔数）都在；**`<head>` 里禁用字体名 `Newsreader` / `霞鹜文楷` / `lxgw`**（历史遗留，正文提到不算）。
-- 代码修改必须走分支：新建分支 → 提交 → 合并回 `main` → push；不要直接在 `main` 上修改。
-- 不擅自新增依赖；改 CI / 改权限前先确认。
+- **30 天活动卡片的窗口** = 最近 30 个 +08 自然日、**含今天**（`cstDayMinus(29)..cstDayMinus(0)`），与日报「今天滚动」同口径；`daily` 柱状也按 +08 自然日分桶（不能用 UTC 日期）。卡片线的 `totals` 与日报同一条恒等式：只由**过滤后的公开明细**求和；`contributionsCollection` 的四项标量在 user-scoped token 下含私有贡献，故逐仓 / 逐条按 `isPrivate` / `visibility` 过滤（拿不准一律按不公开），标量只用于对账告警、不进产物。`README.md` 里 `<!--START:activity-->`…`<!--END:activity-->` 两个 marker 必须各出现且仅一次，否则脚本直接 fail。
+- 站点 head 与字体受 `scripts/daily/verify.mjs` 硬约束（改 head / CSS / 渲染层后**必跑 `check.mjs`**）：必须有 Chomsky `@font-face`（资产保留，但**标题栈不得再引用 Chomsky**）、**`--headline` 与 `--headline-zh` 必须同字族**（粗细 / 字号允许分语言）、zh h1 规则用 `var(--headline-zh)`、favicon 路径与 `docs/assets/fonts/chomsky.woff2` 实体（wOF2 魔数）都在；**`<head>` 里禁用字体名 `Newsreader` / `霞鹜文楷` / `lxgw`**（历史遗留，正文提到不算）。
+- 不擅自新增依赖；改 CI / 改权限前先确认。代码修改必须走分支：新建分支 → 提交 → 合并回 `main` → push；不要直接在 `main` 上改。
+
+## 已知问题（别当成自己弄坏的）
+
+- 活动卡片线在 GitHub 限制 `/users/:u/events/public` 分页时直接失败：`HTTP 422 ... pagination is limited for this resource`（实测 `page=4` 就 422）。`update-activity.yml` 会因此变红，与日报 / 总结无关，目前未修。
+- `update-activity.yml` 没有 push 触发 —— 看到它被 `workflow_dispatch` 触发，是 Cloudflare watchdog 在补 GitHub 丢掉的 schedule，不是有人手动跑。
+- `.openchamber/`、`.opencode/`、`.slim/`、`data/ai-failure.json`、`scripts/preview-*.svg`、`assets/_preview.html` 都在 `.gitignore` 里 —— 截图 / 预览产物不用管，也别提交。
 
 ## Repository Map
 
@@ -114,4 +131,3 @@ For deep work on a specific folder, also read that folder's `codemap.md`
 （`git log --oneline 5c9eeab..HEAD -- scripts ops`，有输出即需复核）。不要用"提交号是否等于 HEAD"判断
 —— 本仓每 2 小时有 bot 自动提交生成物，那样会恒报过期。
 注意：`.slim/` 只是 codemap 工具的本地缓存（已在 `.gitignore` 忽略），不要提交。
-
