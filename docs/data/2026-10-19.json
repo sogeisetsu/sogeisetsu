@@ -3,20 +3,30 @@
   "windowStart": "2026-10-19T00:00:00+08:00",
   "windowEnd": "2026-10-20T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-18T18:11:55.489Z",
+  "generatedAt": "2026-10-18T18:16:27.740Z",
   "empty": false,
   "totals": {
-    "commits": 5,
+    "commits": 7,
     "prs": 0,
-    "issues": 0,
+    "issues": 3,
     "reviews": 0
   },
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 5,
+      "count": 7,
       "own": true,
       "messages": [
+        {
+          "sha": "b0be0c3325cd5b4b80b10f375fa7896b8e633dfa",
+          "message": "revert(test): 恢复真实 model id 与 /oc 的 login 门（两处临时验收改动）",
+          "ts": "2026-10-18T18:16:02Z"
+        },
+        {
+          "sha": "2dad528b5d6baff3f193b63f60e966ee2e782229",
+          "message": "test(ci): 【临时】把 /oc 的 login 门改成不存在的账号，实测「非本人评论 → skipped」",
+          "ts": "2026-10-18T18:14:14Z"
+        },
         {
           "sha": "2b633874d2c61d8f45b082bf0d5abd1b5cb3144a",
           "message": "test(ai): 【临时】把三条腿的 model id 改成不存在的值，用来造一次真失败",
@@ -43,16 +53,48 @@
           "ts": "2026-10-18T16:44:31Z"
         }
       ],
-      "automated": 4,
+      "automated": 5,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 4,
+  "automatedCommits": 5,
   "pullRequests": [],
   "reviews": [],
-  "issues": [],
+  "issues": [
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "number": 9,
+      "title": "[test] opencode /oc smoke（临时，验完即关）",
+      "url": "https://github.com/sogeisetsu/sogeisetsu/issues/9",
+      "action": "commented",
+      "ts": "2026-10-18T18:14:33.000Z",
+      "own": true,
+      "comments": 3
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "number": 9,
+      "title": "[test] opencode /oc smoke（临时，验完即关）",
+      "url": "https://github.com/sogeisetsu/sogeisetsu/issues/9",
+      "action": "commented",
+      "ts": "2026-10-18T18:12:56.000Z",
+      "own": true,
+      "comments": 3
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "number": 9,
+      "title": "[test] opencode /oc smoke（临时，验完即关）",
+      "url": "https://github.com/sogeisetsu/sogeisetsu/issues/9",
+      "action": "opened",
+      "ts": "2026-10-18T18:12:55.000Z",
+      "own": true,
+      "state": "open",
+      "comments": 3
+    }
+  ],
   "releases": [],
   "stars": [],
   "starInventory": [
@@ -145,7 +187,19 @@
       "total": 0
     }
   ],
-  "replies": [],
+  "replies": [
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "number": 9,
+      "title": "[test] opencode /oc smoke（临时，验完即关）",
+      "url": "https://github.com/sogeisetsu/sogeisetsu/issues/9",
+      "author": "github-actions[bot]",
+      "excerpt": "pong [github run](/sogeisetsu/sogeisetsu/actions/runs/39153131747)",
+      "kind": "issue_comment",
+      "ts": "2026-10-18T18:13:21.000Z",
+      "own": true
+    }
+  ],
   "stateChanges": [],
   "truncated": {
     "events": {
@@ -166,33 +220,20 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
-  "aiFailure": {
-    "generatedAt": "2026-10-18T18:11:57.723Z",
-    "pageState": "no-narrative",
-    "attempts": [
-      {
-        "provider": "opencode-go-longcat",
-        "model": "longcat-2.5-preview-free-diagtest",
-        "reason": "HTTP 400 {\"error\":{\"type\":\"server_error\",\"message\":\"Upstream request failed: Model is unavailable.\"}}"
-      },
-      {
-        "provider": "opencode-go-deepseek",
-        "model": "deepseek-v4.1-flash-diagtest",
-        "reason": "HTTP 400 {\"error\":{\"type\":\"server_error\",\"message\":\"Upstream request failed: Model is unavailable.\"}}"
-      },
-      {
-        "provider": "sensenova",
-        "model": "glm-5.2-diagtest",
-        "reason": "HTTP 404 {\"error\":{\"message\":\"model is not found\",\"type\":\"not_found_error\",\"code\":\"5\"}}\n"
-      }
-    ],
-    "issue": {
-      "number": 8,
-      "url": "https://github.com/sogeisetsu/sogeisetsu/issues/8"
+  "ai": {
+    "en": {
+      "headline": "sogeisetsu: 7 own commits plus 5 automated, 3 issue actions on opencode smoke",
+      "summary": "On 2026-10-19 activity centered on the `sogeisetsu/sogeisetsu` repository, with **7** own commits plus 5 automated commits by `github-actions[bot]`. The own work reverted temporary acceptance changes, restoring the real model id and the `/oc` login gate, after first probing with a nonexistent account to confirm that a non-owner comment results in skipped. A separate test changed the three-leg model id to an invalid value to force a real failure. Fixes followed: `opencode.yml` could not use `toLower` because GitHub expressions lack that function, and activity event pagination no longer treats an HTTP 422 as fatal, relying on the Link header instead. A new feature added automatic diagnosis when all AI legs fail, plus a manual `/oc` re-check entry point, and the codemap baseline was refreshed to `4719825` after the pagination fix. On the issue side, 3 actions were logged on `sogeisetsu/sogeisetsu` issue #9, titled `[test] opencode /oc smoke（临时，验完即关）`: it was opened, then commented on later; no issues were closed. A reply came from `github-actions[bot]` on that same issue with the excerpt `pong` linked to a GitHub Actions run, and the thread had 3 comments overall. No pull requests, reviews, releases, discussions, or stars occurred. No section hit its collection cap.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "sogeisetsu：本人 7 次提交、自动提交 5 次，opencode 冒烟测试涉 3 个 issue 动作",
+      "summary": "2026-10-19 的活动集中在 `sogeisetsu/sogeisetsu` 仓库，本人提交 **7** 次，另有 5 次由 `github-actions[bot]` 自动提交。本人工作先是回退临时验收改动，恢复真实 model id 与 `/oc` 的 login 门；此前曾用不存在的账号实测「非本人评论 → skipped」。另一项测试把三条腿的 model id 改成不存在的值，以制造一次真失败。随后修复两处问题：`opencode.yml` 的 if 不能使用 `toLower`（GitHub 表达式没有该函数），活动事件分页不再把 HTTP 422 当致命错误，改为以 Link 头为准。新增功能包括 AI 全失败时自动诊断以及 `/oc` 手动补查入口，并将 codemap 映射基线刷新到 `4719825`。issue 方面，`sogeisetsu/sogeisetsu` 的 #9（标题「[test] opencode /oc smoke（临时，验完即关）」）记录了 3 个动作：先新开，随后评论，没有关闭。该 issue 收到 `github-actions[bot]` 的一条回复，摘要为 `pong`，附 GitHub Actions 运行链接，整个讨论共 3 条评论。当日没有 pull request、review、release、discussion 或 star 活动。各板块均未触及采集上限。",
+      "releaseNotes": []
     }
   },
-  "dataHash": "a18872b5653a4eedbef70f991760ced5294bb6a0c1ed706d8570e99a2f551873"
+  "aiProvider": "opencode-go-deepseek",
+  "aiModel": "deepseek-v4.1-flash",
+  "aiFailure": null,
+  "dataHash": "625dc9a72ec73e48fc24bb9c4caa5fdf6f31293225ee3744e827b1c97a89c19a"
 }
