@@ -3,10 +3,10 @@
   "windowStart": "2026-10-18T00:00:00+08:00",
   "windowEnd": "2026-10-19T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-18T10:59:14.502Z",
+  "generatedAt": "2026-10-18T11:13:21.129Z",
   "empty": false,
   "totals": {
-    "commits": 9,
+    "commits": 10,
     "prs": 0,
     "issues": 1,
     "reviews": 0
@@ -48,9 +48,14 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 3,
+      "count": 4,
       "own": true,
       "messages": [
+        {
+          "sha": "7d90172369536b734898cbd43079736ec99d304c",
+          "message": "fix(ai): 常住 issue 不再重复创建（可见延迟 + 自愈）",
+          "ts": "2026-10-18T11:12:20Z"
+        },
         {
           "sha": "c3aa83a5c3e80c6c2374974c8e3fccf4458823ed",
           "message": "fix(verify): 自动提交「相加表述」不变式不再扫全文",
@@ -67,7 +72,7 @@
           "ts": "2026-10-18T10:46:56Z"
         }
       ],
-      "automated": 19,
+      "automated": 20,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -87,7 +92,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 19,
+  "automatedCommits": 20,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -283,18 +288,18 @@
   ],
   "ai": {
     "en": {
-      "headline": "9 own commits plus 19 automated; commented on a bug and started a discussion",
-      "summary": "Across 3 repositories, **9 own commits** were made: in `opencode-skill-management`, 5 commits revised the `skill_management` spec (removing stale doc references, relocating plans to `.openchamber/plans`, adding Steps checklists, unifying line endings to LF, and publishing a revised spec with feasibility evaluation); in `sogeisetsu`, 3 commits fixed the verify invariant scanner, added notifier graceful degradation, and shipped AI failure visibility with model annotation and a 30-day summary redesign — **19 automated commits** by `github-actions[bot]` were also recorded; in `opencode-agent-sandbox`, 1 commit documented a new `opencode-provider` knowledge category covering catalog sources, credential ownership, and endpoint jurisdiction. The user commented on `openchamber/openchamber` `#4939` (2 comments), started discussion `#5114` titled \"Split the rendered-page selection-menu fix: frame→host selection bridge first (#4939)\", and received replies on `#4601` and `#4899`. Three state changes were observed: `#4896`, `#4920`, and `#4601` were closed by `btriapitsyn`.",
+      "headline": "10 own commits plus 20 automated commits by github-actions[bot]",
+      "summary": "On 2026-10-18, sogeisetsu landed **10 own commits** across three repositories, plus **20 automated commits by `github-actions[bot]`** in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-skill-management` there were 5 commits: removing references to deleted documentation and making the spec self-contained, moving plans into the repo's `.openchamber/plans` directory, adding a Steps checklist with corrected cross-references, normalizing line endings to LF, and a revised `skill_management` spec plus a feasibility evaluation. In `sogeisetsu/sogeisetsu` there were 4 commits fixing duplicate resident-issue creation with a visible delay and self-healing, restricting the \"sum expression\" invariant in the auto-commit verifier to avoid full-text scanning, degrading the notifier page to \"未取到 issue 链接\" on failure, and overhauling AI failure visibility, model annotation, and the 30-day summary. The single commit in `sogeisetsu/opencode-agent-sandbox` added an `opencode-provider` knowledge category covering the catalog's three-tier sources, credential ownership, endpoints, and OpenChamber governance. The issues total of 1 reflects a comment on `openchamber/openchamber` issue `#4939` (\"[Bug] Text selected inside an openchamber_render page never opens the comment menu\", 2 comments), where sogeisetsu replied; 3 other issues were closed by btriapitsyn in state changes (`#4896`, `#4920`, `#4601`).",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "9 次本人提交另有 19 次自动提交；评论了 bug 并发起讨论",
-      "summary": "在 3 个仓库中共有 **9 次本人提交**：在 `opencode-skill-management` 中，5 次提交修订了 `skill_management` 规范（删除失效文档引用、将计划迁移至 `.openchamber/plans`、补充 Steps 清单、统一换行符为 LF、发布修订版规范并附可行性评测）；在 `sogeisetsu` 中，3 次提交修复了验证不变式扫描器、增加 notifier 优雅降级、新增 AI 失败可见性与模型标注及 30 天总结改版——**另有 19 次由 `github-actions[bot]` 自动提交**；在 `opencode-agent-sandbox` 中，1 次提交记录了新增的 `opencode-provider` 知识类别（涵盖 catalog 来源、凭据归属与端点管辖）。用户在 `openchamber/openchamber` 的 `#4939` 下评论（共 2 条评论），发起了讨论 `#5114`（标题为 \"Split the rendered-page selection-menu fix: frame→host selection bridge first (#4939)\"），并收到了 `#4601` 和 `#4899` 的回复。观察到 3 项状态变更：`#4896`、`#4920` 和 `#4601` 由 `btriapitsyn` 关闭。",
+      "headline": "10 次本人提交，另有 20 次由 github-actions[bot] 自动提交；评论 1 个 issue 并发起 1 个讨论",
+      "summary": "2026-10-18 当天，sogeisetsu 在三个仓库共完成 **10 次本人提交**，此外 `sogeisetsu/sogeisetsu` 还有 **20 次由 `github-actions[bot]` 自动提交**。`sogeisetsu/opencode-skill-management` 有 5 次提交：删除已移除文档的引用并让规范自含，把计划改存到仓库的 `.openchamber/plans` 目录，补充 Steps 清单并修正交叉引用，统一换行符为 LF，以及 `skill_management` 规范修订版加可行性评测。`sogeisetsu/sogeisetsu` 有 4 次提交：修复常住 issue 重复创建（可见延迟加自愈），把自动提交校验中「相加表述」不变式改为不再扫全文，让 notifier 失败时页面退化为「未取到 issue 链接」，以及 AI 失败可见性、模型标注与 30 天总结改版。`sogeisetsu/opencode-agent-sandbox` 的 1 次提交新增了 `opencode-provider` 知识类别，涵盖 catalog 三层来源、凭据归属、端点与 OpenChamber 管辖。issue 总数 1 指的是在 `openchamber/openchamber` 的 `#4939`（\"[Bug] Text selected inside an openchamber_render page never opens the comment menu\"，2 条评论）上评论；另有 3 个 issue 由 btriapitsyn 在状态变更中关闭（`#4896`、`#4920`、`#4601`）。收到 2 条 issue 回复：btriapitsyn 在 `#4601` 说明思考等级已在 `7d037b07d` 修复，yulia-ivashko 在 `#4899` 表示无法复现 CSS 像素导出问题。sogeisetsu 还在 `openchamber/openchamber` 发起了讨论 `#5114`（\"[Idea] Split the rendered-page selection-menu fix: frame→host selection bridge first (#4939)\"）。当天没有 pull request、评审、release 或 star 记录。仅检查了每个分区的前 25 条，部分状态变更可能未收录；events、replies、stateChanges 的上限均未触发。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "b5caf97cfd517561bb86dc8358965d793b8beac0176a03397c551097918a36a1"
+  "dataHash": "5cfd8421bdc317fc52d2de9b5fcf6eda0198ec16d54b0e238493e7abc97bc5aa"
 }
