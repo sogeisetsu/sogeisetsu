@@ -866,16 +866,28 @@ function main() {
         `页面=${JSON.stringify(gotNums)} 期望=${JSON.stringify(wantNums)}`
       );
 
-      // 自动提交与 totals 是「相加」关系：>0 时必须有相加表述，且不得出现包含式措辞
+      // 自动提交与 totals 是「相加」关系：>0 时机器生成的 stats-note 必须有相加表述；
+      // 包含式误用只在「提交数紧邻 其中/of which」时才算违规 —— 泛用「其中」（如
+      // "若干 issue 已关闭，其中…"）是正常中文，扫全文档会把好叙述误判成违规。
       if (Number(summary.automatedCommits) > 0) {
-        const additive = /另有|\bplus\b/i.test(summaryHtml);
-        const overlap = /其中|\bof which\b/i.test(summaryHtml);
+        const noteText = [...summaryHtml.matchAll(/<p class="stats-note">([\s\S]*?)<\/p>/g)]
+          .map((mm) => mm[1].replace(/<[^>]*>/g, " "))
+          .join(" ");
+        const aiText = [
+          ...summaryHtml.matchAll(/<div class="ai-summary[^"]*"[^>]*>([\s\S]*?)<\/div>/g),
+        ]
+          .map((mm) => mm[1].replace(/<[^>]*>/g, " "))
+          .join(" ");
+        const additive = /另有|\bplus\b/i.test(noteText);
+        const overlapRe =
+          /(\d[\d,]*\s*(?:own\s+)?(?:commits?|次提交)[^。.!\n]{0,24}(?:其中|\bof which\b))|(?:(?:其中|\bof which\b)[^。.!\n]{0,24}(?:automated\s+commits?|自动提交))/i;
+        const overlap = overlapRe.test(noteText) || overlapRe.test(aiText);
         check(
           "summary.html: 自动提交为相加表述",
           additive && !overlap,
           !additive
             ? `automatedCommits=${summary.automatedCommits} 但页面缺少「另有/plus」相加表述`
-            : "页面出现「其中/of which」包含式表述"
+            : "页面出现「提交数…其中/of which」包含式表述"
         );
       }
 
