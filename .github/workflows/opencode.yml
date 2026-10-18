@@ -6,7 +6,8 @@ name: opencode
 #
 # 硬要求：评论触发**只认本人**（github.event.comment.user.login == 'sogeisetsu'）。
 #   · 用 login 相等，比 author_association == 'OWNER' 更严（后者会放行其他 OWNER/MEMBER/COLLABORATOR）。
-#   · contains 大小写敏感，所以先 toLower —— `/OC`、`/Oc` 也认（mentions 本身不敏感，但我们的 if 自己保证）。
+#   · contains 大小写敏感，而 GitHub 表达式**没有 toLower**（计划里写的 toLower 会让 workflow 直接
+#     判为非法：Unrecognized function: 'toLower'，实测 2026-10-19 踩到），所以四种大小写各列一遍。
 #   · 门只认 `/oc`（不认 `/opencode`）：action 的默认 mentions 是 `/opencode,/oc`，但我们的门是安全边界，
 #     宁可窄 —— `/opencode …` 的评论会被 skip，需要时写 `/oc …`。
 #   · if 为假时 job 是 **skipped**（不是失败）：别人的评论表现为「什么都不会发生」。
@@ -36,7 +37,10 @@ jobs:
   opencode:
     if: |
       github.event.comment.user.login == 'sogeisetsu' &&
-      contains(toLower(github.event.comment.body), '/oc')
+      (contains(github.event.comment.body, '/oc') ||
+       contains(github.event.comment.body, '/OC') ||
+       contains(github.event.comment.body, '/Oc') ||
+       contains(github.event.comment.body, '/oC'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
