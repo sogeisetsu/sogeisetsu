@@ -20,8 +20,12 @@
  * }
  * overview 是章节式：空行分块、行首 `### ` 小标题（splitBlocks → <h3 class="ai-h3">），
  * 其余块 → <p>；highlight / byRepo 仍按句切段（splitParagraphs）。
- * 标题前缀 `窗口区间 · headline` 由 windowPrefix 用 windowStart/windowEnd 代码拼装
- * （日期过 esc），与 provider/model 一样绝不取自 AI 文本。
+ * 窗口区间由代码拼装（日期过 esc），与 provider/model 一样绝不取自 AI 文本，两处
+ * 用法由用户 2026-10-18 冻结构：
+ *   · 首页卡片：区间单独成行 —— windowRange → `<p class="ai-range"><span class="mono">…</span></p>`
+ *     紧接 `<h2 class="ai-headline">{headline}</h2>`（chip 样式在 pageStyle）；
+ *   · 总结页：hero h1 只留 headline，区间由 hero-sub 的 `.hero-win`（` · UTC+8` 不带）
+ *     与 eyebrow 的「近 30 天」承担。
  * highlights[] / byRepo[] 的 repo / number / url 由校验器从真实数据注入：
  * 链接只认注入的 url（过 safeHref），AI 文本里的一切只当纯文本走 aiInlineToHtml。
  *
@@ -151,16 +155,19 @@ function bilingualBlocks(enText, zhText, cls) {
 }
 
 /**
- * 标题的窗口前缀：`<span class="mono">{start} – {end}</span> · `（U+2013 连接
- * 两端日期、U+00B7 分隔标题）。日期取 summary.windowStart / windowEnd —— 代码
- * 拼装 + esc，绝不取自 AI 文本；任一日期缺失/空白 → 返回 ''（标题退回纯
- * headline，不带前缀也不带分隔符）。
+ * 卡片顶部的窗口区间（单独一行，读作 chip）：
+ * `<p class="ai-range"><span class="mono">{start} – {end}</span></p>`（U+2013 连接
+ * 两端日期）。日期取 summary.windowStart / windowEnd —— 代码拼装 + esc，绝不取自
+ * AI 文本；任一日期缺失/空白 → 返回 ''（卡片退化成只有 headline）。
+ * 区间是**单元素内的连续文本**：verify 会在 index.html 里逐字找这一串。
+ * 样式（胶囊 / 描边 / 浅色底 / 小字）在 scripts/daily/render.mjs 的 pageStyle ——
+ * 首页卡片没有 extraCss 钩子。
  */
-function windowPrefix(start, end) {
+function windowRange(start, end) {
   const a = S(start).trim();
   const b = S(end).trim();
   if (!a || !b) return '';
-  return `<span class="mono">${esc(a)} – ${esc(b)}</span> · `;
+  return `<p class="ai-range"><span class="mono">${esc(a)} – ${esc(b)}</span></p>`;
 }
 
 /** AI 徽章（与日报 aiSummaryBlock 同款）。 */
@@ -462,9 +469,10 @@ export function summaryCard({ summary } = {}) {
   if (!hasHead && !hasTeaser) {
     return `<section class="card ai">${top}${AI_UNAVAILABLE()}${fail}${btn}</section>`;
   }
-  // 标题 = 代码拼的窗口区间前缀 + AI headline（前缀与分隔符都不来自 AI 文本）
+  // 标题行只剩 headline（用户冻结的结构：区间单独成行，见 windowRange）
   const head = hasHead
-    ? `<h2 class="ai-headline">${windowPrefix(s.windowStart, s.windowEnd)}${i18n(hEn || hZh, hZh || hEn)}</h2>`
+    ? windowRange(s.windowStart, s.windowEnd) +
+      `<h2 class="ai-headline">${i18n(hEn || hZh, hZh || hEn)}</h2>`
     : '';
   const teaser = bilingualBlock(tEn, tZh, 'en', 'ai-summary');
 
@@ -531,12 +539,13 @@ export function renderSummaryPage({ summary, username } = {}) {
   const start = S(s.windowStart).trim();
   const end = S(s.windowEnd).trim();
   const win = start && end ? `${start} ~ ${end}` : start || end;
-  if (win) subBits.push(`<span class="mono">${esc(`${win} · UTC+8`)}</span>`);
+  // hero 下方 meta 行：只把窗口区间圈出来强调（.hero-win），` · UTC+8` 保持原样。
+  // 不用 .hero-sub .mono 泛选 —— report 页 hero-sub 的 .mono 是 @handle，会误伤。
+  if (win) subBits.push(`<span class="mono"><span class="hero-win">${esc(win)}</span> · UTC+8</span>`);
   const gen = fmtUtc8(s.generatedAt);
   if (gen) subBits.push(i18n(`Generated ${gen}`, `生成于 ${gen}`));
-  // hero 标题 = 代码拼的窗口区间前缀 + AI headline（与首页卡片 h2 同一拼法；
-  // 日期缺失时 windowPrefix 返回 ''，退回纯 headline）
-  const headPrefix = windowPrefix(start, end);
+  // hero 标题只留 headline：窗口区间由上方 eyebrow（近 30 天）与 hero-sub 承担，
+  // 不再在标题里重复一遍（用户 2026-10-18 要求；verify 也锁住了这一点）
   parts.push(
     `<header class="hero">` +
       `<p class="eyebrow">${
@@ -544,7 +553,7 @@ export function renderSummaryPage({ summary, username } = {}) {
           ? i18n(`@${user} · Last 30 days`, `@${user} · 近 30 天`)
           : i18n('Last 30 days', '近 30 天')
       }</p>` +
-      `<h1>${headPrefix}${headline}</h1>` +
+      `<h1>${headline}</h1>` +
       (subBits.length ? `<p class="hero-sub">${subBits.join(SEP)}</p>` : '') +
       `</header>`
   );
@@ -635,6 +644,16 @@ const EXTRA_CSS = `
 .foot-note{margin:10px 0 0;font-size:.78rem;color:var(--on-surface-variant);max-width:64em}
 .ai-h3{margin:14px 0 6px;font-size:.95rem;font-weight:800;color:var(--on-surface)}
 .ai-h3:first-child{margin-top:0}
+/* hero 下方 meta 行：只把窗口区间圈出来强调，UTC+8 与「生成于 …」保持原样。
+   用户点名的就是这一段。不写 .hero-sub .mono 泛选 —— report 页 hero-sub 的
+   .mono 是 @handle，泛选会误伤。 */
+.hero-win{font-weight:700}
+/* 中文小标题与英文对标：同一 .95rem 下，汉字（PingFang SC / 微软雅黑）比拉丁字形
+   看起来更细更小 —— 拉丁侧 800 会落到 Segoe UI Semibold/Black，中文侧最多只到
+   700（微软雅黑 Bold），且中文字面本身更"轻"。字号是唯一在两端都稳的杠杆（macOS
+   PingFang 没有 800，加粗请求无效），所以只给中文放大一档并补一点字距，英文侧
+   一个像素都不动。 */
+html[data-lang="zh"] .ai-h3{font-size:1rem;letter-spacing:.01em}
 .card > .trunc-notice:first-child{margin-top:0}
 .list .ai-summary{margin:9px 0 0}
 .byrepo-title{font-size:.92rem;font-weight:750;color:var(--on-surface)}

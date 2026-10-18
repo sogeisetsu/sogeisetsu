@@ -35,8 +35,8 @@
   --aura:rgba(103,80,164,.12);
   --shadow:0 1px 2px rgba(0,0,0,.05);
   --font:-apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
-  --headline:"Chomsky", "Songti SC", "SimSun", "Noto Serif CJK SC", STSong, serif;
-  --headline-zh:-apple-system, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", "Heiti SC", "SimHei", "Noto Sans CJK SC", sans-serif;
+  --headline:"Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Songti SC", "SimSun", "Noto Serif CJK SC", "Source Han Serif SC", STSong, serif;
+  --headline-zh:var(--headline);
   --mono:ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 @media (prefers-color-scheme: dark){
@@ -84,6 +84,25 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--primary);outline-of
 .mono{font-family:var(--mono)}
 .num{font-variant-numeric:tabular-nums}
 
+/* ---- card window-range chip ----
+   The home card prints its window range on its own line, read as a chip from the
+   same family as the report page .chip / .badge: pill radius, hairline outline,
+   light surface, same small size / weight / tracking. Colours are variables, so
+   both themes work. Class emitted by summaryCard in scripts/summary/render.mjs
+   (the index page has no extraCss hook, so the styles must live here).
+   The range text stays a contiguous run inside one span. */
+.ai-range{
+  display:inline-flex;align-items:center;margin:0 0 10px;
+  padding:.2em .6em;border-radius:999px;border:1px solid var(--outline-variant);
+  background:var(--surface-dim);color:var(--on-surface-variant);
+  font-size:.7rem;font-weight:750;letter-spacing:.02em;
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+/* the chip speaks in the body/UI voice (like .chip / .badge), not in the mono
+   voice — .mono stays on the span for its machine-data meaning, but the pill
+   keeps one typeface. */
+.ai-range > .mono{font-family:inherit;font-size:inherit}
+
 .i18n[data-lang]{display:inline}
 html[data-lang="en"] .i18n[data-lang="zh"],
 html[data-lang="zh"] .i18n[data-lang="en"]{display:none}
@@ -129,8 +148,13 @@ html[data-lang="zh"] .langbtn[data-set-lang="zh"]{
   margin:0 0 10px;font-size:.76rem;font-weight:800;letter-spacing:.16em;
   text-transform:uppercase;color:var(--primary);
 }
-h1{margin:0;font-family:var(--headline);font-size:clamp(2rem,7vw,3rem);line-height:1.04;letter-spacing:-.01em;font-weight:400}
-html[data-lang="zh"] h1{font-family:var(--headline-zh);font-weight:800}
+h1{
+  margin:0;font-family:var(--headline);font-size:clamp(1.95rem,6.4vw,2.95rem);
+  line-height:1.07;letter-spacing:-.015em;font-weight:700;text-wrap:balance;
+}
+html[data-lang="zh"] h1{
+  font-family:var(--headline-zh);font-weight:700;line-height:1.14;letter-spacing:0;
+}
 .hero-sub{margin:12px 0 0;color:var(--on-surface-variant);font-size:.94rem;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 
 /* ---- cards ---- */
@@ -284,13 +308,22 @@ html[data-lang="zh"] .chip{font-size:.76rem;letter-spacing:0}
     linear-gradient(135deg,var(--primary-container),var(--tertiary-container)) border-box;
 }
 .ai-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+/* 徽章是固定标签：flex:none 让它不参与收缩，nowrap 保证「AI SUMMARY」/「AI 摘要」
+   在任何宽度（含 320px）下都不折行、不被逐字断开。窄屏让位的是右侧旁注。 */
 .ai-badge{
-  display:inline-flex;align-items:center;gap:8px;
+  display:inline-flex;align-items:center;gap:8px;flex:none;white-space:nowrap;
   font-size:.73rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);
 }
 .ai-badge svg{width:16px;height:16px}
-/* provider / model 旁注：靠右，与左侧 badge 同一行 */
-.ai-provider{margin-left:auto;font-size:.75rem;color:var(--on-surface-variant)}
+/* provider / model 旁注：靠右，与左侧 badge 同一行。min-width:0 允许它收缩到
+   文字内容以下并自行换行（窄屏由它吸收压力），text-align:right 让换行后的两行
+   仍贴着右边成为一列小字；text-wrap:pretty 避免末行只剩「生成」这种孤字；
+   overflow-wrap:anywhere 是兜底 —— 万一 model 名比剩余宽度还长，就地断词而不是
+   把徽章挤出卡片。 */
+.ai-provider{
+  margin-left:auto;min-width:0;text-align:right;text-wrap:pretty;
+  font-size:.75rem;color:var(--on-surface-variant);overflow-wrap:anywhere;
+}
 /* AI 全失败时的可见性块（原因 + 常驻 issue 链接），夹在「暂不可用」段之后 */
 .ai-failure{margin:10px 0 0;display:flex;flex-direction:column;gap:4px}
 .ai-failure-line{
@@ -298,6 +331,7 @@ html[data-lang="zh"] .chip{font-size:.76rem;letter-spacing:0}
   color:var(--on-surface-variant);overflow-wrap:anywhere;
 }
 .ai-failure .link{font-size:.8rem;font-weight:650}
+.ai-failure-note{font-size:.78rem;color:var(--on-surface-variant)}
 .ai-headline{margin:0 0 8px;font-size:clamp(1.15rem,3.6vw,1.5rem);line-height:1.25;font-weight:800;letter-spacing:-.015em}
 .ai-summary{margin:0;font-size:.98rem;color:var(--on-surface-variant)}
 .ai-summary.i18n[data-lang]{display:block}
@@ -370,6 +404,14 @@ html[data-lang="zh"] .chip{font-size:.76rem;letter-spacing:0}
   .day{flex-direction:column;gap:4px}
   .row{gap:12px}
 }
+/* 手机宽度：AI 块顶行改成「徽章一行 + provider 旁注整行」。并排时旁注只分到
+   100 多 px，会碎成三四行（还在 model 名中间断词）；整行后它回到一两行、
+   贴着徽章读作一行小字 byline，总高度与并排时几乎相同。徽章仍是一行。
+   （对齐见上方 .ai-badge / .ai-provider 注释。） */
+@media (max-width:430px){
+  .ai-top{flex-wrap:wrap;align-items:baseline;gap:2px 10px}
+  .ai-provider{flex:1 1 100%;margin-left:0;text-align:left;font-size:.72rem}
+}
 @media (max-width:400px){
   .ghbtn{padding:8px 11px}
   .ghbtn-label{display:none}
@@ -380,6 +422,16 @@ html[data-lang="zh"] .chip{font-size:.76rem;letter-spacing:0}
 .foot-note{margin:10px 0 0;font-size:.78rem;color:var(--on-surface-variant);max-width:64em}
 .ai-h3{margin:14px 0 6px;font-size:.95rem;font-weight:800;color:var(--on-surface)}
 .ai-h3:first-child{margin-top:0}
+/* hero 下方 meta 行：只把窗口区间圈出来强调，UTC+8 与「生成于 …」保持原样。
+   用户点名的就是这一段。不写 .hero-sub .mono 泛选 —— report 页 hero-sub 的
+   .mono 是 @handle，泛选会误伤。 */
+.hero-win{font-weight:700}
+/* 中文小标题与英文对标：同一 .95rem 下，汉字（PingFang SC / 微软雅黑）比拉丁字形
+   看起来更细更小 —— 拉丁侧 800 会落到 Segoe UI Semibold/Black，中文侧最多只到
+   700（微软雅黑 Bold），且中文字面本身更"轻"。字号是唯一在两端都稳的杠杆（macOS
+   PingFang 没有 800，加粗请求无效），所以只给中文放大一档并补一点字距，英文侧
+   一个像素都不动。 */
+html[data-lang="zh"] .ai-h3{font-size:1rem;letter-spacing:.01em}
 .card > .trunc-notice:first-child{margin-top:0}
 .list .ai-summary{margin:9px 0 0}
 .byrepo-title{font-size:.92rem;font-weight:750;color:var(--on-surface)}
@@ -389,7 +441,7 @@ html[data-lang="zh"] .chip{font-size:.76rem;letter-spacing:0}
 <body>
 <div class="wrap">
 <div class="topbar"><a class="back" href="./index.html"><span class="i18n" data-lang="en">← All reports</span><span class="i18n" data-lang="zh">← 全部日报</span></a><div class="topbar-right"><a class="ghbtn" href="https://github.com/sogeisetsu" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg><span class="ghbtn-label">GitHub</span></a><div class="langtoggle" role="group" aria-label="Language / 语言"><button type="button" class="langbtn" data-set-lang="en" aria-pressed="true">EN</button><button type="button" class="langbtn" data-set-lang="zh" aria-pressed="false">中文</button></div></div></div>
-<header class="hero"><p class="eyebrow"><span class="i18n" data-lang="en">@sogeisetsu · Last 30 days</span><span class="i18n" data-lang="zh">@sogeisetsu · 近 30 天</span></p><h1><span class="mono">2026-09-18 – 2026-10-17</span> · <span class="i18n" data-lang="en">sogeisetsu: 335 commits, 25 PRs, 52 issues across 16 repos</span><span class="i18n" data-lang="zh">sogeisetsu：16 个仓库共 335 次提交、25 个 PR、52 个 issue</span></h1><p class="hero-sub"><span class="mono">2026-09-18 ~ 2026-10-17 · UTC+8</span><span class="dot">·</span><span class="i18n" data-lang="en">Generated 2026-10-18 18:52 · UTC+8</span><span class="i18n" data-lang="zh">生成于 2026-10-18 18:52 · UTC+8</span></p></header>
+<header class="hero"><p class="eyebrow"><span class="i18n" data-lang="en">@sogeisetsu · Last 30 days</span><span class="i18n" data-lang="zh">@sogeisetsu · 近 30 天</span></p><h1><span class="i18n" data-lang="en">sogeisetsu: 335 commits, 25 PRs, 52 issues across 16 repos</span><span class="i18n" data-lang="zh">sogeisetsu：16 个仓库共 335 次提交、25 个 PR、52 个 issue</span></h1><p class="hero-sub"><span class="mono"><span class="hero-win">2026-09-18 ~ 2026-10-17</span> · UTC+8</span><span class="dot">·</span><span class="i18n" data-lang="en">Generated 2026-10-18 18:52 · UTC+8</span><span class="i18n" data-lang="zh">生成于 2026-10-18 18:52 · UTC+8</span></p></header>
 <div class="stats"><div class="stat"><div class="stat-num">335</div><div class="stat-label"><span class="i18n" data-lang="en">Commits</span><span class="i18n" data-lang="zh">提交</span></div></div><div class="stat"><div class="stat-num">25</div><div class="stat-label"><span class="i18n" data-lang="en">Pull requests</span><span class="i18n" data-lang="zh">PR</span></div></div><div class="stat"><div class="stat-num">52</div><div class="stat-label"><span class="i18n" data-lang="en">Issues</span><span class="i18n" data-lang="zh">Issue</span></div></div><div class="stat"><div class="stat-num">0</div><div class="stat-label"><span class="i18n" data-lang="en">Reviews</span><span class="i18n" data-lang="zh">评审</span></div></div></div>
 <p class="stats-note"><span class="i18n" data-lang="en">335 own commits plus 281 automated commits</span><span class="i18n" data-lang="zh">335 次本人提交，另有 281 次由机器人自动提交</span></p>
 <section class="card"><p class="trunc-notice"><span class="i18n" data-lang="en">The earlier 14 days (2026-09-18 ~ 2026-10-01) were rebuilt from GitHub Search and may be incomplete; stars cannot be rebuilt and releases cover only your own repositories.</span><span class="i18n" data-lang="zh">较早的 14 天（2026-09-18 ~ 2026-10-01）为 Search 重建，可能不完整；星标无法重建、发布只覆盖自有仓库。</span></p></section>

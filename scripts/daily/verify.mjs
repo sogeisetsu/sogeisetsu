@@ -7,8 +7,10 @@
  * 检查项：
  *   A 每日数据 docs/data/<date>.json：JSON/结构、totals 求和、empty 标记、automated 字段
  *   B 交叉一致：data ↔ report 一一对应；index 里每个报告链接都能落到真实文件
- *   C head + 字体（index 与每份报告）：favicon 路径、Chomsky @font-face、--headline 值、
- *     中文 h1 规则、禁用字体名（只看 <head>，正文叙述提到字体名不算）；
+ *   C head + 字体（index 与每份报告）：favicon 路径、Chomsky @font-face（资产仍在，
+ *     但标题栈不得再引用它）、--headline 与 --headline-zh 同字族（中英标题同一字族，
+ *     粗细/字号可分语言）、zh h1 规则用 var(--headline-zh)、禁用字体名（只看 <head>，
+ *     正文叙述提到字体名不算）；
  *     以及 favicon.svg / chomsky.woff2 实体与 wOF2 魔数
  *   D 报告正文：无 "merge:" 提交标题、页脚「不含合并提交」、自动提交说明按
  *     Σ automated 出现（>0 必须有，=0 必须无）、有 AI 叙述时双语 ai-summary 各 ≥1 段、
@@ -21,7 +23,7 @@
  *     等于逐日（docs/data ∪ data/backfill，daily 优先）求和、missing 与实际缺日集合相等
  *   I docs/summary.html：文档结构 + head + 确定数字条与 totals 一致、自动提交相加表述、
  *     缺日标注、有 AI 叙述时双语 ai-summary 块与 headline 逐字、
- *     hero 标题必须含 "windowStart – windowEnd" 区间、ai=null 且有失败记录时有失败卡
+ *     正文含窗口区间且 hero 标题**不含**它（用户 2026-10-18 要求）、ai=null 且有失败记录时有失败卡
  *   J 首页卡片一致性：index 是否含 href="./summary.html"（有 ai 叙述或有可渲染的失败明细）、
  *     双语 headline 逐字、卡片标题含窗口区间、降级时的失败卡
  *   E 打印检查过的数据文件 / 报告 / 回填数量
@@ -174,9 +176,27 @@ function headChecks(label, html, assetPrefix) {
   check(`${label}: Chomsky @font-face`, faceOk, `缺少 url('${fontUrl}') 的 Chomsky @font-face`);
 
   check(
-    `${label}: --headline 以 "Chomsky" 开头`,
-    /--headline\s*:\s*"Chomsky"/.test(head),
-    "--headline 的值不以 \"Chomsky\" 开头"
+    `${label}: 标题字族不含 Chomsky`,
+    // 2026-10-18 改版：标题不再用 Chomsky 黑体字（用户明确要求去掉"丑丑的英文艺术字体"）。
+    // @font-face 与 woff2 资产保留，但任何标题栈都不得再引用它 —— 一旦没人引用，
+    // 浏览器永远不下载它（惰性字节）。这里拦住的是"又把它加回标题"的回退。
+    /--headline\s*:/.test(head) && !/--headline\s*:[^;]*Chomsky/i.test(head),
+    "--headline 又引用了 Chomsky（改版后标题统一用同一衬线字族）"
+  );
+
+  // 中英文标题必须同字族（用户要求：同字族、粗细大小可不同）：--headline-zh 允许写成
+  // var(--headline)（别名）或字面量，两种都归一成 --headline 的值再比。
+  const declOf = (name) => {
+    const m = new RegExp(`--${name}\\s*:\\s*([^;}]+)`).exec(head);
+    return m ? m[1].replace(/\s+/g, " ").trim() : "";
+  };
+  const latinStack = declOf("headline");
+  const zhRaw = declOf("headline-zh");
+  const zhStack = /^var\(--headline\)$/.test(zhRaw) ? latinStack : zhRaw;
+  check(
+    `${label}: 中英文标题同字族`,
+    Boolean(latinStack) && zhStack === latinStack,
+    `--headline=${JSON.stringify(latinStack)} 与 --headline-zh=${JSON.stringify(zhRaw)} 不同字族`
   );
 
   check(
@@ -939,13 +959,23 @@ function main() {
         );
       }
 
-      // 30 天标题必须由代码写死窗口区间（不来自 AI）：hero h1 里必须出现 "WS – WE"
+      // 30 天页的窗口区间由代码写死，但 2026-10-18 用户明确要求**不要**出现在 hero 标题里
+      // （标题只留 headline；区间由下方 hero-sub 的 `2026-09-18 ~ 2026-10-17 · UTC+8` 承担，
+      // eyebrow 另有「近 30 天」）。所以这里改成断言「页面正文里必须有这个区间」，
+      // 并且 hero h1 里**不得**再出现它 —— 两边都锁住，避免回退成重复展示。
       if (typeof summary.windowStart === "string" && typeof summary.windowEnd === "string") {
-        const winLabel = `${summary.windowStart} – ${summary.windowEnd}`;
+        const winTilde = `${summary.windowStart} ~ ${summary.windowEnd}`;
         check(
-          "summary.html: 标题含窗口区间",
-          summaryHtml.includes(winLabel),
-          `页面未出现 ${JSON.stringify(winLabel)}`
+          "summary.html: 正文含窗口区间",
+          summaryHtml.includes(winTilde),
+          `页面正文未出现 ${JSON.stringify(winTilde)}`
+        );
+        const h1 = /<h1>([\s\S]*?)<\/h1>/.exec(summaryHtml);
+        const h1Text = h1 ? h1[1].replace(/<[^>]*>/g, " ") : "";
+        check(
+          "summary.html: hero 标题不含窗口区间",
+          Boolean(h1) && !h1Text.includes(summary.windowStart) && !h1Text.includes(summary.windowEnd),
+          `hero h1 仍含窗口区间：${JSON.stringify(h1Text.trim().slice(0, 120))}`
         );
       }
 

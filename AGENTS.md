@@ -86,12 +86,14 @@ git push
 - Issue/PR 行的评论数（REST 取，含机器人与本人，仅展示用，不进 `totals`；仓库非公开或读取失败则不显示）：**Issue＝会话评论**（`/issues/:n` 的 `comments`），**PR＝会话评论＋行内评审评论**（`/pulls/:n` 的 `comments + review_comments`，与 Replies 段 `issue_comment + review_comment` 口径对齐）；**窗口已关闭的定稿日冻结已存 `docs/data/<date>.json` 里的快照**，重采集不取实时值，避免计数漂移改写定稿页面（「今天」滚动报仍取实时值；`--force` 会一并重取实时值，是口径变更后的逃生口）。重跑已关闭日期时 `replies` / `stateChanges` 可能比原产物多（历史漏采被补录，属修复而非漂移），被冻结的只有评论数这一项。
 - **30 天总结的窗口** = 最近 30 个「已定稿」的 +08 自然日（`cstDayMinus(30)..cstDayMinus(1)`，不含今天）；数据源 = `docs/data` ∪ `data/backfill`，同日两份都有时以 `docs/data` 为准。
 - **总结页的数字条完全由代码求和**（Σ 各日 `totals` / `automatedCommits`），AI 只叙述、不计算；`verify.mjs` 逐项核对，偏了就 FAIL。
-- **总结正文是章节式**：`overview` 3–6 段、约 4200 字符上限，允许行首 `### 小标题`（渲染成 `<h3 class="ai-h3">`），其余 markdown（列表 / 链接 / 表格 / 代码块 / 斜体）继续拒收；**卡片与 hero 标题由代码拼** `窗口区间 · headline`（`2026-09-18 – 2026-10-17 · …`，日期走 `.mono`），AI 只给 headline。
+- **总结正文是章节式**：`overview` 3–6 段、约 4200 字符上限，允许行首 `### 小标题`（渲染成 `<h3 class="ai-h3">`），其余 markdown（列表 / 链接 / 表格 / 代码块 / 斜体）继续拒收。
+- **窗口区间由代码拼**（AI 只给 headline）：**首页卡片**里区间单独成一行、渲染成 chip（`<p class="ai-range"><span class="mono">2026-09-18 – 2026-10-17</span></p>`，样式同 `.chip`）；**总结页 hero 标题不含区间**（用户 2026-10-18 要求：eyebrow 有「近 30 天」、hero-sub 有 `2026-09-18 ~ 2026-10-17 · UTC+8`，标题里再来一遍是重复），区间只在 hero-sub 里加粗（`.hero-win`）。两处文本都必须保持**单元素内连续**（`verify.mjs` 逐字查：卡片查 en-dash 形式、总结页查 `~` 形式且 hero `h1` 不得含区间）。
+- **标题字体**：中英文标题同一字族（`--headline` == `--headline-zh`，系统衬线栈），**不再使用 Chomsky 黑体**；中英文可按语言给不同的字重 / 字号 / 行高（CJK 需要更大的字号与行高）。`verify.mjs` 会挡住"把 Chomsky 加回标题栈"的回退。
 - **AI 块旁注 provider / model**：日报 / 总结页 / 首页卡片都在 AI 徽章右侧显示 `provider / model`（历史数据只有 `aiProvider` 时退化成只有 provider）。
 - **总结的 AI 输出受严格校验**：`highlights` / `byRepo` 里出现的仓库与条目编号必须真实存在于输入数据，链接一律由校验器从输入注入（模型不许给 URL）；**AI 不许提任何条目的评论数**（`comments` 是采集那一刻的实时值）。
 - **`data/backfill/` 是一次性回填**：事件流（`/users/:u/events/public`）只保留最近 300 条 / 90 天，2026-09-16 ~ 10-01 的动作级事件已过期，只能用 Search API（`author:` / `commenter:` / `reviewed-by:` + 日期区间）+ 逐条 REST 校时重建，属**近似**：`stars` 无法重建（留空）、`releases` 只覆盖自有仓库、issue/评审可能偏低、评论数（`comments`）不回填；每个回填文件带 `source: "search-backfill"` 与 `backfillLimits`，页面如实标注。窗口每天前移，这批日期会逐日退出窗口（约 15 天后窗口完全由 `docs/data` 覆盖）。
 - **30 天活动卡片的窗口** = 最近 30 个 +08 自然日、**含今天**（`cstDayMinus(29)..cstDayMinus(0)`），与日报「今天滚动」同口径；`daily` 柱状也按 +08 自然日分桶（不能用 UTC 日期，否则 +08 的 00:00–08:00 会归错天）。卡片线的 `totals` 与日报同一条恒等式：只由**过滤后的公开明细**求和；`contributionsCollection` 的四项标量在 user-scoped token 下含私有贡献，故逐仓 / 逐条按 `isPrivate` / `visibility` 过滤（拿不准一律按不公开），标量只用于对账告警、不进产物。
-- 站点 head 与字体受 `scripts/daily/verify.mjs` 硬约束（改 head / CSS / 渲染层后必跑 `check.mjs`）：必须有 Chomsky `@font-face`、`--headline` 必须以 `"Chomsky"` 开头、favicon 路径与 `docs/assets/fonts/chomsky.woff2` 实体（wOF2 魔数）都在；**`<head>` 里禁用字体名 `Newsreader` / `霞鹜文楷` / `lxgw`**（历史遗留，正文提到不算）。
+- 站点 head 与字体受 `scripts/daily/verify.mjs` 硬约束（改 head / CSS / 渲染层后必跑 `check.mjs`）：必须有 Chomsky `@font-face`（资产保留，但**标题栈不得再引用 Chomsky** —— 2026-10-18 改版去掉了黑体标题）、**`--headline` 与 `--headline-zh` 必须同字族**（中英标题同一字族，粗细/字号允许分语言）、zh h1 规则用 `var(--headline-zh)`、favicon 路径与 `docs/assets/fonts/chomsky.woff2` 实体（wOF2 魔数）都在；**`<head>` 里禁用字体名 `Newsreader` / `霞鹜文楷` / `lxgw`**（历史遗留，正文提到不算）。
 - 代码修改必须走分支：新建分支 → 提交 → 合并回 `main` → push；不要直接在 `main` 上修改。
 - 不擅自新增依赖；改 CI / 改权限前先确认。
 

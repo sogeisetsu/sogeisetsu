@@ -16,7 +16,7 @@
  *     超长 overview 按空行块截断 / headline / teaser 截断不拒收、byRepo 条数随真实仓库数放宽
  *   D 端到端                  —— 假 provider → generateStructured（含纠正重试 2 次）→
  *     renderSummaryPage / summaryCard 的数字、双语、headline、teaser（旧数据回退第一段）、
- *     两个板块标题的条数 pill、缺日标注、窗口前缀标题、### → h3.ai-h3、
+ *     两个板块标题的条数 pill、缺日标注、窗口区间（卡片 chip / hero-sub，h1 不含）、### → h3.ai-h3、
  *     provider/model 旁注、AI 全失败的失败卡（reason 脱敏）
  *   E 临时目录清理
  *
@@ -870,19 +870,29 @@ await check("e2e: 卡片只放 teaser（不带 overview 全文），旧数据回
   ];
 });
 
-// --- 新增回归：窗口前缀标题 / 章节式 h3 / provider 旁注 / 失败卡（均为代码字段，非 AI 文本）
+// --- 新增回归：窗口区间（卡片 chip / 页面 hero-sub）/ 章节式 h3 / provider 旁注 / 失败卡
+//     （均为代码字段，非 AI 文本）
 
-await check("render: 标题带窗口前缀（页面 h1 + 卡片 h2，代码拼装非 AI 文本）", () => {
+await check("render: 窗口区间按 2026-10-18 冻结结构渲染（卡片 chip 独立成行；hero h1 不含区间）", () => {
   if (!e2eSummary) return [["summaryReady", false]];
   const html = renderSummaryPage({ summary: e2eSummary });
   const card = summaryCard({ summary: e2eSummary });
-  const needle = `${c1.windowStart} – ${c1.windowEnd}`; // U+2013 连接两端日期
+  const needle = `${c1.windowStart} – ${c1.windowEnd}`; // U+2013 连接两端日期（卡片 chip）
+  const tilde = `${c1.windowStart} ~ ${c1.windowEnd}`; // 总结页 hero-sub 用 ~
+  const h1 = /<h1>([\s\S]*?)<\/h1>/.exec(html);
+  const h1Text = h1 ? h1[1].replace(/<[^>]*>/g, " ") : "";
+  const cardH2 = /<h2 class="ai-headline">([\s\S]*?)<\/h2>/.exec(card);
+  const cardH2Text = cardH2 ? cardH2[1].replace(/<[^>]*>/g, " ") : "";
   return [
-    ["pageHasNeedle", html.includes(needle)],
-    ["cardHasNeedle", card.includes(needle)],
-    ["pageH1", html.includes(`<h1><span class="mono">${needle}</span> · `)],
-    ["cardH2", card.includes(`<h2 class="ai-headline"><span class="mono">${needle}</span> · `)],
-    ["pageH1NotTilde", !html.includes(`<h1><span class="mono">${c1.windowStart} ~ `)],
+    // 卡片：区间单独一行且是 chip（单元素内连续文本 —— verify 逐字查这一串）
+    ["cardChip", card.includes(`<p class="ai-range"><span class="mono">${needle}</span></p>`)],
+    ["cardChipBeforeH2", card.indexOf('class="ai-range"') < card.indexOf('class="ai-headline"')],
+    ["cardH2NoRange", Boolean(cardH2) && !cardH2Text.includes(c1.windowStart)],
+    ["cardChipCss", html.includes(".ai-range{")], // chip 样式在 pageStyle（整页 head）里，卡片片段本身不带 CSS
+    // 总结页：hero h1 只留 headline，区间由 hero-sub 承担（用户明确要求不重复）
+    ["pageH1NoRange", Boolean(h1) && !h1Text.includes(c1.windowStart) && !h1Text.includes(c1.windowEnd)],
+    ["pageHeroWin", html.includes(`<span class="hero-win">${tilde}</span>`)],
+    ["pageNoEnDash", !html.includes(needle)],
   ];
 });
 
