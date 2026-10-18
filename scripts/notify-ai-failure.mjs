@@ -11,8 +11,10 @@
  *
  *   state=failed → 失败路径
  *     1. 幂等确保存住 label `ai-failure`（gh label create --force，失败忽略）
- *     2. 找常住 open issue（gh issue list --label ai-failure --state open）：
- *        没有就用固定标题 `[ai-failure] AI 叙述生成失败` 建一条；有则追加评论
+ *     2. 找常住 open issue（REST `GET /repos/:o/:r/issues?state=open&labels=ai-failure`，
+ *        不用 `gh issue list --label` —— 后者走 search 索引，刚建好的 issue 看不到，
+ *        会把常住 issue 重复建出来）：没有就用固定标题 `[ai-failure] AI 叙述生成失败`
+ *        建一条；有则追加评论
  *        —— 每次失败 run 恰好一条，正文纯代码拼接（绝不由 AI 参与），
  *        reason 一律先过 sanitizeReason 脱敏：body/comment 里绝不出现
  *        key / token / URL / env 泄露
@@ -29,6 +31,12 @@
  *   记录不存在 → 本次没做 AI 尝试（无变化跳过 / --no-ai）：什么都不做。
  *     **不能把「没有记录」当成已恢复**：CI 每次都是全新 checkout，文件在运行开始时必然不存在，
  *     否则一次跳过 AI 的运行就会误关掉仍然有效的失败 issue。
+ *
+ * 防重复建 issue（实测踩到过）：GitHub 的 issue 列表（REST 与 search 一样）在新建 issue 后
+ * 有数秒到数十秒的可见延迟 —— 每日线与总结线可能紧挨着跑，第二条失败 run 看不到刚建的
+ * 常住 issue，就会再建一条。两道保险：① 决定「创建」之前先多确认几次（只在列表为空时付费，
+ * 追加路径不受影响）；② 一旦发现同时有多个 open 的 ai-failure issue，保留编号最小的那条，
+ * 其余追加说明后关闭（自愈，让历史重复收敛回一条）。
  *
  * 退出码永远为 0：通知器坏了绝不能挡住生成物发布——顶层 catch 把一切异常
  * 降级成 ::warning:: 行后 process.exit(0)；可见性三件套 = 常住 issue +
@@ -68,6 +76,8 @@ const REPO = process.env.GITHUB_REPOSITORY || "sogeisetsu/sogeisetsu";
 const USERNAME = process.env.GITHUB_REPOSITORY_OWNER || "sogeisetsu";
 const LABEL = "ai-failure";
 const ISSUE_TITLE = "[ai-failure] AI 叙述生成失败";
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // ---------------------------------------------------------------- gh 封装
 
@@ -230,28 +240,76 @@ function rerender(record) {
 
 // ---------------------------------------------------------------- 两条路径
 
-/** gh issue list 的公共参数（失败路径与恢复路径共用口径）。 */
-const LIST_ARGS = ["issue", "list", "--repo", REPO, "--label", LABEL, "--state", "open",
-  "--json", "number,url,title", "--limit", "5"];
-
-/** 列出 open 的 ai-failure issue；gh 失败抛错（顶层降级成 warning）。 */
-function listOpenIssues() {
-  const res = gh(LIST_ARGS);
-  if (!res.ok) throw new Error(`gh issue list 失败：${res.stderr || res.stdout || "未知错误"}`);
-  try {
-    return JSON.parse(res.stdout || "[]");
-  } catch {
-    throw new Error(`gh issue list 输出不是合法 JSON：${res.stdout.slice(0, 200)}`);
+/**
+ * 列出 open 的 ai-failure issue。
+ *
+ * 为什么用 REST `/issues` 而不是 `gh issue list --label`：后者走 search/GraphQL，
+ * 新建 issue 有几秒到几分钟的索引延迟 —— 上一次失败刚建好常住 issue、下一次失败
+ * 紧接着跑时 search 还看不到它，于是又建一条（实测复现：#2 之后立刻建出 #3）。
+ * REST 立即一致；代价是要自己滤掉列表里的 pull request（REST /issues 混装 PR）。
+ * 传输类错误（EOF / 超时 / 5xx / 限流）退避重试 2 次，别让一次网络抖动整条失败路径降级。
+ */
+async function listOpenIssues() {
+  const path = `repos/${REPO}/issues?state=open&labels=${encodeURIComponent(LABEL)}&per_page=20`;
+  let res;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    if (attempt > 0) await sleep(1000 * attempt);
+    res = gh(["api", path]);
+    if (res.ok) break;
+    const err = `${res.stderr} ${res.stdout}`;
+    if (!/EOF|timeout|timed out|connection|TLS|502|503|504|rate limit/i.test(err)) break;
+    console.log(`::warning::AI 失败可见性：gh api issues 失败（${err.trim()}），重试`);
   }
+  if (!res.ok) throw new Error(`gh api issues 失败：${res.stderr || res.stdout || "未知错误"}`);
+  let arr;
+  try {
+    arr = JSON.parse(res.stdout || "[]");
+  } catch {
+    throw new Error(`gh api issues 输出不是合法 JSON：${res.stdout.slice(0, 200)}`);
+  }
+  if (!Array.isArray(arr)) throw new Error("gh api issues 输出不是数组");
+  return arr
+    .filter((i) => i && typeof i === "object" && !i.pull_request)
+    .map((i) => ({ number: i.number, url: i.html_url, title: i.title }))
+    .sort((a, b) => a.number - b.number);
+}
+
+/**
+ * 「确定没有 open 的常住 issue」再动手的版本：只在列表为空时多确认几次。
+ * 新建 issue 在 GitHub 列表侧有几秒可见延迟；不确认就会把常住 issue 建成一对。
+ * 追加路径（列表非空）不受影响，零额外等待。
+ */
+async function listOpenIssuesSettled() {
+  const waits = [3000, 6000, 10000]; // 累计 ~19s，远小于一次 AI 尝试的耗时
+  let issues = await listOpenIssues();
+  for (const ms of waits) {
+    if (issues.length > 0) return issues;
+    await sleep(ms);
+    issues = await listOpenIssues();
+  }
+  return issues;
 }
 
 /** 失败路径：建/评论常住 issue → 回写 → 重渲染。返回单行摘要。 */
-function failurePath(record) {
+async function failurePath(record) {
   const body = buildFailureBody(record);
-  const issues = listOpenIssues();
+  const found = await listOpenIssuesSettled();
   let issue;
-  if (issues.length > 0) {
-    issue = issues[0];
+  if (found.length > 0) {
+    issue = found[0];
+    // 自愈：历史上可能因为可见延迟建出多条，保留编号最小的一条，其余追加说明后关闭
+    for (const extra of found.slice(1)) {
+      gh(
+        ["issue", "comment", String(extra.number), "--repo", REPO, "--body-file", "-"],
+        { input: `重复的常住 issue（同一 label \`${LABEL}\`），已合并到 #${issue.number}。` }
+      );
+      const closed = gh(["issue", "close", String(extra.number), "--repo", REPO]);
+      console.log(
+        closed.ok
+          ? `${LOG} 已合并重复的常住 issue #${extra.number} → #${issue.number}`
+          : `::warning::AI 失败可见性：关闭重复 issue #${extra.number} 失败（${closed.stderr || closed.stdout}）`
+      );
+    }
     const res = gh(["issue", "comment", String(issue.number), "--repo", REPO, "--body-file", "-"], { input: body });
     if (!res.ok) throw new Error(`gh issue comment 失败：${res.stderr || res.stdout || "未知错误"}`);
     console.log(`${LOG} 已在 issue #${issue.number} 追加失败评论`);
@@ -266,7 +324,7 @@ function failurePath(record) {
     if (m) {
       issue = { number: Number(m[1]), url: res.stdout };
     } else {
-      const again = listOpenIssues();
+      const again = await listOpenIssues();
       if (!again.length) throw new Error("gh issue create 成功但拿不到 issue 编号");
       issue = again[0];
     }
@@ -275,12 +333,12 @@ function failurePath(record) {
 
   writeBackIssue(record, issue);
   rerender(record);
-  return `失败记录存在 → issue #${issue.number} ${issues.length > 0 ? "已追加评论" : "已创建"}，已回写并重渲染`;
+  return `失败记录存在 → issue #${issue.number} ${found.length > 0 ? "已追加评论" : "已创建"}，已回写并重渲染`;
 }
 
 /** 恢复路径：有 open issue 才动作（补「已恢复」评论并关闭），否则什么都不做。 */
-function recoveryPath() {
-  const issues = listOpenIssues();
+async function recoveryPath() {
+  const issues = await listOpenIssuesSettled();
   if (!issues.length) return "本次 AI 成功，且无 open 的 ai-failure issue，无需动作";
   const now = new Date().toISOString();
   const lines = [`已恢复：本次运行 AI 叙述生成成功（${now}）`];
@@ -319,7 +377,7 @@ function appendStepSummary(markdown) {
   }
 }
 
-function main() {
+async function main() {
   // 1. label 幂等确保：已存在时 --force 等价于更新描述/颜色，任何失败都忽略（只是装饰性前置）
   gh(["label", "create", LABEL, "--repo", REPO, "--color", "B60205", "--description", "AI 叙述生成失败（常住）", "--force"]);
 
@@ -332,16 +390,16 @@ function main() {
   if (!record) {
     summary = "无 run 级记录（本次未做 AI 尝试），不动作";
   } else if (record.state === "ok") {
-    summary = recoveryPath();
+    summary = await recoveryPath();
   } else {
-    summary = failurePath(record);
+    summary = await failurePath(record);
   }
   console.log(`${LOG} ${summary}`);
   appendStepSummary(`**AI 失败可见性**：${summary}`);
 }
 
 try {
-  main();
+  await main();
 } catch (err) {
   // 任何异常都不许逃逸：通知器坏了绝不能挡住生成物发布
   console.log(`::warning::AI 失败可见性：${errMessage(err)}`);
