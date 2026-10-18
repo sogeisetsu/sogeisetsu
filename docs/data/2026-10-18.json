@@ -3,10 +3,10 @@
   "windowStart": "2026-10-18T00:00:00+08:00",
   "windowEnd": "2026-10-19T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-18T10:56:38.404Z",
+  "generatedAt": "2026-10-18T10:59:14.502Z",
   "empty": false,
   "totals": {
-    "commits": 8,
+    "commits": 9,
     "prs": 0,
     "issues": 1,
     "reviews": 0
@@ -48,9 +48,14 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 2,
+      "count": 3,
       "own": true,
       "messages": [
+        {
+          "sha": "c3aa83a5c3e80c6c2374974c8e3fccf4458823ed",
+          "message": "fix(verify): 自动提交「相加表述」不变式不再扫全文",
+          "ts": "2026-10-18T10:58:40Z"
+        },
         {
           "sha": "70e8af4d68015da54686a1fd86cb2824a89abe9a",
           "message": "fix(ai): notifier 失败时页面退化为「未取到 issue 链接」",
@@ -62,7 +67,7 @@
           "ts": "2026-10-18T10:46:56Z"
         }
       ],
-      "automated": 18,
+      "automated": 19,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -82,7 +87,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 18,
+  "automatedCommits": 19,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -278,18 +283,18 @@
   ],
   "ai": {
     "en": {
-      "headline": "8 own commits across three repos; 18 automated commits by github-actions[bot]",
-      "summary": "Across three repositories the user made **8 own commits**, and `github-actions[bot]` also produced 18 automated commits. In `sogeisetsu/opencode-skill-management`, 5 commits tidied documentation: dropping references to a removed doc, moving plans into `.openchamber/plans`, adding a Steps checklist with corrected cross-references, normalizing line endings to LF, and revising the `skill_management` spec plus a feasibility evaluation. The 2 commits in `sogeisetsu/sogeisetsu` improved AI-failure visibility and model labeling, adding a 30-day summary redesign and degrading pages to an \"issue link not retrieved\" state when the notifier fails. A single commit in `sogeisetsu/opencode-agent-sandbox` added an `opencode-provider` knowledge category covering catalog sources, credential ownership, endpoints, and OpenChamber governance. The only issue activity was a comment on `openchamber/openchamber` issue #4939 about text selected inside an `openchamber_render` page never opening the comment menu, which carried 2 comments in total. Two replies arrived in existing issues: `btriapitsyn` confirmed #4601's thinking-level bug was fixed in `7d037b07d`, and `yulia-ivashko` reported #4899's export-resolution bug as unreproducible. Three issues in `openchamber/openchamber` were closed by `btriapitsyn` (#4896, #4920, #4601).",
+      "headline": "9 own commits plus 19 automated; commented on a bug and started a discussion",
+      "summary": "Across 3 repositories, **9 own commits** were made: in `opencode-skill-management`, 5 commits revised the `skill_management` spec (removing stale doc references, relocating plans to `.openchamber/plans`, adding Steps checklists, unifying line endings to LF, and publishing a revised spec with feasibility evaluation); in `sogeisetsu`, 3 commits fixed the verify invariant scanner, added notifier graceful degradation, and shipped AI failure visibility with model annotation and a 30-day summary redesign — **19 automated commits** by `github-actions[bot]` were also recorded; in `opencode-agent-sandbox`, 1 commit documented a new `opencode-provider` knowledge category covering catalog sources, credential ownership, and endpoint jurisdiction. The user commented on `openchamber/openchamber` `#4939` (2 comments), started discussion `#5114` titled \"Split the rendered-page selection-menu fix: frame→host selection bridge first (#4939)\", and received replies on `#4601` and `#4899`. Three state changes were observed: `#4896`, `#4920`, and `#4601` were closed by `btriapitsyn`.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "三个仓库共 8 次本人提交，另有 18 次 github-actions[bot] 自动提交",
-      "summary": "用户在三个仓库共完成 **8 次本人提交**，此外 `github-actions[bot]` 还产生了 18 次自动提交。在 `sogeisetsu/opencode-skill-management` 中，5 次提交用于整理文档：删除对已移除文档的引用、把计划改存到 `.openchamber/plans`、补充 Steps 清单并修正交叉引用、统一换行符为 LF，以及修订 `skill_management` 规范并做可行性评测。`sogeisetsu/sogeisetsu` 的 2 次提交提升了 AI 失败的可见性与模型标注，加入 30 天总结改版，并在 notifier 失败时让页面退化为「未取到 issue 链接」。`sogeisetsu/opencode-agent-sandbox` 的 1 次提交新增了 `opencode-provider` 知识类别，涵盖 catalog 三层来源、凭据归属、端点与 OpenChamber 管辖。唯一的 issue 动态是在 `openchamber/openchamber` 的 issue #4939 上留言，内容是关于 `openchamber_render` 页面内选中文本始终不弹出评论菜单，该 issue 共有 2 条评论。另有 2 条回复出现在既有 issue 中：`btriapitsyn` 确认 #4601 的思考等级问题已在 `7d037b07d` 修复，`yulia-ivashko` 则表示 #4899 的导出分辨率问题无法复现。`openchamber/openchamber` 中有 3 个 issue 被 `btriapitsyn` 关闭（#4896、#4920、#4601）。用户还发起了讨论 #5114，建议把渲染页面选择菜单的修复拆开，先落地 frame→host 的选择桥接。",
+      "headline": "9 次本人提交另有 19 次自动提交；评论了 bug 并发起讨论",
+      "summary": "在 3 个仓库中共有 **9 次本人提交**：在 `opencode-skill-management` 中，5 次提交修订了 `skill_management` 规范（删除失效文档引用、将计划迁移至 `.openchamber/plans`、补充 Steps 清单、统一换行符为 LF、发布修订版规范并附可行性评测）；在 `sogeisetsu` 中，3 次提交修复了验证不变式扫描器、增加 notifier 优雅降级、新增 AI 失败可见性与模型标注及 30 天总结改版——**另有 19 次由 `github-actions[bot]` 自动提交**；在 `opencode-agent-sandbox` 中，1 次提交记录了新增的 `opencode-provider` 知识类别（涵盖 catalog 来源、凭据归属与端点管辖）。用户在 `openchamber/openchamber` 的 `#4939` 下评论（共 2 条评论），发起了讨论 `#5114`（标题为 \"Split the rendered-page selection-menu fix: frame→host selection bridge first (#4939)\"），并收到了 `#4601` 和 `#4899` 的回复。观察到 3 项状态变更：`#4896`、`#4920` 和 `#4601` 由 `btriapitsyn` 关闭。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "efe683f43ec7a3fef52f73b4c1889e4639227bb3f0acb49f7f0c2103fd4eed5c"
+  "dataHash": "b5caf97cfd517561bb86dc8358965d793b8beac0176a03397c551097918a36a1"
 }
