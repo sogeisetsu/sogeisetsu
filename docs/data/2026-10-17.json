@@ -3,7 +3,7 @@
   "windowStart": "2026-10-17T00:00:00+08:00",
   "windowEnd": "2026-10-18T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-17T16:51:00.046Z",
+  "generatedAt": "2026-10-18T10:48:50.008Z",
   "empty": false,
   "totals": {
     "commits": 24,
@@ -283,6 +283,10 @@
       "total": 0
     },
     {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "total": 0
+    },
+    {
       "repo": "sogeisetsu/ownsalesforcelearnbook",
       "total": 0
     },
@@ -338,28 +342,30 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "24 commits across three repos, opencode-go-model-picker released v1.4.0",
-      "summary": "sogeisetsu made **24 own commits** across three repositories plus 35 automated commits by github-actions[bot], all in sogeisetsu/sogeisetsu. In `sogeisetsu/sogeisetsu`, they initialized a codemap with directory mappings and Atlas, fixed the activity card to use +08 natural-day windows with public-data-only counting, improved AI retry logic for empty-content responses, and added repository count pills to `docs/summary.html`. In `sogeisetsu/opencode-go-model-picker`, they released v1.4.0, fixed scripts from a prior review with atomic snapshot writes, enhanced `discover-agents` to emit full inventory records and report skipped built-ins, and added a version badge derived from `SKILL.md`. In `sogeisetsu/opencode-agent-sandbox`, they corrected outdated knowledge entries on subcommands, skill counts, and Windows ports, and added remote-branch-deletion guidance. They commented on issues #50823 and #56113 in `anomalyco/opencode`, commented on and closed #55785. No PRs or reviews were made.",
+      "headline": "24 own commits plus 35 automated; v1.4.0 shipped, MiMo vision issues triaged",
+      "summary": "**24** own commits across three repos, plus **35 automated commits by `github-actions[bot]`** in `sogeisetsu/sogeisetsu`. That repo's 17 commits advanced the codemap baseline, redrew `repo-overview.excalidraw` as a \"三问矩阵\", fixed the activity-card window to +08 natural days, and added count pills to `docs/summary.html`. In `sogeisetsu/opencode-go-model-picker`, 5 commits shipped v1.4.0 with atomic JSON-write and proxy helpers, richer `discover-agents.mjs` output (`mode`, `hidden`, `traits`, `provenance.fetchedAt`, `skippedBuiltins`), and atomic snapshot writes. In `sogeisetsu/opencode-agent-sandbox`, 2 commits corrected stale knowledge-base conclusions and added a remote-branch-deletion check. I commented on `anomalyco/opencode` issues #50823, #56113, and #55785, and closed #55785. No PRs or reviews were submitted.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v1.4.0",
-          "summary": "Introduced shared helper scripts for BOM-safe JSON reading and atomic snapshot writes with proxy support across network scripts. Enhanced `discover-agents` to emit full inventory records (mode, hidden, traits, provenance.fetchedAt) and report skipped built-ins under `skippedBuiltins`. Added a version badge derived from `SKILL.md` to detect version drift."
+          "summary": "Added shared helpers for atomic JSON writes (temp file + rename) and proxy-aware script re-runs, so all four network scripts respect a configured proxy. `scripts/discover-agents.mjs` now emits `mode`, `hidden`, `traits`, `provenance.fetchedAt`, and `skippedBuiltins` for a more complete agent inventory. Atomic snapshot writes with loud failure on unreadable snapshots round out the changes."
         }
       ]
     },
     "zh": {
-      "headline": "三个仓库提交 24 次，opencode-go-model-picker 发布 v1.4.0",
-      "summary": "sogeisetsu 在三个仓库提交 **24 次**，另有 35 次由 github-actions[bot] 自动提交（均在 sogeisetsu/sogeisetsu）。在 `sogeisetsu/sogeisetsu` 中，初始化了 codemap（目录映射 + Atlas），修复活动卡片改用 +08 自然日窗口并只统计公开数据，改进了空响应时的 AI 重试逻辑，并为 `docs/summary.html` 补上仓库条数 pill。在 `sogeisetsu/opencode-go-model-picker` 中发布 v1.4.0，修复脚本引入原子快照写入，增强 `discover-agents` 输出完整清单并报告被跳过的内置项，并新增基于 `SKILL.md` 的版本徽章。在 `sogeisetsu/opencode-agent-sandbox` 中修正了过期的子命令列表、skill 数量和 Windows 端口文档，并补充了远程分支删除检查。在 `anomalyco/opencode` 评论了 #50823 和 #56113，并评论后关闭了 #55785。当日无 PR 和代码审查。",
+      "headline": "24 次本人提交，另有 35 次自动提交；v1.4.0 发布，MiMo 视觉问题已处理",
+      "summary": "当天在三个仓库共产生 **24** 次本人提交，`sogeisetsu/sogeisetsu` 另有 **35 次由 `github-actions[bot]` 自动提交**。该仓库 17 次提交推进了 codemap 基线、将 `repo-overview.excalidraw` 重画为「三问矩阵」、修正活动卡片为 +08 自然日窗口，并为 `docs/summary.html` 补上条数 pill。`sogeisetsu/opencode-go-model-picker` 的 5 次提交发布了 v1.4.0，新增原子化 JSON 写入与代理支持、更完整的 `discover-agents.mjs` 输出（`mode`、`hidden`、`traits`、`provenance.fetchedAt`、`skippedBuiltins`）以及原子化快照写入。`sogeisetsu/opencode-agent-sandbox` 的 2 次提交修正了知识库中的过期结论并补充了远程分支删除检查。我在 `anomalyco/opencode` 的 #50823、#56113 和 #55785 上发表了评论，并关闭了 #55785。当天无 PR 提交或代码审查。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v1.4.0",
-          "summary": "引入共享辅助脚本（安全读取含 BOM 的 JSON、原子快照写入、代理支持），增强 `discover-agents` 输出完整清单记录（mode、hidden、traits、provenance.fetchedAt）并在 `skippedBuiltins` 中报告被跳过的内置项。新增基于 `SKILL.md` 的版本徽章以检测版本漂移。"
+          "summary": "新增原子化 JSON 写入（临时文件后重命名）与代理感知的脚本重跑等共享辅助函数，使四个网络脚本均可遵循已配置的代理。`scripts/discover-agents.mjs` 现输出 `mode`、`hidden`、`traits`、`provenance.fetchedAt` 及 `skippedBuiltins`，提供更完整的 agent 清单。原子化快照写入及不可读快照的报错机制进一步完善了脚本健壮性。"
         }
       ]
     }
   },
   "aiProvider": "opencode-go-longcat",
-  "dataHash": "7b9fb7d3b865ff8bd525c77d537d6eb754948d895b643350ef5e0af78fc7f9de"
+  "aiModel": "longcat-2.5-preview-free",
+  "aiFailure": null,
+  "dataHash": "233427282a08f8309a4826109b34beb67893b5e9d8ed6d1503c58e38a4742559"
 }
