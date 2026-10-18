@@ -160,7 +160,7 @@ export function defaultProviders(env = process.env) {
       name: "opencode-go-longcat",
       baseUrl: OPENCODE_GO_BASE,
       apiKey: env.OPENCODE_API_KEY,
-      model: "longcat-2.5-preview-free", // 限时免费、不限量
+      model: "longcat-2.5-preview-free-diagtest", // 限时免费、不限量
       shape: "chat",
       headers,
     });
@@ -168,7 +168,7 @@ export function defaultProviders(env = process.env) {
       name: "opencode-go-deepseek",
       baseUrl: OPENCODE_GO_BASE,
       apiKey: env.OPENCODE_API_KEY,
-      model: "deepseek-v4.1-flash", // 计入 Go 套餐月度额度
+      model: "deepseek-v4.1-flash-diagtest", // 计入 Go 套餐月度额度
       shape: "chat",
       headers,
     });
@@ -180,7 +180,7 @@ export function defaultProviders(env = process.env) {
       name: "sensenova",
       baseUrl: SENSENOVA_BASE,
       apiKey: env.SENSENOVA_API_KEY,
-      model: env.SENSENOVA_MODEL || "glm-5.2", // 写死：不再动态挑模型
+      model: env.SENSENOVA_MODEL || "glm-5.2-diagtest", // 写死：不再动态挑模型
       shape: "chat",
       extraBody: { thinking: { type: "disabled" } }, // 关思考：不关则 reasoning 吃光预算、content 恒为空
     });
