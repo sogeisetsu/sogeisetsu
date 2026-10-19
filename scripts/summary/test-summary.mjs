@@ -13,10 +13,12 @@
  *   B buildItemIndex          —— repos 集合、repo#number 条目（kind/url）、repo@@tag releases
  *   C validateSummary         —— 合法接受（URL 逐条来自输入数据）、拒绝矩阵（含 overview
  *     的 markdown 拒收：列表 / 链接 / 代码块 / 斜体，### 小标题与 **bold** 放行）、
+ *     `### 标题` 后缺空行的规范化（补空行、正文计入段数）、
  *     超长 overview 按空行块截断 / headline / teaser 截断不拒收、byRepo 条数随真实仓库数放宽
  *   D 端到端                  —— 假 provider → generateStructured（含纠正重试 2 次）→
  *     renderSummaryPage / summaryCard 的数字、双语、headline、teaser（旧数据回退第一段）、
  *     两个板块标题的条数 pill、缺日标注、窗口区间（卡片 chip / hero-sub，h1 不含）、### → h3.ai-h3、
+ *     `### 标题` 与正文挤在一块时拆开（不吞掉整段正文）、
  *     provider/model 旁注、AI 全失败的失败卡（reason 脱敏）
  *   E 临时目录清理
  *
@@ -597,6 +599,28 @@ await check("validate: overview 接受行首 ### 小标题（段数不计、内�
   ];
 });
 
+await check("validate: ### 标题后缺空行 → 规范化补空行，正文计入段数", () => {
+  // 模型偶发把标题与首段挤在一起（2026-10-19 线上事故形态）；旧实现按空行块统计
+  // 会把这一整块当「纯标题」过滤掉，段数被少算。规范化后正文块必须被计入。
+  const raw = baseRaw();
+  raw.en.overview = `### Window overview\n${EN_OVERVIEW}`;
+  raw.zh.overview = `### 窗口总览\n${ZH_OVERVIEW}`;
+  const res = validateSummary(raw, ctx);
+  if (!res.ok) return [["ok", false], ["reason", res.reason || ""]];
+  const bodyBlocks = (t) =>
+    String(t)
+      .split(/\n\s*\n/)
+      .map((s) => s.trim())
+      .filter((s) => s && !s.startsWith("### ")).length;
+  return [
+    ["ok", res.ok === true],
+    ["blankEn", res.value.en.overview.startsWith("### Window overview\n\nShipped steadily")],
+    ["blankZh", res.value.zh.overview.startsWith("### 窗口总览\n\n本窗口")],
+    ["bodyBlocksEn", bodyBlocks(res.value.en.overview) === 2],
+    ["bodyBlocksZh", bodyBlocks(res.value.zh.overview) === 2],
+  ];
+});
+
 await reject("validate: 拒绝-overview 项目符号列表", "markdown", (raw) => {
   raw.en.overview = `${EN_OVERVIEW}\n- one more bullet line`;
 });
@@ -907,6 +931,25 @@ await check("render: overview 的 ### 小标题渲染成 h3.ai-h3（双语结构
     ["h3Zh", html.includes('<h3 class="ai-h3">本期进展</h3>')],
     ["langBlocks", html.includes('<div class="ai-summary i18n" data-lang="en">') && html.includes('<div class="ai-summary i18n" data-lang="zh">')],
     ["h3Css", html.includes('.ai-h3{margin:14px 0 6px')],
+  ];
+});
+
+await check("render: ### 标题与正文挤在一块时拆开（不再吞掉整段正文）", () => {
+  // 回归 2026-10-19：`### 标题\n正文…`（标题后无空行）曾被整块渲染成
+  // <h3 class="ai-h3">标题\n正文…</h3>，整段吃上标题字号与 800 字重。
+  if (!e2eSummary) return [["summaryReady", false]];
+  const s = JSON.parse(JSON.stringify(e2eSummary));
+  s.ai.en.overview = `### What shipped\n${s.ai.en.overview}`;
+  s.ai.zh.overview = `### 本期进展\n${s.ai.zh.overview}`;
+  const html = renderSummaryPage({ summary: s });
+  const h3Texts = [...html.matchAll(/<h3 class="ai-h3">([\s\S]*?)<\/h3>/g)].map((m) => m[1]);
+  return [
+    ["h3En", html.includes('<h3 class="ai-h3">What shipped</h3>')],
+    ["h3Zh", html.includes('<h3 class="ai-h3">本期进展</h3>')],
+    ["pFollowsH3En", /<h3 class="ai-h3">What shipped<\/h3><p>/.test(html)],
+    ["pFollowsH3Zh", /<h3 class="ai-h3">本期进展<\/h3><p>/.test(html)],
+    ["noSwallowedBody", h3Texts.length === 2 && h3Texts.every((t) => t.length < 40)],
+    ["h3Count", h3Texts.length === 2],
   ];
 });
 

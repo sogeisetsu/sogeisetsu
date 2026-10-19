@@ -17,6 +17,8 @@
  *   · overview 是章节式：3–6 段正文（### 小标题不计入段数），行首 `### ` 唯一放行的
  *     块级标记（渲染层切成 <h3 class="ai-h3">），其余 markdown（列表 / 链接 / 表格 /
  *     代码块 / 斜体 / 其他层级标题 / 引用）一律拒收，reason 带 "markdown" 供纠正提示命中。
+ *     入库前先 normalizeOverview：`### 标题` 与正文之间缺空行（模型偶发）时补一个空行，
+ *     保证段数统计与渲染层分块都拿到规范形态（不拒收、不重试）。
  *   · 段数上限不砍真实内容：highlights 固定 8 条；byRepo 的上限随 ctx.repos 放大
  *     （提示词要求「每个有活动的仓库都要有一条」，固定 8 条会把真实仓库悄悄截掉），
  *     只在 24 条硬顶上收口。缺仓库仍不拒收 —— 按约定只在提示词里要求。
@@ -84,6 +86,33 @@ function countBodyBlocks(text) {
     .map((s) => s.trim())
     .filter((s) => s && !s.startsWith("### "))
     .length;
+}
+
+/**
+ * 章节式 overview 入库规范化：`### 小标题` 与紧随其后的正文之间必须空行分隔。
+ *
+ * 为什么要有这一道（2026-10-19 线上事故）：模型偶发不守提示词，把标题与首段
+ * 挤在一起（`### 标题\n正文…`）。渲染层是按空行分块的，旧实现会把「标题＋整段
+ * 正文」当成一个标题块，整段套上 <h3 class="ai-h3"> 的字号与 800 字重（小章节
+ * 全部消失）。在数据层先把形态摆正，`countBodyBlocks()` / `fitOverviewByBlock()`
+ * / render 的 `splitBlocks()` 就不必各自打补丁，后续任何消费者拿到的都是规范形态。
+ *
+ * 只补这一处：`### ` 行的下一行非空且不是另一个 `### ` 时插入一个空行。
+ * 不拒收、不触发重试 —— 这是确定性兜底，不能因为模型的小毛病把好输出打成重试循环。
+ */
+function normalizeOverview(text) {
+  const lines = String(text).replace(/\r\n?/g, "\n").split("\n");
+  const out = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    out.push(line);
+    if (!line.trim().startsWith("### ")) continue;
+    const next = lines[i + 1];
+    if (next === undefined) continue;
+    const nt = next.trim();
+    if (nt && !nt.startsWith("### ")) out.push("");
+  }
+  return out.join("\n");
 }
 
 /** 在文本里找第一个被禁的 markdown 标记，返回「列表/链接/…」标签或 null。 */
@@ -170,10 +199,12 @@ export function validateSummary(raw, ctx) {
     const teaser = fitText(teaserRaw, TEASER_MAX_CHARS, 1, 2);
     if (!teaser) return { ok: false, reason: `${lang}.teaser 为空` };
 
-    // --- overview：非空 → 句数 → 正文块数（### 小标题不计）→ markdown 拒收 →
-    //     评论数禁令（看原文，不看截断后）→ 超长按空行块截断
-    const overviewRaw = String(sec.overview ?? "").trim();
-    if (!overviewRaw) return { ok: false, reason: `${lang}.overview 为空` };
+    // --- overview：非空 → 规范化（### 标题后补空行）→ 句数 → 正文块数
+    //     （### 小标题不计）→ markdown 拒收 → 评论数禁令（看原文，不看截断后）
+    //     → 超长按空行块截断
+    const trimmed = String(sec.overview ?? "").trim();
+    if (!trimmed) return { ok: false, reason: `${lang}.overview 为空` };
+    const overviewRaw = normalizeOverview(trimmed);
     const sentences = countSentences(overviewRaw);
     if (sentences < OVERVIEW_MIN_SENTENCES) {
       return { ok: false, reason: `${lang}.overview 句数不足（${sentences} < ${OVERVIEW_MIN_SENTENCES}）` };

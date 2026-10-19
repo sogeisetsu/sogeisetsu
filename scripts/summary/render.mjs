@@ -88,18 +88,45 @@ function extLink(url, text) {
 // ---------------------------------------------------------------- 双语正文
 
 /**
- * 章节式正文切块：只按空行（`/\n\s*\n/`）分块，绝不在句末标点处切。
- * 首行（trim 后）以 `### ` 开头的块 → { type: 'h' }，并剥掉行首的 `### `
- * （渲染成 <h3 class="ai-h3">）；其余块 → { type: 'p' }；空块丢弃。
+ * 章节式正文切块：先按空行（`/\n\s*\n/`）分块，块内再**逐行**识别 `### `，
+ * 绝不在句末标点处切。
+ *
+ * 为什么是行级而不是「块首判断」（2026-10-19 线上事故）：模型偶发不守提示词，
+ * 把 `### 小标题` 与紧随其后的正文挤在同一块里（标题后没有空行）。旧实现只看
+ * 块首 —— 整块被当成标题，`### 标题\n一整段正文` 全部塞进 <h3 class="ai-h3">，
+ * 于是标题字号/800 字重作用到整段上、小章节消失。行级状态机让标题与正文必然
+ * 分成两块的「标题」与「正文」，已发布的坏数据只要 --rerender 即可恢复。
+ *
+ * 规则：
+ *   · 以 `### ` 开头的行（trim 后）→ flush 已累积的正文缓冲为 { type: 'p' }，
+ *     再产出 { type: 'h', text: 剥掉 `### ` 后的行内容 }；空标题（如 `###`）不产出
+ *     h 块（与旧行为一致 —— `'###'.startsWith('### ')` 为假）；
+ *   · 其余行累积进正文缓冲，块内软换行原样保留在 <p> 里（HTML 会折叠）；
+ *   · 空缓冲不产出空 <p>（`### 标题` 后无正文 → 只有 h 块）。
  */
 export function splitBlocks(text) {
   const src = S(text).replace(/\r\n?/g, '\n');
   const out = [];
-  for (const raw of src.split(/\n\s*\n/)) {
-    const block = raw.trim();
+  for (const rawBlock of src.split(/\n\s*\n/)) {
+    const block = rawBlock.trim();
     if (!block) continue;
-    if (block.startsWith('### ')) out.push({ type: 'h', text: block.slice(4).trim() });
-    else out.push({ type: 'p', text: block });
+    let buf = [];
+    const flush = () => {
+      const t = buf.join('\n').trim();
+      if (t) out.push({ type: 'p', text: t });
+      buf = [];
+    };
+    for (const line of block.split('\n')) {
+      const t = line.trim();
+      if (t.startsWith('### ')) {
+        flush();
+        const heading = t.slice(4).trim();
+        if (heading) out.push({ type: 'h', text: heading });
+      } else {
+        buf.push(line);
+      }
+    }
+    flush();
   }
   return out;
 }
