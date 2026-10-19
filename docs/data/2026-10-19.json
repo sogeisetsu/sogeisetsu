@@ -3,7 +3,7 @@
   "windowStart": "2026-10-19T00:00:00+08:00",
   "windowEnd": "2026-10-20T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-19T08:51:10.404Z",
+  "generatedAt": "2026-10-19T10:51:10.638Z",
   "empty": false,
   "totals": {
     "commits": 9,
@@ -63,13 +63,13 @@
           "ts": "2026-10-18T16:44:31Z"
         }
       ],
-      "automated": 19,
+      "automated": 21,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 19,
+  "automatedCommits": 21,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -296,18 +296,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "9 commits verify AI diagnosis and activity pagination fix, close temp smoke",
-      "summary": "Today had **9 own commits** in `sogeisetsu/sogeisetsu` (plus 19 automated commits by `github-actions[bot]`). Commits covered: fixing `opencode.yml` where GitHub expressions lack `toLower`; adding AI all-failure auto-diagnosis with `/oc` manual diagnostic entry; fixing activity event pagination treating HTTP 422 as fatal; fixing `summary` window assertion comparing against 'today's today' as root cause of overnight failures; refreshing codemap baselines to `46667bc` and `4719825`; and a series of temporary acceptance tests on `/oc` login gate and model id with subsequent revert.\n\nIssue activity totaled 5 operations, all on `#9` (`[test] opencode /oc smoke`): opened the issue, commented 3 times, then closed it.\n\nReceived 3 replies: `github-actions[bot]` replied 2 times under `#9` (AI diagnosis evidence-missing explanation and pong response), `yulia-ivashko` replied 1 time under `openchamber/openchamber` `#4899`. Additionally, `openchamber/openchamber` `#4111` and `#4899` were both closed by `yulia-ivashko`. No releases, PRs, reviews, or discussion activity.",
+      "headline": "sogeisetsu 修复 CI 与活动分页问题，新增 AI 失败自动诊断功能",
+      "summary": "`sogeisetsu` made **9 own commits** to `sogeisetsu/sogeisetsu` plus 21 automated commits by `github-actions[bot]`. Key fixes include: `opencode.yml` no longer uses `toLower` (unavailable in GitHub expressions), `check.yml` summary window assertion no longer hard-compares against \"today\" (root cause of midnight failures), and event pagination treats HTTP 422 as non-fatal by relying on the `Link` header. A new feature adds AI failure auto-diagnosis with a manual `/oc` fallback entry. Two temporary test commits verified the \"non-owner comment → skipped\" path and forced a real AI failure, then were reverted. The user opened or closed 5 issues, all being issue #9 (`[test] opencode /oc smoke（临时，验完即关）`) which was opened, commented on 3 times, and then closed with 5 total comments. In `openchamber/openchamber`, issues #4111 and #4899 were both closed by `yulia-ivashko`. Three replies were received: one from `yulia-ivashko` on `openchamber/openchamber#4899` and two from `github-actions[bot]` on `sogeisetsu/sogeisetsu#9`.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "9 次提交验证 AI 诊断与活动分页修复，关闭临时 smoke 测试 issue",
-      "summary": "今日在 `sogeisetsu/sogeisetsu` 有 **9 次本人提交**（另有 19 次由 `github-actions[bot]` 自动提交）。提交内容涵盖：修复 `opencode.yml` 中 GitHub 表达式不支持 `toLower` 的问题；新增 AI 全失败自动诊断与 `/oc` 手动补查入口；修复事件分页将 HTTP 422 误判为致命错误的问题；修正 `summary` 窗口断言与「此刻的今天」硬比的根因；刷新 codemap 映射基线到 `46667bc` 和 `4719825`；以及对 `/oc` login 门与 model id 的临时验收测试及还原。\n\nIssue 方面共 5 次操作，全部集中在 `#9`（`[test] opencode /oc smoke`）：新开该 issue，评论 3 次，随后关闭。\n\n收到 3 条回复：`github-actions[bot]` 在 `#9` 回复 2 条（AI 诊断证据缺失说明及 pong 响应），`yulia-ivashko` 在 `openchamber/openchamber` `#4899` 回复 1 条。此外 `openchamber/openchamber` 的 `#4111` 和 `#4899` 均由 `yulia-ivashko` 关闭。无 release、PR、review 或 discussion 活动。",
+      "headline": "sogeisetsu 修复 CI 与活动分页问题，新增 AI 失败自动诊断功能",
+      "summary": "`sogeisetsu` 在 `sogeisetsu/sogeisetsu` 仓库完成 **9 次本人提交**，另有 21 次由 `github-actions[bot]` 自动提交。主要修复包括：`opencode.yml` 不再使用 `toLower`（GitHub 表达式不支持该函数），`check.yml` 的 summary 窗口断言不再与\"此刻的今天\"硬比（这是半夜必红的根因），事件分页将 HTTP 422 视为非致命错误并以 `Link` 头为准。新增功能为 AI 全失败自动诊断及 `/oc` 手动补查入口。两次临时测试提交验证了\"非本人评论 → skipped\"路径并制造了一次真实 AI 失败，随后已回退。用户新开或关闭 5 个 issue，均为 issue #9（`[test] opencode /oc smoke（临时，验完即关）`），该 issue 被新开、评论 3 次后关闭，共 5 条评论。在 `openchamber/openchamber` 中，issue #4111 和 #4899 均由 `yulia-ivashko` 关闭。收到 3 条回复：1 条来自 `yulia-ivashko` 在 `openchamber/openchamber#4899`，2 条来自 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu#9`。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "efc0f0684bc538f90a774f29139543292a54e25b33f2822ae1ead1fe42e824b3"
+  "dataHash": "827d29d1691d7452f25d41459b09122355b3bab69a3cf7e273e1b3ddc82ce16f"
 }
