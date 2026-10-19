@@ -3,7 +3,7 @@
   "windowStart": "2026-10-19T00:00:00+08:00",
   "windowEnd": "2026-10-20T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-18T22:27:44.393Z",
+  "generatedAt": "2026-10-19T00:51:09.549Z",
   "empty": false,
   "totals": {
     "commits": 9,
@@ -63,13 +63,13 @@
           "ts": "2026-10-18T16:44:31Z"
         }
       ],
-      "automated": 10,
+      "automated": 12,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 10,
+  "automatedCommits": 12,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -220,6 +220,17 @@
   ],
   "replies": [
     {
+      "repo": "openchamber/openchamber",
+      "number": 4899,
+      "title": "[Bug] Browser captures export at CSS pixel size (1x), so they are half the screen's resolution on a 200% display",
+      "url": "https://github.com/openchamber/openchamber/issues/4899",
+      "author": "yulia-ivashko",
+      "excerpt": "Closing this since we couldn't reproduce it. Today I also tried Windows 11 with the display really set to 200%: a Desktop (1440×900) capture came out at 2880×1800 on current main, and the Tablet and …",
+      "kind": "issue_comment",
+      "ts": "2026-10-18T23:54:56.000Z",
+      "own": false
+    },
+    {
       "repo": "sogeisetsu/sogeisetsu",
       "number": 9,
       "title": "[test] opencode /oc smoke（临时，验完即关）",
@@ -242,7 +253,18 @@
       "own": true
     }
   ],
-  "stateChanges": [],
+  "stateChanges": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 4899,
+      "title": "[Bug] Browser captures export at CSS pixel size (1x), so they are half the screen's resolution on a 200% display",
+      "url": "https://github.com/openchamber/openchamber/issues/4899",
+      "action": "closed",
+      "actor": "yulia-ivashko",
+      "ts": "2026-10-18T23:54:57.000Z",
+      "own": false
+    }
+  ],
   "truncated": {
     "events": {
       "cap": 300,
@@ -264,18 +286,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "9 own commits plus 10 bot commits in sogeisetsu/sogeisetsu; issue #9 closed",
-      "summary": "All activity was in `sogeisetsu/sogeisetsu`, with **9 own commits** plus 10 automated commits by `github-actions[bot]`. The own commits added AI all-failure auto diagnosis with a manual `/oc` re-check entry, fixed the `opencode.yml` `if` condition that used the unsupported `toLower`, fixed activity event pagination so HTTP 422 is no longer treated as fatal (using the `Link` header instead), and adjusted the verify summary window assertion so it no longer hard-compares against the current day. Two temporary acceptance changes were made to force a real failure — a nonexistent model id on the three legs and a nonexistent login account on the `/oc` login gate — and were then reverted, with the codemap baseline refreshed twice, to `46667bc` and `4719825`. Issue #9, titled `[test] opencode /oc smoke（临时，验完即关）`, was opened, commented on three times, and then closed, giving 5 issue actions in total for the day. `github-actions[bot]` replied twice on that issue, including a `pong` referencing run 39153131747 and a note that `data/ai-diagnosis.md` recorded no failed AI leg because no AI attempt had run at diagnosis time. No pull requests, reviews, releases, or discussion activity were recorded.",
+      "headline": "sogeisetsu 在 sogeisetsu/sogeisetsu 完成 9 次提交，关闭测试 issue #9",
+      "summary": "In `sogeisetsu/sogeisetsu`, **9 own commits** were made plus 12 automated commits by `github-actions[bot]`. The commits added AI failure auto-diagnosis with a `/oc` manual recheck entry, fixed `opencode.yml` using `toLower` in an `if` expression (unsupported in GitHub expressions), fixed `check.yml` summary window assertions that caused nightly failures, and fixed activity event pagination treating HTTP 422 as fatal (now using the `Link` header). Two temporary acceptance tests (altering model IDs and the login gate) and their revert were also included, along with two codemap baseline refreshes. Opened or closed 1 issue (#9 `[test] opencode /oc smoke（临时，验完即关）`), which was opened, received 3 comments, and was then closed. Received 1 reply from `yulia-ivashko` on `openchamber/openchamber` #4899 regarding its closure, and that issue was subsequently closed by `yulia-ivashko`.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu/sogeisetsu 9 次本人提交加 10 次机器人提交，issue #9 已关闭",
-      "summary": "当日活动全部集中在 `sogeisetsu/sogeisetsu`：**9 次本人提交**，另有 10 次由 `github-actions[bot]` 自动提交。本人提交新增了 AI 全失败自动诊断与 `/oc` 手动补查入口，修复了 `opencode.yml` 中 `if` 使用不被支持的 `toLower` 的问题，修正活动事件分页使 HTTP 422 不再被视为致命错误（改以 `Link` 头为准），并调整 verify 的 summary 窗口断言，不再与「此刻的今天」硬比。两处临时验收改动（三条腿改用不存在的 model id、`/oc` 登录门改为不存在的账号）用于制造真实失败，随后已回滚，codemap 基线也两次刷新到 `46667bc` 与 `4719825`。Issue #9「[test] opencode /oc smoke（临时，验完即关）」被新开、评论 3 次后关闭，当日 issue 活动共 5 条。`github-actions[bot]` 在该 issue 回复 2 次，包括一次附带 run 39153131747 的 `pong`，以及说明 `data/ai-diagnosis.md` 未记录任何失败 AI 腿、因为诊断运行时根本没有 AI 尝试。当日没有 PR、review、release 或讨论活动。",
+      "headline": "sogeisetsu 在 sogeisetsu/sogeisetsu 完成 9 次提交，关闭测试 issue #9",
+      "summary": "在 `sogeisetsu/sogeisetsu` 仓库完成 **9 次本人提交**，另有 12 次由 `github-actions[bot]` 自动提交。提交新增 AI 全失败自动诊断与 `/oc` 手动补查入口，修复 `opencode.yml` 中 `if` 表达式误用 `toLower` 的问题，修正 `check.yml` 中 summary 窗口断言导致半夜必红的根因，以及修复活动线事件分页将 HTTP 422 误判为致命错误的问题（改以 `Link` 头为准）。还包含两次临时验收测试及回退、两次 codemap 映射基线刷新。新开或关闭了 1 个 issue（#9 `[test] opencode /oc smoke（临时，验完即关）`），该 issue 先被开启，经 3 次评论互动后被关闭。收到 1 条来自 `yulia-ivashko` 的回复，关于 `openchamber/openchamber` #4899 的关闭说明，该 issue 随后被 `yulia-ivashko` 关闭。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "dc64a1689dcbd329f51eaf33a70a785a809ff8fe3d2caf0800f4637258b1c4dc"
+  "dataHash": "56873344254de2dfa48cd99664838d90b9fc4c5255fc32ba5fe026e56ee18737"
 }
