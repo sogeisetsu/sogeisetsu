@@ -1,0 +1,173 @@
+{
+  "date": "2026-10-20",
+  "windowStart": "2026-10-20T00:00:00+08:00",
+  "windowEnd": "2026-10-21T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-19T16:51:55.039Z",
+  "empty": false,
+  "totals": {
+    "commits": 3,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "count": 3,
+      "own": true,
+      "messages": [
+        {
+          "sha": "8855a7ab61060aa1626cf5afb7130e0f760ca40b",
+          "message": "docs: 补 v5 真实宿主往返回归证据（disable → permission.rejected → enable → 逐字节还原）",
+          "ts": "2026-10-19T16:51:00Z"
+        },
+        {
+          "sha": "1bb729b336506f4e994a438a9557c09dd5fa6b78",
+          "message": "docs: 回写 0.1.0 发布结果（trusted publishing Valid · provenance）",
+          "ts": "2026-10-19T16:46:41Z"
+        },
+        {
+          "sha": "152ae7dfa3da93f07f613bde9305887ef252b2ac",
+          "message": "chore: 发布 0.1.0（trusted publishing 已验证，rc.1 由 CI 发布并带 provenance）",
+          "ts": "2026-10-19T16:21:27Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    }
+  ],
+  "automatedCommits": 0,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [],
+  "stars": [],
+  "starInventory": [
+    {
+      "repo": "sogeisetsu/WOW-Csharp",
+      "total": 108
+    },
+    {
+      "repo": "sogeisetsu/shumeipai",
+      "total": 24
+    },
+    {
+      "repo": "sogeisetsu/OGFont",
+      "total": 3
+    },
+    {
+      "repo": "sogeisetsu/lianxi",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/springstudyy",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/-java-",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/awesome-agent-skills",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/myBlog",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-creator",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ownsalesforcelearnbook",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ruan-js",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu.github.io",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/testhello",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/tuangou",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typora-support-apex",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typoraimage",
+      "total": 0
+    }
+  ],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "ai": {
+    "en": {
+      "headline": "2026-10-20: 3 own commits in opencode-skill-management; no PRs or issues",
+      "summary": "sogeisetsu made **3 own commits** in `sogeisetsu/opencode-skill-management`, with no automated commits recorded. The changes documented a real host round-trip regression for `v5`: `disable` → `permission.rejected` → `enable` → byte-for-byte restoration. They also wrote back the `0.1.0` release result as trusted publishing with `provenance`, and published `0.1.0` after verifying trusted publishing, with `rc.1` released by CI and carrying `provenance`. No pull requests, issues, reviews, releases, stars, replies, discussions, or state changes were recorded. Only the activity window for 2026-10-20 was examined.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "2026-10-20: 3 own commits in opencode-skill-management; no PRs or issues",
+      "summary": "sogeisetsu 在 `sogeisetsu/opencode-skill-management` 提交了 **3 次本人提交**，未记录到自动提交。变更记录了 `v5` 的真实宿主往返回归：`disable` → `permission.rejected` → `enable` → 逐字节还原。同时回写了 `0.1.0` 的发布结果，标明 trusted publishing 已验证且带 `provenance`，并发布 `0.1.0`，其中 `rc.1` 由 CI 发布并携带 `provenance`。当天没有记录到 pull request、issue、review、release、star、回复、讨论或状态变更。报告仅覆盖 2026-10-20 的活动窗口。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "opencode-go-longcat",
+  "aiModel": "longcat-2.5-preview-free",
+  "aiFailure": null,
+  "dataHash": "f6d3ab8a635b0072fab2613b8d44abd15c1591d9f7916867633f04e1d6bee771"
+}

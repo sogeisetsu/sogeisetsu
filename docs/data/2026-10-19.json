@@ -3,10 +3,10 @@
   "windowStart": "2026-10-19T00:00:00+08:00",
   "windowEnd": "2026-10-20T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-19T14:51:18.703Z",
+  "generatedAt": "2026-10-19T16:51:05.856Z",
   "empty": false,
   "totals": {
-    "commits": 17,
+    "commits": 19,
     "prs": 0,
     "issues": 5,
     "reviews": 0
@@ -68,16 +68,26 @@
           "ts": "2026-10-18T16:44:31Z"
         }
       ],
-      "automated": 26,
+      "automated": 27,
       "automatedBots": [
         "github-actions[bot]"
       ]
     },
     {
       "repo": "sogeisetsu/opencode-skill-management",
-      "count": 4,
+      "count": 6,
       "own": true,
       "messages": [
+        {
+          "sha": "2a09664eaf70715eb468793d0c0c41b1fcbaf02c",
+          "message": "chore: 0.1.0-rc.1（由 CI 通过 trusted publishing 发布，验证 OIDC 配置）",
+          "ts": "2026-10-19T15:50:32Z"
+        },
+        {
+          "sha": "16a98090099fffc63bed47dc2a1ca3ca8ac4d912",
+          "message": "docs: 记录 rc.0 发布与只带包根的运行时加载实测（无需 ./server）",
+          "ts": "2026-10-19T13:16:13Z"
+        },
         {
           "sha": "2e42b0a410e08655f15f4ab272e6a7f4b94c7789",
           "message": "chore: 0.1.0-rc.0（首发需要先建包，见计划第七节）",
@@ -127,7 +137,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 26,
+  "automatedCommits": 27,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -354,18 +364,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu: 17 own commits, 26 automated, and 5 issue actions on one smoke test",
-      "summary": "On 2026-10-19 `sogeisetsu` made **17 own commits** in three repositories, plus 26 automated commits by `github-actions[bot]`. Ten own commits went to `sogeisetsu/sogeisetsu`: a summary-rendering fix for `###` headings swallowing text, a revert of two temporary test changes, a new AI-failure auto-diagnosis path with a manual `/oc` re-check entry, a fix for the invalid `toLower` in `opencode.yml`'s `if`, a corrected `verify` window assertion behind `check.yml`'s midnight failures, and pagination no longer treating HTTP 422 as fatal. `sogeisetsu/opencode-skill-management` got 4 commits preparing `0.1.0-rc.0` and implementing spec v5 (relaxed enable criteria, atomic writes, hardened descriptions). `sogeisetsu/opencode-agent-sandbox` added 3 commits: eval artifacts moved into `evals/`, a DeepSeek V4.1 flash 1017 demo, and a new `reading-notes` category. Issue activity covered opening or closing 5 issues, all on `sogeisetsu/sogeisetsu` `#9`, opened, commented on three times and closed. Two replies came from `github-actions[bot]` on `#9` and one from `yulia-ivashko` on `openchamber/openchamber` `#4899`; no pull requests, reviews, releases or discussions were recorded.",
+      "headline": "19 commits across 3 repos, 27 automated, and a test issue closed",
+      "summary": "On 2026-10-19 the user landed **19 own commits** across three repositories, plus 27 automated commits by `github-actions[bot]`. In `sogeisetsu/sogeisetsu` (10 own) work centered on the opencode CI pipeline: automatic AI-failure diagnosis plus a manual `/oc` re-check entry, a fix for the invalid `toLower` call in `opencode.yml`, and event pagination that no longer treats HTTP 422 as fatal. The repo also fixed the summary window assertion behind nightly `check.yml` failures. `sogeisetsu/opencode-skill-management` (6 own) published `0.1.0-rc.0` and `0.1.0-rc.1` via CI trusted publishing to validate OIDC, and landed spec v5 with relaxed enable criteria and atomic writes. `sogeisetsu/opencode-agent-sandbox` (3 own) moved eval artifacts into `evals/`, added a DeepSeek V4.1 flash demo, and a `reading-notes` category. The issue count of 5 (opened or closed) all concerns the test issue `sogeisetsu/sogeisetsu#9`, which was opened, commented on three times, and closed, with two replies from `github-actions[bot]`. Three replies arrived, including one from `yulia-ivashko` on `openchamber/openchamber#4899`, who also closed `openchamber/openchamber#4111`; no pull requests, reviews, releases, or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu：17 次本人提交、26 次自动提交，issue 操作 5 项",
-      "summary": "2026-10-19，`sogeisetsu` 在三个仓库共完成 **17 次本人提交**，另有 26 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sogeisetsu` 有 10 次：修复 summary 渲染中 `###` 小标题吞掉正文的问题、回滚两处临时测试改动、新增 AI 全失败自动诊断与 `/oc` 手动补查入口、修正 `opencode.yml` 的 `if` 中无效的 `toLower`、修正导致 `check.yml` 半夜必红的 `verify` 窗口断言，并让事件分页不再把 HTTP 422 当致命错误。`sogeisetsu/opencode-skill-management` 有 4 次提交，准备 `0.1.0-rc.0` 并落地规范 v5（放宽 enable 判据、原子写、description 硬化）。`sogeisetsu/opencode-agent-sandbox` 有 3 次提交：测评产物收进 `evals/`、DeepSeek V4.1 flash 1017 演示、新增 `reading-notes` 类别。issue 方面新开或关闭 5 个 issue，全部集中在 `sogeisetsu/sogeisetsu` 的 `#9`，该 issue 被新开、评论三次后关闭。收到 2 条来自 `github-actions[bot]` 的回复（在 `#9`）和 1 条来自 `yulia-ivashko` 的回复（在 `openchamber/openchamber` `#4899`）；当天没有 PR、review、release 或 discussion 记录。",
+      "headline": "3 个仓库 19 次提交，另有 27 次自动提交，测试 issue 已关闭",
+      "summary": "2026-10-19，用户共完成 **19 次本人提交**，分布在三个仓库，另有 27 次由 `github-actions[bot]` 完成的自动提交。`sogeisetsu/sogeisetsu`（10 次本人提交）围绕 opencode CI 流水线展开：新增 AI 全失败自动诊断与 `/oc` 手动补查入口，修复 `opencode.yml` 中误用 GitHub 表达式不存在的 `toLower`，并让事件分页不再把 HTTP 422 当作致命错误；该仓库还修正了导致 `check.yml` 半夜必红的 summary 窗口断言。`sogeisetsu/opencode-skill-management`（6 次本人提交）通过 CI trusted publishing 发布 `0.1.0-rc.0` 与 `0.1.0-rc.1` 以验证 OIDC，并落地规范 v5（enable 判据放宽、原子写）。`sogeisetsu/opencode-agent-sandbox`（3 次本人提交）把测评产物收进 `evals/`，新增 DeepSeek V4.1 flash 演示与 `reading-notes` 类别。issue 计数为 5（新开或关闭），全部集中在测试 issue `sogeisetsu/sogeisetsu#9`：新开、评论三次后关闭，并收到 `github-actions[bot]` 的两条回复。当天共收到三条回复，包括 `yulia-ivashko` 在 `openchamber/openchamber#4899` 的回复，她同时关闭了该 issue 与 `openchamber/openchamber#4111`；没有 PR、评审、发布或讨论记录。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "7e0b8b1e067f93f3a50e653300a76330022a3d27fe64b5075ffa762ccd470212"
+  "dataHash": "89a47b57bddf04edc3245b297583ed3c6725700e7a8d09aa0a272c9d3c766b3a"
 }
