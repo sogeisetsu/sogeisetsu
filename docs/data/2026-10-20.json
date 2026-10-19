@@ -3,10 +3,10 @@
   "windowStart": "2026-10-20T00:00:00+08:00",
   "windowEnd": "2026-10-21T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-19T16:51:55.039Z",
+  "generatedAt": "2026-10-19T18:51:09.869Z",
   "empty": false,
   "totals": {
-    "commits": 3,
+    "commits": 5,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,19 @@
   "commits": [
     {
       "repo": "sogeisetsu/opencode-skill-management",
-      "count": 3,
+      "count": 5,
       "own": true,
       "messages": [
+        {
+          "sha": "85d6a3914a2aef2a1eb0810dd0bdc9f2ec997805",
+          "message": "docs: 补 git spec 运行时加载实测（首选分发通道闭环）",
+          "ts": "2026-10-19T17:03:41Z"
+        },
+        {
+          "sha": "9cb02f78d2e87933cb24f5a8021e217bced2a3f3",
+          "message": "docs: 补发布生命周期验收（0.1.0 运行时 · update/remove 与宿主 CLI 小坑）",
+          "ts": "2026-10-19T16:56:59Z"
+        },
         {
           "sha": "8855a7ab61060aa1626cf5afb7130e0f760ca40b",
           "message": "docs: 补 v5 真实宿主往返回归证据（disable → permission.rejected → enable → 逐字节还原）",
@@ -35,9 +45,19 @@
       ],
       "automated": 0,
       "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 0,
+      "own": true,
+      "messages": [],
+      "automated": 2,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
     }
   ],
-  "automatedCommits": 0,
+  "automatedCommits": 2,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -156,18 +176,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "2026-10-20: 3 own commits in opencode-skill-management; no PRs or issues",
-      "summary": "sogeisetsu made **3 own commits** in `sogeisetsu/opencode-skill-management`, with no automated commits recorded. The changes documented a real host round-trip regression for `v5`: `disable` → `permission.rejected` → `enable` → byte-for-byte restoration. They also wrote back the `0.1.0` release result as trusted publishing with `provenance`, and published `0.1.0` after verifying trusted publishing, with `rc.1` released by CI and carrying `provenance`. No pull requests, issues, reviews, releases, stars, replies, discussions, or state changes were recorded. Only the activity window for 2026-10-20 was examined.",
+      "headline": "opencode-skill-management 发布 0.1.0，5 次文档与发布提交",
+      "summary": "在 `sogeisetsu/opencode-skill-management` 中有 **5 次本人提交**，全部为文档和发布相关：补充了 git spec 运行时加载的实测记录、发布生命周期验收（0.1.0 运行时及 `update`/`remove` 与宿主 CLI 的小坑）、v5 真实宿主往返回归证据，并回写了 0.1.0 发布结果（trusted publishing 验证通过、带 provenance）。最后一次提交是 chore 类型的 0.1.0 版本发布。此外，`sogeisetsu/sogeisetsu` 仓库有 2 次由 `github-actions[bot]` 自动提交。当日无 PR、issue、review 或 release 活动。",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "2026-10-20: 3 own commits in opencode-skill-management; no PRs or issues",
-      "summary": "sogeisetsu 在 `sogeisetsu/opencode-skill-management` 提交了 **3 次本人提交**，未记录到自动提交。变更记录了 `v5` 的真实宿主往返回归：`disable` → `permission.rejected` → `enable` → 逐字节还原。同时回写了 `0.1.0` 的发布结果，标明 trusted publishing 已验证且带 `provenance`，并发布 `0.1.0`，其中 `rc.1` 由 CI 发布并携带 `provenance`。当天没有记录到 pull request、issue、review、release、star、回复、讨论或状态变更。报告仅覆盖 2026-10-20 的活动窗口。",
+      "headline": "opencode-skill-management 发布 0.1.0，5 次文档与发布提交",
+      "summary": "在 `sogeisetsu/opencode-skill-management` 中有 **5 次本人提交**，全部为文档和发布相关：补充了 git spec 运行时加载的实测记录、发布生命周期验收（0.1.0 运行时及 `update`/`remove` 与宿主 CLI 的小坑）、v5 真实宿主往返回归证据，并回写了 0.1.0 发布结果（trusted publishing 验证通过、带 provenance）。最后一次提交是 chore 类型的 0.1.0 版本发布。此外，`sogeisetsu/sogeisetsu` 仓库有 2 次由 `github-actions[bot]` 自动提交。当日无 PR、issue、review 或 release 活动。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "f6d3ab8a635b0072fab2613b8d44abd15c1591d9f7916867633f04e1d6bee771"
+  "dataHash": "9312a1938141adf6e5a0133db36cd0fbb99c6e0ca43695813470866964fdb5bb"
 }
