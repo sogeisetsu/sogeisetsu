@@ -3,7 +3,7 @@
   "windowStart": "2026-10-20T00:00:00+08:00",
   "windowEnd": "2026-10-21T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-19T18:51:09.869Z",
+  "generatedAt": "2026-10-19T19:59:03.818Z",
   "empty": false,
   "totals": {
     "commits": 5,
@@ -51,13 +51,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 2,
+      "automated": 4,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 2,
+  "automatedCommits": 4,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -176,18 +176,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "opencode-skill-management 发布 0.1.0，5 次文档与发布提交",
-      "summary": "在 `sogeisetsu/opencode-skill-management` 中有 **5 次本人提交**，全部为文档和发布相关：补充了 git spec 运行时加载的实测记录、发布生命周期验收（0.1.0 运行时及 `update`/`remove` 与宿主 CLI 的小坑）、v5 真实宿主往返回归证据，并回写了 0.1.0 发布结果（trusted publishing 验证通过、带 provenance）。最后一次提交是 chore 类型的 0.1.0 版本发布。此外，`sogeisetsu/sogeisetsu` 仓库有 2 次由 `github-actions[bot]` 自动提交。当日无 PR、issue、review 或 release 活动。",
+      "headline": "Released opencode-skill-management 0.1.0 with 5 commits",
+      "summary": "On 2026-10-20, activity was concentrated in the `sogeisetsu/opencode-skill-management` repository with **5 own commits**, all related to the 0.1.0 release and documentation. The commits include: recording the 0.1.0 release result (trusted publishing verified as Valid with provenance); adding git spec runtime load test notes confirming the preferred distribution channel works end-to-end; adding release lifecycle acceptance covering 0.1.0 runtime update/remove flows and host CLI quirks; adding v5 real-host round-trip regression evidence (disable → permission.rejected → enable → byte-by-byte restore); and a chore commit completing the 0.1.0 release (rc.1 published by CI with provenance). The `sogeisetsu/sogeisetsu` repo had 4 additional automated commits by `github-actions[bot]`. No PRs, issues, reviews, releases, or discussion activity occurred, and no section was truncated.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "opencode-skill-management 发布 0.1.0，5 次文档与发布提交",
-      "summary": "在 `sogeisetsu/opencode-skill-management` 中有 **5 次本人提交**，全部为文档和发布相关：补充了 git spec 运行时加载的实测记录、发布生命周期验收（0.1.0 运行时及 `update`/`remove` 与宿主 CLI 的小坑）、v5 真实宿主往返回归证据，并回写了 0.1.0 发布结果（trusted publishing 验证通过、带 provenance）。最后一次提交是 chore 类型的 0.1.0 版本发布。此外，`sogeisetsu/sogeisetsu` 仓库有 2 次由 `github-actions[bot]` 自动提交。当日无 PR、issue、review 或 release 活动。",
+      "headline": "发布 opencode-skill-management 0.1.0，共 5 次提交",
+      "summary": "2026-10-20 当天活动集中在 `sogeisetsu/opencode-skill-management` 仓库，共有 **5 次本人提交**，均与 0.1.0 版本发布及文档补充有关。提交内容包括：回写 0.1.0 发布结果（trusted publishing 验证为 Valid，附 provenance）；补充 git spec 运行时加载实测记录，确认首选分发通道闭环；补充发布生命周期验收，涵盖 0.1.0 运行时 update/remove 流程及宿主 CLI 问题；补充 v5 真实宿主的往返回归证据（disable → permission.rejected → enable → 逐字节还原）；以及一次 chore 提交完成 0.1.0 发布（rc.1 由 CI 发布并带 provenance）。`sogeisetsu/sogeisetsu` 仓库另有 4 次由 `github-actions[bot]` 自动提交。当天无 PR、issue、review、release 或讨论活动，各列表均未触发截断。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "9312a1938141adf6e5a0133db36cd0fbb99c6e0ca43695813470866964fdb5bb"
+  "dataHash": "d8cf3da119e57573175957c4bf56fd9c68acd8f089d4fe6c90c672eef80703ce"
 }
