@@ -3,10 +3,10 @@
   "windowStart": "2026-10-19T00:00:00+08:00",
   "windowEnd": "2026-10-20T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-19T10:51:10.638Z",
+  "generatedAt": "2026-10-19T12:51:12.193Z",
   "empty": false,
   "totals": {
-    "commits": 9,
+    "commits": 15,
     "prs": 0,
     "issues": 5,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 9,
+      "count": 10,
       "own": true,
       "messages": [
+        {
+          "sha": "4d92092c5b2ca02b4997910935ad76b69612c690",
+          "message": "fix(summary): 小标题不再吞掉整段正文（### 后缺空行的行级容错）",
+          "ts": "2026-10-19T12:24:30Z"
+        },
         {
           "sha": "b0be0c3325cd5b4b80b10f375fa7896b8e633dfa",
           "message": "revert(test): 恢复真实 model id 与 /oc 的 login 门（两处临时验收改动）",
@@ -63,13 +68,56 @@
           "ts": "2026-10-18T16:44:31Z"
         }
       ],
-      "automated": 21,
+      "automated": 23,
       "automatedBots": [
         "github-actions[bot]"
       ]
+    },
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "count": 3,
+      "own": true,
+      "messages": [
+        {
+          "sha": "0113b532e6dd288ea5682193abf20f15c2c95df2",
+          "message": "chore: 横向测评产物收进 evals/ 目录，并在 AGENTS.md 里写清约定",
+          "ts": "2026-10-19T12:15:53Z"
+        },
+        {
+          "sha": "36664c7a7e83986706346c0bd43c7c01f9e7e9ec",
+          "message": "eval: DeepSeek V4.1 flash 1017 —— 鹈鹕骑自行车单文件演示",
+          "ts": "2026-10-19T12:12:50Z"
+        },
+        {
+          "sha": "934b42c2ad61fd3ef402c31ce44f08ef77ef3503",
+          "message": "docs(knowledge): 新增 reading-notes 类别——《卫国那些事儿》全文与左传引文核对",
+          "ts": "2026-10-19T12:12:50Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "45a974467bfb01fbab9c5aa4fdc69519d866ebdb",
+          "message": "docs: 规范 §11.4 改为双通道分发（git spec 主 + npm 由 CI trusted publishing 发布）",
+          "ts": "2026-10-19T12:35:27Z"
+        },
+        {
+          "sha": "88a657c890dfed63a321a04872f49559057ad301",
+          "message": "docs: 规范预改 v5（enable 判据放宽 · 备份 1 份 + 原子写 · description 硬化）；下一步计划转为个人计划",
+          "ts": "2026-10-19T12:11:51Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
     }
   ],
-  "automatedCommits": 21,
+  "automatedCommits": 23,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -296,18 +344,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu 修复 CI 与活动分页问题，新增 AI 失败自动诊断功能",
-      "summary": "`sogeisetsu` made **9 own commits** to `sogeisetsu/sogeisetsu` plus 21 automated commits by `github-actions[bot]`. Key fixes include: `opencode.yml` no longer uses `toLower` (unavailable in GitHub expressions), `check.yml` summary window assertion no longer hard-compares against \"today\" (root cause of midnight failures), and event pagination treats HTTP 422 as non-fatal by relying on the `Link` header. A new feature adds AI failure auto-diagnosis with a manual `/oc` fallback entry. Two temporary test commits verified the \"non-owner comment → skipped\" path and forced a real AI failure, then were reverted. The user opened or closed 5 issues, all being issue #9 (`[test] opencode /oc smoke（临时，验完即关）`) which was opened, commented on 3 times, and then closed with 5 total comments. In `openchamber/openchamber`, issues #4111 and #4899 were both closed by `yulia-ivashko`. Three replies were received: one from `yulia-ivashko` on `openchamber/openchamber#4899` and two from `github-actions[bot]` on `sogeisetsu/sogeisetsu#9`.",
+      "headline": "15 own commits plus 23 automated; issue #9 smoke test opened and closed",
+      "summary": "On 2026-10-19 `sogeisetsu` made **15 own commits** across three repositories plus 23 automated commits by `github-actions[bot]`. Ten own commits went to `sogeisetsu/sogeisetsu`: a summary-rendering fix so `###` headings no longer swallow the next paragraph, a `check.yml` verify-window assertion fix, an activity pagination fix for HTTP 422, and a new AI all-failure diagnosis with a manual `/oc` re-check. Temporary test edits that broke model ids and the `/oc` login gate were reverted, and the codemap baseline was refreshed twice. `sogeisetsu/opencode-agent-sandbox` saw three commits moving eval artifacts into `evals/`, adding a DeepSeek V4.1 flash demo, and starting a `reading-notes` category. Two commits in `sogeisetsu/opencode-skill-management` revised the spec toward dual-channel distribution and a v5 draft. Issue activity was 5 events on `sogeisetsu/sogeisetsu`#9, a temporary `/oc` smoke test opened, commented on, and closed. Three replies arrived: two from `github-actions[bot]` on that issue and one from `yulia-ivashko` on `openchamber/openchamber`#4899, which she closed with #4111. No pull requests, reviews, releases, or discussions were recorded, and no section hit its cap.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 修复 CI 与活动分页问题，新增 AI 失败自动诊断功能",
-      "summary": "`sogeisetsu` 在 `sogeisetsu/sogeisetsu` 仓库完成 **9 次本人提交**，另有 21 次由 `github-actions[bot]` 自动提交。主要修复包括：`opencode.yml` 不再使用 `toLower`（GitHub 表达式不支持该函数），`check.yml` 的 summary 窗口断言不再与\"此刻的今天\"硬比（这是半夜必红的根因），事件分页将 HTTP 422 视为非致命错误并以 `Link` 头为准。新增功能为 AI 全失败自动诊断及 `/oc` 手动补查入口。两次临时测试提交验证了\"非本人评论 → skipped\"路径并制造了一次真实 AI 失败，随后已回退。用户新开或关闭 5 个 issue，均为 issue #9（`[test] opencode /oc smoke（临时，验完即关）`），该 issue 被新开、评论 3 次后关闭，共 5 条评论。在 `openchamber/openchamber` 中，issue #4111 和 #4899 均由 `yulia-ivashko` 关闭。收到 3 条回复：1 条来自 `yulia-ivashko` 在 `openchamber/openchamber#4899`，2 条来自 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu#9`。",
+      "headline": "本人提交 15 次、自动提交 23 次，issue #9 冒烟测试开并关",
+      "summary": "2026-10-19，`sogeisetsu` 在三个仓库共完成 **15 次本人提交**，另有 23 次由 `github-actions[bot]` 自动提交。其中 10 次本人提交落在 `sogeisetsu/sogeisetsu`：修复 summary 渲染，使 `###` 小标题不再吞掉后一段正文；修正 `check.yml` 的 verify 窗口断言；修复活动事件分页对 HTTP 422 的处理；并新增 AI 全失败自动诊断与手动 `/oc` 补查入口。为验收临时改坏 model id 与 `/oc` 登录门的改动已回滚，codemap 基线刷新两次。`sogeisetsu/opencode-agent-sandbox` 有 3 次提交，把测评产物收进 `evals/`、加入 DeepSeek V4.1 flash 演示，并新增 `reading-notes` 类别。`sogeisetsu/opencode-skill-management` 有 2 次提交，把规范改为双通道分发并推进 v5 预改稿。issue 方面共 5 条动态，集中在 `sogeisetsu/sogeisetsu`#9 这个临时 `/oc` 冒烟测试上，该 issue 被新开、评论后关闭。共收到 3 条回复：两条来自 `github-actions[bot]`（在该 issue 下），一条来自 `yulia-ivashko`（在 `openchamber/openchamber`#4899 下），她同时关闭了该 issue 与 #4111。当天没有 PR、review、release 或 discussion，也没有任何板块触及采集上限。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "827d29d1691d7452f25d41459b09122355b3bab69a3cf7e273e1b3ddc82ce16f"
+  "dataHash": "e79683a4a8b0e328770a77e6770d0dcd5d6c581043120371e7572141e9750d9e"
 }
