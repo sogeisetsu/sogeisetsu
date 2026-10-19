@@ -3,7 +3,7 @@
   "windowStart": "2026-10-19T00:00:00+08:00",
   "windowEnd": "2026-10-20T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-19T04:48:59.844Z",
+  "generatedAt": "2026-10-19T06:51:08.366Z",
   "empty": false,
   "totals": {
     "commits": 9,
@@ -63,13 +63,13 @@
           "ts": "2026-10-18T16:44:31Z"
         }
       ],
-      "automated": 16,
+      "automated": 18,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 16,
+  "automatedCommits": 18,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -296,18 +296,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "9 commits in sogeisetsu/sogeisetsu: AI diagnosis, CI fix, pagination fix",
-      "summary": "In `sogeisetsu/sogeisetsu`, **9 own commits** plus **16 automated commits** by `github-actions[bot]` were made. Key changes: added AI all-failure auto-diagnosis with an `/oc` manual recheck entry; fixed `opencode.yml` `if` using `toLower` (unavailable in GitHub expressions); fixed `check.yml` `summary` window assertion no longer hard-comparing \"today now\" (midnight red-run root cause); fixed event pagination treating HTTP `422` as fatal (now using `Link` header); refreshed codemap to `46667bc` and `4719825`; plus temporary acceptance tests (non-existent `model id` to induce failures, non-existent `/oc` `login` account to test skip) then reverted. Opened or closed **5 issues**, all on issue `9` (`[test] opencode /oc smoke（临时，验完即关）`): 1 open, 3 comments, 1 close. Received 3 replies: `yulia-ivashko` closed `openchamber/openchamber` issues `4899` (browser capture resolution bug) and `4111` (orphaned MCP child processes); `github-actions[bot]` posted 2 automated replies on issue `9` (AI diagnosis result and a `pong` with a run link).",
+      "headline": "9 own commits + 18 automated in sogeisetsu, issue #9 smoke test closed",
+      "summary": "In `sogeisetsu/sogeisetsu`, there were **9 own commits** plus 18 automated commits by `github-actions[bot]`. The own commits added AI all-fail auto-diagnosis with a manual `/oc` lookup entry, fixed `opencode.yml` using `toLower` in an `if` expression (invalid in GitHub expressions), corrected `summary` window assertions that caused `check.yml` false alarms at midnight, and made event pagination treat HTTP 422 as non-fatal via `Link` headers. Two temporary test commits and a revert restored real `model id` values and the `/oc` login gate. Codemap baselines were refreshed twice. The issues total of 5 all concerns issue #9 \"[test] opencode /oc smoke（临时，验完即关）\": it was opened, commented on 3 times, then closed, with `github-actions[bot]` replies confirming the smoke path works. Two `openchamber/openchamber` issues (#4111 orphaned MCP processes, #4899 browser capture resolution) were closed by yulia-ivashko.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu/sogeisetsu 仓库 9 次提交：AI 诊断、CI 修复、分页修复",
-      "summary": "在 `sogeisetsu/sogeisetsu` 仓库完成了 **9 次本人提交**，另有 **16 次由 `github-actions[bot]` 自动提交**。主要变更包括：新增 AI 全失败自动诊断功能及 `/oc` 手动补查入口；修复 `opencode.yml` 中 `if` 条件误用 `toLower`（GitHub 表达式不支持该函数）；修正 `check.yml` 中 `summary` 窗口断言不再与「此刻的今天」硬比（解决半夜必红的根因）；修复事件分页将 HTTP `422` 误判为致命错误（改以 `Link` 头为准）；刷新 codemap 映射基线到 `46667bc` 和 `4719825`；以及一系列临时验收测试（将 `model id` 改为不存在的值制造真失败、将 `/oc` 的 `login` 门改为不存在的账号测试跳过逻辑）并随后回滚。新开或关闭 **5 个 issue**，全部集中在 issue `9`（`[test] opencode /oc smoke（临时，验完即关）`）：1 次打开、3 次评论、1 次关闭。收到 3 条回复：`yulia-ivashko` 关闭了 `openchamber/openchamber` 的 issue `4899`（浏览器截图分辨率 bug）和 `4111`（多运行删除后残留 MCP 子进程）；`github-actions[bot]` 在 issue `9` 上发布了 2 条自动回复（AI 诊断结果和带有 run 链接的 `pong`）。",
+      "headline": "sogeisetsu 仓库 9 次本人提交加 18 次自动提交，issue #9 冒烟测试关闭",
+      "summary": "在 `sogeisetsu/sogeisetsu` 中有 **9 次本人提交**，另有 18 次由 `github-actions[bot]` 自动提交。本人提交新增了 AI 全失败自动诊断及 `/oc` 手动补查入口，修复了 `opencode.yml` 中 `if` 表达式误用 `toLower` 的问题，修正了 `summary` 窗口断言导致 `check.yml` 半夜误报的根因，并使事件分页将 HTTP 422 视为非致命错误（以 `Link` 头为准）。两次临时测试提交及一次 revert 恢复了真实 `model id` 与 `/oc` 的 login 门。映射基线刷新了两次。issues 计数 5 全部围绕 issue #9 \"[test] opencode /oc smoke（临时，验完即关）\"：该 issue 被开启、评论 3 次后关闭，`github-actions[bot]` 的回复确认了冒烟路径正常。`openchamber/openchamber` 的两个 issue（#4111 孤立 MCP 子进程、#4899 浏览器截屏分辨率）由 yulia-ivashko 关闭。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "7ea29e8cb1d01983b61a6a901755a346b43c0929618d0ce3ec6cc364a22dd657"
+  "dataHash": "7a503ea9457e5fd1857323e377c2abef859818c88e3ab3669ecc31ec647c1786"
 }
