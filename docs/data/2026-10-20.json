@@ -3,7 +3,7 @@
   "windowStart": "2026-10-20T00:00:00+08:00",
   "windowEnd": "2026-10-21T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-19T22:51:06.176Z",
+  "generatedAt": "2026-10-19T23:45:42.656Z",
   "empty": false,
   "totals": {
     "commits": 5,
@@ -51,13 +51,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 6,
+      "automated": 8,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 6,
+  "automatedCommits": 8,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -176,18 +176,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu released opencode-skill-management 0.1.0 and added verification docs",
-      "summary": "Today `sogeisetsu` made **5 own commits** to `sogeisetsu/opencode-skill-management`, documenting the `git spec` runtime loading test, the `0.1.0` publish lifecycle verification for update/remove and host CLI pitfalls, and the `v5` real-host roundtrip evidence from disable through `permission.rejected` to enable and byte-for-byte restore. The same activity wrote back the `0.1.0` release result with trusted publishing Valid and provenance, and shipped the `0.1.0` release whose `rc.1` was published by `CI` with provenance. In addition, `sogeisetsu/sogeisetsu` had **6 automated commits** by `github-actions[bot]`, with no own commits. The `totals` block reports 5 commits, 0 PRs, 0 issues, and 0 reviews; the 6 automated commits are additional. No stars, replies, state changes, or discussions were recorded, and there were no releases in the input, so `releaseNotes` is empty.",
+      "headline": "sogeisetsu 发布 opencode-skill-management 0.1.0，5 次文档与发布提交",
+      "summary": "In the `sogeisetsu/opencode-skill-management` repo, the user made **5 own commits** centered on the 0.1.0 release and its verification. The commits document git spec runtime loading measurements, release lifecycle acceptance (update/remove and host CLI pitfalls), v5 real-host round-trip regression evidence (disable → permission.rejected → enable → byte-for-byte restore), and a write-back of the trusted publishing provenance validation result. The release was finalized with `chore: 发布 0.1.0`, where rc.1 was published by CI with provenance attached. Additionally, the `sogeisetsu/sogeisetsu` repo had **8 automated commits by `github-actions[bot]`**. No PRs, issues, reviews, or discussion activity occurred that day.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 发布 opencode-skill-management 0.1.0 并补充实测文档",
-      "summary": "当天 `sogeisetsu` 在 `sogeisetsu/opencode-skill-management` 提交了 **5 次本人提交**，补充了 `git spec` 运行时加载实测、`0.1.0` 发布生命周期验收（update/remove 与宿主 CLI 小坑）以及 `v5` 真实宿主往返回归证据（disable → `permission.rejected` → enable → 逐字节还原）。同一活动还回写了 `0.1.0` 发布结果（trusted publishing Valid · provenance），并发布了 `0.1.0`，其 `rc.1` 由 `CI` 发布并带 provenance。此外，`sogeisetsu/sogeisetsu` 有 **6 次由 `github-actions[bot]` 自动提交**，本人无提交。`totals` 记录 5 次提交、0 个 PR、0 个 issue、0 次 review，6 次自动提交为额外计数。未记录 star、回复、状态变更或讨论，输入中没有发布，因此 `releaseNotes` 为空。",
+      "headline": "sogeisetsu 发布 opencode-skill-management 0.1.0，5 次文档与发布提交",
+      "summary": "在 `sogeisetsu/opencode-skill-management` 仓库中，用户完成了 **5 次本人提交**，围绕 0.1.0 版本的发布与验证展开。提交内容涵盖 git spec 运行时加载实测、发布生命周期验收（update/remove 与宿主 CLI 问题）、v5 真实宿主往返回归证据（disable → permission.rejected → enable → 逐字节还原），以及 trusted publishing 的 provenance 验证结果回写。最终通过 `chore: 发布 0.1.0` 完成正式发布，rc.1 由 CI 发布并附带 provenance。此外，`sogeisetsu/sogeisetsu` 仓库有 **8 次由 `github-actions[bot]` 自动提交**。当日无 PR、issue、review 或 discussion 活动。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "cc0fd40225472c1229a2a622292fdc0e6c77f0eae15be3c4fe7753057d576b22"
+  "dataHash": "8e5f7f42e5f1ff6828cc8de839a3c3aaf414cb7da8d2464d101afaf9cd119ea8"
 }
