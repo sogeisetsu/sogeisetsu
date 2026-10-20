@@ -44,6 +44,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { BACKFILL_DIR, cstDayMinus, dateRange, readJsonIfExists } from "./lib/days.mjs";
+import { AUTOMATED_OVERLAP_RE } from "./lib/ai.mjs";
 import { hasVisibleActivity } from "./render.mjs";
 
 // ---------------------------------------------------------------- 常量与参数
@@ -921,8 +922,8 @@ function main() {
       );
 
       // 自动提交与 totals 是「相加」关系：>0 时机器生成的 stats-note 必须有相加表述；
-      // 包含式误用只在「提交数紧邻 其中/of which」时才算违规 —— 泛用「其中」（如
-      // "若干 issue 已关闭，其中…"）是正常中文，扫全文档会把好叙述误判成违规。
+      // 包含式误用只在「其中/包含…自动提交」「includes … automated commits」这一族说法上
+      // 才算违规（正则与 AI 校验层共用 AUTOMATED_OVERLAP_RE，避免两处漂移）。
       if (Number(summary.automatedCommits) > 0) {
         const noteText = [...summaryHtml.matchAll(/<p class="stats-note">([\s\S]*?)<\/p>/g)]
           .map((mm) => mm[1].replace(/<[^>]*>/g, " "))
@@ -933,9 +934,7 @@ function main() {
           .map((mm) => mm[1].replace(/<[^>]*>/g, " "))
           .join(" ");
         const additive = /另有|\bplus\b/i.test(noteText);
-        const overlapRe =
-          /(\d[\d,]*\s*(?:own\s+)?(?:commits?|次提交)[^。.!\n]{0,24}(?:其中|\bof which\b))|(?:(?:其中|\bof which\b)[^。.!\n]{0,24}(?:automated\s+commits?|自动提交))/i;
-        const overlap = overlapRe.test(noteText) || overlapRe.test(aiText);
+        const overlap = AUTOMATED_OVERLAP_RE.test(noteText) || AUTOMATED_OVERLAP_RE.test(aiText);
         check(
           "summary.html: 自动提交为相加表述",
           additive && !overlap,

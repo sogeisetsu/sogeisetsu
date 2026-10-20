@@ -111,6 +111,9 @@ function buildRetryFeedback(reason, n) {
   if (/句数/.test(r)) {
     return "REJECTED: the summary sentence count was outside 4-8. Rewrite with 4-6 sentences.";
   }
+  if (/包含关系|自动提交/.test(r)) {
+    return 'REJECTED: automated commits are SEPARATE and ADDITIONAL — never a subset of the user\'s own commits. Rewrite additive: "8 own commits plus 1 automated commit" / "8 次本人提交，另有 1 次自动提交"; never "其中" / "of which" / "includes" / "包含".';
+  }
   if (/releaseNotes/.test(r)) {
     return "REJECTED: check releaseNotes — one entry per input release, repo+tag exactly matching, each summary at most 3 sentences.";
   }
@@ -226,6 +229,26 @@ const SYSTEM_PROMPT = [
   "- Neutral and factual: no hype, no speculation, no invented facts; keep repo names, numbers and tags verbatim from the input.",
   "- Inline formatting: inside SUMMARY (not the headline) use EXACTLY two Markdown markers and nothing else — inline code with a single backtick `like-this`, and bold with double asterisks **like this**. Inline code is expected, not optional: wrap EVERY literal identifier in backticks — repository names such as `sogeisetsu/sogeisetsu` and `iOfficeAI/OfficeCLI`, bot logins such as `github-actions[bot]`, file/script paths such as `scripts/daily/verify.mjs` and `~/.opencode`, config keys, commands, commit SHAs, version/tag names, and anything else literal that you judge should be code. Bold is also expected, not optional: in the summary, bold the single most important number or outcome (e.g. one key commit total, a standout figure like a 0%→100% success jump, or the headline result). Aim for 1–3 bolded spans total so emphasis stays meaningful. The headline must be PLAIN TEXT — no backticks, no asterisks, no other markup of any kind. Do NOT use any other Markdown anywhere (no headings, no lists, no links, no italic, no tables, no code fences). Keep raw HTML out. The JSON envelope itself must stay pure JSON with no markdown.",
 ].join("\n");
+
+/**
+ * 「自动提交是相加项」的包含式误用检测 —— 日报叙述、30 天总结、verify 共用一份正则。
+ *
+ * 口径：`count`（本人提交）与 `automated`（机器人提交）互不相交，相加才等于总提交数。
+ * 模型偶发写成包含关系（线上实证：zh 总结「368 次提交……其中提交数包含 336 次自动提交」，
+ * en 同名句 "the commit figure includes 336 automated commits"）。只拦「提交数紧邻
+ * 其中/包含/包括…自动提交」这一族说法，不拦正常的中文「其中」（如「若干 issue 已关闭，其中…」）。
+ * 反向的「自动提交不计入总数」是正确说法，故「计入」前必须不是「不」。
+ */
+export const AUTOMATED_OVERLAP_RE = new RegExp(
+  [
+    String.raw`(?:其中|包含|包括)[^。\n]{0,12}(?:\d+\s*)?(?:次)?自动提交`,
+    String.raw`自动提交[^。\n]{0,12}(?<!不)(?:计入|包含在|算在|并入|已包含)`,
+    String.raw`\b(?:includes?|including|contains?|containing)\b[^.\n]{0,24}automated\s+commits?`,
+    String.raw`\bautomated\s+commits?\b[^.\n]{0,24}(?:(?<!not )(?:included in|counted in)|part of)\b`,
+    String.raw`\bcommits?\b[^.\n]{0,24}\bof which\b`,
+  ].join("|"),
+  "i"
+);
 
 const cap = (list) => (Array.isArray(list) ? list.slice(0, SECTION_CAP) : []);
 
@@ -460,8 +483,17 @@ function validateNarrative(raw, data) {
 
     // 硬性长度用代码强制（模型无法稳定遵守字符上限）：超长按句界/词界截断，而不是整段拒绝
     const headline = fitHeadline(String(sec.headline ?? "").trim(), HEADLINE_MAX_CHARS);
+    const summaryRaw = String(sec.summary ?? "").trim();
+    // 自动提交写成「其中/包含」的包含关系 → 拒收重试（本人与机器人提交是相加关系）
+    const overlap = AUTOMATED_OVERLAP_RE.exec(summaryRaw);
+    if (overlap) {
+      return {
+        ok: false,
+        reason: `${lang}.summary 把自动提交写成包含关系（「${overlap[0]}」），应写成「本人 N 次，另有 M 次」`,
+      };
+    }
     const summary = fitText(
-      String(sec.summary ?? "").trim(),
+      summaryRaw,
       SUMMARY_MAX_CHARS,
       SUMMARY_MIN_SENTENCES,
       SUMMARY_MAX_SENTENCES
