@@ -153,6 +153,57 @@ check("mdBlock: raw HTML escaped, no injection", () => {
   ];
 });
 
+check("mdBlock: GFM table renders as a real table", () => {
+  const out = mdBlockToHtml(
+    "intro\n\n| Action | What |\n|---|---|\n| `list` | every skill |\n| inspect | why |\n\nafter"
+  );
+  return [
+    ["thead", out.includes("<thead><tr><th>Action</th><th>What</th></tr></thead>")],
+    ["tbody", out.includes("<tbody><tr><td><code>list</code></td><td>every skill</td></tr>")],
+    ["twoRows", (out.match(/<tr>/g) || []).length === 3],
+    ["noPipes", !out.includes("|---|") && !out.includes("| Action |")],
+    ["paraBefore", out.includes("<p>intro</p>")],
+    ["paraAfter", out.includes("<p>after</p>")],
+  ];
+});
+
+check("mdBlock: table alignment, escaped pipes, ragged rows", () => {
+  const out = mdBlockToHtml("| L | C | R |\n|:--|:-:|--:|\n| a | b | c |\n| only |");
+  const shortRow = /<tr>(?:(?!<\/tr>).)*only(?:(?!<\/tr>).)*<\/tr>/.exec(out);
+  return [
+    ["center", out.includes('<th style="text-align:center">C</th>')],
+    ["right", out.includes('<th style="text-align:right">R</th>')],
+    ["leftPlain", out.includes("<th>L</th>")],
+    ["paddedCell", (shortRow[0].match(/<td/g) || []).length === 3],
+    ["paddedAlign", shortRow[0].includes('<td style="text-align:center"></td>')],
+  ];
+});
+
+check("mdBlock: table cells are escaped and `\\|` stays literal", () => {
+  const out = mdBlockToHtml("| a | b |\n|---|---|\n| <img src=x onerror=alert(1)> | x \\| y |");
+  return [
+    ["noRawImg", !/<img/.test(out)],
+    ["escaped", out.includes("&lt;img")],
+    ["literalPipe", out.includes("x | y")],
+    ["noEscapedPipeLeft", !out.includes("\\|")],
+  ];
+});
+
+check("mdBlock: not a table without a matching delimiter row", () => {
+  const bad = mdBlockToHtml("a | b\n---\nnext");
+  const hr = mdBlockToHtml("text\n\n---\n\nmore");
+  return [
+    ["noTable", !/<table>/.test(bad) && !/<table>/.test(hr)],
+    ["keptLiteral", bad.includes("a | b")],
+    ["hrKept", hr.includes("---")],
+  ];
+});
+
+check("mdBlock: table does not swallow the following list", () => {
+  const out = mdBlockToHtml("| a | b |\n|---|---|\n| 1 | 2 |\n- after table");
+  return [["ul", out.includes("<ul><li>after table</li></ul>")], ["oneBodyRow", (out.match(/<tr>/g) || []).length === 2]];
+});
+
 check("mdBlock: respects maxChars bound", () => {
   const long = Array.from({ length: 200 }, (_, i) => `line ${i}`).join("\n");
   const out = mdBlockToHtml(long, 300);
