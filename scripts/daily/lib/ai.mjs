@@ -250,6 +250,25 @@ export const AUTOMATED_OVERLAP_RE = new RegExp(
   "i"
 );
 
+/**
+ * 旧的日报叙述能否安全沿用（`index.mjs` 的「AI 失败 + 数据未变」分支用）。
+ *
+ * 目的：让措辞规则对**已发布**的叙述也生效 —— 旧规则下写出的「其中…自动提交」
+ * 不能因为这次 AI 全挂而被原样带回页面。summary 或任一 releaseNotes 命中包含式
+ * 就返回 false，调用方宁可出失败卡也不沿用。
+ */
+export function narrativeWordingOk(ai) {
+  for (const lang of ["en", "zh"]) {
+    const sec = (ai && ai[lang]) || {};
+    if (AUTOMATED_OVERLAP_RE.test(String(sec.summary ?? ""))) return false;
+    const notes = Array.isArray(sec.releaseNotes) ? sec.releaseNotes : [];
+    for (const note of notes) {
+      if (AUTOMATED_OVERLAP_RE.test(String((note && note.summary) ?? ""))) return false;
+    }
+  }
+  return true;
+}
+
 const cap = (list) => (Array.isArray(list) ? list.slice(0, SECTION_CAP) : []);
 
 /** 把 data 压成紧凑 user prompt：只含聚合条目 + 总数 + 日期。 */

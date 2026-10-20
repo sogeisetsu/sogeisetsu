@@ -588,6 +588,20 @@ function main() {
       }
     }
 
+    // AI 正文同样不许把自动提交写成包含式（旧规则生成的已发布文本也要拦；
+    // 正则与生成校验共用 AUTOMATED_OVERLAP_RE）
+    if (data.ai && hasVisibleActivity(data) && automated > 0) {
+      const aiText = [...html.matchAll(/<div class="ai-summary[^"]*"[^>]*>([\s\S]*?)<\/div>/g)]
+        .map((mm) => mm[1].replace(/<[^>]*>/g, " "))
+        .join(" ");
+      const hit = AUTOMATED_OVERLAP_RE.exec(aiText);
+      check(
+        `${label}: 自动提交为相加表述（AI 正文）`,
+        !hit,
+        hit ? `AI 正文出现包含式表述「${hit[0]}」` : ""
+      );
+    }
+
     // AI 全失败可见性：有可见段、无叙述、且当天记了失败 → 报告必须渲染失败卡（原因 + issue 链接）；
     // notifier 没跑成（拿不到 issue）时必须退化成「未取到 issue 链接」，不许静默只剩「暂不可用」
     const failAttempts =
