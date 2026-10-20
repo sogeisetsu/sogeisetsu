@@ -3,10 +3,10 @@
   "windowStart": "2026-10-20T00:00:00+08:00",
   "windowEnd": "2026-10-21T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-20T11:54:46.363Z",
+  "generatedAt": "2026-10-20T12:23:44.750Z",
   "empty": false,
   "totals": {
-    "commits": 6,
+    "commits": 8,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -48,22 +48,32 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 1,
+      "count": 3,
       "own": true,
       "messages": [
+        {
+          "sha": "9a1ec586b99db26ba0172cf975cfb5410c5f3965",
+          "message": "fix(daily): 沿用旧叙述前先过措辞闸门，verify 也查日报 AI 正文",
+          "ts": "2026-10-20T12:22:42Z"
+        },
+        {
+          "sha": "30e1c2caa8346cae63fe82b467dd269a9ad77294",
+          "message": "chore(ci): check.yml 支持手动补跑（workflow_dispatch）",
+          "ts": "2026-10-20T12:08:28Z"
+        },
         {
           "sha": "42c38df655aec6d5f11f8470283a839709e092cb",
           "message": "fix(summary): 自动提交必须写成相加，禁止「其中/包含」的包含式表述",
           "ts": "2026-10-20T11:52:25Z"
         }
       ],
-      "automated": 22,
+      "automated": 25,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 22,
+  "automatedCommits": 25,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -182,18 +192,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu 2026-10-20: 6 own commits, 22 automated, release 0.1.0",
-      "summary": "All activity landed in two repositories. In `sogeisetsu/opencode-skill-management` the user made 5 commits covering the git spec runtime-loading tests, the 0.1.0 release lifecycle acceptance (update/remove and host CLI edge cases), v5 real-host round-trip regression evidence (disable → permission.rejected → enable → byte-for-byte restore), and a chore commit that released `0.1.0` through trusted publishing with provenance. In `sogeisetsu/sogeisetsu` one commit fixed the summary rule so automated commits must be phrased additively, never with an \"of which\"/\"包含\" containment style. On top of the **6 own commits** there were 22 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. No pull requests, issues, reviews, releases, stars, replies, or discussions were recorded, and no section hit its collection cap.",
+      "headline": "sogeisetsu 发布 0.1.0，修复日报措辞与 CI 手动补跑",
+      "summary": "In `sogeisetsu/opencode-skill-management`, 5 commits completed the **0.1.0 release**: verified trusted publishing with provenance, documented git spec runtime loading tests, release lifecycle acceptance for `update`/`remove`, v5 real host round-trip regression evidence, and wrote back 0.1.0 release results. In `sogeisetsu/sogeisetsu`, 3 own commits fixed the daily summary wording gate (old narratives must pass before reuse, `verify` now also checks report AI body text), added `workflow_dispatch` support to `check.yml` for manual re-runs, and enforced additive phrasing for automated commits in summaries. Additionally, **25 automated commits** by `github-actions[bot]` were recorded. No PRs, issues, reviews, or releases were observed. No discussions or replies were found.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 2026-10-20：6 次本人提交与 22 次自动提交，发布 0.1.0",
-      "summary": "当天活动集中在两个仓库。在 `sogeisetsu/opencode-skill-management` 中，用户提交了 5 次，内容涉及 git spec 运行时加载实测、0.1.0 发布生命周期验收（update/remove 与宿主 CLI 小坑）、v5 真实宿主往返回归证据（disable → permission.rejected → enable → 逐字节还原），以及一次通过 trusted publishing 发布 `0.1.0` 并带 provenance 的 chore 提交。在 `sogeisetsu/sogeisetsu` 中有 1 次提交，修正了摘要规则，要求自动提交必须写成相加表述，禁止「其中/包含」式写法。除 **6 次本人提交** 外，`github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 中另有 22 次自动提交。当天没有 pull request、issue、review、release、star、回复或讨论记录，且各部分均未触发收集上限。",
+      "headline": "sogeisetsu 发布 0.1.0，修复日报措辞与 CI 手动补跑",
+      "summary": "在 `sogeisetsu/opencode-skill-management` 中，5 次提交完成了 **0.1.0 发布**：验证了带 provenance 的 trusted publishing，记录了 git spec 运行时加载实测、`update`/`remove` 发布生命周期验收、v5 真实宿主往返回归证据，并回写了 0.1.0 发布结果。在 `sogeisetsu/sogeisetsu` 中，3 次本人提交修复了日报措辞闸门（沿用旧叙述前须先通过检查，`verify` 也同时检查日报 AI 正文），为 `check.yml` 添加了 `workflow_dispatch` 支持以便手动补跑，并强制摘要中对自动提交使用相加式表述。另有 **25 次自动提交**由 `github-actions[bot]` 完成。当日无 PR、issue、review 或发布记录，也未观察到讨论或回复。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "7e6ad2df3a2961321a8e3cd704707ce6069c63382595bb86070dd381b956b4ed"
+  "dataHash": "b238a7989d4d17b95c8c95765aac1f0801a9e51b62b2dc9cd691dda2a5857398"
 }
