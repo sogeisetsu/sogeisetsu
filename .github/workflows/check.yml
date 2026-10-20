@@ -3,6 +3,9 @@ name: Check
 on:
   push:
   pull_request:
+  # 手动补跑：生成物是 bot 用 GITHUB_TOKEN 推的，不会触发 push/PR —— 线上出问题
+  # 或刚重生成完 docs/ 时，需要有办法对当前 HEAD 单独跑一遍。
+  workflow_dispatch:
 
 # 纯预检：只读、零 secret、不碰 docs/，所以只给读权限。
 permissions:
