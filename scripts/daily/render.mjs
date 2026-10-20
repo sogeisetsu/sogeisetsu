@@ -172,11 +172,87 @@ export function aiInlineToHtml(text) {
 }
 
 /**
+ * A GFM table delimiter row: `|---|---|`, `:-- | --:`, `| :-: |`. Dashes are
+ * mandatory, so a plain `---` horizontal rule does not qualify on its own —
+ * the caller also requires a header row with the same cell count.
+ */
+const TABLE_DELIM_RE = /^\s*\|?\s*:?-+:?\s*(?:\|\s*:?-+:?\s*)*\|?\s*$/;
+
+/**
+ * Split one markdown table row into raw (still unescaped) cell strings. A `|`
+ * escaped as `\|` and a `|` inside a backtick code span are content, not
+ * separators; a leading / trailing `|` is a border and yields no cell.
+ */
+function splitTableRow(line) {
+  const s = String(line == null ? '' : line).trim();
+  const cells = [];
+  let cur = '';
+  let inCode = false;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === '\\' && s[i + 1] === '|') {
+      cur += '\\|';
+      i++;
+      continue;
+    }
+    if (ch === '`') {
+      inCode = !inCode;
+      cur += ch;
+      continue;
+    }
+    if (ch === '|' && !inCode) {
+      cells.push(cur);
+      cur = '';
+      continue;
+    }
+    cur += ch;
+  }
+  cells.push(cur);
+  if (/^\|/.test(s) && cells.length && !cells[0].trim()) cells.shift();
+  if (/\|$/.test(s) && cells.length && !cells[cells.length - 1].trim()) cells.pop();
+  return cells.map((c) => c.trim());
+}
+
+/** Column alignments from a delimiter row, or null when it is not one. */
+function tableAligns(line) {
+  if (!TABLE_DELIM_RE.test(String(line == null ? '' : line))) return null;
+  return splitTableRow(line).map((c) => {
+    const left = c.startsWith(':');
+    const right = c.endsWith(':');
+    if (left && right) return 'center';
+    if (right) return 'right';
+    return '';
+  });
+}
+
+/**
+ * Render a parsed table. Cells go through mdInlineToHtml (escaped first, so no
+ * raw HTML survives); `\|` becomes a literal pipe. Alignment comes from the
+ * delimiter row keywords only, never from cell text.
+ */
+function tableToHtml(aligns, header, rows) {
+  const cols = header.length;
+  const cell = (tag, text, align) => {
+    const style = align ? ` style="text-align:${align}"` : '';
+    return `<${tag}${style}>${mdInlineToHtml(String(text).replace(/\\\|/g, '|'))}</${tag}>`;
+  };
+  const rowHtml = (cells, tag) => {
+    const padded = cells.slice(0, cols);
+    while (padded.length < cols) padded.push('');
+    return `<tr>${padded.map((c, k) => cell(tag, c, aligns[k])).join('')}</tr>`;
+  };
+  const head = `<thead>${rowHtml(header, 'th')}</thead>`;
+  const body = rows.length ? `<tbody>${rows.map((r) => rowHtml(r, 'td')).join('')}</tbody>` : '';
+  return `<table>${head}${body}</table>`;
+}
+
+/**
  * Render a bounded BLOCK-level markdown subset for UNTRUSTED release notes:
  * ATX headings (`#`..`######`), unordered lists (`-`/`*`/`+`), ordered lists,
- * fenced code blocks, and paragraphs. Every line is escaped first (via
- * mdInlineToHtml), so raw HTML never survives; only a whitelist of block
- * markers is expanded. Output is clamped so a long release body stays compact.
+ * fenced code blocks, GFM pipe tables, and paragraphs. Every line is escaped
+ * first (via mdInlineToHtml), so raw HTML never survives; only a whitelist of
+ * block markers is expanded. Output is clamped so a long release body stays
+ * compact.
  */
 export function mdBlockToHtml(text, maxChars = 1400) {
   const raw = String(text == null ? '' : text).replace(/\r\n?/g, '\n').trim();
@@ -199,7 +275,8 @@ export function mdBlockToHtml(text, maxChars = 1400) {
       list = null;
     }
   };
-  for (const line of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
     if (fence !== null) {
       if (/^\s*```/.test(line)) {
         out.push(`<pre><code>${fence.join('\n')}</code></pre>`);
@@ -214,6 +291,26 @@ export function mdBlockToHtml(text, maxChars = 1400) {
       flushList();
       fence = [];
       continue;
+    }
+    // GFM pipe table: a header row with `|`, a delimiter row whose column
+    // count matches, then body rows up to the first blank / pipe-less line.
+    if (line.includes('|') && i + 1 < lines.length) {
+      const aligns = tableAligns(lines[i + 1]);
+      const header = aligns ? splitTableRow(line) : null;
+      if (aligns && header.length === aligns.length) {
+        flushPara();
+        flushList();
+        const body = [];
+        let j = i + 2;
+        for (; j < lines.length; j++) {
+          const row = lines[j];
+          if (!row.trim() || !row.includes('|')) break;
+          body.push(splitTableRow(row));
+        }
+        out.push(tableToHtml(aligns, header, body));
+        i = j - 1;
+        continue;
+      }
     }
     const heading = /^(#{1,6})\s+(.*)$/.exec(line);
     if (heading) {
@@ -1326,6 +1423,25 @@ html[data-lang="zh"] .chip{font-size:.76rem;letter-spacing:0}
 .release-notes code{
   font-family:var(--mono);font-size:.84em;background:rgba(0,0,0,.05);
   padding:.12em .38em;border-radius:6px;
+}
+/* GFM table from a release body: .release-notes clamps its lines, so this
+   must fit the card width and wrap cells instead of scrolling sideways. */
+.release-notes table{
+  margin:.5em 0;width:100%;border-collapse:collapse;
+  font-size:.84rem;line-height:1.45;
+}
+.release-notes th,.release-notes td{
+  padding:6px 9px;text-align:left;vertical-align:top;
+  border-top:1px solid var(--outline-variant);
+  /* anywhere (inherited from .release-notes) shrinks a column's min-content to
+     one character and breaks a word like inspect mid-word; break-word still
+     wraps over-long tokens but keeps them at full width for column sizing. */
+  overflow-wrap:break-word;
+}
+.release-notes td code,.release-notes th code{overflow-wrap:break-word}
+.release-notes thead th{
+  border-top:0;border-bottom:1px solid var(--outline-variant);
+  background:var(--surface-dim);color:var(--on-surface);font-weight:750;
 }
 .ai-note{
   margin:12px 0 0;padding:10px 13px;border-radius:12px;font-size:.88rem;
