@@ -3,10 +3,10 @@
   "windowStart": "2026-10-20T00:00:00+08:00",
   "windowEnd": "2026-10-21T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-20T11:45:58.264Z",
+  "generatedAt": "2026-10-20T11:54:46.363Z",
   "empty": false,
   "totals": {
-    "commits": 5,
+    "commits": 6,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -48,16 +48,22 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 0,
+      "count": 1,
       "own": true,
-      "messages": [],
-      "automated": 21,
+      "messages": [
+        {
+          "sha": "42c38df655aec6d5f11f8470283a839709e092cb",
+          "message": "fix(summary): 自动提交必须写成相加，禁止「其中/包含」的包含式表述",
+          "ts": "2026-10-20T11:52:25Z"
+        }
+      ],
+      "automated": 22,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 21,
+  "automatedCommits": 22,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -176,18 +182,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "2026-10-20：sogeisetsu 5 次本人提交，21 次自动提交",
-      "summary": "On 2026-10-20, `sogeisetsu` made **5 own commits** in `sogeisetsu/opencode-skill-management`, all documentation or release work for `0.1.0`. The commits record git spec runtime loading measurements, release lifecycle acceptance for `0.1.0` including `update`/`remove` and host CLI pitfalls, and v5 real-host round-trip regression evidence from `disable` through `permission.rejected` and `enable` to byte-for-byte restoration. They also write back the `0.1.0` release result with trusted publishing Valid and provenance, and a `chore` commit publishes `0.1.0` with `rc.1` released by `CI` and carrying provenance. In `sogeisetsu/sogeisetsu`, there were **21 automated commits by `github-actions[bot]`**. Overall totals were 5 commits, 0 pull requests, 0 issues, and 0 reviews, with no releases, stars, discussion activity, replies, or state changes recorded.",
+      "headline": "sogeisetsu 2026-10-20: 6 own commits, 22 automated, release 0.1.0",
+      "summary": "All activity landed in two repositories. In `sogeisetsu/opencode-skill-management` the user made 5 commits covering the git spec runtime-loading tests, the 0.1.0 release lifecycle acceptance (update/remove and host CLI edge cases), v5 real-host round-trip regression evidence (disable → permission.rejected → enable → byte-for-byte restore), and a chore commit that released `0.1.0` through trusted publishing with provenance. In `sogeisetsu/sogeisetsu` one commit fixed the summary rule so automated commits must be phrased additively, never with an \"of which\"/\"包含\" containment style. On top of the **6 own commits** there were 22 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. No pull requests, issues, reviews, releases, stars, replies, or discussions were recorded, and no section hit its collection cap.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "2026-10-20：sogeisetsu 5 次本人提交，21 次自动提交",
-      "summary": "2026-10-20，`sogeisetsu` 在 `sogeisetsu/opencode-skill-management` 提交了 **5 次本人提交**，全部围绕 `0.1.0` 的文档与发布工作。提交内容包括 git spec 运行时加载实测、`0.1.0` 发布生命周期验收（含 `update`/`remove` 与宿主 CLI 小坑），以及 v5 真实宿主往返回归证据（`disable` → `permission.rejected` → `enable` → 逐字节还原）。此外还回写 `0.1.0` 发布结果（trusted publishing Valid 与 provenance），并以 `chore` 提交完成 `0.1.0` 发布，其中 `rc.1` 由 `CI` 发布并带 provenance。在 `sogeisetsu/sogeisetsu` 中，另有 **21 次由 `github-actions[bot]` 自动提交**。当日总计为 5 次提交、0 个 PR、0 个 issue、0 个 review，且没有 release、star、discussion、reply 或状态变更记录。",
+      "headline": "sogeisetsu 2026-10-20：6 次本人提交与 22 次自动提交，发布 0.1.0",
+      "summary": "当天活动集中在两个仓库。在 `sogeisetsu/opencode-skill-management` 中，用户提交了 5 次，内容涉及 git spec 运行时加载实测、0.1.0 发布生命周期验收（update/remove 与宿主 CLI 小坑）、v5 真实宿主往返回归证据（disable → permission.rejected → enable → 逐字节还原），以及一次通过 trusted publishing 发布 `0.1.0` 并带 provenance 的 chore 提交。在 `sogeisetsu/sogeisetsu` 中有 1 次提交，修正了摘要规则，要求自动提交必须写成相加表述，禁止「其中/包含」式写法。除 **6 次本人提交** 外，`github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 中另有 22 次自动提交。当天没有 pull request、issue、review、release、star、回复或讨论记录，且各部分均未触发收集上限。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-longcat",
   "aiModel": "longcat-2.5-preview-free",
   "aiFailure": null,
-  "dataHash": "bfd68be03a81f50814e18f7c9273f99ae9957c03622ad83ddf56e87ada512d91"
+  "dataHash": "7e6ad2df3a2961321a8e3cd704707ce6069c63382595bb86070dd381b956b4ed"
 }
