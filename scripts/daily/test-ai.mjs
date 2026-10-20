@@ -13,6 +13,7 @@
  *   · HTTP 400（带 reasoning_effort）→ 去掉该参数重试
  *   · HTTP 429 → 等待后重试
  *   · 只返回 1 句 summary → 追加“句数”纠正提示后重试
+ *   · 把自动提交写成包含关系（includes / 其中）→ 追加“相加”纠正提示后重试
  *   · empty:true（totals 全 0）但 discussion 非空 → 仍会调用 provider
  *     （锁住「可见性判断只在调用方，generateNarrative 不按 empty 自行拦截」）
  *   · provider.headers 原样进请求头（OpenCode Go 的 user-agent / 会话 id 走这条）
@@ -141,6 +142,15 @@ const cases = [
     name: "single-sentence-summary-retries",
     script: [chatResp(JSON.stringify(jsonWith({ enSummary: "Only one very long sentence that should be rejected." }))), chatResp(JSON.stringify(validNarrative()))],
     expect: { ok: true, calls: 2, userPrompt: "sentence count" },
+  },
+  {
+    // 自动提交是相加项：写成包含关系（includes / 其中）必须拒收重试，不能直接发布。
+    name: "automated-commit-overlap-retries",
+    script: [
+      chatResp(JSON.stringify(jsonWith({ enSummary: "One. Two. Three. Four. The 4 commits include 1 automated commit." }))),
+      chatResp(JSON.stringify(validNarrative())),
+    ],
+    expect: { ok: true, calls: 2, userPrompt: "automated commits" },
   },
   {
     name: "discussions-in-payload-and-prompt",

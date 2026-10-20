@@ -575,6 +575,35 @@ await reject("validate: 拒绝-overview 提评论数", "评论数", (raw) => {
     "The overall pace was even. It had 3 comments."
   );
 });
+// 自动提交是相加项：写成「其中/包含」的包含关系拒收（线上实证的中/英两种说法）
+await reject("validate: 拒绝-overview 自动提交写成其中（中文）", "包含关系", (raw) => {
+  raw.zh.overview = ZH_OVERVIEW.replace(
+    "整体节奏没有异常。",
+    "整体节奏没有异常。总计 368 次提交，其中提交数包含 336 次自动提交。"
+  );
+});
+await reject("validate: 拒绝-overview includes automated commits（英文）", "包含关系", (raw) => {
+  raw.en.overview = EN_OVERVIEW.replace(
+    "The overall pace was even.",
+    "The overall pace was even. The commit figure includes 336 automated commits."
+  );
+});
+await reject("validate: 拒绝-byRepo 自动提交写成其中", "包含关系", (raw) => {
+  raw.zh.byRepo[0].text = "本人提交 99 次，其中 331 次为自动提交。";
+});
+await check("validate: overview 接受「另有…自动提交」相加表述", () => {
+  const raw = baseRaw();
+  raw.en.overview = EN_OVERVIEW.replace(
+    "The overall pace was even.",
+    "The overall pace was even. 99 own commits landed, plus 331 automated commits."
+  );
+  raw.zh.overview = ZH_OVERVIEW.replace(
+    "整体节奏没有异常。",
+    "整体节奏没有异常。本人提交 99 次，另有 331 次自动提交。"
+  );
+  const res = validateSummary(raw, ctx);
+  return [["ok", res.ok === true], ["keptAdditive", Boolean(res.ok && res.value.zh.overview.includes("另有 331 次自动提交"))]];
+});
 await reject("validate: 拒绝-highlights 仅 2 条", "至少 3 条", (raw) => {
   raw.en.highlights = raw.en.highlights.slice(0, 2);
 });

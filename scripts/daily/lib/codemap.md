@@ -6,7 +6,7 @@
 
 - `days.mjs` —— **口径单点**：路径常量（`ROOT`/`DATA_DIR`/`REPORT_DIR`/`BACKFILL_DIR`/`ARCHIVE_LIMIT=60`）、+08 自然日推算（`cstDayMinus`/`prevDateOf`/`nextDateOf`/`dateRange`）、原子写入 `writeAtomic`、内容哈希 `contentHash`、`docs/data` 扫描（`listDateStrings`/`listDays`）。两线的日期与哈希口径必须从这里走，保证逐字一致。
 - `github.mjs` —— **采集层**：`collectDailyData()`（事件流主通道，按 1–10 段编号组装）与 `collectHistoricalData()`（Search API 历史回填通道，同 shape + `source`/`backfillLimits`），以及被确定性测试直接断言的纯函数（`normalizeNotes`/`buildTargetQueries`/`filterTargetCandidates`/`orderTargetCandidates`/`isPullRow`/`commentTotalOf`/`groupCommentCountTargets`/`attachCommentCounts`）；提交归属别名表 `COMMIT_AUTHOR_ALIASES = ["suyue"]`。
-- `ai.mjs` —— **AI 适配层**：`defaultProviders()` provider 链、通用结构化生成 `generateStructured()`（日报与总结共用的唯一入口）、日报包装 `generateNarrative()`、跨线复用的文本标尺（`countSentences`/`splitSentences`/`fitHeadline`/`fitText`）与 `resolveSenseNovaModel()`。
+- `ai.mjs` —— **AI 适配层**：`defaultProviders()` provider 链、通用结构化生成 `generateStructured()`（日报与总结共用的唯一入口）、日报包装 `generateNarrative()`、跨线复用的文本标尺（`countSentences`/`splitSentences`/`fitHeadline`/`fitText`）与 `resolveSenseNovaModel()`；另有 `AUTOMATED_OVERLAP_RE`（「自动提交写成包含关系」检测，日报叙述 / 总结 overview+byRepo / `verify.mjs` 共用）。
 
 ## Design
 

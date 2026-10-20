@@ -78,6 +78,9 @@ export function summaryFeedback(reason, n = 0) {
   if (/评论数/.test(r)) {
     return "REJECTED: the text mentions comment counts. Remove every comment-count phrasing (no \"N comments\", no \"N 条评论\") from overview, highlights and byRepo.";
   }
+  if (/包含关系|自动提交/.test(r)) {
+    return "REJECTED: automated commits are SEPARATE and ADDITIONAL, never a subset of the user's own commits. Rewrite additive — \"99 own commits plus 331 automated commits\" / \"99 次本人提交，另有 331 次自动提交\" — and never \"其中\" / \"of which\" / \"includes\" / \"包含\" for that relation.";
+  }
   if (/teaser/.test(r)) {
     return "REJECTED: `teaser` is missing or empty. Add a home-page teaser of 1-2 sentences and at most 240 characters to both en and zh.";
   }

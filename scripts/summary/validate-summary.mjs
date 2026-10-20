@@ -22,6 +22,10 @@
  *   · 段数上限不砍真实内容：highlights 固定 8 条；byRepo 的上限随 ctx.repos 放大
  *     （提示词要求「每个有活动的仓库都要有一条」，固定 8 条会把真实仓库悄悄截掉），
  *     只在 24 条硬顶上收口。缺仓库仍不拒收 —— 按约定只在提示词里要求。
+ *   · 自动提交是相加项（`count` 与 `automated` 互不相交）：overview / byRepo 里出现
+ *     「其中/包含 … 自动提交」「includes … automated commits」这类包含式说法就拒收，
+ *     让 summaryFeedback 提示改成「本人 N 次，另有 M 次」。正则见
+ *     daily/lib/ai.mjs 的 AUTOMATED_OVERLAP_RE（verify 共用同一份）。
  *   · reason 用中文、简短可执行 —— 它会打进日志并被 summaryFeedback 消费。
  *
  * 导出：
@@ -32,7 +36,7 @@
  * 用法：validate: (parsed) => validateSummary(parsed, ctx)   // generateStructured 的同步校验器
  */
 
-import { countSentences, fitHeadline, fitText } from "../daily/lib/ai.mjs";
+import { AUTOMATED_OVERLAP_RE, countSentences, fitHeadline, fitText } from "../daily/lib/ai.mjs";
 
 // ---------------------------------------------------------------- 常量
 
@@ -228,6 +232,14 @@ export function validateSummary(raw, ctx) {
     if (badOverview) {
       return { ok: false, reason: `不许提评论数: ${lang}.overview 出现 "${badOverview}"` };
     }
+    // 自动提交是相加项（count 与 automated 互不相交）：写成「其中/包含」的包含关系要重写
+    const overlapOverview = AUTOMATED_OVERLAP_RE.exec(overviewRaw);
+    if (overlapOverview) {
+      return {
+        ok: false,
+        reason: `${lang}.overview 把自动提交写成包含关系（「${overlapOverview[0]}」），应写成「本人 N 次，另有 M 次」`,
+      };
+    }
     const overview =
       overviewRaw.length > OVERVIEW_MAX_CHARS
         ? fitOverviewByBlock(overviewRaw, OVERVIEW_MAX_CHARS)
@@ -328,6 +340,13 @@ export function validateSummary(raw, ctx) {
       const badText = findCommentCount(textRaw);
       if (badText) {
         return { ok: false, reason: `不许提评论数: ${at}.text 出现 "${badText}"` };
+      }
+      const overlapText = AUTOMATED_OVERLAP_RE.exec(textRaw);
+      if (overlapText) {
+        return {
+          ok: false,
+          reason: `${at}.text 把自动提交写成包含关系（「${overlapText[0]}」），应写成「本人 N 次，另有 M 次」`,
+        };
       }
       byRepo.push({ repo, text: textRaw.slice(0, BY_REPO_TEXT_MAX) });
       if (byRepo.length >= byRepoCap) break;

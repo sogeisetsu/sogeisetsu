@@ -59,6 +59,12 @@ jobs:
           # 逃生口：仅在 workflow_dispatch 勾了 diagnose 时非空 → 追加评论的路径也强制再诊断一次
           DIAGNOSE: ${{ inputs.diagnose && '1' || '' }}
 
+      # 生成物门禁：check.yml 由 push 触发，而这里的 docs/ 提交用的是 GITHUB_TOKEN，
+      # GitHub 不会因此触发 workflow —— 线上曾因此放出一版 AI 正文把自动提交写成
+      # 「其中」的总结（verify 能查出来却没人跑）。所以提交前在本流程里自己跑一遍。
+      - name: 校验生成物（门禁）
+        run: node scripts/daily/verify.mjs --quiet
+
       - name: 提交并推送更新
         run: |
           git config user.name "github-actions[bot]"
