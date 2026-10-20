@@ -3,7 +3,7 @@
   "windowStart": "2026-10-20T00:00:00+08:00",
   "windowEnd": "2026-10-21T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-20T12:23:44.750Z",
+  "generatedAt": "2026-10-20T12:31:28.307Z",
   "empty": false,
   "totals": {
     "commits": 8,
@@ -67,13 +67,13 @@
           "ts": "2026-10-20T11:52:25Z"
         }
       ],
-      "automated": 25,
+      "automated": 26,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 25,
+  "automatedCommits": 26,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -192,18 +192,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu 发布 0.1.0，修复日报措辞与 CI 手动补跑",
-      "summary": "In `sogeisetsu/opencode-skill-management`, 5 commits completed the **0.1.0 release**: verified trusted publishing with provenance, documented git spec runtime loading tests, release lifecycle acceptance for `update`/`remove`, v5 real host round-trip regression evidence, and wrote back 0.1.0 release results. In `sogeisetsu/sogeisetsu`, 3 own commits fixed the daily summary wording gate (old narratives must pass before reuse, `verify` now also checks report AI body text), added `workflow_dispatch` support to `check.yml` for manual re-runs, and enforced additive phrasing for automated commits in summaries. Additionally, **25 automated commits** by `github-actions[bot]` were recorded. No PRs, issues, reviews, or releases were observed. No discussions or replies were found.",
+      "headline": "8 own commits: 5 document 0.1.0 release proof, 3 fix daily-report wording checks",
+      "summary": "Work on **2026-10-20** totaled 8 own commits and 0 pull requests, issues, or reviews. In `sogeisetsu/opencode-skill-management`, 5 own commits recorded the `0.1.0` release: trusted publishing was confirmed valid with provenance and `rc.1` was published by CI, plus new documentation covering a real-host round-trip (disable, `permission.rejected`, enable, byte-for-byte restore), the release-lifecycle checks for update and remove with host CLI caveats, and git spec runtime loading as the preferred distribution channel. In `sogeisetsu/sogeisetsu`, 3 own commits tightened the daily-report pipeline: an existing narrative must pass a wording gate before reuse and `verify` now also inspects the report's AI body, `check.yml` gained `workflow_dispatch` for manual reruns, and summaries must describe automated commits as additive, with no inclusive “of which” phrasing. Separately, 26 automated commits by `github-actions[bot]` landed in `sogeisetsu/sogeisetsu`. No releases, discussions, or replies appeared in the window.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 发布 0.1.0，修复日报措辞与 CI 手动补跑",
-      "summary": "在 `sogeisetsu/opencode-skill-management` 中，5 次提交完成了 **0.1.0 发布**：验证了带 provenance 的 trusted publishing，记录了 git spec 运行时加载实测、`update`/`remove` 发布生命周期验收、v5 真实宿主往返回归证据，并回写了 0.1.0 发布结果。在 `sogeisetsu/sogeisetsu` 中，3 次本人提交修复了日报措辞闸门（沿用旧叙述前须先通过检查，`verify` 也同时检查日报 AI 正文），为 `check.yml` 添加了 `workflow_dispatch` 支持以便手动补跑，并强制摘要中对自动提交使用相加式表述。另有 **25 次自动提交**由 `github-actions[bot]` 完成。当日无 PR、issue、review 或发布记录，也未观察到讨论或回复。",
+      "headline": "8 次本人提交：5 次记录 0.1.0 发布证据，3 次修正日报措辞校验",
+      "summary": "**2026-10-20** 当天共有 8 次本人提交，拉取请求、issue 和评审均为 0。在 `sogeisetsu/opencode-skill-management` 中，5 次本人提交记录了 `0.1.0` 的发布：trusted publishing 已验证有效并带 provenance，`rc.1` 由 CI 发布；同时补充了真实宿主往返回归（disable → `permission.rejected` → enable → 逐字节还原）、update/remove 的发布生命周期验收及宿主 CLI 小坑，以及 git spec 运行时加载的实测（首选分发通道）。在 `sogeisetsu/sogeisetsu` 中，3 次本人提交收紧了日报流水线：沿用旧叙述前先过措辞闸门，`verify` 也会检查日报 AI 正文；`check.yml` 支持 `workflow_dispatch` 手动补跑；摘要中自动提交必须写成相加，禁止「其中/包含」的包含式表述。此外，`github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 产生了 26 次自动提交。该时间窗口内没有发布、讨论或回复。",
       "releaseNotes": []
     }
   },
-  "aiProvider": "opencode-go-longcat",
-  "aiModel": "longcat-2.5-preview-free",
+  "aiProvider": "opencode-go-deepseek",
+  "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "b238a7989d4d17b95c8c95765aac1f0801a9e51b62b2dc9cd691dda2a5857398"
+  "dataHash": "fced750b0cde48227843e6daa5d964948fe39b01cc540668ce3f55fbdc1fd062"
 }
