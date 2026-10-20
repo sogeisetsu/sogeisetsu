@@ -33,7 +33,7 @@ import path from "node:path";
 import { appendFileSync } from "node:fs";
 
 import { collectDailyData } from "./lib/github.mjs";
-import { defaultProviders, generateNarrative } from "./lib/ai.mjs";
+import { defaultProviders, generateNarrative, narrativeWordingOk } from "./lib/ai.mjs";
 import { renderIndexPage, renderMarkdown, renderReportPage, hasVisibleActivity } from "./render.mjs";
 import {
   AI_FAILURE_PATH,
@@ -180,8 +180,10 @@ async function processDate(date) {
       aiProvider = res.provider;
       aiModel = res.model ?? null;
       console.log(`[daily-report] AI 叙述: 成功（provider=${aiProvider}${aiModel ? `, model=${aiModel}` : ""}）`);
-    } else if (existing && existing.ai && existing.dataHash === hash) {
-      // 数据未变、只是 AI 临时失败：保留上一次叙述，避免把已发布页面降级成「无叙述」
+    } else if (existing && existing.ai && existing.dataHash === hash && narrativeWordingOk(existing.ai)) {
+      // 数据未变、只是 AI 临时失败：保留上一次叙述，避免把已发布页面降级成「无叙述」。
+      // 但旧叙述要先过措辞规则（`narrativeWordingOk`）：旧规则下写出的「其中…自动提交」
+      // 不能借这次失败被原样带回页面 —— 宁可出失败卡。
       ai = existing.ai;
       aiProvider = existing.aiProvider ?? null;
       aiModel = existing.aiModel ?? null;

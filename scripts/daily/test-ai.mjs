@@ -14,6 +14,7 @@
  *   · HTTP 429 → 等待后重试
  *   · 只返回 1 句 summary → 追加“句数”纠正提示后重试
  *   · 把自动提交写成包含关系（includes / 其中）→ 追加“相加”纠正提示后重试
+ *   · 旧叙述沿用前的措辞闸门 narrativeWordingOk（summary / releaseNotes 任一命中即拒用）
  *   · empty:true（totals 全 0）但 discussion 非空 → 仍会调用 provider
  *     （锁住「可见性判断只在调用方，generateNarrative 不按 empty 自行拦截」）
  *   · provider.headers 原样进请求头（OpenCode Go 的 user-agent / 会话 id 走这条）
@@ -29,7 +30,7 @@
 
 import http from "node:http";
 
-const { generateNarrative, defaultProviders, orderProvidersForSummary, sanitizeReason } = await import(
+const { generateNarrative, defaultProviders, orderProvidersForSummary, sanitizeReason, narrativeWordingOk } = await import(
   new URL("./lib/ai.mjs", import.meta.url).href
 );
 
@@ -263,6 +264,27 @@ const cases = [
         ["longRunRedacted", !longRun.includes("a".repeat(40))],
         ["truncated", longText.length <= 301 && longText.endsWith("…")],
         ["emptySafe", sanitizeReason(null) === ""],
+      ];
+    },
+  },
+  {
+    // 不触网：旧叙述沿用前的措辞闸门（index.mjs 的「AI 失败 + 数据未变」分支）
+    name: "narrative-wording-guard",
+    fn: () => {
+      const good = {
+        en: { summary: "99 own commits plus 331 automated commits." },
+        zh: { summary: "本人提交 99 次，另有 331 次自动提交。" },
+      };
+      const badZh = { ...good, zh: { summary: "本人提交 99 次，其中 331 次为自动提交。" } };
+      const badNotes = {
+        ...good,
+        en: { ...good.en, releaseNotes: [{ repo: "a/b", tag: "v1", summary: "4 commits, of which 1 automated." }] },
+      };
+      return [
+        ["good", narrativeWordingOk(good) === true],
+        ["badZh", narrativeWordingOk(badZh) === false],
+        ["badNotes", narrativeWordingOk(badNotes) === false],
+        ["nullSafe", narrativeWordingOk(null) === true],
       ];
     },
   },
