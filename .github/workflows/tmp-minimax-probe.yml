@@ -1,8 +1,8 @@
 name: tmp-minimax-probe
 
-# 一次性探针（用完即删，不进 main）：拿仓库的 OPENCODE_API_KEY 对
-# minimax-m3.1-flash-free 做 A/B，验证「它是 thinking 模型、推理吃光预算导致
-# 180s 无响应」这个猜测 —— 那样加 thinking:{type:"disabled"} 应该能出内容。
+# 一次性探针（用完即删，不进 main）。第一轮结论：小 prompt + max_tokens 1024
+# 秒回 200；加 thinking:{type:"disabled"} 反而 400。所以 180s 挂死不是「thinking 吃预算」。
+# 第二轮隔离真正的变量：max_tokens 49152（= MAX_TOKENS）与真实量级的 prompt。
 on:
   workflow_dispatch:
 
@@ -28,32 +28,39 @@ jobs:
             "x-opencode-session": `probe-${randomUUID()}`,
             "content-type": "application/json",
           };
-          const msgs = [
-            { role: "system", content: 'Reply with ONE strict JSON object only: {"headline":"ok","summary":"ok"}' },
-            { role: "user", content: "Give me the JSON now." },
-          ];
-          async function probe(label, model, bodyExtra, timeoutMs = 150000) {
+          const system = 'Reply with ONE strict JSON object only: {"en":{"headline":"...","summary":"..."},"zh":{...}}';
+          const smallUser = "Give me the JSON now.";
+          // 真实日报 prompt 量级：凑一段 ~12k 字符的类 JSON 输入
+          const bigUser = [
+            "Input data (JSON):",
+            JSON.stringify({ commits: Array.from({ length: 60 }, (_, i) => ({ repo: `user/repo-${i}`, count: 3, messages: ["fix: something", "docs: something else"] })), issues: Array.from({ length: 30 }, (_, i) => ({ repo: `user/repo-${i}`, number: 100 + i, title: "an issue title that is reasonably long to pad the payload" })) }),
+            "Write the JSON now.",
+          ].join("\n");
+          async function probe(label, userText, bodyExtra, timeoutMs = 150000) {
             const ac = new AbortController();
             const t = setTimeout(() => ac.abort(), timeoutMs);
             const t0 = Date.now();
-            const body = { model, messages: msgs, ...bodyExtra };
+            const body = {
+              model: "minimax-m3.1-flash-free",
+              messages: [{ role: "system", content: system }, { role: "user", content: userText }],
+              temperature: 0.3,
+              ...bodyExtra,
+            };
             try {
               const res = await fetch(URL_, { method: "POST", headers, body: JSON.stringify(body), signal: ac.signal });
               const text = await res.text();
               const secs = ((Date.now() - t0) / 1000).toFixed(1);
-              console.log(`\n=== ${label} :: HTTP ${res.status} in ${secs}s`);
-              console.log(text.slice(0, 700));
+              console.log(`\n=== ${label} :: prompt=${userText.length}B HTTP ${res.status} in ${secs}s`);
+              console.log(text.slice(0, 800));
             } catch (e) {
               const secs = ((Date.now() - t0) / 1000).toFixed(1);
-              console.log(`\n=== ${label} :: EXC ${e?.name} ${e?.message} in ${secs}s`);
+              console.log(`\n=== ${label} :: prompt=${userText.length}B EXC ${e?.name} ${e?.message} in ${secs}s`);
             } finally {
               clearTimeout(t);
             }
           }
-          const MINI = "minimax-m3.1-flash-free";
           const rf = { type: "json_object" };
-          await probe("A minimax rf + max_tokens 1024", MINI, { response_format: rf, max_tokens: 1024 });
-          await probe("B minimax rf + thinking-disabled", MINI, { response_format: rf, max_tokens: 1024, thinking: { type: "disabled" } });
-          await probe("C minimax bare (no rf, no max_tokens)", MINI, {});
-          await probe("D deepseek control (rf)", "deepseek-v4.1-flash", { response_format: rf, max_tokens: 1024 }, 60000);
+          await probe("E small prompt + max_tokens 49152 + rf", smallUser, { max_tokens: 49152, response_format: rf });
+          await probe("F big prompt + max_tokens 49152 + rf", bigUser, { max_tokens: 49152, response_format: rf });
+          await probe("G big prompt + max_tokens 1024 + rf", bigUser, { max_tokens: 1024, response_format: rf });
           EOF
