@@ -1,0 +1,193 @@
+{
+  "date": "2026-10-22",
+  "windowStart": "2026-10-22T00:00:00+08:00",
+  "windowEnd": "2026-10-23T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-21T16:54:10.282Z",
+  "empty": false,
+  "totals": {
+    "commits": 4,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/sopen-translate",
+      "count": 4,
+      "own": true,
+      "messages": [
+        {
+          "sha": "f969eb3e40e332d7f90711cfd50201bc4a222c6d",
+          "message": "chore: add checkJs type checking via JSDoc",
+          "ts": "2026-10-21T16:46:31Z"
+        },
+        {
+          "sha": "fafa0eafd79d15e1e0268f0643e1fae69c0055e4",
+          "message": "docs: add AGENTS.md with repo constraints and verification steps",
+          "ts": "2026-10-21T16:37:23Z"
+        },
+        {
+          "sha": "02da7cc7ab2669cd9fe1b6aed99db62ac810dbd2",
+          "message": "refactor: drop selection translation, keep page translation only",
+          "ts": "2026-10-21T16:05:49Z"
+        },
+        {
+          "sha": "f95696a460a75342508c048dfd0a81aacae1bc13",
+          "message": "feat: MV3 skeleton with page + selection translation",
+          "ts": "2026-10-21T16:01:26Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    }
+  ],
+  "automatedCommits": 0,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [],
+  "stars": [],
+  "starInventory": [
+    {
+      "repo": "sogeisetsu/WOW-Csharp",
+      "total": 108
+    },
+    {
+      "repo": "sogeisetsu/shumeipai",
+      "total": 24
+    },
+    {
+      "repo": "sogeisetsu/OGFont",
+      "total": 3
+    },
+    {
+      "repo": "sogeisetsu/lianxi",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/springstudyy",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/-java-",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/awesome-agent-skills",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/myBlog",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-creator",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ownsalesforcelearnbook",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ruan-js",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu.github.io",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sopen-translate",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/testhello",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/tuangou",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typora-support-apex",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typoraimage",
+      "total": 0
+    }
+  ],
+  "replies": [],
+  "stateChanges": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 5293,
+      "title": "[Bug] Project actions menu: Auto-discover dev server runs the first saved action instead of discovering a server",
+      "url": "https://github.com/openchamber/openchamber/issues/5293",
+      "action": "closed",
+      "actor": "btriapitsyn",
+      "ts": "2026-10-21T16:45:33.000Z",
+      "own": false
+    }
+  ],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "ai": {
+    "en": {
+      "headline": "4 commits to sopen-translate; openchamber issue closed",
+      "summary": "On 2026-10-22, `sogeisetsu` made **4 commits**, all in `sogeisetsu/sopen-translate` (no automated commits). The work built an MV3 skeleton for page and selection translation, then refactored to drop selection translation and keep page translation only. It also added `checkJs` type checking via JSDoc and an `AGENTS.md` file documenting repository constraints and verification steps. No pull requests, reviews, or issues were involved, and there were no releases or stars that day. Separately, `btriapitsyn` closed issue `#5293` in `openchamber/openchamber`, a bug report about the project actions menu, where auto-discover dev server ran the first saved action instead of discovering a server. No discussions took place, and no collection section was truncated.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "sopen-translate 完成 4 次提交；openchamber 关闭一个 issue",
+      "summary": "2026-10-22，`sogeisetsu` 共完成 **4 次提交**，全部位于 `sogeisetsu/sopen-translate`，没有自动提交。当天先搭建了 MV3 骨架，支持整页翻译和划词翻译，随后重构移除划词翻译，只保留整页翻译。此外还通过 JSDoc 为 `checkJs` 加入类型检查，并新增 `AGENTS.md`，记录仓库约束与验证步骤。当天没有拉取请求、评审或 issue 活动，也没有发布版本或收到 star。另外，`btriapitsyn` 关闭了 `openchamber/openchamber` 的 issue `#5293`，该问题报告项目操作菜单中的自动发现开发服务器会运行第一个已保存的操作，而不是发现服务器。当天没有参与讨论，各采集分区均未被截断。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "opencode-go-deepseek",
+  "aiModel": "deepseek-v4.1-flash",
+  "aiFailure": null,
+  "dataHash": "c37caef304f4b7e0694e2ed62ec1db7a039c640bd4ab58638b0abfc80b16f4a5"
+}
