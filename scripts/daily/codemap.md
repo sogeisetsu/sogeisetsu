@@ -18,7 +18,7 @@
 - **单文档双语**：`i18n(en, zh)` 把两种语言烘焙进同一 HTML，CSS 按 `<html data-lang>` 显隐，`LANG_BOOTSTRAP` + `TOGGLE_SCRIPT`（localStorage 键 `gh-report-lang`）切换；两侧文本相同则只出一份。`i18nInline` 是走 `aiInlineToHtml` 的变体。
 - **页面即纯函数**：`renderReportPage({ data, ai })` / `renderIndexPage({ days, generatedAt, username, summaryCardHtml })` / `renderMarkdown({ data, ai })`，全部字符串拼接；`htmlDoc({ title, body, assetPrefix, extraCss })` 是文档外壳，`pageStyle(assetPrefix, extraCss)` 是全站 CSS（含 Chomsky `@font-face` —— 资产保留，但标题栈已改版为系统衬线、不再引用它），`extraCss` 是 summary 页注入专属样式的唯一钩子。
 - **渲染单元抽象**：`section(icon, titleEn, titleZh, pillHtml, body)` 卡片骨架、`pill(total, fallback)`（**0 是合法总数**，不回退成行数）、`statsStrip(totals)` 数字条、`truncationNotice()` 采集上限提示。
-- **安全边界**：所有动态串过 `esc()`，链接过 `safeHref()`；不可信文本（他人评论、release notes）只走白名单子集——`aiInlineToHtml`（仅 `code`+`**bold**`）、`mdInlineToHtml`、`mdBlockToHtml`（先转义再展开、fence 未闭合也收尾、`maxChars` 截断），内部链接一律相对路径（站点挂在 subpath）。
+- **安全边界**：所有动态串过 `esc()`，链接过 `safeHref()`；不可信文本（他人评论、release notes）只走白名单子集——`aiInlineToHtml`（仅 `code`+`**bold**`）、`mdInlineToHtml`、`mdBlockToHtml`（先转义再展开、fence 未闭合也收尾、GFM 管道表格成真表、`maxChars` 截断），内部链接一律相对路径（站点挂在 subpath）。
 - **`check.mjs` 编排**：`spawnSync(process.execPath, ...)` 依次跑 ① `node --check` 11 个脚本（daily 侧 `lib/ai` `lib/days` `render` `lib/github` `index` + summary 侧 `collect` `prompt` `validate-summary` `render` `backfill` `index`）→ ② `test-ai.mjs` → ③ `test-render.mjs` → ④ `summary/test-summary.mjs` → ⑤ `verify.mjs --quiet`，汇总数失败项后统一 exit。
 
 ## Flow

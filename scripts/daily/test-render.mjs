@@ -6,7 +6,8 @@
  *
  * 覆盖（对应复审问题 3 与本次复审）：
  *   · aiInlineToHtml     — 标记「仅两样」(code+bold)；斜体/链接/字面 HTML 保持字面；转义安全
- *   · mdBlockToHtml      — 标题/列表/段落；先转义；fence 未闭合到 EOF 也收尾；截断边界内
+ *   · mdBlockToHtml      — 标题/列表/段落/GFM 管道表格（对齐、`\|` 转义、行宽不齐）；
+ *                          先转义；fence 未闭合到 EOF 也收尾；截断边界内
  *   · i18nInline         — en/zh 两侧各走内联渲染
  *   · normalizeNotes     — 保留换行/行首结构、折叠行内空格、截断到上限、去零宽字符
  *   · splitParagraphs    — 英文句末切分不与 v1.3.0 / e.g. 撞车；保留结尾标点
