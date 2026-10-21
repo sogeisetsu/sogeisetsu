@@ -52,7 +52,7 @@ node scripts/test-activity-window.mjs  # 活动卡片口径 / 可见性
 
 ## AI 生成：provider 链与失败可见性
 
-- 链顺序（`defaultProviders`，`scripts/daily/lib/ai.mjs`）：`opencode-go-minimax`（`minimax-m3.1-flash-free`，限时免费）→ `opencode-go-longcat`（限时免费）→ `opencode-go-deepseek`（计入 Go 套餐额度）→ sensenova `glm-5.2`；Go 三条共用 `OPENCODE_API_KEY`。免费腿里 minimax 排在 longcat 前，是因为 2026-10-21 起 longcat 的上游推理端点持续回 `402 Endpoint is unavailable` / 挂满超时（`/models` 里模型仍在列），longcat 退为第二候选。
+- 链顺序（`defaultProviders`，`scripts/daily/lib/ai.mjs`）：`opencode-go-minimax`（`minimax-m3.1-flash-free`，限时免费）→ `opencode-go-longcat`（限时免费）→ `opencode-go-deepseek`（计入 Go 套餐额度）→ sensenova `glm-5.2`；Go 三条共用 `OPENCODE_API_KEY`。免费腿里 minimax 排在 longcat 前，是因为 2026-10-21 起 longcat 的上游推理端点持续回 `402 Endpoint is unavailable` / 挂满超时（`/models` 里模型仍在列），longcat 退为第二候选。minimax 那条腿单独配 `reasoningEffort: "low"` —— 它认 `reasoning_effort` 但不收 `"none"`（400），而把参数整个去掉，思考就不受约束、真实日报 prompt 在 300s 内连响应头都回不来（实测 `low` 10.9s 出内容、`minimal` 20.6s、`medium` 24.7s）。
 - 商汤腿写死 `glm-5.2`（不再从 `GET /models` 动态挑）且带 `extraBody:{thinking:{type:"disabled"}}` 关思考 —— 不关则 reasoning 吃光预算、content 恒为空；`SENSENOVA_MODEL` 可覆盖。
 - **总结线单独重排**：`orderProvidersForSummary` 把 deepseek 提到最前（`longcat-2.5-preview-free` 结构上做不了 30 天总结），日报保持免费腿优先。重排只加在总结线，别推回 `defaultProviders`。`minimax-m3.1-flash-free` 还没跑过 30 天总结，重排后它落在 deepseek 之后、longcat 之前 —— 顶不掉唯一稳定的腿，最坏多花一次超时。
 - `MAX_TOKENS = 49152`（截断时翻倍到上限 65536）；`CHAT_TIMEOUT_MS = 180000`。abort / 网络异常**不重试**，直接换下一条。

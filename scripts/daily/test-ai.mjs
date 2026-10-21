@@ -188,6 +188,13 @@ const cases = [
     },
   },
   {
+    // provider.reasoningEffort 覆盖默认的 "none"：minimax 那条免费腿只认 low/minimal/medium
+    name: "provider-reasoning-effort-override",
+    provider: { ...provider, name: "mock-go-minimax", reasoningEffort: "low" },
+    script: [chatResp(JSON.stringify(validNarrative()))],
+    expect: { ok: true, calls: 1, reasoningEffort: "low" },
+  },
+  {
     // 不触网：只验 defaultProviders 的列表、顺序（Go 两条在前、商汤殿后）与商汤腿写死 glm-5.2 + 关思考
     name: "default-providers-order-and-go-headers",
     fn: () => {
@@ -206,6 +213,7 @@ const cases = [
           both.map((p) => p.name).join(",") ===
             "opencode-go-minimax,opencode-go-longcat,opencode-go-deepseek,sensenova",
         ],
+        ["minimaxReasoningLow", go[0]?.reasoningEffort === "low" && go[1]?.reasoningEffort === undefined],
         [
           "goModels",
           go[0]?.model === "minimax-m3.1-flash-free" &&
@@ -333,6 +341,7 @@ for (const c of cases) {
   if (c.expect.secondMaxTokens !== undefined) checks.push(["secondMaxTokens", requests[1]?.body?.max_tokens === c.expect.secondMaxTokens]);
   if (c.expect.firstMaxTokens !== undefined) checks.push(["firstMaxTokens", requests[0]?.body?.max_tokens === c.expect.firstMaxTokens]);
   if (c.expect.secondNoReasoning) checks.push(["secondNoReasoning", !("reasoning_effort" in (requests[1]?.body || {}))]);
+  if (c.expect.reasoningEffort !== undefined) checks.push(["reasoningEffort", requests[0]?.body?.reasoning_effort === c.expect.reasoningEffort]);
   if (c.expect.headerUA !== undefined) checks.push(["headerUA", (requests.at(-1)?.headers?.["user-agent"] || "") === c.expect.headerUA]);
   if (c.expect.headerSession !== undefined) checks.push(["headerSession", (requests.at(-1)?.headers?.["x-opencode-session"] || "") === c.expect.headerSession]);
   if (c.expect.maxSummaryLen !== undefined) checks.push(["summaryLen", res && res.en.summary.length <= c.expect.maxSummaryLen]);

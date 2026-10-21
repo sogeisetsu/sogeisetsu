@@ -37,6 +37,9 @@
  *   shape = "chat"      → POST {baseUrl}/chat/completions
  *   shape = "responses" → POST {baseUrl}/responses
  *   headers（可选）      → 追加到请求头（OpenCode Go 要求自报 user-agent / 会话 id）
+ *   reasoningEffort（可选）→ chat 形态的 reasoning_effort 取值，默认 "none"（关思考）。
+ *                         minimax 不认 "none"（400），去掉参数又会让它无约束地思考到超时，
+ *                         所以它单独写 "low"（实测 11s 出内容）
  *   extraBody（可选）    → 合并进 chat 请求体（sensenova 借它发 thinking:{type:"disabled"} 关思考）
  *
  * 用法：node scripts/daily/lib/ai.mjs --data=path.json
@@ -167,6 +170,9 @@ export function defaultProviders(env = process.env) {
       apiKey: env.OPENCODE_API_KEY,
       model: "minimax-m3.1-flash-free", // 限时免费、不限量
       shape: "chat",
+      // 它认 reasoning_effort，但不收 "none"（400）；一旦把参数整个去掉，思考就不受约束，
+      // 真实日报 prompt 在 300s 内连响应头都没有。实测 "low" 10.9s 出内容。
+      reasoningEffort: "low",
       headers,
     });
     list.push({
@@ -600,7 +606,9 @@ function extractContent(json, shape) {
  *   · JSON 提取/校验失败 → 逐次加严提醒，最多追加 3 次（共 4 次尝试）→ 换下一家
  *   · 截断（finish_reason=length）或空输出（200 但 content 为空，reasoning 吃光预算）
  *     → 打印 usage/reasoning 诊断并翻倍 max_tokens 重试（上限 65536）
- *   · chat 默认发 reasoning_effort=none 关闭思考（避免 CoT 吃光 max_tokens 导致 content 为空）；400 时去掉重试
+ *   · chat 默认发 reasoning_effort=none 关闭思考（避免 CoT 吃光 max_tokens 导致 content 为空）；400 时去掉重试。
+ *     取值可由 provider.reasoningEffort 覆盖 —— minimax 不认 "none"（400），而整个去掉参数
+ *     它又会无约束地思考到超时，所以它单独配 "low"
  *   · provider.headers（可选）原样追加进请求头（OpenCode Go 的 user-agent / 会话 id 走这里）
  *   · provider.extraBody（可选）合并进 chat 请求体（sensenova 的 thinking:{type:"disabled"} 走这里）
  *
@@ -641,7 +649,7 @@ async function attemptProvider(provider, system, user, validate, feedback = buil
             ],
             temperature: 0.3,
             max_tokens: maxTokens,
-            ...(reasoningOff ? { reasoning_effort: "none" } : {}),
+            ...(reasoningOff ? { reasoning_effort: provider.reasoningEffort || "none" } : {}),
             ...(useJsonMode ? { response_format: { type: "json_object" } } : {}),
             // provider 自定义请求体片段（sensenova 的 thinking:{type:"disabled"} 走这里）；
             // 只作用于 chat 形态，responses 形态不带（那边的参数名不同）
