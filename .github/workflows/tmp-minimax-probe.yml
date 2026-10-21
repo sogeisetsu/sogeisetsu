@@ -1,8 +1,10 @@
 name: tmp-minimax-probe
 
-# 一次性探针（用完即删，不进 main）。第一轮结论：小 prompt + max_tokens 1024
-# 秒回 200；加 thinking:{type:"disabled"} 反而 400。所以 180s 挂死不是「thinking 吃预算」。
-# 第二轮隔离真正的变量：max_tokens 49152（= MAX_TOKENS）与真实量级的 prompt。
+# 一次性探针（用完即删，不进 main）。
+# 第一轮：小 prompt + max_tokens 1024 秒回 200；thinking:{type:"disabled"} 反而 400。
+# 第二轮：big prompt + max_tokens 49152 也是 200/11s —— 所以不是「prompt 大」或「输出预算」。
+# 第三轮（本版）：抓**真实**的 system+user prompt（本地假 provider 拦一次 generateNarrative），
+# 再原样回放给 minimax，量它到底要多久 / 会不会一直 thinking 到超时。
 on:
   workflow_dispatch:
 
@@ -13,54 +15,90 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: probe minimax variants
+      - uses: actions/checkout@v7
+      - name: capture real prompt then replay to minimax
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         run: |
           node --input-type=module - <<'EOF'
-          import { randomUUID } from "node:crypto";
-          const URL_ = "https://opencode.ai/inference/go/openai/v1/chat/completions";
+          import http from "node:http";
+          import { readFileSync } from "node:fs";
+          import { generateNarrative } from "./scripts/daily/lib/ai.mjs";
+
+          const data = JSON.parse(readFileSync("docs/data/2026-10-22.json", "utf8"));
+          let captured = null;
+          const srv = http.createServer((req, res) => {
+            let raw = "";
+            req.on("data", (c) => { raw += c; });
+            req.on("end", () => {
+              if (!captured) {
+                try {
+                  const body = JSON.parse(raw);
+                  const sys = body.messages?.find((m) => m.role === "system")?.content || "";
+                  const usr = body.messages?.find((m) => m.role === "user")?.content || "";
+                  captured = { sys, usr, body };
+                  console.log(`captured: system=${sys.length}B user=${usr.length}B keys=${Object.keys(body).join(",")}`);
+                } catch (e) {
+                  console.log(`capture parse failed: ${e.message}`);
+                }
+              }
+              // 返回一个能过校验的最小叙述，让 generateNarrative 尽早结束
+              const payload = {
+                en: { headline: "probe", summary: "One sentence only for the probe run here." },
+                zh: { headline: "探针", summary: "仅用于探针的一次性句子。" },
+                releaseNotes: [],
+              };
+              res.writeHead(200, { "content-type": "application/json" });
+              res.end(JSON.stringify({ choices: [{ message: { content: JSON.stringify(payload) }, finish_reason: "stop" }], usage: {} }));
+            });
+          });
+          await new Promise((r) => srv.listen(8787, "127.0.0.1", r));
+
+          try {
+            await generateNarrative({
+              data,
+              providers: [{ name: "capture", baseUrl: "http://127.0.0.1:8787", apiKey: "x", model: "m", shape: "chat" }],
+            });
+          } catch (e) {
+            console.log(`generateNarrative threw (expected-ish): ${e?.message}`);
+          }
+          srv.close();
+          if (!captured) { console.log("NO PROMPT CAPTURED"); process.exit(0); }
+
           const KEY = process.env.OPENCODE_API_KEY;
           if (!KEY) { console.log("NO KEY"); process.exit(0); }
-          const headers = {
-            authorization: `Bearer ${KEY}`,
-            "user-agent": "sogeisetsu-daily-report/1.0 (+https://github.com/sogeisetsu/sogeisetsu)",
-            "x-opencode-session": `probe-${randomUUID()}`,
-            "content-type": "application/json",
+          const body = {
+            model: "minimax-m3.1-flash-free",
+            messages: [
+              { role: "system", content: captured.sys },
+              { role: "user", content: captured.usr },
+            ],
+            temperature: 0.3,
+            max_tokens: 49152,
+            response_format: { type: "json_object" },
           };
-          const system = 'Reply with ONE strict JSON object only: {"en":{"headline":"...","summary":"..."},"zh":{...}}';
-          const smallUser = "Give me the JSON now.";
-          // 真实日报 prompt 量级：凑一段 ~12k 字符的类 JSON 输入
-          const bigUser = [
-            "Input data (JSON):",
-            JSON.stringify({ commits: Array.from({ length: 60 }, (_, i) => ({ repo: `user/repo-${i}`, count: 3, messages: ["fix: something", "docs: something else"] })), issues: Array.from({ length: 30 }, (_, i) => ({ repo: `user/repo-${i}`, number: 100 + i, title: "an issue title that is reasonably long to pad the payload" })) }),
-            "Write the JSON now.",
-          ].join("\n");
-          async function probe(label, userText, bodyExtra, timeoutMs = 150000) {
-            const ac = new AbortController();
-            const t = setTimeout(() => ac.abort(), timeoutMs);
-            const t0 = Date.now();
-            const body = {
-              model: "minimax-m3.1-flash-free",
-              messages: [{ role: "system", content: system }, { role: "user", content: userText }],
-              temperature: 0.3,
-              ...bodyExtra,
-            };
-            try {
-              const res = await fetch(URL_, { method: "POST", headers, body: JSON.stringify(body), signal: ac.signal });
-              const text = await res.text();
-              const secs = ((Date.now() - t0) / 1000).toFixed(1);
-              console.log(`\n=== ${label} :: prompt=${userText.length}B HTTP ${res.status} in ${secs}s`);
-              console.log(text.slice(0, 800));
-            } catch (e) {
-              const secs = ((Date.now() - t0) / 1000).toFixed(1);
-              console.log(`\n=== ${label} :: prompt=${userText.length}B EXC ${e?.name} ${e?.message} in ${secs}s`);
-            } finally {
-              clearTimeout(t);
-            }
+          const bytes = JSON.stringify(body).length;
+          const t0 = Date.now();
+          const ac = new AbortController();
+          const timer = setTimeout(() => ac.abort(), 420000); // 7 分钟：看它是慢还是真挂
+          try {
+            const res = await fetch("https://opencode.ai/inference/go/openai/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                authorization: `Bearer ${KEY}`,
+                "user-agent": "sogeisetsu-daily-report/1.0 (+https://github.com/sogeisetsu/sogeisetsu)",
+                "x-opencode-session": "probe-real-prompt",
+                "content-type": "application/json",
+              },
+              body: JSON.stringify(body),
+              signal: ac.signal,
+            });
+            const text = await res.text();
+            console.log(`\n=== replay HTTP ${res.status} in ${((Date.now() - t0) / 1000).toFixed(1)}s, request=${bytes}B, response=${text.length}B`);
+            console.log(text.slice(0, 1200));
+          } catch (e) {
+            console.log(`\n=== replay EXC ${e?.name} ${e?.message} in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+          } finally {
+            clearTimeout(timer);
           }
-          const rf = { type: "json_object" };
-          await probe("E small prompt + max_tokens 49152 + rf", smallUser, { max_tokens: 49152, response_format: rf });
-          await probe("F big prompt + max_tokens 49152 + rf", bigUser, { max_tokens: 49152, response_format: rf });
-          await probe("G big prompt + max_tokens 1024 + rf", bigUser, { max_tokens: 1024, response_format: rf });
           EOF
