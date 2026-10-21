@@ -3,7 +3,7 @@
 ![GitHub activity over the last 30 days](./assets/30-day-activity.svg)
 
 <!--START:activity-->
-_Updated automatically: 2026-10-21_
+_Updated automatically: 2026-10-22_
 
 <details><summary>🔨 Owned repos</summary>
 
@@ -12,11 +12,11 @@ _Updated automatically: 2026-10-21_
 - 📝 Pushed 32 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 25 commits to `sogeisetsu/opencode-skill-management`
 - 📝 Pushed 17 commits to `sogeisetsu/opencode-agent-sandbox`
-- 📝 Pushed 5 commits to `sogeisetsu/asset-inventory`
+- 📝 Pushed 4 commits to `sogeisetsu/sopen-translate`
 - 📝 Pushed 1 commit to `sogeisetsu/myBlog`
 - 🐛 Opened issue [\[test\] opencode /oc smoke（临时，验完即关）](https://github.com/sogeisetsu/sogeisetsu/issues/9) in `sogeisetsu/sogeisetsu`
-- 🚀 [feat: v1.7.0 - seven languages, Material docs site, rendered examples](https://github.com/sogeisetsu/asset-inventory/pull/8) · merged
-- 🚀 [chore: bump to 1.6.1](https://github.com/sogeisetsu/asset-inventory/pull/7) · merged
+- 📦 Released [v0.2.0](https://github.com/sogeisetsu/opencode-skill-management/releases/tag/v0.2.0) in `sogeisetsu/opencode-skill-management`
+- 📦 Released [v0.2.0](https://github.com/sogeisetsu/opencode-skill-management/releases/tag/v0.2.0) in `sogeisetsu/opencode-skill-management`
 
 </details>
 
