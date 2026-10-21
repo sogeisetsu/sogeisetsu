@@ -1,0 +1,59 @@
+name: tmp-minimax-probe
+
+# 一次性探针（用完即删，不进 main）：拿仓库的 OPENCODE_API_KEY 对
+# minimax-m3.1-flash-free 做 A/B，验证「它是 thinking 模型、推理吃光预算导致
+# 180s 无响应」这个猜测 —— 那样加 thinking:{type:"disabled"} 应该能出内容。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: probe minimax variants
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+        run: |
+          node --input-type=module - <<'EOF'
+          import { randomUUID } from "node:crypto";
+          const URL_ = "https://opencode.ai/inference/go/openai/v1/chat/completions";
+          const KEY = process.env.OPENCODE_API_KEY;
+          if (!KEY) { console.log("NO KEY"); process.exit(0); }
+          const headers = {
+            authorization: `Bearer ${KEY}`,
+            "user-agent": "sogeisetsu-daily-report/1.0 (+https://github.com/sogeisetsu/sogeisetsu)",
+            "x-opencode-session": `probe-${randomUUID()}`,
+            "content-type": "application/json",
+          };
+          const msgs = [
+            { role: "system", content: 'Reply with ONE strict JSON object only: {"headline":"ok","summary":"ok"}' },
+            { role: "user", content: "Give me the JSON now." },
+          ];
+          async function probe(label, model, bodyExtra, timeoutMs = 150000) {
+            const ac = new AbortController();
+            const t = setTimeout(() => ac.abort(), timeoutMs);
+            const t0 = Date.now();
+            const body = { model, messages: msgs, ...bodyExtra };
+            try {
+              const res = await fetch(URL_, { method: "POST", headers, body: JSON.stringify(body), signal: ac.signal });
+              const text = await res.text();
+              const secs = ((Date.now() - t0) / 1000).toFixed(1);
+              console.log(`\n=== ${label} :: HTTP ${res.status} in ${secs}s`);
+              console.log(text.slice(0, 700));
+            } catch (e) {
+              const secs = ((Date.now() - t0) / 1000).toFixed(1);
+              console.log(`\n=== ${label} :: EXC ${e?.name} ${e?.message} in ${secs}s`);
+            } finally {
+              clearTimeout(t);
+            }
+          }
+          const MINI = "minimax-m3.1-flash-free";
+          const rf = { type: "json_object" };
+          await probe("A minimax rf + max_tokens 1024", MINI, { response_format: rf, max_tokens: 1024 });
+          await probe("B minimax rf + thinking-disabled", MINI, { response_format: rf, max_tokens: 1024, thinking: { type: "disabled" } });
+          await probe("C minimax bare (no rf, no max_tokens)", MINI, {});
+          await probe("D deepseek control (rf)", "deepseek-v4.1-flash", { response_format: rf, max_tokens: 1024 }, 60000);
+          EOF
