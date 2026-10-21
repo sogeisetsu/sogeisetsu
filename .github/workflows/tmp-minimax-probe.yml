@@ -1,11 +1,7 @@
 name: tmp-minimax-probe
 
-# 一次性探针（用完即删，不进 main）。已确认的三轮：
-#   1. 小 prompt：200/3-4s；thinking:{type:"disabled"} → 400（不支持）
-#   2. 大 prompt（8.4KB）+ max_tokens 49152：200/11s
-#   3. 回放**真实** system(5047B)+user(1995B) prompt：300s 无响应头 → fetch failed
-# 第四轮：真实 prompt 下试 reasoning_effort 的各个值 —— 能不能关/压低思考，
-# 决定 minimax 这条腿还有没有救（值能被接受就能在 provider 上配一个）。
+# 一次性探针（用完即删，不进 main）。第五轮：端到端 —— 用真实数据 + 真实
+# defaultProviders() 链调 generateNarrative，看 minimax（reasoning_effort=low）能否一次过。
 on:
   workflow_dispatch:
 
@@ -17,94 +13,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: real prompt x reasoning_effort variants
+      - name: real chain end-to-end
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         run: |
           node --input-type=module - <<'EOF'
-          import http from "node:http";
           import { readFileSync } from "node:fs";
-          import { randomUUID } from "node:crypto";
-          import { generateNarrative } from "./scripts/daily/lib/ai.mjs";
+          import { generateNarrative, defaultProviders } from "./scripts/daily/lib/ai.mjs";
 
           const data = JSON.parse(readFileSync("docs/data/2026-10-22.json", "utf8"));
-          let captured = null;
-          const srv = http.createServer((req, res) => {
-            let raw = "";
-            req.on("data", (c) => { raw += c; });
-            req.on("end", () => {
-              if (!captured) {
-                const body = JSON.parse(raw);
-                captured = {
-                  sys: body.messages?.find((m) => m.role === "system")?.content || "",
-                  usr: body.messages?.find((m) => m.role === "user")?.content || "",
-                };
-              }
-              const payload = {
-                en: { headline: "probe", summary: "One sentence only for the probe run here." },
-                zh: { headline: "探针", summary: "仅用于探针的一次性句子。" },
-                releaseNotes: [],
-              };
-              res.writeHead(200, { "content-type": "application/json" });
-              res.end(JSON.stringify({ choices: [{ message: { content: JSON.stringify(payload) }, finish_reason: "stop" }], usage: {} }));
-            });
-          });
-          await new Promise((r) => srv.listen(8787, "127.0.0.1", r));
-          try {
-            await generateNarrative({
-              data,
-              providers: [{ name: "capture", baseUrl: "http://127.0.0.1:8787", apiKey: "x", model: "m", shape: "chat" }],
-            });
-          } catch (e) {
-            console.log(`capture run threw: ${e?.message}`);
+          const providers = defaultProviders();
+          console.log(`chain: ${providers.map((p) => `${p.name}(${p.model}${p.reasoningEffort ? ",effort=" + p.reasoningEffort : ""})`).join(" -> ")}`);
+          const t0 = Date.now();
+          const ai = await generateNarrative({ data, providers });
+          const secs = ((Date.now() - t0) / 1000).toFixed(1);
+          if (!ai) {
+            console.log(`\nRESULT: null（全败）in ${secs}s`);
+          } else {
+            console.log(`\nRESULT: ok in ${secs}s provider=${ai.provider} model=${ai.model || "-"}`);
+            console.log(`en.headline(${ai.en.headline.length}) ${ai.en.headline}`);
+            console.log(`en.summary(${ai.en.summary.length}) ${ai.en.summary.slice(0, 120)}...`);
+            console.log(`zh.headline(${ai.zh.headline.length}) ${ai.zh.headline}`);
           }
-          srv.close();
-          if (!captured) { console.log("NO PROMPT CAPTURED"); process.exit(0); }
-          console.log(`prompt: system=${captured.sys.length}B user=${captured.usr.length}B`);
-
-          const KEY = process.env.OPENCODE_API_KEY;
-          if (!KEY) { console.log("NO KEY"); process.exit(0); }
-
-          async function attempt(effort, timeoutMs = 150000) {
-            const body = {
-              model: "minimax-m3.1-flash-free",
-              messages: [{ role: "system", content: captured.sys }, { role: "user", content: captured.usr }],
-              temperature: 0.3,
-              max_tokens: 49152,
-              response_format: { type: "json_object" },
-            };
-            if (effort !== null) body.reasoning_effort = effort;
-            const t0 = Date.now();
-            const ac = new AbortController();
-            const timer = setTimeout(() => ac.abort(), timeoutMs);
-            try {
-              const res = await fetch("https://opencode.ai/inference/go/openai/v1/chat/completions", {
-                method: "POST",
-                headers: {
-                  authorization: `Bearer ${KEY}`,
-                  "user-agent": "sogeisetsu-daily-report/1.0 (+https://github.com/sogeisetsu/sogeisetsu)",
-                  "x-opencode-session": `probe-${randomUUID()}`,
-                  "content-type": "application/json",
-                },
-                body: JSON.stringify(body),
-                signal: ac.signal,
-              });
-              const text = await res.text();
-              const secs = ((Date.now() - t0) / 1000).toFixed(1);
-              let usage = "";
-              try {
-                const j = JSON.parse(text);
-                const rc = j.choices?.[0]?.message?.reasoning_content;
-                usage = ` usage=${JSON.stringify(j.usage || {})} reasoningLen=${rc ? rc.length : 0} contentLen=${j.choices?.[0]?.message?.content?.length ?? 0}`;
-              } catch {}
-              console.log(`\n=== effort=${JSON.stringify(effort)} :: HTTP ${res.status} in ${secs}s${usage}`);
-              if (res.status !== 200) console.log(text.slice(0, 300));
-            } catch (e) {
-              console.log(`\n=== effort=${JSON.stringify(effort)} :: EXC ${e?.name} ${e?.message} in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
-            } finally {
-              clearTimeout(timer);
-            }
-          }
-
-          for (const v of ["low", "minimal", "medium", "none"]) await attempt(v);
           EOF
