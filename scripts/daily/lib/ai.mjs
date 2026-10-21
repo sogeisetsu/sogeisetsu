@@ -144,7 +144,9 @@ export function sanitizeReason(text, maxLen = 300) {
 
 /**
  * 按优先级返回可用 provider；没有 key 的直接跳过。
- * 顺序（本轮改序）：OpenCode Go 两条在前（免费模型 → 付费额度内模型）、sensenova 殿后。
+ * 顺序：OpenCode Go 三条在前（两条限时免费 → 付费额度内模型）、sensenova 殿后。
+ * 免费腿里 minimax 在前、longcat 在后：2026-10-21 起 longcat 的上游推理端点持续 402 /
+ * 挂满超时（`/models` 里模型仍在列），所以换一条免费腿先顶上，longcat 留作第二候选。
  * 商汤的模型不再动态解析（/models 挑出来的模型在长提示词下把预算全烧在思考上、永不产出），
  * 写死 glm-5.2 并关掉思考（extraBody 仅这一条带）。
  */
@@ -159,6 +161,14 @@ export function defaultProviders(env = process.env) {
       "user-agent": OPENCODE_GO_USER_AGENT,
       "x-opencode-session": `sogeisetsu-daily-report-${randomUUID()}`,
     };
+    list.push({
+      name: "opencode-go-minimax",
+      baseUrl: OPENCODE_GO_BASE,
+      apiKey: env.OPENCODE_API_KEY,
+      model: "minimax-m3.1-flash-free", // 限时免费、不限量
+      shape: "chat",
+      headers,
+    });
     list.push({
       name: "opencode-go-longcat",
       baseUrl: OPENCODE_GO_BASE,
@@ -199,6 +209,9 @@ export function defaultProviders(env = process.env) {
  * 而 `deepseek-v4.1-flash` 是唯一稳定过校验的腿。重排只作用于总结线，
  * `defaultProviders` 保持 Go 内部的「免费优先」顺序 —— 日报是每 2 小时的高频任务，
  * 不该因为总结线的需要而放弃免费腿。
+ *
+ * `minimax-m3.1-flash-free` 还没有跑过 30 天总结（口径未验证）：重排后它落在 deepseek 之后、
+ * longcat 之前，最坏情况是多花一次超时才落到 longcat，不会顶掉唯一稳定的那条腿。
  */
 export function orderProvidersForSummary(list) {
   const arr = Array.isArray(list) ? list : [];

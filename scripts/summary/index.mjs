@@ -7,7 +7,7 @@
  * 数据流：
  *   collectSummaryData()  → 最近 30 个已定稿 +08 自然日的聚合（docs/data ∪ data/backfill）
  *                           数字条全部由代码逐日求和，不经 AI
- *   generateStructured()  → 主商汤 / 备 OpenCode Go（longcat → deepseek），按严格 schema 产出 en+zh 结构化叙述（失败则 null）
+ *   generateStructured()  → 主商汤 / 备 OpenCode Go（minimax → longcat → deepseek），按严格 schema 产出 en+zh 结构化叙述（失败则 null）
  *   renderSummaryPage()   → docs/summary.html（独立页，中英内联切换）
  *   summaryCard()         → docs/index.html 顶部的总结卡片片段
  *   docs/summary.json 为结构化真相源（只留最新一份），含 dataHash 供「无变化跳过」。

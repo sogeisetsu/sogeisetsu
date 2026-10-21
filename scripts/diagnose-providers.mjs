@@ -50,6 +50,7 @@ const NEAR_MATCH_CAP = 5; // 「家族相近」候选 id 最多列 5 个（只�
 
 /** provider 名 → 它需要的环境变量名（只用于「未配置」时的提示文本，不参与探查）。 */
 const KEY_ENV = {
+  "opencode-go-minimax": "OPENCODE_API_KEY",
   "opencode-go-longcat": "OPENCODE_API_KEY",
   "opencode-go-deepseek": "OPENCODE_API_KEY",
   sensenova: "SENSENOVA_API_KEY",
