@@ -3,12 +3,12 @@
   "windowStart": "2026-10-22T00:00:00+08:00",
   "windowEnd": "2026-10-23T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-21T17:15:07.560Z",
+  "generatedAt": "2026-10-21T17:39:40.510Z",
   "empty": false,
   "totals": {
-    "commits": 8,
+    "commits": 10,
     "prs": 0,
-    "issues": 0,
+    "issues": 1,
     "reviews": 0
   },
   "commits": [
@@ -52,6 +52,32 @@
       "automatedBots": []
     },
     {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 3,
+      "own": true,
+      "messages": [
+        {
+          "sha": "cba49542c68c783cda9557cf3522fa24db042b5f",
+          "message": "chore(codemap): 刷新映射基线到 9cc6516（AI provider 链加免费腿 minimax 后复核）",
+          "ts": "2026-10-21T17:39:16Z"
+        },
+        {
+          "sha": "d93ea4d9efea5b2241e2e287a4369e9ad4130351",
+          "message": "feat(ai): 免费腿加 opencode-go-minimax，排在 longcat 之前",
+          "ts": "2026-10-21T17:39:16Z"
+        },
+        {
+          "sha": "4090c80bcfda18aa87e63a78aa607c915eab4fbf",
+          "message": "docs: 修正活动卡片 422 的\"未修\"误记，补齐 codemap / test-render 的表格说明",
+          "ts": "2026-10-21T17:14:34Z"
+        }
+      ],
+      "automated": 3,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    },
+    {
       "repo": "sogeisetsu/opencode-agent-sandbox",
       "count": 1,
       "own": true,
@@ -64,28 +90,23 @@
       ],
       "automated": 0,
       "automatedBots": []
-    },
-    {
-      "repo": "sogeisetsu/sogeisetsu",
-      "count": 1,
-      "own": true,
-      "messages": [
-        {
-          "sha": "4090c80bcfda18aa87e63a78aa607c915eab4fbf",
-          "message": "docs: 修正活动卡片 422 的\"未修\"误记，补齐 codemap / test-render 的表格说明",
-          "ts": "2026-10-21T17:14:34Z"
-        }
-      ],
-      "automated": 2,
-      "automatedBots": [
-        "github-actions[bot]"
-      ]
     }
   ],
-  "automatedCommits": 2,
+  "automatedCommits": 3,
   "pullRequests": [],
   "reviews": [],
-  "issues": [],
+  "issues": [
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "number": 8,
+      "title": "[ai-failure] AI 叙述生成失败",
+      "url": "https://github.com/sogeisetsu/sogeisetsu/issues/8",
+      "action": "commented",
+      "ts": "2026-10-21T17:27:46.000Z",
+      "own": true,
+      "comments": 5
+    }
+  ],
   "releases": [],
   "stars": [],
   "starInventory": [
@@ -216,18 +237,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "8 commits across 3 repos: browser-extension skeleton and docs fixes",
-      "summary": "On 2026-10-22 the user made **8 own commits** across three repositories, plus **2 automated commits by `github-actions[bot]`** in `sogeisetsu/sogeisetsu`. In `sogeisetsu/sopen-translate` (6 commits) they built out an MV3 skeleton for page and selection translation, then dropped selection translation and kept page translation only; further commits reset page state between translation runs, added DOM smoke tests for two-round restore, added required-field validation, enabled `checkJs` type checking through JSDoc, wrote `AGENTS.md` with repo constraints and verification steps, and fixed documentation drift. In `sogeisetsu/opencode-agent-sandbox` (1 commit) they added an `openchamber-storage` knowledge category covering whether pasted images are stored as files or in the database, plus deletion without shrinking and the `VACUUM` flow. In `sogeisetsu/sogeisetsu` (1 own commit) they corrected an activity-card 422 entry previously marked as unfixed and completed the table notes for `codemap` and `test-render`. No pull requests, reviews, issues, releases, stars, replies or discussions were recorded, and no state-change items involving the user were found beyond the `openchamber/openchamber` #5293 closure handled by `btriapitsyn`.",
+      "headline": "sogeisetsu: 10 commits across 3 repos, issue #8 comment",
+      "summary": "On 2026-10-22 `sogeisetsu` recorded **10 own commits** across three repositories, plus 3 automated commits by `github-actions[bot]`. In `sogeisetsu/sopen-translate` there were 6 commits: an MV3 skeleton with page and selection translation was followed by dropping selection translation to keep page translation only, adding `AGENTS.md`, enabling `checkJs` type checking via JSDoc, resetting page state between runs with smoke tests and required-field validation, and a DOM smoke test for two-round restore that also fixed doc drift. In `sogeisetsu/sogeisetsu` the 3 own commits added a free-leg `opencode-go-minimax` provider ordered before `longcat`, refreshed the codemap baseline to `9cc6516`, and corrected the activity-card 422 note while filling in codemap and test-render table docs. In `sogeisetsu/opencode-agent-sandbox` one docs commit added the `openchamber-storage` knowledge category covering pasted-image file vs database storage and the no-shrink delete and `VACUUM` flow. The user commented on issue `sogeisetsu/sogeisetsu#8` ([ai-failure] AI 叙述生成失败), which has 5 comments, opening or closing 1 issue overall. Separately, `openchamber/openchamber#5293` was closed by `btriapitsyn`. There were no pull requests, reviews, releases, or discussions.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "三个仓库共 8 次提交：浏览器扩展骨架与文档修订",
-      "summary": "2026-10-22，用户在三个仓库中共完成 **8 次本人提交**，另有 **2 次由 `github-actions[bot]` 自动提交**（位于 `sogeisetsu/sogeisetsu`）。在 `sogeisetsu/sopen-translate`（6 次提交）中，先搭建 MV3 骨架支持页面翻译与划词翻译，随后去掉划词翻译、只保留页面翻译；其余提交在翻译运行之间重置页面状态，补充两轮恢复的 DOM 冒烟测试与必填字段校验，通过 JSDoc 启用 `checkJs` 类型检查，新增 `AGENTS.md` 记录仓库约束与验证步骤，并修正文档与实现不一致之处。在 `sogeisetsu/opencode-agent-sandbox`（1 次提交）中，新增 `openchamber-storage` 知识类别，记录粘贴图片是存为文件还是写入数据库，以及删除后不缩小与 `VACUUM` 流程。在 `sogeisetsu/sogeisetsu`（1 次提交）中，修正活动卡片 422 被误记为未修复的条目，并补齐 `codemap` 与 `test-render` 的表格说明。当日无 PR、评审、issue、发布、star、回复或讨论记录；状态变更方面仅有 `openchamber/openchamber` 的 #5293 由 `btriapitsyn` 关闭，与用户无直接关联。",
+      "headline": "sogeisetsu：三个仓库共 10 次提交，评论 issue #8",
+      "summary": "2026-10-22，`sogeisetsu` 在三个仓库中记录了 **10 次本人提交**，另有 3 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sopen-translate` 有 6 次提交：先搭建 MV3 骨架并支持整页与划词翻译，随后去掉划词翻译只保留整页翻译，添加 `AGENTS.md` 说明仓库约束，通过 JSDoc 启用 `checkJs` 类型检查，在翻译运行之间重置页面状态并补充冒烟测试与必填校验，最后为两轮恢复添加 DOM 冒烟测试并修正文档偏差。`sogeisetsu/sogeisetsu` 的 3 次本人提交新增免费线路 `opencode-go-minimax`（排在 `longcat` 之前），把 codemap 基线刷新到 `9cc6516`，并修正活动卡片 422 的“未修”误记、补齐 codemap 与 test-render 的表格说明。`sogeisetsu/opencode-agent-sandbox` 有 1 次文档提交，新增 `openchamber-storage` 知识类别，涵盖粘贴图片存文件还是落库、删除不缩与 `VACUUM` 流程。用户评论了 issue `sogeisetsu/sogeisetsu#8`（[ai-failure] AI 叙述生成失败），该 issue 共有 5 条评论，整体新开或关闭 1 个 issue。另外，`openchamber/openchamber#5293` 已由 `btriapitsyn` 关闭。当天没有拉取请求、评审、发布或讨论活动。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "c8bf7c4e89e4185273d8e4aed9b89c0e88c4a91b0e9fea897be8720bc179b188"
+  "dataHash": "f1c7c928a844b4bf146eb5b8755963b0ccbc10b1cf477753280f6c1f7eabaad7"
 }
