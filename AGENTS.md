@@ -114,7 +114,7 @@ git push
 
 ## 已知问题（别当成自己弄坏的）
 
-- 活动卡片线在 GitHub 限制 `/users/:u/events/public` 分页时直接失败：`HTTP 422 ... pagination is limited for this resource`（实测 `page=4` 就 422）。`update-activity.yml` 会因此变红，与日报 / 总结无关，目前未修。
+- 活动卡片线的事件翻页**只认 `Link` 头**（`decideEventPage()`），别再用「满页即有下一页」推断 —— 最后一页恰好满页时会去请求不存在的页并拿到 `HTTP 422 pagination is limited for this resource`，那是历史坑（`4719825` 已修）。第 2 页起的 422 / 4xx / 5xx 重试耗尽属「分页到底」：告警 + 停 + 保留已取部分并置 `stoppedByLimit`，`truncated` 会如实标注。**只有第 1 页取不到才 fail**（没有事件样本会让时间轴全零、`reposOwn` 空，而 `totals` 来自 GraphQL 非零）。所以看到 `stoppedByLimit` 告警是预期行为，不是新 bug。
 - `update-activity.yml` 没有 push 触发 —— 看到它被 `workflow_dispatch` 触发，是 Cloudflare watchdog 在补 GitHub 丢掉的 schedule，不是有人手动跑。
 - `.openchamber/`、`.opencode/`、`.slim/`、`data/ai-failure.json`、`scripts/preview-*.svg`、`assets/_preview.html` 都在 `.gitignore` 里 —— 截图 / 预览产物不用管，也别提交。
 
