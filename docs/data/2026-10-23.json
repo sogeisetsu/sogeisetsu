@@ -3,7 +3,7 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-22T20:51:10.269Z",
+  "generatedAt": "2026-10-22T21:41:50.643Z",
   "empty": false,
   "totals": {
     "commits": 6,
@@ -56,13 +56,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 9,
+      "automated": 11,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 9,
+  "automatedCommits": 11,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -185,18 +185,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "6 commits on sopen-translate: glossary, caching, perf, v0.2.0",
-      "summary": "Activity on 2026-10-23 was concentrated in `sogeisetsu/sopen-translate`, with **6 own commits** and no pull requests, reviews, issues, or releases. Work started with a page-level performance change that batches requests by provider policy, adds bounded concurrency and an adaptive split. Two maintenance commits followed: one added an ignore rule for locally installed agent skills, and one recorded C6 real-device acceptance results in the planning docs. A fix for options and popup keeps the model cache TTL honest and guards the restore status fetch. The release commit bumped the extension to `0.2.0` and synced docs with the bilingual and glossary work. The final feature commit shipped an offline-built builtin glossary term list with 797 entries. In `sogeisetsu/sogeisetsu` there were no own commits; **9 automated commits by `github-actions[bot]`** were recorded.",
+      "headline": "sogeisetsu lands 6 commits: batching, 0.2.0 release, 797-entry glossary",
+      "summary": "On 2026-10-23 the user made **6 own commits** across `sogeisetsu/sopen-translate`, plus 11 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sopen-translate`, page performance work added provider-policy batching, bounded concurrency and adaptive splitting. Options and popup fixes kept the model cache TTL honest and guarded the restore status fetch, and the glossary shipped an offline-built builtin term list with 797 entries. Housekeeping included ignoring locally installed agent skills and recording C6 real-device acceptance results in the plan docs. A release chore bumped the project to 0.2.0 and synced docs with the bilingual/glossary work. No pull requests, reviews, issues, discussions or stars were recorded, and no collection section hit its cap.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sopen-translate 提交 6 次：术语表、缓存、性能与 v0.2.0",
-      "summary": "2026-10-23 的活动集中在 `sogeisetsu/sopen-translate`，共 **6 次本人提交**，没有拉取请求、评审、issue 或发布。当天先做了页面级性能改动：按 provider 策略分批请求，并加入有界并发与自适应拆分。随后两个维护类提交，一个为本地安装的 agent skills 增加忽略规则，另一个在规划文档中记录 C6 真机验收结果。针对 options 和 popup 的修复让模型缓存 TTL 更准确，并为恢复状态请求加了保护。发布提交把扩展版本升到 `0.2.0`，并让文档与双语、术语表工作保持同步。最后一个功能提交上线了离线构建的内置术语表，共含 797 条词条。`sogeisetsu/sogeisetsu` 当天没有本人提交，但有 **9 次由 `github-actions[bot]` 完成的自动提交**。",
+      "headline": "sogeisetsu 完成 6 次提交：批处理、0.2.0 与 797 条术语表",
+      "summary": "2026-10-23，用户在 `sogeisetsu/sopen-translate` 完成 **6 次本人提交**，另有 11 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 的自动提交。`sopen-translate` 的页面性能工作加入了按服务商策略批处理、有界并发与自适应拆分。选项与弹窗修复让模型缓存 TTL 更准确，并为恢复状态请求加了保护；术语表则上线了离线构建的内置词条列表，共 797 条。杂项工作包括忽略本地安装的 agent skills，并在计划文档中记录 C6 真机验收结果。发布相关提交将版本提升至 0.2.0，并让文档与双语/术语表工作保持一致。当天没有 pull request、review、issue、discussion 或 star 记录，且各采集区块均未触及上限。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "a3a935e955842b8617ee385163e742688efc2de0dc77a87a031fe51b67a49f33"
+  "dataHash": "d495aa48f66c69a6cf22579d16d2db99e1623276e467c57449d0afead642b75a"
 }
