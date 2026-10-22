@@ -3,10 +3,10 @@
   "windowStart": "2026-10-22T00:00:00+08:00",
   "windowEnd": "2026-10-23T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-22T15:31:11.631Z",
+  "generatedAt": "2026-10-22T16:12:02.156Z",
   "empty": false,
   "totals": {
-    "commits": 23,
+    "commits": 25,
     "prs": 0,
     "issues": 1,
     "reviews": 0
@@ -83,16 +83,26 @@
           "ts": "2026-10-21T17:14:34Z"
         }
       ],
-      "automated": 28,
+      "automated": 30,
       "automatedBots": [
         "github-actions[bot]"
       ]
     },
     {
       "repo": "sogeisetsu/sopen-translate",
-      "count": 7,
+      "count": 9,
       "own": true,
       "messages": [
+        {
+          "sha": "04e9d945f812ec5b7ea7d1f4d70f287643b9cfa7",
+          "message": "feat(page): bilingual rendering, chunk splitting, circuit breaker and progress",
+          "ts": "2026-10-22T15:41:33Z"
+        },
+        {
+          "sha": "e4cf0171845124ee68df580d4f4f841d2bf01151",
+          "message": "feat(providers): add protocol layer, presets, model list and glossary pipeline",
+          "ts": "2026-10-22T15:41:26Z"
+        },
         {
           "sha": "890f24d686a1be7f160edc37358144f1a83a1c52",
           "message": "修改并生成最终的开发计划",
@@ -157,7 +167,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 28,
+  "automatedCommits": 30,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -302,18 +312,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu: 23 commits across 3 repos, 1 issue comment",
-      "summary": "On 2026-10-22 `sogeisetsu` recorded **23 own commits** across three repositories, plus 28 automated commits by `github-actions[bot]`. In `sogeisetsu/sogeisetsu` the 13 own commits focused on AI reasoning settings: documenting measured `deepseek` usage for the three `reasoning_effort` values, switching the `minimax` free tier to `reasoning_effort=low` since `none` returns 400 and omitting the parameter times out, and running several temporary CI probe workflows that were later deleted. A codemap baseline was also repointed to the rebased `d93ea4d`. In `sogeisetsu/sopen-translate` the 7 own commits built an MV3 skeleton with page translation, then dropped selection translation, added `checkJs` type checking via JSDoc, added `AGENTS.md`, fixed page state reset between runs with smoke tests and required-field validation, and added a DOM smoke test for two-round restore. In `sogeisetsu/opencode-agent-sandbox` the 3 own commits extended knowledge docs: the 11-skill table for OMO slim, three new behavior-constraint skills in OMO slim v3.0.5, and a new `openchamber-storage` category. For issues, the user commented on `sogeisetsu/sogeisetsu` issue #8 `[ai-failure] AI 叙述生成失败`, which has 5 comments. The `openchamber/openchamber` bug #5293 was closed by `btriapitsyn`. No releases, PRs, reviews or discussions were recorded.",
+      "headline": "sogeisetsu: 25 commits across 3 repos, 1 issue comment, no releases",
+      "summary": "On 2026-10-22, `sogeisetsu` made **25 own commits** spread across three repositories, plus 30 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/sogeisetsu` the work was 13 own commits: probing and documenting `deepseek` `reasoning_effort` behavior (including that `none` disables thinking), switching the `minimax` free leg to `reasoning_effort=low` because `none` returns a 400, adding then removing temporary probe workflows, and repointing the codemap baseline to `d93ea4d`. In `sogeisetsu/sopen-translate` there were 9 commits: an MV3 skeleton, bilingual page rendering with chunk splitting, a circuit breaker and progress reporting, a provider protocol layer with presets, model lists and a glossary pipeline, DOM smoke tests, page-state resets and required-field validation, `checkJs` typing via JSDoc, and an `AGENTS.md` constraints file; selection translation was dropped in favor of page translation only. In `sogeisetsu/opencode-agent-sandbox` there were 3 documentation commits covering the OMO slim bundled skill table, three new behavior-constraint skills in OMO slim v3.0.5, and a new `openchamber-storage` category. On issues, `sogeisetsu` commented on `sogeisetsu/sogeisetsu` issue #8 \"[ai-failure] AI 叙述生成失败\", which carries 5 comments.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu：3 个仓库共 23 次提交，评论 1 个 issue",
-      "summary": "2026-10-22，`sogeisetsu` 在三个仓库共记录 **23 次本人提交**，另有 28 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/sogeisetsu`，13 次本人提交集中在 AI 推理参数：记录 `deepseek` 三种 `reasoning_effort` 取值的实测用量，把 `minimax` 免费腿改为发送 `reasoning_effort=low`（`none` 会返回 400，去掉参数则思考到超时），并运行了数个临时 CI 探针 workflow，随后删除；codemap 基线改指向 rebase 后的 `d93ea4d`。在 `sogeisetsu/sopen-translate`，7 次本人提交先搭起带页面翻译的 MV3 骨架，随后移除划词翻译，通过 JSDoc 加入 `checkJs` 类型检查，新增 `AGENTS.md`，修复多次翻译之间的页面状态重置并补充冒烟测试与必填字段校验，还添加了两轮恢复的 DOM 冒烟测试。在 `sogeisetsu/opencode-agent-sandbox`，3 次本人提交补充知识文档：OMO slim 随包 11 个 skill 全表、OMO slim v3.0.5 新增的三个行为约束型 skill，以及新增 `openchamber-storage` 类别。issue 方面，用户评论了 `sogeisetsu/sogeisetsu` 的 #8 `[ai-failure] AI 叙述生成失败`，该 issue 共 5 条评论。`openchamber/openchamber` 的 #5293 由 `btriapitsyn` 关闭。当天没有 release、PR、review 或 discussion 记录。",
+      "headline": "sogeisetsu 当日 3 个仓库 25 次提交，评论 1 个 issue，无发布",
+      "summary": "2026-10-22，`sogeisetsu` 共做出 **25 次本人提交**，分布在三个仓库中，另有 `sogeisetsu/sogeisetsu` 中由 `github-actions[bot]` 完成的 30 次自动提交。在 `sogeisetsu/sogeisetsu` 有 13 次本人提交：实测并记录 `deepseek` 的 `reasoning_effort` 行为（其中 `none` 确实关闭思考），把 `minimax` 免费腿改为发送 `reasoning_effort=low`（`none` 会返回 400），先后新增又删除临时探针 workflow，并把 codemap 基线改指向 `d93ea4d`。在 `sogeisetsu/sopen-translate` 有 9 次提交：MV3 骨架、带分块拆分的双语页面渲染、熔断与进度、包含预设、模型列表和术语表管线的 provider 协议层、DOM 冒烟测试、页面状态重置与必填字段校验、基于 JSDoc 的 `checkJs` 类型检查，以及记录仓库约束与验证步骤的 `AGENTS.md`；同时移除了划词翻译，仅保留整页翻译。在 `sogeisetsu/opencode-agent-sandbox` 有 3 次文档提交，分别补充 OMO slim 随包 skill 全表、OMO slim v3.0.5 新增的三个行为约束型 skill，以及新增的 `openchamber-storage` 类别。issue 方面，`sogeisetsu` 在自己仓库的 #8「[ai-failure] AI 叙述生成失败」下发表评论，该 issue 共有 5 条评论。当日没有 pull request、评审、发布、star 或讨论记录；另有一条外部 issue `openchamber/openchamber` #5293（项目操作菜单中 Auto-discover dev server 会运行第一个已保存操作）由 `btriapitsyn` 关闭。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "8731dcb6a1c7a7aa07bd6b9d68d2e89336be0c91e095b4fa884a9aa3f01c23a4"
+  "dataHash": "d9930b27c1a80971f32194669c292afcf7cfe0c707def3b172f00993d74edb3c"
 }

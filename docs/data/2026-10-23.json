@@ -1,0 +1,177 @@
+{
+  "date": "2026-10-23",
+  "windowStart": "2026-10-23T00:00:00+08:00",
+  "windowEnd": "2026-10-24T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-22T16:12:14.864Z",
+  "empty": false,
+  "totals": {
+    "commits": 1,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/sopen-translate",
+      "count": 1,
+      "own": true,
+      "messages": [
+        {
+          "sha": "bdc9a6df84ea2f9ec162747d83c76e72f8b0296e",
+          "message": "feat(glossary): ship offline-built builtin term list with 797 entries",
+          "ts": "2026-10-22T16:09:39Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 0,
+      "own": true,
+      "messages": [],
+      "automated": 1,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    }
+  ],
+  "automatedCommits": 1,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [],
+  "stars": [],
+  "starInventory": [
+    {
+      "repo": "sogeisetsu/WOW-Csharp",
+      "total": 108
+    },
+    {
+      "repo": "sogeisetsu/shumeipai",
+      "total": 24
+    },
+    {
+      "repo": "sogeisetsu/OGFont",
+      "total": 3
+    },
+    {
+      "repo": "sogeisetsu/lianxi",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/springstudyy",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/-java-",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/awesome-agent-skills",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/myBlog",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-creator",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ownsalesforcelearnbook",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ruan-js",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu.github.io",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sopen-translate",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/testhello",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/tuangou",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typora-support-apex",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typoraimage",
+      "total": 0
+    }
+  ],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "ai": {
+    "en": {
+      "headline": "1 own commit in sopen-translate adds 797 builtin glossary terms",
+      "summary": "On 2026-10-23, activity was limited to repository commits, with **1** own commit in total. In `sogeisetsu/sopen-translate`, a single commit shipped the offline-built builtin term list for the glossary, containing 797 entries. Separately, `sogeisetsu/sogeisetsu` recorded **1 automated commit by `github-actions[bot]`**. There were no pull requests, issues, reviews, releases, stars, or discussion activity in the window, and no items were truncated.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "sopen-translate 本人提交 1 次，新增 797 条内置术语",
+      "summary": "2026-10-23 当天活动仅涉及提交，本人提交共 **1** 次。在 `sogeisetsu/sopen-translate` 中，一次提交上线了离线构建的术语表内置词条列表，共 797 条。此外，`sogeisetsu/sogeisetsu` 记录了 **1 次由 `github-actions[bot]` 完成的自动提交**。该时间窗口内没有拉取请求、issue、评审、发布、star 或讨论活动，也没有出现截断。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "opencode-go-deepseek",
+  "aiModel": "deepseek-v4.1-flash",
+  "aiFailure": null,
+  "dataHash": "dd83fa56384939d96ac88aed7bfc2dc11483a415c80f498d8b85c04437d9d36b"
+}
