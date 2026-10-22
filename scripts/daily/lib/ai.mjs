@@ -624,6 +624,8 @@ async function attemptProvider(provider, system, user, validate, feedback = buil
   let corrections = 0; // 已因 JSON/校验失败追加纠正提示的次数（最多 MAX_CORRECTIONS 次）
   let triedResponses = false; // SenseNova 404/405 → responses 已切换过
   let reasoningOff = true; // chat 形态默认发 reasoning_effort=none 关思考；400 时去掉重试
+  // 实测（2026-10-22，真实日报 prompt，deepseek-v4.1-flash）：none → reasoning_tokens=0 / 8.5s；
+  // low → 1077 / 17.1s；整个不带参数 → 2799 / 24.0s。所以 "none" 对它是真关掉的，不是被忽略。
   let maxTokens = MAX_TOKENS; // 截断时自适应翻倍（上限 MAX_TOKENS_CAP）
 
   for (let round = 0; round < MAX_ROUNDS; round += 1) {
