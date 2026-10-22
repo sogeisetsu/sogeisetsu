@@ -8,10 +8,10 @@ _Updated automatically: 2026-10-22_
 <details><summary>🔨 Owned repos</summary>
 
 - 📝 Pushed 125 commits to `sogeisetsu/meld-deepresearch`
-- 📝 Pushed 109 commits to `sogeisetsu/sogeisetsu`
+- 📝 Pushed 110 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 32 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 25 commits to `sogeisetsu/opencode-skill-management`
-- 📝 Pushed 18 commits to `sogeisetsu/opencode-agent-sandbox`
+- 📝 Pushed 20 commits to `sogeisetsu/opencode-agent-sandbox`
 - 📝 Pushed 5 commits to `sogeisetsu/sopen-translate`
 - 📝 Pushed 1 commit to `sogeisetsu/myBlog`
 - 🐛 Opened issue [\[test\] opencode /oc smoke（临时，验完即关）](https://github.com/sogeisetsu/sogeisetsu/issues/9) in `sogeisetsu/sogeisetsu`
