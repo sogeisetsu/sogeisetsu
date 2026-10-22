@@ -3,7 +3,7 @@
   "windowStart": "2026-10-22T00:00:00+08:00",
   "windowEnd": "2026-10-23T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-22T15:21:31.142Z",
+  "generatedAt": "2026-10-22T15:31:11.631Z",
   "empty": false,
   "totals": {
     "commits": 23,
@@ -83,7 +83,7 @@
           "ts": "2026-10-21T17:14:34Z"
         }
       ],
-      "automated": 27,
+      "automated": 28,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -157,7 +157,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 27,
+  "automatedCommits": 28,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -302,18 +302,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "23 commits across 3 repos; deepseek and minimax tuning plus MV3 skeleton",
-      "summary": "On 2026-10-22 the user pushed **23 own commits** across three repositories, plus 27 automated commits by `github-actions[bot]`. In `sogeisetsu/sogeisetsu`, 13 own commits centered on measuring `reasoning_effort` behavior: documenting deepseek's three `reasoning_effort` settings and their measured usage, switching minimax's free leg to `reasoning_effort=low` after `none` returned 400 and omitting the parameter led to thinking timeouts, and running several temporary CI probes (rounds two through five, an A/B test, and an end-to-end run) that were later deleted. A codemap baseline was also repointed to the rebased `d93ea4d` because the original `9cc6516` is no longer in main history. In `sogeisetsu/sopen-translate`, 7 commits built an MV3 skeleton, dropped selection translation in favor of page translation, added `AGENTS.md`, `checkJs` type checking via JSDoc, page-state reset between runs with required-field validation and a DOM smoke test for two-round restore, and finalized the development plan. In `sogeisetsu/opencode-agent-sandbox`, 3 commits documented OMO slim: a full table of the 11 bundled skills and their authorization targets, three new behavior-constraint skills in v3.0.5, and a new `openchamber-storage` category covering pasted-image storage, deletion without shrinking, and the VACUUM flow.",
+      "headline": "sogeisetsu: 23 commits across 3 repos, 1 issue comment",
+      "summary": "On 2026-10-22 `sogeisetsu` recorded **23 own commits** across three repositories, plus 28 automated commits by `github-actions[bot]`. In `sogeisetsu/sogeisetsu` the 13 own commits focused on AI reasoning settings: documenting measured `deepseek` usage for the three `reasoning_effort` values, switching the `minimax` free tier to `reasoning_effort=low` since `none` returns 400 and omitting the parameter times out, and running several temporary CI probe workflows that were later deleted. A codemap baseline was also repointed to the rebased `d93ea4d`. In `sogeisetsu/sopen-translate` the 7 own commits built an MV3 skeleton with page translation, then dropped selection translation, added `checkJs` type checking via JSDoc, added `AGENTS.md`, fixed page state reset between runs with smoke tests and required-field validation, and added a DOM smoke test for two-round restore. In `sogeisetsu/opencode-agent-sandbox` the 3 own commits extended knowledge docs: the 11-skill table for OMO slim, three new behavior-constraint skills in OMO slim v3.0.5, and a new `openchamber-storage` category. For issues, the user commented on `sogeisetsu/sogeisetsu` issue #8 `[ai-failure] AI 叙述生成失败`, which has 5 comments. The `openchamber/openchamber` bug #5293 was closed by `btriapitsyn`. No releases, PRs, reviews or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "三个仓库共 23 次提交：deepseek 与 minimax 调参、MV3 骨架",
-      "summary": "2026-10-22，用户共提交 **23 次本人提交**，涉及三个仓库，另有 27 次由 `github-actions[bot]` 完成的自动提交。在 `sogeisetsu/sogeisetsu` 中，13 次提交主要围绕 `reasoning_effort` 的实测：记录 deepseek 三种 `reasoning_effort` 取值及其实测用量，在 `none` 会返回 400、去掉参数又会思考超时的情况下，将 minimax 免费腿改为发送 `reasoning_effort=low`，并运行了多轮临时 CI 探针（第二至第五轮、A/B 测试及真实链端到端），用完后删除。codemap 映射基线也改指向 rebase 后的 `d93ea4d`，因为原 `9cc6516` 已不在 main 历史中。在 `sogeisetsu/sopen-translate` 中，7 次提交搭建 MV3 骨架，去掉划词翻译只保留整页翻译，新增 `AGENTS.md`、通过 JSDoc 实现的 `checkJs` 类型检查、每次翻译间重置页面状态并加入必填字段校验与两轮恢复的 DOM 冒烟测试，并完成最终开发计划。在 `sogeisetsu/opencode-agent-sandbox` 中，3 次提交补充 OMO slim 文档：随包 11 个 skill 的全表及授权对象、v3.0.5 新增的三个行为约束型 skill，以及新的 `openchamber-storage` 类别（粘贴图片存文件还是落库、删除不缩与 VACUUM 流程）。用户还在 `sogeisetsu/sogeisetsu` 的 issue #8（`[ai-failure] AI 叙述生成失败`）下发表了评论，该 issue 共 5 条评论。当天没有 PR、评审或发布；另外观察到一处外部状态变更：`btriapitsyn` 关闭了 `openchamber/openchamber` 的项目操作菜单相关 issue #5293。",
+      "headline": "sogeisetsu：3 个仓库共 23 次提交，评论 1 个 issue",
+      "summary": "2026-10-22，`sogeisetsu` 在三个仓库共记录 **23 次本人提交**，另有 28 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/sogeisetsu`，13 次本人提交集中在 AI 推理参数：记录 `deepseek` 三种 `reasoning_effort` 取值的实测用量，把 `minimax` 免费腿改为发送 `reasoning_effort=low`（`none` 会返回 400，去掉参数则思考到超时），并运行了数个临时 CI 探针 workflow，随后删除；codemap 基线改指向 rebase 后的 `d93ea4d`。在 `sogeisetsu/sopen-translate`，7 次本人提交先搭起带页面翻译的 MV3 骨架，随后移除划词翻译，通过 JSDoc 加入 `checkJs` 类型检查，新增 `AGENTS.md`，修复多次翻译之间的页面状态重置并补充冒烟测试与必填字段校验，还添加了两轮恢复的 DOM 冒烟测试。在 `sogeisetsu/opencode-agent-sandbox`，3 次本人提交补充知识文档：OMO slim 随包 11 个 skill 全表、OMO slim v3.0.5 新增的三个行为约束型 skill，以及新增 `openchamber-storage` 类别。issue 方面，用户评论了 `sogeisetsu/sogeisetsu` 的 #8 `[ai-failure] AI 叙述生成失败`，该 issue 共 5 条评论。`openchamber/openchamber` 的 #5293 由 `btriapitsyn` 关闭。当天没有 release、PR、review 或 discussion 记录。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "64058a533162162086da8733664af5c7d441c24fd572be054f7967a1608e867e"
+  "dataHash": "8731dcb6a1c7a7aa07bd6b9d68d2e89336be0c91e095b4fa884a9aa3f01c23a4"
 }
