@@ -3,7 +3,7 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-22T17:01:12.673Z",
+  "generatedAt": "2026-10-22T17:15:51.847Z",
   "empty": false,
   "totals": {
     "commits": 3,
@@ -41,13 +41,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 5,
+      "automated": 6,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 5,
+  "automatedCommits": 6,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -170,18 +170,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu: 3 own commits on sopen-translate, plus 5 automated commits",
-      "summary": "On 2026-10-23 the user made **3 own commits**, all in `sogeisetsu/sopen-translate`. One fix commit addressed option and popup behavior, keeping the model cache TTL honest and guarding the restore status fetch. A `chore(release)` commit bumped the project to `0.2.0` and synced docs with bilingual and glossary work. The third commit shipped a glossary feature: an offline-built builtin term list with 797 entries. Separately, **5 automated commits** by `github-actions[bot]` landed in `sogeisetsu/sogeisetsu`, additive to the own commit count. No pull requests, reviews, issues, releases, stars, or discussions were recorded for the day.",
+      "headline": "3 own commits in sopen-translate; 6 automated commits in profile repo",
+      "summary": "On 2026-10-23, `sogeisetsu` made **3 own commits**, all in `sogeisetsu/sopen-translate`. Work covered three areas: option and popup fixes so the model cache TTL stays accurate and the restore status fetch is guarded; an offline-built builtin glossary term list with **797 entries**; and a release chore bumping the version to `0.2.0` and syncing docs with the bilingual and glossary work. Separately, `sogeisetsu/sogeisetsu` recorded 6 automated commits by `github-actions[bot]`. There were no pull requests, reviews, issues, releases, stars, or discussions activity in the window, and no section hit a collection cap.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu：sopen-translate 本人提交 3 次，另有 5 次自动提交",
-      "summary": "2026-10-23，用户共有 **3 次本人提交**，全部位于 `sogeisetsu/sopen-translate`。其中一次修复提交处理了选项与弹窗相关逻辑，保持模型缓存 TTL 准确，并为恢复状态的请求增加了保护。一次 `chore(release)` 提交将版本升至 `0.2.0`，并同步了与双语及术语表工作相关的文档。第三次提交上线了术语表功能：一份离线构建的内置词条列表，共 797 条。此外，`github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 完成了 **5 次自动提交**，与本人提交数分开计算。当天没有记录到拉取请求、评审、issue、发布、star 或讨论活动。",
+      "headline": "sopen-translate 本人提交 3 次，个人主页仓库自动提交 6 次",
+      "summary": "2026-10-23，`sogeisetsu` 共完成 **3 次本人提交**，全部在 `sogeisetsu/sopen-translate`。工作覆盖三块：修正 options 与 popup，使模型缓存 TTL 保持准确并保护恢复状态请求；发布离线构建的内置术语表，共 **797 条**；发布相关杂项提交将版本升至 `0.2.0`，并同步文档与双语、术语表相关改动。另外，`sogeisetsu/sogeisetsu` 记录了 6 次由 `github-actions[bot]` 完成的自动提交。该时间窗口内没有 pull request、审查、issue、发布、star 或讨论活动，各栏目均未触及采集上限。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "f14274240781023b7a176e803130a5068632372e3953cbd8d2ace06cc4897d16"
+  "dataHash": "16f57f9546ec49480e4f163e78301363bdc4e66fe9212e22bf8021748fa22035"
 }
