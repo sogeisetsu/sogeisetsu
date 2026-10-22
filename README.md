@@ -12,7 +12,7 @@ _Updated automatically: 2026-10-22_
 - 📝 Pushed 32 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 25 commits to `sogeisetsu/opencode-skill-management`
 - 📝 Pushed 20 commits to `sogeisetsu/opencode-agent-sandbox`
-- 📝 Pushed 5 commits to `sogeisetsu/sopen-translate`
+- 📝 Pushed 6 commits to `sogeisetsu/sopen-translate`
 - 📝 Pushed 1 commit to `sogeisetsu/myBlog`
 - 🐛 Opened issue [\[test\] opencode /oc smoke（临时，验完即关）](https://github.com/sogeisetsu/sogeisetsu/issues/9) in `sogeisetsu/sogeisetsu`
 - 💬 Commented on [sogeisetsu/sogeisetsu#8](https://github.com/sogeisetsu/sogeisetsu/issues/8): \[ai-failure\] AI 叙述生成失败
