@@ -3,10 +3,10 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-22T18:51:04.579Z",
+  "generatedAt": "2026-10-22T20:51:10.269Z",
   "empty": false,
   "totals": {
-    "commits": 5,
+    "commits": 6,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/sopen-translate",
-      "count": 5,
+      "count": 6,
       "own": true,
       "messages": [
+        {
+          "sha": "dba1d0e66ebe901357e6deb559ea9dc4cb142bfc",
+          "message": "perf(page): batch by provider policy, add bounded concurrency and adaptive split",
+          "ts": "2026-10-22T19:01:16Z"
+        },
         {
           "sha": "cf225ce359240aa8b73cc9f8cb9bbf1dae051d6d",
           "message": "chore: ignore locally installed agent skills",
@@ -51,13 +56,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 7,
+      "automated": 9,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 7,
+  "automatedCommits": 9,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -180,18 +185,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "5 commits to sopen-translate: 0.2.0 release, 797-term glossary",
-      "summary": "On 2026-10-23 the user made **5 own commits** in `sogeisetsu/sopen-translate` and nothing else: no pull requests, reviews, issues, discussions or releases elsewhere. The commit sequence began with a chore to ignore locally installed agent skills, then documented C6 real-device acceptance results in the plan. A fix touched options and popup handling to keep the model cache TTL honest and to guard the restore status fetch. The user then bumped the project to version 0.2.0 and synced docs with the bilingual and glossary work. The final commit shipped an offline-built builtin term list of 797 glossary entries. Separately, `sogeisetsu/sogeisetsu` received **7 automated commits** from `github-actions[bot]`. Collection was not truncated in any section.",
+      "headline": "6 commits on sopen-translate: glossary, caching, perf, v0.2.0",
+      "summary": "Activity on 2026-10-23 was concentrated in `sogeisetsu/sopen-translate`, with **6 own commits** and no pull requests, reviews, issues, or releases. Work started with a page-level performance change that batches requests by provider policy, adds bounded concurrency and an adaptive split. Two maintenance commits followed: one added an ignore rule for locally installed agent skills, and one recorded C6 real-device acceptance results in the planning docs. A fix for options and popup keeps the model cache TTL honest and guards the restore status fetch. The release commit bumped the extension to `0.2.0` and synced docs with the bilingual and glossary work. The final feature commit shipped an offline-built builtin glossary term list with 797 entries. In `sogeisetsu/sogeisetsu` there were no own commits; **9 automated commits by `github-actions[bot]`** were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sopen-translate 提交 5 次：发布 0.2.0、术语表含 797 条",
-      "summary": "2026-10-23，用户在 `sogeisetsu/sopen-translate` 完成 **5 次本人提交**，当天没有其他活动：没有 pull request、评审、issue、讨论或发布。提交依次为：先忽略本地安装的 agent skills；再在计划文档中记录 C6 真机验收结果。随后修复 options 与 popup，使模型缓存的 TTL 保持准确，并为恢复状态请求加上保护。接着将版本升至 0.2.0，并同步与双语及术语表工作相关的文档。最后一次提交上线了离线构建的内置术语列表，共 797 条。另外，`sogeisetsu/sogeisetsu` 收到 `github-actions[bot]` 的 **7 次自动提交**。本次各板块采集均未触发截断。",
+      "headline": "sopen-translate 提交 6 次：术语表、缓存、性能与 v0.2.0",
+      "summary": "2026-10-23 的活动集中在 `sogeisetsu/sopen-translate`，共 **6 次本人提交**，没有拉取请求、评审、issue 或发布。当天先做了页面级性能改动：按 provider 策略分批请求，并加入有界并发与自适应拆分。随后两个维护类提交，一个为本地安装的 agent skills 增加忽略规则，另一个在规划文档中记录 C6 真机验收结果。针对 options 和 popup 的修复让模型缓存 TTL 更准确，并为恢复状态请求加了保护。发布提交把扩展版本升到 `0.2.0`，并让文档与双语、术语表工作保持同步。最后一个功能提交上线了离线构建的内置术语表，共含 797 条词条。`sogeisetsu/sogeisetsu` 当天没有本人提交，但有 **9 次由 `github-actions[bot]` 完成的自动提交**。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "d73c216c0969705c2ecbd4a25d360f9820f66481d78d1acacf9bfd08cddbff05"
+  "dataHash": "a3a935e955842b8617ee385163e742688efc2de0dc77a87a031fe51b67a49f33"
 }
