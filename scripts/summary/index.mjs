@@ -7,7 +7,7 @@
  * 数据流：
  *   collectSummaryData()  → 最近 30 个已定稿 +08 自然日的聚合（docs/data ∪ data/backfill）
  *                           数字条全部由代码逐日求和，不经 AI
- *   generateStructured()  → 主商汤 / 备 OpenCode Go（minimax → longcat → deepseek），按严格 schema 产出 en+zh 结构化叙述（失败则 null）
+ *   generateStructured()  → 主商汤 / 备 OpenCode Go（deepseek），按严格 schema 产出 en+zh 结构化叙述（失败则 null）
  *   renderSummaryPage()   → docs/summary.html（独立页，中英内联切换）
  *   summaryCard()         → docs/index.html 顶部的总结卡片片段
  *   docs/summary.json 为结构化真相源（只留最新一份），含 dataHash 供「无变化跳过」。
@@ -227,9 +227,9 @@ async function main() {
       system,
       user,
       validate: (raw) => validateSummary(raw, { ...index, missing: collected.missing }),
-      // 总结线的 provider 顺序与日报不同（重排只在这条线上做，绝不推回 defaultProviders——
-      // 日报仍是免费腿优先）：longcat-2.5-preview-free 结构上做不了 30 天总结任务
-      // （连接约 306s 后被掐断），deepseek-v4.1-flash 是唯一稳定腿 → 总结先 deepseek。
+      // 总结线的 provider 顺序与日报不同（重排只在这条线上做，绝不推回 defaultProviders）：
+      // 历史上是因为 longcat-2.5-preview-free 结构上做不了 30 天总结（连接约 306s 后被掐断），
+      // 而 deepseek-v4.1-flash 是唯一稳定腿 → 总结先 deepseek。免费腿下线后这里是空操作。
       providers: orderProvidersForSummary(defaultProviders()),
       feedback: summaryFeedback,
       onProviderFailure: (a) => attempts.push(a),

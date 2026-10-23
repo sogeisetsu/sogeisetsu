@@ -6,7 +6,7 @@
  *
  * 数据流：
  *   collectDailyData()  → 指定自然日（Asia/Shanghai）的公开活动数据
- *   generateNarrative() → 主商汤 / 备 OpenCode Go（minimax → longcat → deepseek），产出 en+zh 结构化叙述（失败则 null）
+ *   generateNarrative() → 主商汤 / 备 OpenCode Go（deepseek），产出 en+zh 结构化叙述（失败则 null）
  *   renderReportPage()  → docs/report/YYYY-MM-DD.html（中英内联切换）
  *   renderMarkdown()    → docs/report/YYYY-MM-DD.md（仓库内可读）
  *   renderIndexPage()   → docs/index.html（最新一天 + 归档列表，列最近 60 天）
