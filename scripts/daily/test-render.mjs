@@ -33,6 +33,9 @@ const {
   commentTotalOf,
   groupCommentCountTargets,
   attachCommentCounts,
+  repoPayloadIsPublic,
+  filterPublicRepos,
+  selectScanRepos,
 } = await import(new URL("./lib/github.mjs", import.meta.url).href);
 
 // ---------------------------------------------------------------- 断言收集
@@ -761,8 +764,44 @@ check("pageStyle: 失败可见性 / provider 旁注样式在基础样式里（in
   ];
 });
 
-// ---------------------------------------------------------------- 汇总
+// ---------------------------------------------------------------- 公开性闸门：私有仓绝不进提交扫描
 
+check("repos: 私有 / internal / 窗口外仓库都不进提交扫描队列", () => {
+  const win = {
+    startMs: Date.parse("2026-10-03T00:00:00+08:00"),
+    endMs: Date.parse("2026-10-04T00:00:00+08:00"),
+  };
+  const ownRepos = [
+    { full_name: "me/public-repo", pushed_at: "2026-10-03T10:00:00Z", private: false, visibility: "public" },
+    { full_name: "me/secret-repo", pushed_at: "2026-10-03T11:00:00Z", private: true, visibility: "private" },
+    { full_name: "me/internal-repo", pushed_at: "2026-10-03T12:00:00Z", private: false, visibility: "internal" },
+    { full_name: "me/old-repo", pushed_at: "2026-10-01T00:00:00Z", private: false, visibility: "public" },
+  ];
+  const events = [
+    { type: "PushEvent", created_at: "2026-10-03T09:00:00Z", repo: { name: "someone-else/their-repo" } },
+    { type: "PushEvent", created_at: "2026-10-01T09:00:00Z", repo: { name: "out/of-window" } },
+    { type: "IssuesEvent", created_at: "2026-10-03T09:00:00Z", repo: { name: "ignored/wrong-type" } },
+  ];
+  const queue = selectScanRepos(events, ownRepos, win, "me");
+  const names = queue.map((q) => q.full);
+  return [
+    ["payloadPublic", repoPayloadIsPublic({ private: false, visibility: "public" })],
+    ["payloadPrivate", !repoPayloadIsPublic({ private: true, visibility: "private" })],
+    ["payloadInternal", !repoPayloadIsPublic({ private: false, visibility: "internal" })],
+    ["payloadNull", !repoPayloadIsPublic(null)],
+    ["filterKeepsPublic", filterPublicRepos(ownRepos).map((r) => r.full_name).join(",") === "me/public-repo,me/old-repo"],
+    ["queueNoPrivate", !names.includes("me/secret-repo")],
+    ["queueNoInternal", !names.includes("me/internal-repo")],
+    ["queueNoOld", !names.includes("me/old-repo")],
+    ["queueHasPublic", names.includes("me/public-repo")],
+    ["queueHasPushedEvent", names.includes("someone-else/their-repo")],
+    ["queueNoOutOfWindow", !names.includes("out/of-window")],
+    ["queueNoWrongType", !names.includes("ignored/wrong-type")],
+    ["queueShape", queue.every((q) => q.owner && q.repoName && q.full === `${q.owner}/${q.repoName}`)],
+  ];
+});
+
+// ---------------------------------------------------------------- 汇总
 await Promise.all(pending); // 等异步用例收口，保证汇总数字正确
 console.log(`\n${passed}/${cases.length} cases passed`);
 process.exit(passed === cases.length ? 0 : 1);
