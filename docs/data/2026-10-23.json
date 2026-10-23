@@ -3,10 +3,10 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T04:51:07.561Z",
+  "generatedAt": "2026-10-23T06:51:06.253Z",
   "empty": false,
   "totals": {
-    "commits": 7,
+    "commits": 14,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,44 @@
   "commits": [
     {
       "repo": "sogeisetsu/sopen-translate",
-      "count": 7,
+      "count": 14,
       "own": true,
       "messages": [
+        {
+          "sha": "4e6e0f1ac2e2bbb9c90886c70d3b6716b6a21625",
+          "message": "docs(plan): assess proxy options for Index-Translate by user experience",
+          "ts": "2026-10-23T06:15:48Z"
+        },
+        {
+          "sha": "4c98ed2893f059bbf0cb09cc35562caf9cd8ee4f",
+          "message": "docs(plan): add browser free-translation options (Edge, Google, on-device)",
+          "ts": "2026-10-23T06:09:18Z"
+        },
+        {
+          "sha": "d8234513ded16a1189543302aa1b06cb733ed456",
+          "message": "docs(plan): add keyless Bilibili Index-Translate provider option",
+          "ts": "2026-10-23T05:58:16Z"
+        },
+        {
+          "sha": "19c02a166148adea5a801c23c446bed3acc5128c",
+          "message": "docs: require branch workflow and refresh the remaining E/F execution plan",
+          "ts": "2026-10-23T05:50:27Z"
+        },
+        {
+          "sha": "0587549385ea7fd4db33880410555491bf3a5146",
+          "message": "docs(agents): reconcile with batching, reasoning and real-device testing",
+          "ts": "2026-10-23T05:17:30Z"
+        },
+        {
+          "sha": "d6eb6d8e0a763434a742405abed35bb318c44d00",
+          "message": "docs(plan): add Microsoft Translator + targeted AI repair phase and KISS reference boundary",
+          "ts": "2026-10-23T05:12:58Z"
+        },
+        {
+          "sha": "31096bcaf162bb45e1a497c48ed67c5997c00641",
+          "message": "perf(providers): disable thinking per preset/model, fall back on 400",
+          "ts": "2026-10-23T04:59:28Z"
+        },
         {
           "sha": "abfc7ba05588047b11a6fd9113a27524784c4d26",
           "message": "perf(page): raise batch budget to 8k/400, 8 lanes, retry failed batches",
@@ -61,13 +96,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 16,
+      "automated": 18,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 16,
+  "automatedCommits": 18,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -190,18 +225,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu: 7 commits in sopen-translate, 0.2.0 bump and 797-entry glossary",
-      "summary": "On 2026-10-23 `sogeisetsu` made **7 own commits**, all in `sogeisetsu/sopen-translate`. Page-translation performance work led the day: batches are now sized by provider policy with bounded concurrency and adaptive splitting, and the batch budget was raised to 8k/400 with 8 lanes plus retries for failed batches. That was followed by a fix in `options`/`popup` keeping the model cache TTL honest and guarding the restore status fetch, and a release bump to `0.2.0` with docs synced to the bilingual and glossary work. A feature commit shipped an offline-built builtin glossary term list with 797 entries, and the planning docs recorded real-device acceptance results for C6. Housekeeping included ignoring locally installed agent skills. Separately, **16 automated commits** by `github-actions[bot]` landed in `sogeisetsu/sogeisetsu`; no PRs, issues, reviews, releases, discussions or state changes were recorded.",
+      "headline": "sogeisetsu: 14 commits to sopen-translate, plus 18 automated commits",
+      "summary": "On 2026-10-23, `sogeisetsu` made **14 own commits**, all in `sogeisetsu/sopen-translate`, alongside 18 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The day's work was mostly planning and documentation: the commit messages assess proxy options for Index-Translate, weigh browser free-translation routes from Edge, Google and on-device, and add a keyless Bilibili Index-Translate provider option. Further docs commits add a Microsoft Translator route with a targeted AI-repair phase and a KISS reference boundary, reconcile `AGENTS` guidance with batching, reasoning and real-device testing, and require a branch workflow while refreshing the remaining E/F execution plan. Performance work landed as well: providers now disable thinking per preset/model and fall back on a 400 response, while page batching rises to a budget of 8k/400 with 8 lanes, retries for failed batches, provider-policy batching, bounded concurrency and adaptive splitting. A final chore commit ignores locally installed agent skills. There were no pull requests, reviews, issues, releases or discussions in the window, and no section was truncated.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu：sopen-translate 提交 7 次，版本升至 0.2.0 并内置 797 条术语",
-      "summary": "2026-10-23，`sogeisetsu` 共完成 **7 次本人提交**，全部位于 `sogeisetsu/sopen-translate`。当天以页面翻译性能优化为主：按服务商策略划分批次，加入有界并发与自适应拆分，并把批次预算提升到 8k/400、8 条通道，同时为失败批次增加重试。随后在 `options`/`popup` 中修正模型缓存 TTL 的准确性，并为恢复状态请求增加防护；版本号升至 `0.2.0`，文档与双语及术语表相关改动同步更新。一项功能提交上线了离线构建的内置术语表，共 797 条，规划文档中则记录了 C6 真机验收结果。杂项方面忽略了本地安装的 agent skills。此外，`github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 中产生了 **16 次自动提交**；当天没有 PR、issue、评审、发布、讨论或状态变更记录。",
+      "headline": "sogeisetsu：sopen-translate 提交 14 次，另有 18 次自动提交",
+      "summary": "2026-10-23，`sogeisetsu` 共完成 **14 次本人提交**，全部位于 `sogeisetsu/sopen-translate`；同一天，`sogeisetsu/sogeisetsu` 还有 `github-actions[bot]` 的 18 次自动提交。当天工作以规划和文档为主：提交内容评估了 Index-Translate 的代理方案，比较 Edge、Google 与端侧等浏览器免费翻译路径，并新增了无需密钥的 Bilibili Index-Translate 提供方选项。文档提交还加入了 Microsoft Translator 方案与定向 AI 修复阶段、KISS 参考边界，使 `AGENTS` 指引与批处理、推理、真机测试保持一致，并要求分支工作流、刷新剩余的 E/F 执行计划。性能方面也有改动：各提供方按预设/模型关闭 thinking，遇到 400 时回退；页面批处理预算提升至 8k/400，启用 8 条通道，失败批次重试，按提供方策略分批，并加入有界并发与自适应拆分。最后一次杂项提交忽略本地安装的 agent 技能。该时间窗口内没有拉取请求、评审、issue、发布或讨论，也没有任何部分被截断。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "b919924719224ecb53f913c8b728cf91745ce3a98f3af9120af379f2bd7590ee"
+  "dataHash": "a4276a2b001163cf2cf2f9d1d616fab1b15a17701cdb8bac15afc92831b155df"
 }
