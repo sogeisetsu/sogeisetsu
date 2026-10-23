@@ -3,10 +3,10 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T11:27:31.214Z",
+  "generatedAt": "2026-10-23T11:50:24.603Z",
   "empty": false,
   "totals": {
-    "commits": 38,
+    "commits": 40,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -182,6 +182,37 @@
       "automatedBots": []
     },
     {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 4,
+      "own": true,
+      "messages": [
+        {
+          "sha": "112bc86f301e06b4e9c62a44bc29eb6fb4a4b72d",
+          "message": "docs(codemap): 映射基线抬到 provider 配置解耦之后的提交",
+          "ts": "2026-10-23T11:49:48Z"
+        },
+        {
+          "sha": "20e82b8f9e530d4f89e62d2a9caba843015eff6e",
+          "message": "feat(ai): provider 链解耦到 config/providers.json，并把 Nvidia 两条腿接到日报链首",
+          "ts": "2026-10-23T11:49:13Z"
+        },
+        {
+          "sha": "f20b6a3212fa283ef3ff353aa481d0a8acf54153",
+          "message": "chore(ci): /oc 与诊断叙述的模型从 longcat 换成 opencode-go/deepseek-v4.1-flash",
+          "ts": "2026-10-23T08:31:07Z"
+        },
+        {
+          "sha": "6c40fa7b65e11f946d49c754876cde9dd9b1acf9",
+          "message": "chore(ai): 下线 minimax 与 longcat 两条免费腿，链变为 deepseek → sensenova",
+          "ts": "2026-10-23T08:25:40Z"
+        }
+      ],
+      "automated": 28,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    },
+    {
       "repo": "sogeisetsu/opencode-skill-management",
       "count": 3,
       "own": true,
@@ -206,27 +237,6 @@
       "automatedBots": []
     },
     {
-      "repo": "sogeisetsu/sogeisetsu",
-      "count": 2,
-      "own": true,
-      "messages": [
-        {
-          "sha": "f20b6a3212fa283ef3ff353aa481d0a8acf54153",
-          "message": "chore(ci): /oc 与诊断叙述的模型从 longcat 换成 opencode-go/deepseek-v4.1-flash",
-          "ts": "2026-10-23T08:31:07Z"
-        },
-        {
-          "sha": "6c40fa7b65e11f946d49c754876cde9dd9b1acf9",
-          "message": "chore(ai): 下线 minimax 与 longcat 两条免费腿，链变为 deepseek → sensenova",
-          "ts": "2026-10-23T08:25:40Z"
-        }
-      ],
-      "automated": 27,
-      "automatedBots": [
-        "github-actions[bot]"
-      ]
-    },
-    {
       "repo": "sogeisetsu/opencode-agent-sandbox",
       "count": 1,
       "own": true,
@@ -241,7 +251,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 27,
+  "automatedCommits": 28,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -385,30 +395,30 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "38 commits across 4 repos; opencode-skill-management ships v1.0.0",
-      "summary": "On 2026-10-23 the user made 38 own commits, with 32 in `sogeisetsu/sopen-translate`, 3 in `sogeisetsu/opencode-skill-management`, 2 in `sogeisetsu/sogeisetsu` and 1 in `sogeisetsu/opencode-agent-sandbox`. The sopen-translate work moved Apache-2.0 licensing and README/agent docs forward, added an MT/LLM/DeepL path diagram, and fixed CSS toast scoping, review flag handling, provider protocol-id lookup, and strict validation of index/corrected review responses. The opencode-skill-management commits added Chinese release policy and acceptance notes and cut the 1.0.0 version. `sogeisetsu/sogeisetsu` also received **27 automated commits by github-actions[bot]**, whose contents were not detailed. That repo's two own commits switched model legs in `/oc` and diagnostics and retired the minimax and longcat free legs. The day also brought one reply on `openchamber/openchamber` issue #5489, plus the **v1.0.0** release below. Totals were 38 commits, 0 PRs, 0 issues and 0 reviews.",
+      "headline": "40 commits across four repositories and one v1.0.0 release",
+      "summary": "**40 commits** were recorded across four repositories, with 28 additional automated commits by `github-actions[bot]`. In `sogeisetsu/sopen-translate`, 32 own commits adopted Apache-2.0, added documentation and a path diagram, scoped toast CSS selectors, exposed review flags, validated review responses, and fixed provider protocol lookup. In `sogeisetsu/sogeisetsu`, 4 own commits decoupled the provider chain into `config/providers.json`, connected Nvidia paths to the daily-report chain, changed CI models to `opencode-go/deepseek-v4.1-flash`, and retired the Minimax and Longcat free paths. `sogeisetsu/opencode-skill-management` received 3 own commits for release policy, acceptance notes, and version `1.0.0`, while `sogeisetsu/opencode-agent-sandbox` added one knowledge document. The `sogeisetsu/opencode-skill-management` release `v1.0.0` introduced a skill switchboard with `list` and `inspect` actions and config-based disabling that does not delete or move skill files. A reply from `openchamber-bot[bot]` confirmed the unconditional improve-action arming behavior in `openchamber/openchamber` issue #5489.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.0.0",
-          "summary": "First stable release of `skill_management`, a switchboard for skills installed in an OpenCode setup. Disabling a skill writes a single `skill` permission rule (`effect: \"deny\"`, or `\"ask\"` for a soft disable) into the global config without touching skill files. The surface is frozen for 1.x and includes `list` and `inspect` actions."
+          "summary": "This first stable release adds a switchboard for OpenCode skills, including `list` and `inspect` actions. Disabling a skill writes a single `skill` permission rule to global configuration without deleting, moving, or rewriting skill files."
         }
       ]
     },
     "zh": {
-      "headline": "4 个仓库共 38 次提交，opencode-skill-management 发布 v1.0.0",
-      "summary": "2026-10-23，用户本人共提交 38 次：`sogeisetsu/sopen-translate` 32 次、`sogeisetsu/opencode-skill-management` 3 次、`sogeisetsu/sogeisetsu` 2 次、`sogeisetsu/opencode-agent-sandbox` 1 次。sopen-translate 的改动推进了 Apache-2.0 许可与 README、agent 文档，新增 MT/LLM/DeepL 路径图，并修复了 CSS toast 作用域、review 标记处理、provider 协议 id 查找以及 index/corrected review 响应逐项校验等问题。opencode-skill-management 的提交补充了中文发布政策与验收记录，并打出 1.0.0 版本。`sogeisetsu/sogeisetsu` 另有 **27 次由 github-actions[bot] 完成的自动提交**，未展开其内容；该仓库本人 2 次提交则更换了 `/oc` 与诊断链路的模型，并下线 minimax 与 longcat 两条免费腿。当天还收到 `openchamber/openchamber` issue #5489 的一条回复，并发布了下方 **v1.0.0**。总计 38 次提交、0 个 PR、0 个 issue、0 次 review。",
+      "headline": "四个仓库共 40 次提交，并发布 v1.0.0",
+      "summary": "当天共记录 **40 次提交**，另有 28 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sopen-translate` 的 32 次本人提交涵盖 Apache-2.0 采用、文档与路径图补充、toast CSS 选择器限定、review 标记暴露、review 响应校验及 provider 协议查找修复。`sogeisetsu/sogeisetsu` 的 4 次本人提交将 provider 链解耦到 `config/providers.json`，接入 Nvidia 路径，将 CI 模型改为 `opencode-go/deepseek-v4.1-flash`，并下线 Minimax 与 Longcat 免费链。`sogeisetsu/opencode-skill-management` 通过 3 次本人提交补充发布政策、验收记录及版本 `1.0.0`，`sogeisetsu/opencode-agent-sandbox` 则新增一份知识文档。`sogeisetsu/opencode-skill-management` 发布 `v1.0.0`，提供包含 `list` 与 `inspect` 的技能切换台，并可通过配置禁用技能而不删除或移动技能文件。`openchamber-bot[bot]` 在 `openchamber/openchamber` issue #5489 中回复，确认 improve 操作会无条件触发执行目标。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.0.0",
-          "summary": "`skill_management` 首个稳定版，为已安装的 OpenCode 技能提供统一管理。禁用技能只在全局配置中写入一条 `skill` 权限规则（`effect: \"deny\"`，软禁用为 `\"ask\"`），不会改动技能文件。接口在 1.x 内冻结，包含 `list` 与 `inspect` 两个动作。"
+          "summary": "首个稳定版本提供 OpenCode 技能切换台，包含 `list` 与 `inspect` 操作。禁用技能时仅向全局配置写入一条 `skill` 权限规则，不删除、移动或重写技能文件。"
         }
       ]
     }
   },
-  "aiProvider": "opencode-go-deepseek",
-  "aiModel": "deepseek-v4.1-flash",
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "459e9bd7b7151ac59582ba5ddd3b70eb494b13fa456a253e9f22d33d14aaefac"
+  "dataHash": "e57d431639539d5046bdc1962ea770830b3c62543f664683de30f9e035cf44f9"
 }
