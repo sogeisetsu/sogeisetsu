@@ -50,7 +50,7 @@ import {
   workflowFromEnv,
   writeAtomic,
 } from "../daily/lib/days.mjs";
-import { renderIndexPage } from "../daily/render.mjs";
+import { renderIndexPage } from "../site/indexPage.mjs";
 import { buildItemIndex, collectSummaryData } from "./collect.mjs";
 import { buildSummaryPrompts, summaryFeedback } from "./prompt.mjs";
 import { renderSummaryPage, summaryCard } from "./render.mjs";

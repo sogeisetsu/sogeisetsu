@@ -1,23 +1,21 @@
 /**
- * render.mjs — zero-dependency ESM renderer for the daily GitHub-activity
- * report published on GitHub Pages.
+ * scripts/daily/render.mjs
+ * ------------------------------------------------------------------
+ * 日报页渲染（零依赖 ESM，Node 20+）：docs/report/<date>.{html,md}。
  *
- *   import { renderReportPage, renderIndexPage, renderMarkdown } from './render.mjs';
+ *   renderReportPage({ data, ai })   → 整份 "<!doctype html>…</html>"
+ *   renderMarkdown({ data, ai })     → 与 html 同目录的 .md
  *
- *   renderReportPage({ data, ai })      -> full "<!doctype html>…</html>" string
- *   renderIndexPage({ days, generatedAt }) -> archive index page
- *   renderMarkdown({ data, ai })        -> human-readable .md committed next to the html
+ * 全站外壳（转义 / 双语 / 图标 / 分区骨架 / 页脚 / htmlDoc）在 scripts/site/shell.mjs，
+ * Markdown 子集在 scripts/site/md.mjs，首页归档页在 scripts/site/indexPage.mjs，
+ * 全站 CSS 在 scripts/site/css.mjs —— 本文件只负责「一天的数据 → 日报正文」。
  *
- * Design language: Material Design 3, matching scripts/render-svg.mjs — same
- * tonal palette, same system FONT_STACK, light + dark via prefers-color-scheme.
- *
- * Hard rules honoured here:
- *   · Zero external assets. No fonts, images, stylesheets, scripts or network.
- *   · Every dynamic string passes through esc() before it reaches the document.
- *   · The site is served from a subpath (https://sogeisetsu.github.io/sogeisetsu/),
- *     so every internal link is RELATIVE and never begins with "/".
- *   · Both languages are baked into the same document; a tiny inline script
- *     flips data-lang on <html>, updates lang, and remembers the choice.
+ * 硬规则（与 site/ 一致）：
+ *   · 零外部资源：没有字体、图片、样式表、脚本或网络请求。
+ *   · 每个动态字符串都先过 esc() 才进文档。
+ *   · 站点从子路径发布（https://sogeisetsu.github.io/sogeisetsu/），
+ *     所有内链都是相对路径、绝不以 "/" 开头。
+ *   · 中英两版烘进同一份文档，靠 <html data-lang> + 一小段内联脚本切换。
  */
 
 import { sanitizeReason } from './lib/ai/prose.mjs';
@@ -49,24 +47,6 @@ import {
   mdLink,
   splitParagraphs,
 } from '../site/md.mjs';
-
-// 过渡期 re-export：summary/render.mjs 仍在从本文件取这些外壳件（P2d 改成直接从 site/ 取）。
-export {
-  SEP,
-  TOGGLE_SCRIPT,
-  aiInlineToHtml,
-  esc,
-  footerBlock,
-  htmlDoc,
-  i18n,
-  icon,
-  pill,
-  safeHref,
-  section,
-  splitParagraphs,
-  statsStrip,
-  topbarRight,
-};
 
 const MONTHS_EN = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -169,7 +149,6 @@ function statusBadge(it) {
   if (state === 'merged') return actionBadge('merged');
   return actionBadge(it && it.action);
 }
-
 
 
 /**
@@ -713,63 +692,6 @@ export function renderReportPage({ data, ai } = {}) {
 
   const title = `GitHub activity · ${date || 'daily report'}`;
   return htmlDoc({ title, body, assetPrefix: '../' });
-}
-
-// ---------------------------------------------------------------- index page
-
-export function renderIndexPage({ days, generatedAt, username, summaryCardHtml } = {}) {
-  const list = A(days).slice(0, 60);
-  const user = username == null ? '' : String(username).trim();
-  // 近 30 天 AI 总结卡片（片段已由 scripts/summary/render.mjs 渲染好）；没有总结文件时为空串
-  const summaryCard = typeof summaryCardHtml === 'string' ? summaryCardHtml.trim() : '';
-
-  const rows = list
-    .map((day) => {
-      const entry = day && typeof day === 'object' ? day : {};
-      const dateLabel = fmtDateShort(entry.date);
-      const href = safeHref(entry.url);
-      const hasHead =
-        String(entry.headline_en || '').trim() !== '' ||
-        String(entry.headline_zh || '').trim() !== '';
-      const head =
-        entry.hasActivity === false
-          ? `<span class="day-head day-head-empty">${i18n('A quiet day', '安静的一天')}</span>`
-          : hasHead
-            ? `<span class="day-head">${i18n(entry.headline_en, entry.headline_zh)}</span>`
-            : `<span class="day-head day-head-empty">${i18n('Report available', '日报已生成')}</span>`;
-      const inner =
-        `<span class="day-date">${i18n(dateLabel.en, dateLabel.zh)}</span>${head}`;
-      if (href) return `<li><a class="day" href="${esc(href)}">${inner}</a></li>`;
-      return `<li><span class="day day-plain">${inner}</span></li>`;
-    })
-    .join('');
-
-  const body =
-    `<div class="wrap">\n` +
-    `<div class="topbar">${topbarRight(user)}</div>\n` +
-    `<header class="hero">` +
-    `<h1>${
-      user
-        ? i18n(`${user} · Daily GitHub activity`, `${user} 的 GitHub 每日动态`)
-        : i18n('Daily GitHub activity', 'GitHub 每日动态')
-    }</h1>` +
-    `<p class="hero-sub">${i18n(
-      'One report per day, newest first.',
-      '每日一份报告，最新在前。'
-    )}</p>` +
-    `</header>\n` +
-    (summaryCard ? `${summaryCard}\n` : '') +
-    (list.length
-      ? `<ul class="daylist">\n${rows}\n</ul>\n`
-      : `<section class="card empty-card"><p class="empty-sub">${i18n(
-          'No reports yet.',
-          '暂无日报。'
-        )}</p></section>\n`) +
-    `${footerBlock(generatedAt)}\n` +
-    `</div>\n` +
-    `<script>${TOGGLE_SCRIPT}</script>`;
-
-  return htmlDoc({ title: 'Daily GitHub activity', body, assetPrefix: '' });
 }
 
 // ---------------------------------------------------------------- markdown

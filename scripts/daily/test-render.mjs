@@ -22,7 +22,8 @@
  * 输出：每个用例一行 PASS/FAIL；结尾 N/M；有失败退出码 1。
  */
 
-const { renderReportPage } = await import(new URL("./render.mjs", import.meta.url).href);
+const { renderReportPage, renderMarkdown } = await import(new URL("./render.mjs", import.meta.url).href);
+const { renderIndexPage } = await import(new URL("../site/indexPage.mjs", import.meta.url).href);
 const { aiInlineToHtml, mdBlockToHtml, i18nInline, splitParagraphs } = await import(
   new URL("../site/md.mjs", import.meta.url).href
 );
@@ -765,6 +766,56 @@ check("pageStyle: 失败可见性 / provider 旁注样式在基础样式里（in
   return [
     ["providerCss", html.includes(".ai-provider{")],
     ["failureCss", html.includes(".ai-failure{") && html.includes(".ai-failure-line{")],
+  ];
+});
+
+// ---------------------------------------------------------------- 渲染冒烟（失败可见性）
+
+// notifier 平时不跑（只有 AI 真挂了那天才动仓库），所以它依赖的渲染入口不能靠「线上跑一次」
+// 来验证。这里用一份合成 aiFailure 记录跑三个纯渲染入口：断言不抛错、不把漏搬的符号
+// 渲染成字面 "undefined"、失败原因仍在页面上（R8 / R10）。
+check("render-only 冒烟：合成 aiFailure 下三个渲染入口不抛错、不出现 undefined", () => {
+  const failure = {
+    state: "failed",
+    runId: "1234567890",
+    attempts: [
+      {
+        provider: "nvidia-minimax-flash",
+        model: "minimaxai/minimax-m3.1-flash",
+        reason: "HTTP 429（已重试仍失败）",
+      },
+      { provider: "sensenova", model: "glm-5.2", reason: "未尝试（超出 lane 预算 8 分钟）" },
+    ],
+    issue: { number: 5489, url: "https://github.com/sogeisetsu/sogeisetsu/issues/5489" },
+  };
+  const data = {
+    ...aiDay(),
+    aiFailure: failure,
+    aiProvider: "nvidia-minimax-flash",
+    aiModel: "minimaxai/minimax-m3.1-flash",
+  };
+  const report = renderReportPage({ data, ai: null });
+  const md = renderMarkdown({ data, ai: null });
+  const index = renderIndexPage({
+    days: [
+      {
+        date: data.date,
+        url: `./report/${data.date}.html`,
+        headline_en: null,
+        headline_zh: null,
+        hasActivity: true,
+      },
+    ],
+    generatedAt: data.generatedAt,
+    username: data.username,
+    summaryCardHtml: null,
+  });
+  return [
+    ["reportHasFailureBlock", report.includes('class="ai-failure"')],
+    ["reportNoUndefined", !/>undefined<|"undefined"/.test(report)],
+    ["markdownNoUndefined", !/undefined/.test(md)],
+    ["indexNoUndefined", !/>undefined<|"undefined"/.test(index)],
+    ["indexQuietDayLink", index.includes(`./report/${data.date}.html`)],
   ];
 });
 

@@ -72,7 +72,8 @@ import {
   readJsonIfExists,
   writeAtomic,
 } from "./daily/lib/days.mjs";
-import { renderIndexPage, renderMarkdown, renderReportPage } from "./daily/render.mjs";
+import { renderMarkdown, renderReportPage } from "./daily/render.mjs";
+import { renderIndexPage } from "./site/indexPage.mjs";
 import { renderSummaryPage, summaryCard } from "./summary/render.mjs";
 
 // ---------------------------------------------------------------- 常量

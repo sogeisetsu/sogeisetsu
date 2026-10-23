@@ -35,7 +35,8 @@ import { appendFileSync } from "node:fs";
 import { collectDailyData } from "./lib/github.mjs";
 import { defaultProviders, generateNarrative, narrativeWordingOk } from "./lib/ai.mjs";
 import { laneBudgetMs } from "./lib/providers.mjs";
-import { renderIndexPage, renderMarkdown, renderReportPage } from "./render.mjs";
+import { renderMarkdown, renderReportPage } from "./render.mjs";
+import { renderIndexPage } from "../site/indexPage.mjs";
 import { hasVisibleActivity } from "../lib/domain.mjs";
 import {
   AI_FAILURE_PATH,

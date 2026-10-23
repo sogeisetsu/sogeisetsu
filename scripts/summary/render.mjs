@@ -48,9 +48,8 @@ import {
   htmlDoc,
   TOGGLE_SCRIPT,
   SEP,
-  aiInlineToHtml,
-  splitParagraphs,
-} from '../daily/render.mjs';
+} from '../site/shell.mjs';
+import { aiInlineToHtml, splitParagraphs } from '../site/md.mjs';
 import { sanitizeReason } from '../daily/lib/ai/prose.mjs';
 
 // ---------------------------------------------------------------- 防御小工具
