@@ -276,18 +276,47 @@ async function fetchPublicEvents(token, username, win) {
  * 把窗口内动作级事件映射为 pullRequests / reviews / issues 条目
  * （PushEvent 不在此处理，见 buildCommits）。
  */
-function mapEvents(rawEvents, username, win) {
+/**
+ * 公共事件流 → 三类行（PR / 评审 / issue 与"我评论了条目"）。
+ *
+ * **动作时间一律取事件 payload 里的业务时间，而不是 `ev.created_at`**：
+ * GitHub 会重放旧的 IssuesEvent（线上实证：#5489 于 10-23 09:57Z 创建、12:28Z 关闭，
+ * 事件流却在 10-23 17:09Z 又发了一条 `opened`，payload.issue.created_at 仍是原创建时间）。
+ * 用 ev.created_at 会把「昨天开的、已经关掉的 issue」算进今天的窗口，页面还会显示"开启"。
+ * 因此：opened → issue/PR 的 created_at，closed → closed_at，merged → merged_at，
+ * comment → comment.created_at，review → review.submitted_at；缺失时退回 ev.created_at。
+ *
+ * 同一 (仓库, 编号, 动作) 只保留**最早**的一条（重放/重复投递防护）；评论与评审按各自 id 去重。
+ */
+export function mapEvents(rawEvents, username, win) {
   const pullRequests = [];
   const reviews = [];
   const issues = [];
   const own = (repo) => isOwnRepoName(repo, username);
+  const rowIndex = new Map(); // key → 在对应数组里的下标（只用于"同动作取最早"）
+
+  const pushRow = (list, row, key) => {
+    const at = rowIndex.get(key);
+    if (at === undefined) {
+      rowIndex.set(key, list.length);
+      list.push(row);
+      return;
+    }
+    const prev = list[at];
+    if (prev && tsOf(row.ts) < tsOf(prev.ts)) list[at] = row; // 重放：保留最早的一次
+  };
 
   for (const ev of rawEvents || []) {
-    const ts = tsOf(ev.created_at);
-    if (!inWindow(ts, win)) continue; // 只保留窗口内事件
+    if (!inWindow(tsOf(ev.created_at), win)) continue; // 便宜的早退：连事件本身都出窗
     const repo = ev.repo && ev.repo.name;
     if (!repo) continue;
     const payload = ev.payload || {};
+    const evTs = tsOf(ev.created_at);
+    // 业务时间缺失/非法时退回事件时间，再统一按窗口精筛（重放事件的业务时间常在窗外）
+    const actionTs = (candidate) => {
+      const t = tsOf(candidate);
+      return t > 0 ? t : evTs;
+    };
 
     if (ev.type === "PullRequestEvent") {
       const pr = payload.pull_request || {};
@@ -295,56 +324,85 @@ function mapEvents(rawEvents, username, win) {
       if (payload.action === "opened") action = "opened";
       else if (payload.action === "closed") action = pr.merged === true ? "merged" : "closed";
       if (!action) continue; // synchronize / reopened / labeled 等不计
-      pullRequests.push({
-        repo,
-        number: pr.number ?? 0,
-        title: pr.title || "",
-        url: pr.html_url || `https://github.com/${repo}/pull/${pr.number ?? 0}`,
-        action,
-        ts: isoOf(ts),
-        own: own(repo),
-      });
+      const ts =
+        action === "opened"
+          ? actionTs(pr.created_at)
+          : action === "merged"
+            ? actionTs(pr.merged_at || pr.closed_at)
+            : actionTs(pr.closed_at);
+      if (!inWindow(ts, win)) continue;
+      pushRow(
+        pullRequests,
+        {
+          repo,
+          number: pr.number ?? 0,
+          title: pr.title || "",
+          url: pr.html_url || `https://github.com/${repo}/pull/${pr.number ?? 0}`,
+          action,
+          ts: isoOf(ts),
+          own: own(repo),
+        },
+        `pr|${repo}|${pr.number ?? 0}|${action}`
+      );
     } else if (ev.type === "IssuesEvent") {
       if (payload.action !== "opened" && payload.action !== "closed") continue;
       const issue = payload.issue || {};
-      issues.push({
-        repo,
-        number: issue.number ?? 0,
-        title: issue.title || "",
-        url: issue.html_url || `https://github.com/${repo}/issues/${issue.number ?? 0}`,
-        action: payload.action,
-        ts: isoOf(ts),
-        own: own(repo),
-      });
+      const ts = payload.action === "opened" ? actionTs(issue.created_at) : actionTs(issue.closed_at);
+      if (!inWindow(ts, win)) continue;
+      pushRow(
+        issues,
+        {
+          repo,
+          number: issue.number ?? 0,
+          title: issue.title || "",
+          url: issue.html_url || `https://github.com/${repo}/issues/${issue.number ?? 0}`,
+          action: payload.action,
+          ts: isoOf(ts),
+          own: own(repo),
+        },
+        `issue|${repo}|${issue.number ?? 0}|${payload.action}`
+      );
     } else if (ev.type === "PullRequestReviewEvent") {
       const pr = payload.pull_request || {};
-      const submitted = tsOf(payload.review && payload.review.submitted_at) || ts;
-      reviews.push({
-        repo,
-        number: pr.number ?? 0,
-        title: pr.title || "",
-        url: pr.html_url || `https://github.com/${repo}/pull/${pr.number ?? 0}`,
-        ts: isoOf(submitted),
-        own: own(repo),
-      });
+      const review = payload.review || {};
+      const ts = actionTs(review.submitted_at);
+      if (!inWindow(ts, win)) continue;
+      pushRow(
+        reviews,
+        {
+          repo,
+          number: pr.number ?? 0,
+          title: pr.title || "",
+          url: pr.html_url || `https://github.com/${repo}/pull/${pr.number ?? 0}`,
+          ts: isoOf(ts),
+          own: own(repo),
+        },
+        `review|${repo}|${pr.number ?? 0}|${review.id ?? isoOf(ts)}`
+      );
     } else if (ev.type === "IssueCommentEvent") {
       // 只记“自己评论了别人/自己的条目”（公共事件本就是该用户的，仍按 actor 复核）
       if (!isOwnLogin(ev.actor && ev.actor.login, username)) continue;
       const target = payload.pull_request || payload.issue || {};
       const comment = payload.comment || {};
+      const ts = actionTs(comment.created_at);
+      if (!inWindow(ts, win)) continue;
       const number = target.number ?? 0;
-      issues.push({
-        repo,
-        number,
-        title: target.title || "",
-        url:
-          target.html_url ||
-          comment.html_url ||
-          `https://github.com/${repo}/issues/${number}`,
-        action: "commented",
-        ts: isoOf(ts),
-        own: own(repo),
-      });
+      pushRow(
+        issues,
+        {
+          repo,
+          number,
+          title: target.title || "",
+          url:
+            target.html_url ||
+            comment.html_url ||
+            `https://github.com/${repo}/issues/${number}`,
+          action: "commented",
+          ts: isoOf(ts),
+          own: own(repo),
+        },
+        `comment|${comment.id ?? comment.html_url ?? `${repo}|${number}|${isoOf(ts)}`}`
+      );
     }
   }
   return { pullRequests, reviews, issues };

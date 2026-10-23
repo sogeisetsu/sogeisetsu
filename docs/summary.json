@@ -3,7 +3,7 @@
   "windowEnd": "2026-10-23",
   "days": 30,
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T17:09:09.888Z",
+  "generatedAt": "2026-10-23T18:10:04.009Z",
   "missing": {
     "days": 0,
     "dates": []
@@ -131,284 +131,276 @@
       "commits": "repo-scan-accurate"
     }
   },
-  "dataHash": "1cbcea3ad4f5248ca08af068d8ead09789d4122528a0a1e19f28508648a94828",
+  "dataHash": "b0e51acc94ee7c6f8d850152e98f83d529bd395e84130b2a3df28ae00a378fb1",
   "ai": {
     "en": {
-      "headline": "30 days of OpenCode skills, deep-research tooling, and 60 upstream issues",
-      "teaser": "404 own commits plus 457 automated, 9 PRs, 60 issues, and 15 releases across 17 repos. Work centered on building and shipping OpenCode agent skills, a deep-research protocol, and filing detailed bug reports.",
-      "overview": "### Own repositories: skills and tooling\n\nThe largest block of work went into building and releasing OpenCode agent skills. In **sogeisetsu/meld-deepresearch**, 76 commits advanced a deep-research protocol from an initial SKILL.md through validation scripts, bilingual landing pages, and four tagged releases (v0.1.0 through v0.4.0), turning a single research skill into a family of three cooperating skills with a unified CLI. In sogeisetsu/asset-inventory, 72 commits and five releases (v1.13.0 through v1.15.0) hardened MCP probing, added a broken-state marker, introduced a release-prep script, and switched host-command scanning to a registry-first approach.\\n\n### Profile and automation\n\nThe sogeisetsu/sogeisetsu profile repo saw 126 own commits plus 452 automated commits, focused on a rolling 30-day activity card with a daily-update workflow, bilingual copy, statistics fixes, and a CI upgrade to checkout/setup-node v7. The opencode-skill-creator repo received 5 automated commits with no manual commits.\n\n### More skills and a translation extension\n\nsogeisetsu/sopen-translate received 50 commits building a bilingual MV3 browser translation extension with a protocol layer, presets, a glossary pipeline, and DOM smoke tests. sogeisetsu/opencode-skill-management got 31 commits and two releases (v0.2.0 and v1.0.0), implementing a skill management plugin with list, inspect, disable, and enable actions. sogeisetsu/opencode-go-model-picker saw 24 commits and four releases, adding agent discovery scripts, a snapshot summary tool, and proxy support. sogeisetsu/opencode-agent-sandbox received 22 commits archiving OpenCode V2 architecture and Windows-path knowledge.\n\n### Upstream contributions: issues and PRs\n\n60 issues were filed or commented on across eight upstream repos. 30 of these were in openchamber/openchamber, covering bugs like stale AGENTS.md saves, missing auto-update manifests, context-panel calculation errors, and orphaned MCP processes. 12 issues in anomalyco/opencode addressed MiMo model image-input failures, subagent model errors, and websearch provider issues. 8 PRs were opened in antongulin/opencode-skill-creator to fix review-server disposal, CRLF handling, browser launching, and eval robustness. Additional issues went to alvinunreal/oh-my-opencode-slim, iOfficeAI/OfficeCLI, vercel-labs/skills, OpenSenseNova repos, and VoltAgent/awesome-agent-skills.\n\n### Data completeness\n\nData for September 24 through October 1 was reconstructed via GitHub Search and is approximate: star counts are unavailable, releases cover only the user's own repositories, and issue, review, and discussion counts may be incomplete. No days are missing from the 30-day window.",
+      "headline": "404 commits, 9 PRs and 60 issues across 18 repositories in 30 days",
+      "teaser": "Own projects shipped nine releases and bilingual docs; most issues were filed upstream on OpenChamber and OpenCode.",
+      "overview": "### Own skill and tooling projects\n\nMost of the window went into sogeisetsu's own OpenCode-adjacent skills. `asset-inventory` advanced through five releases (v1.13.0, v1.13.1, v1.13.3, v1.14.0, v1.15.0), adding a registry-first host-command scan, a `broken` state marker in seven locales, skills.sh one-line install, and a release-prep script with a docs-parity gate. `meld-deepresearch` shipped v0.1.0 through v0.4.0, splitting into three cooperating skills, adding a `meld.py` CLI wrapper around the six gates, and hardening blocked-source handling so unreachable citations are labelled unknown.\n\n`opencode-go-model-picker` reached v1.4.0 with new `discover-agents.mjs` and `snapshot-summary.mjs` scripts, proxy-aware network helpers, and clarified fallback-chain checks. `opencode-skill-management` implemented the `skill_management` plugin with list, inspect, disable and enable actions, released 0.1.0-rc.0 and rc.1 through trusted publishing, then cut v0.2.0 and v1.0.0.\n\n### Profile, blog and translation work\n\n`sogeisetsu/sogeisetsu` carried **126 own commits plus 452 automated commits**, reworking the activity card copy into English, switching the daily report to a rolling two-hour update with a manual date input, and fixing the split totals so the numbers can no longer disagree. `sopen-translate` was built from an empty repo into an MV3 page-translation extension with a provider protocol layer, chunk splitting, circuit breaker and smoke tests, with selection translation later dropped. `myBlog` received three OpenChamber capture samples, and `opencode-agent-sandbox` collected twenty-two commits of archived knowledge notes on OpenCode V2 distribution and Windows paths.\n\n### Upstream reports\n\nWork outside own repositories was mostly issue reporting. On `openchamber/openchamber` the focus was the multi-run lifecycle, missing auto-update manifests, stale-save clobbering of AGENTS.md, the context panel breakdown bar, browser-capture resolution and composer model switching; several of those were closed after fixes. On `anomalyco/opencode` the reports covered MiMo-V2.6-Flash vision failing after five images, image rejection on the Go endpoint and websearch Tinyfish 400s. Smaller reports went to `iOfficeAI/OfficeCLI`, `vercel-labs/skills`, `OpenSenseNova` skills repos and `alvinunreal/oh-my-opencode-slim`.\n\nFour pull requests to `antongulin/opencode-skill-creator` were opened and then closed, covering CRLF frontmatter validation, review-server disposal, platform-specific browser launch and eval robustness, alongside a request for OpenCode V2 compatibility. One listing PR was opened to `VoltAgent/awesome-agent-skills`. The window had **404 commits, 9 PRs, 60 issues and 0 reviews**, with 457 additional automated commits; no days are missing. Data for 2026-09-24 through 2026-10-01 was reconstructed via GitHub Search, so star counts are unavailable and releases cover only own repositories.",
       "highlights": [
-        {
-          "repo": "sogeisetsu/meld-deepresearch",
-          "kind": "release",
-          "text": "Released v0.4.0, wrapping all six gate scripts behind a single meld.py CLI and making the skill smaller and safer to re-run.",
-          "url": "https://github.com/sogeisetsu/meld-deepresearch/releases/tag/v0.4.0",
-          "tag": "v0.4.0"
-        },
         {
           "repo": "sogeisetsu/asset-inventory",
           "kind": "release",
-          "text": "Released v1.15.0, switching host-command scanning to a registry-first enumeration approach.",
-          "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.15.0",
-          "tag": "v1.15.0"
+          "text": "Shipped v1.13.0 with a new broken state marker across seven locales, then v1.13.1, v1.13.3, v1.14.0 and v1.15.0.",
+          "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.13.3"
+        },
+        {
+          "repo": "sogeisetsu/meld-deepresearch",
+          "kind": "release",
+          "text": "Released v0.1.0 through v0.4.0, ending with a meld.py CLI wrapper around the six validation gates.",
+          "url": "https://github.com/sogeisetsu/meld-deepresearch/releases/tag/v0.1.0"
+        },
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "kind": "release",
+          "text": "v1.4.0 added discover-agents.mjs and snapshot-summary.mjs plus proxy-aware network helpers.",
+          "url": "https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v1.0.0"
         },
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "kind": "release",
-          "text": "Released v1.0.0 of the skill_management plugin, freezing the list/inspect/disable/enable surface for 1.x.",
-          "url": "https://github.com/sogeisetsu/opencode-skill-management/releases/tag/v1.0.0",
-          "tag": "v1.0.0"
+          "text": "v1.0.0 froze the skill_management surface after rc releases published via trusted publishing.",
+          "url": "https://github.com/sogeisetsu/opencode-skill-management/releases/tag/v0.2.0"
         },
         {
           "repo": "openchamber/openchamber",
-          "number": 5293,
+          "number": 4111,
           "kind": "issue",
-          "text": "Filed a bug report on the project actions menu running the first saved action instead of auto-discovering a dev server.",
-          "url": "https://github.com/openchamber/openchamber/issues/5293"
+          "text": "Deleting a multi-run left orphaned MCP child processes and broke git worktree remove --force; the report was closed.",
+          "url": "https://github.com/openchamber/openchamber/issues/4111"
         },
         {
           "repo": "anomalyco/opencode",
           "number": 55785,
           "kind": "issue",
-          "text": "Opened an issue reporting that MiMo-V2.6-flash and V2.5 advertise image input but the Go endpoint rejects every image with HTTP 400.",
+          "text": "Reported that mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image with 400.",
           "url": "https://github.com/anomalyco/opencode/issues/55785"
         },
         {
           "repo": "antongulin/opencode-skill-creator",
           "number": 42,
           "kind": "pr",
-          "text": "Opened a PR to harden eval robustness in parsing, aggregation, and install for the opencode-skill-creator plugin.",
+          "text": "Opened and closed a hardening PR for eval robustness in parsing, aggregation and install.",
           "url": "https://github.com/antongulin/opencode-skill-creator/pull/42"
-        },
-        {
-          "repo": "sogeisetsu/sogeisetsu",
-          "number": 8,
-          "kind": "issue",
-          "text": "Filed an AI failure report on the profile repo's narrative generation.",
-          "url": "https://github.com/sogeisetsu/sogeisetsu/issues/8"
         },
         {
           "repo": "VoltAgent/awesome-agent-skills",
           "number": 1103,
           "kind": "pr",
-          "text": "Submitted a PR to add the sogeisetsu/asset-inventory skill to the awesome-agent-skills listing.",
+          "text": "Submitted a listing PR adding sogeisetsu/asset-inventory to the awesome-agent-skills list.",
           "url": "https://github.com/VoltAgent/awesome-agent-skills/pull/1103"
         }
       ],
       "byRepo": [
         {
           "repo": "sogeisetsu/sogeisetsu",
-          "text": "126 own commits plus 452 automated commits, 0 PRs, 6 issues, 0 reviews, 0 releases. Work centered on a rolling 30-day activity card with a daily auto-update workflow, bilingual English copy, statistics-split fixes, a CI upgrade to checkout/setup-node v7, and a 2-hour rolling daily-report update cycle with manual date dispatch."
+          "text": "**126 own commits plus 452 automated commits**, 0 PRs, 6 issues, 0 reviews and 0 releases. The profile repo moved its activity card copy to English, added a 30-day activity card with a daily auto-update workflow, switched the report to a rolling two-hour refresh with a manual date input, and fixed the statistics split so totals cannot disagree."
         },
         {
           "repo": "sogeisetsu/meld-deepresearch",
-          "text": "76 own commits plus 0 automated commits, 0 PRs, 0 issues, 0 reviews, 4 releases. Advanced a deep-research protocol from an initial SKILL.md through validation scripts, a bilingual GitHub Pages landing page, first-class observations evidence type, and four releases culminating in v0.4.0, which wrapped all gate scripts behind a single `meld.py` CLI and split the skill into three cooperating skills."
+          "text": "76 own commits, 0 automated, 0 PRs, 0 issues, 0 reviews and 4 releases (v0.1.0 to v0.4.0). Work added a bilingual landing page under docs/, a first-class observations evidence type with C1-C8 fixes, a Chinese README, validation scripts and CI for milestone M2, and the `meld.py` CLI that wraps the six gates."
         },
         {
           "repo": "sogeisetsu/asset-inventory",
-          "text": "72 own commits plus 0 automated commits, 0 PRs, 0 issues, 0 reviews, 5 releases. Shipped releases v1.13.0 through v1.15.0, adding a broken-state marker, security guards for MCP probing, a release-prep script, skills.sh one-command install, and a registry-first host-command scan. Also improved docs with a11y, OG tags, and a 404 page."
+          "text": "72 own commits, 0 automated, 0 PRs, 0 issues, 0 reviews and 5 releases. Releases ranged from v1.13.0 to v1.15.0, adding the broken state marker, security guards, skills.sh install, the release-prep script and the registry-first host-command scan, with docs work on accessibility, 404 styles and release-note range rules."
         },
         {
           "repo": "sogeisetsu/sopen-translate",
-          "text": "50 own commits plus 0 automated commits, 0 PRs, 0 issues, 0 reviews, 0 releases. Built a bilingual MV3 browser translation extension with a protocol layer, provider presets, a glossary pipeline, chunk splitting, a circuit breaker, DOM smoke tests, and JSDoc type checking. Dropped selection translation to focus on page translation only."
+          "text": "50 own commits, 0 automated, 0 PRs, 0 issues, 0 reviews and 0 releases. The repo started from an MV3 skeleton with page and selection translation, then gained a provider protocol layer with presets and glossary pipeline, bilingual rendering with chunk splitting and a circuit breaker, smoke tests, and a refactor dropping selection translation."
         },
         {
           "repo": "sogeisetsu/opencode-skill-management",
-          "text": "31 own commits plus 0 automated commits, 0 PRs, 0 issues, 0 reviews, 2 releases. Implemented a `skill_management` plugin with list, inspect, disable, and enable actions that writes a single permission rule into global config. Released v0.2.0 and v1.0.0, the latter freezing the API surface for 1.x."
+          "text": "31 own commits, 0 automated, 0 PRs, 0 issues, 0 reviews and 2 releases. The `skill_management` plugin was implemented with list, inspect, disable and enable actions, specs and feasibility notes were revised, and v0.2.0 and v1.0.0 were published after rc builds validated OIDC trusted publishing."
         },
         {
           "repo": "openchamber/openchamber",
-          "text": "0 own commits plus 0 automated commits, 0 PRs, 30 issues, 0 reviews, 0 releases. Filed and commented on 30 bug reports and feature ideas covering stale AGENTS.md saves, missing auto-update manifests, context-panel calculation errors, orphaned MCP processes, browser capture resolution, model-switching thinking-level bugs, and multi-run UI issues."
+          "text": "0 own commits, 0 automated, 0 PRs, 30 issues, 0 reviews and 0 releases. Reports covered multi-run process leaks and the worktree removal failure, missing latest.yml manifests in v2.0.1, stale-save clobbering of AGENTS.md, the context breakdown bar, browser-capture resolution, composer thinking level and several feature ideas."
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
-          "text": "24 own commits plus 0 automated commits, 0 PRs, 0 issues, 0 reviews, 4 releases. Released v1.0.0 through v1.4.0, adding agent discovery scripts, a snapshot summary tool, proxy support for network scripts, a two-question mode diagnostic, and a three-part scannable recommendation table with paste-ready config blocks."
+          "text": "24 own commits, 0 automated, 0 PRs, 0 issues, 0 reviews and 4 releases. v1.0.0 shipped the plan-aware allocation skill; later versions added a three-part output with config appendix, discover-agents and snapshot-summary scripts, and proxy-aware helpers, alongside fixes to snapshot preference handling and schemaVersion alignment."
         },
         {
           "repo": "sogeisetsu/opencode-agent-sandbox",
-          "text": "22 own commits plus 0 automated commits, 0 PRs, 0 issues, 0 reviews, 0 releases. Archived knowledge on OpenCode V2 distribution, architecture, authentication, Windows path issues, oh-my-opencode-slim findings, and remote branch deletion risks in a `knowledge/` base with Excalidraw sketches."
+          "text": "22 own commits, 0 automated, 0 PRs, 0 issues, 0 reviews and 0 releases. The repository holds an AGENTS.md plus a knowledge base archiving OpenCode V2 distribution, architecture, auth and Windows path pitfalls, oh-my-opencode-slim findings, and corrections to stale conclusions about subcommands and bundled skill counts."
         },
         {
           "repo": "anomalyco/opencode",
-          "text": "0 own commits plus 0 automated commits, 0 PRs, 12 issues, 0 reviews, 0 releases. Filed and commented on 12 issues covering MiMo-V2.6-flash image-input HTTP 400 rejections, subagent model_coming_soon failures, stale image reads after multiple images, Windows CLI availability, auth.json removal behavior, and websearch tinyfish HTTP 400 errors."
+          "text": "0 own commits, 0 automated, 0 PRs, 12 issues, 0 reviews and 0 releases. Filed and followed up issues on MiMo-V2.6-Flash vision reading stale images, image input rejected by the Go endpoint, subagent model_coming_soon failures, Tinyfish websearch 400s, worktree removal recovery and a missing Windows desktop CLI entry."
         },
         {
           "repo": "antongulin/opencode-skill-creator",
-          "text": "0 own commits plus 0 automated commits, 8 PRs, 4 issues, 0 reviews, 0 releases. Opened 8 PRs fixing review-server disposal on plugin unload, CRLF line endings in frontmatter validation, platform-specific browser launching, eval robustness in parsing and aggregation, and dist rebuild bloat. Also filed issues on OpenCode V2 compatibility and build inline bundling."
+          "text": "0 own commits, 0 automated, 8 PRs, 4 issues, 0 reviews and 0 releases. Four pull requests were opened and closed covering CRLF frontmatter validation, review-server disposal on unload, platform-specific browser launch and eval robustness; issues covered OpenCode V2 plugin load errors and dist rebuild inflation."
         },
         {
           "repo": "sogeisetsu/myBlog",
-          "text": "3 own commits plus 0 automated commits, 0 PRs, 0 issues, 0 reviews, 0 releases. Added three OpenChamber capture samples: a desktop 1440x900 screenshot, a panel-region 1:1 crop, and a mobile 390x844 screenshot."
+          "text": "3 own commits, 0 automated, 0 PRs, 0 issues, 0 reviews and 0 releases. The only change was adding three OpenChamber capture samples: a 1440x900 desktop screenshot, a 1:1 panel-region capture and a 390x844 mobile screenshot."
         },
         {
           "repo": "alvinunreal/oh-my-opencode-slim",
-          "text": "0 own commits plus 0 automated commits, 0 PRs, 2 issues, 0 reviews, 0 releases. Filed a bug report that `reflect --sessions` queries legacy V1 tables and returns 0 sessions on OpenCode V2, and commented on the issue before it was closed."
+          "text": "0 own commits, 0 automated, 0 PRs, 2 issues, 0 reviews and 0 releases. One report noted that `reflect --sessions` queries legacy V1 tables and returns zero sessions on OpenCode V2; it was later closed."
         },
         {
           "repo": "iOfficeAI/OfficeCLI",
-          "text": "0 own commits plus 0 automated commits, 0 PRs, 2 issues, 0 reviews, 0 releases. Opened an issue reporting that OpenCode detection and skill install paths point to `~/.opencode` instead of `~/.config/opencode`, and filed a feature request for OpenCode v2 integration to fix the skills install path and add an MCP target."
+          "text": "0 own commits, 0 automated, 0 PRs, 2 issues, 0 reviews and 0 releases. Reports flagged that OpenCode detection and the skill install path point at ~/.opencode instead of ~/.config/opencode, and requested a v2 integration fixing the install path and adding an MCP target."
         },
         {
           "repo": "vercel-labs/skills",
-          "text": "0 own commits plus 0 automated commits, 0 PRs, 2 issues, 0 reviews, 0 releases. Filed two listing requests: one to index sogeisetsu/asset-inventory and one to index sogeisetsu/opencode-go-model-picker."
+          "text": "0 own commits, 0 automated, 0 PRs, 2 issues, 0 reviews and 0 releases. Two listing requests asked for indexing of sogeisetsu/asset-inventory and sogeisetsu/opencode-go-model-picker."
         },
         {
           "repo": "OpenSenseNova/SenseNova-Skills",
-          "text": "0 own commits plus 0 automated commits, 0 PRs, 1 issue, 0 reviews, 0 releases. Opened an issue on OpenCode V2 compatibility regarding SKILL.md frontmatter and runtime assumptions."
+          "text": "0 own commits, 0 automated, 0 PRs, 1 issue, 0 reviews and 0 releases. The issue raised OpenCode V2 compatibility concerns around SKILL.md frontmatter and runtime assumptions."
         },
         {
           "repo": "OpenSenseNova/SenseNova-Skills-DeepResearch",
-          "text": "0 own commits plus 0 automated commits, 0 PRs, 1 issue, 0 reviews, 0 releases. Opened a feature request to make the harness extensible for OpenCode and other platforms, and to consider exposing it as an MCP service."
+          "text": "0 own commits, 0 automated, 0 PRs, 1 issue, 0 reviews and 0 releases. The feature request proposed making the harness extensible to OpenCode and Pi and possibly exposing it via MCP."
         },
         {
           "repo": "VoltAgent/awesome-agent-skills",
-          "text": "0 own commits plus 0 automated commits, 1 PR, 0 issues, 0 reviews, 0 releases. Submitted a PR to add the sogeisetsu/asset-inventory skill to the awesome-agent-skills listing; the PR was later closed."
+          "text": "0 own commits, 0 automated, 1 PR, 0 issues, 0 reviews and 0 releases. A listing pull request added sogeisetsu/asset-inventory to the collection."
         },
         {
           "repo": "sogeisetsu/opencode-skill-creator",
-          "text": "0 own commits plus 5 automated commits, 0 PRs, 0 issues, 0 reviews, 0 releases. Received 5 automated commits with no manual activity during this window."
+          "text": "0 own commits, 5 automated commits, 0 PRs, 0 issues, 0 reviews and 0 releases. Activity was limited to automated commits; no manual changes were recorded in the window."
         }
       ]
     },
     "zh": {
-      "headline": "30天的OpenCode技能、深度研究工具与60个上游issue",
-      "teaser": "404次本人提交，另有457次自动提交，9个PR，60个issue，15个发布，覆盖17个仓库。工作重心在于构建和发布OpenCode智能体技能、深度研究协议，以及提交详细的bug报告。",
-      "overview": "### 自有仓库：技能与工具\n\n最大的工作量投入在构建和发布OpenCode智能体技能上。在 **sogeisetsu/meld-deepresearch** 中，76次提交将一个深度研究协议从初始SKILL.md推进到验证脚本、双语落地页和四个正式发布（v0.1.0至v0.4.0），将单一研究技能转变为三个协作技能家族并配备统一CLI。在sogeisetsu/asset-inventory中，72次提交和五个发布（v1.13.0至v1.15.0）强化了MCP探测，新增了损坏状态标记，引入了发布准备脚本，并将主机命令扫描切换为注册表优先方式。\n\n### 个人主页与自动化\n\nsogeisetsu/sogeisetsu个人主页仓库有126次本人提交，另有452次自动提交，专注于滚动30天活动卡片及其每日自动更新工作流、双语文案、统计数字修复，以及将CI升级至checkout/setup-node v7。opencode-skill-creator仓库收到5次自动提交，无手动提交。\n\n### 更多技能与翻译扩展\n\nsogeisetsu/sopen-translate获得50次提交，构建了一个双语MV3浏览器翻译扩展，包含协议层、预设、术语表管道、分块拆分、断路器和DOM冒烟测试。sogeisetsu/opencode-skill-management获得31次提交和两个发布（v0.2.0和v1.0.0），实现了技能管理插件，支持list、inspect、disable和enable操作。sogeisetsu/opencode-go-model-picker有24次提交和四个发布，新增了智能体发现脚本、快照摘要工具和代理支持。sogeisetsu/opencode-agent-sandbox获得22次提交，归档了OpenCode V2架构和Windows路径知识。\n\n### 上游贡献：issue与PR\n\n在8个上游仓库中提交或评论了60个issue。其中30个在openchamber/openchamber，涵盖AGENTS.md静默覆盖、缺少自动更新清单、上下文面板计算错误、MCP子进程残留等bug。12个在anomalyco/opencode，涉及MiMo模型图片输入失败、子智能体模型错误和websearch提供者问题。在antongulin/opencode-skill-creator中开启了8个PR，修复了review服务器清理、CRLF处理、浏览器启动和eval健壮性问题。其余issue分布在alvinunreal/oh-my-opencode-slim、iOfficeAI/OfficeCLI、vercel-labs/skills、OpenSenseNova仓库和VoltAgent/awesome-agent-skills。\n\n### 数据完整性\n\n9月24日至10月1日的数据通过GitHub Search重建，为近似值：星标数不可用，发布仅覆盖用户自有仓库，issue、review和discussion计数可能不完整。30天窗口内无缺失日期。",
+      "headline": "30 天内在 18 个仓库提交 404 次、PR 9 个、issue 60 个",
+      "teaser": "自有项目发布了九个版本并完善双语文档；大部分 issue 提给了上游的 OpenChamber 和 OpenCode。",
+      "overview": "### 自有 skill 与工具项目\n\n本窗口的大部分精力投入在 sogeisetsu 自己的 OpenCode 相关 skill 上。`asset-inventory` 连续发布五个版本（v1.13.0、v1.13.1、v1.13.3、v1.14.0、v1.15.0），新增了以注册表为先的主机命令扫描、覆盖七种语言的 broken 状态标记、skills.sh 一行安装，以及带文档一致性检查的发布准备脚本。`meld-deepresearch` 从 v0.1.0 发布到 v0.4.0，拆分为三个协作 skill，增加 `meld.py` 命令行统一封装六道校验门，并规定被拦截的来源要记为观察、无法访问的引用标为 unknown。\n\n`opencode-go-model-picker` 推进到 v1.4.0，新增 `discover-agents.mjs` 与 `snapshot-summary.mjs`，网络脚本支持代理，回退链检查说明更清晰。`opencode-skill-management` 实现了 `skill_management` 插件，提供 list、inspect、disable、enable 四个动作，先以 rc 版本验证 trusted publishing，随后发布 v0.2.0 和 v1.0.0。\n\n### 个人主页、博客与翻译项目\n\n`sogeisetsu/sogeisetsu` 有 **126 次本人提交，另有 452 次自动提交**，活动卡片文案改为英文，日报改为每两小时滚动更新并支持手动指定日期，统计拆分口径也做了修正，避免数字对不上。`sopen-translate` 从空仓库起步，做成 MV3 页面翻译扩展，包含供应商协议层、分块切分、熔断和冒烟测试，之后移除了划词翻译。`myBlog` 只新增了三张 OpenChamber 截图样例，`opencode-agent-sandbox` 积累了 22 次提交，归档 OpenCode V2 分发、架构与 Windows 路径相关的知识笔记。\n\n### 上游问题反馈\n\n自有仓库之外的工作主要是提交 issue。在 `openchamber/openchamber` 上关注多轮运行的生命周期、v2.0.1 缺少自动更新清单、外部修改 AGENTS.md 后保存静默覆盖、上下文面板占比条、浏览器截图分辨率与切换模型时的思考等级等问题，其中若干已随修复关闭。在 `anomalyco/opencode` 上反馈了 MiMo-V2.6-Flash 在单次会话五张图片后读图异常、Go 端点拒绝图片以及 Tinyfish 搜索返回 400 等问题。较小的问题提给了 `iOfficeAI/OfficeCLI`、`vercel-labs/skills`、`OpenSenseNova` 相关仓库和 `alvinunreal/oh-my-opencode-slim`。\n\n向 `antongulin/opencode-skill-creator` 提交的四个 PR 均已开启并关闭，涉及 CRLF 前置元数据校验、插件卸载时释放评审服务器、按平台启动浏览器和评测健壮性，另有一条 OpenCode V2 兼容性请求。向 `VoltAgent/awesome-agent-skills` 提交了一个收录 PR。窗口总计 **404 次提交、9 个 PR、60 个 issue、0 次评审**，另有 457 次自动提交；没有缺失日期。2026-09-24 至 2026-10-01 的数据经 GitHub Search 重建，星标数不可得，release 仅覆盖本人仓库。",
       "highlights": [
-        {
-          "repo": "sogeisetsu/meld-deepresearch",
-          "kind": "release",
-          "text": "发布v0.4.0，将全部六个门控脚本统一到单个meld.py CLI背后，使技能更小且更安全地重复运行。",
-          "url": "https://github.com/sogeisetsu/meld-deepresearch/releases/tag/v0.4.0",
-          "tag": "v0.4.0"
-        },
         {
           "repo": "sogeisetsu/asset-inventory",
           "kind": "release",
-          "text": "发布v1.15.0，将主机命令扫描切换为注册表优先枚举方式。",
-          "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.15.0",
-          "tag": "v1.15.0"
+          "text": "先发布 v1.13.0 引入覆盖七种语言的 broken 状态标记，随后依次发布 v1.13.1、v1.13.3、v1.14.0 与 v1.15.0。",
+          "url": "https://github.com/sogeisetsu/asset-inventory/releases/tag/v1.13.3"
+        },
+        {
+          "repo": "sogeisetsu/meld-deepresearch",
+          "kind": "release",
+          "text": "从 v0.1.0 发布到 v0.4.0，最终用 meld.py 命令行统一封装六道校验门。",
+          "url": "https://github.com/sogeisetsu/meld-deepresearch/releases/tag/v0.1.0"
+        },
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "kind": "release",
+          "text": "v1.4.0 新增 discover-agents.mjs 和 snapshot-summary.mjs，并让网络脚本支持代理。",
+          "url": "https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v1.0.0"
         },
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "kind": "release",
-          "text": "发布skill_management插件v1.0.0，冻结list/inspect/disable/enable的API表面于1.x。",
-          "url": "https://github.com/sogeisetsu/opencode-skill-management/releases/tag/v1.0.0",
-          "tag": "v1.0.0"
+          "text": "v1.0.0 冻结 skill_management 的接口面，此前已通过 trusted publishing 发布 rc 版本。",
+          "url": "https://github.com/sogeisetsu/opencode-skill-management/releases/tag/v0.2.0"
         },
         {
           "repo": "openchamber/openchamber",
-          "number": 5293,
+          "number": 4111,
           "kind": "issue",
-          "text": "提交bug报告：项目操作菜单运行第一个保存的操作而非自动发现开发服务器。",
-          "url": "https://github.com/openchamber/openchamber/issues/5293"
+          "text": "报告删除多轮运行会遗留 MCP 子进程并导致 git worktree remove --force 失败，该问题已关闭。",
+          "url": "https://github.com/openchamber/openchamber/issues/4111"
         },
         {
           "repo": "anomalyco/opencode",
           "number": 55785,
           "kind": "issue",
-          "text": "提交issue：MiMo-V2.6-flash和V2.5声明支持图片输入，但Go端点以HTTP 400拒绝所有图片。",
+          "text": "报告 mimo-v2.6-flash 与 mimo-v2.5 声明支持图片输入，但 Go 端点对所有图片返回 400。",
           "url": "https://github.com/anomalyco/opencode/issues/55785"
         },
         {
           "repo": "antongulin/opencode-skill-creator",
           "number": 42,
           "kind": "pr",
-          "text": "提交PR以强化opencode-skill-creator插件在解析、聚合和安装方面的eval健壮性。",
+          "text": "开启并关闭了加强评测解析、聚合与安装健壮性的 PR。",
           "url": "https://github.com/antongulin/opencode-skill-creator/pull/42"
-        },
-        {
-          "repo": "sogeisetsu/sogeisetsu",
-          "number": 8,
-          "kind": "issue",
-          "text": "提交了个人主页仓库AI叙述生成失败的报告。",
-          "url": "https://github.com/sogeisetsu/sogeisetsu/issues/8"
         },
         {
           "repo": "VoltAgent/awesome-agent-skills",
           "number": 1103,
           "kind": "pr",
-          "text": "提交PR将sogeisetsu/asset-inventory技能添加到awesome-agent-skills列表中。",
+          "text": "提交收录 PR，把 sogeisetsu/asset-inventory 加入 awesome-agent-skills 列表。",
           "url": "https://github.com/VoltAgent/awesome-agent-skills/pull/1103"
         }
       ],
       "byRepo": [
         {
           "repo": "sogeisetsu/sogeisetsu",
-          "text": "126次本人提交，另有452次自动提交，0个PR，6个issue，0次review，0个发布。工作集中在滚动30天活动卡片及其每日自动更新工作流、双语英文文案、统计拆分修复、CI升级至checkout/setup-node v7，以及每2小时滚动更新的日报周期和手动日期触发。"
+          "text": "**126 次本人提交，另有 452 次自动提交**，0 个 PR、6 个 issue、0 次评审、0 个 release。个人主页仓库把活动卡片文案改为英文，新增近 30 天活动卡片与每日自动更新 workflow，日报改为每两小时滚动更新并支持手动指定日期，同时修正统计拆分使总数不再对不上。"
         },
         {
           "repo": "sogeisetsu/meld-deepresearch",
-          "text": "76次本人提交，另有0次自动提交，0个PR，0个issue，0次review，4个发布。将深度研究协议从初始SKILL.md推进到验证脚本、双语GitHub Pages落地页、一等观察证据类型，并通过四个发布最终达到v0.4.0，将所有门控脚本统一到单个`meld.py` CLI背后，并将技能拆分为三个协作技能。"
+          "text": "76 次本人提交，0 次自动提交，0 个 PR、0 个 issue、0 次评审、4 个 release（v0.1.0 至 v0.4.0）。期间新增 docs/ 下的双语落地页、一等公民的观察证据类型及 C1-C8 修正、中文 README、M2 阶段的校验脚本与 CI，以及封装六道门的 `meld.py` 命令行。"
         },
         {
           "repo": "sogeisetsu/asset-inventory",
-          "text": "72次本人提交，另有0次自动提交，0个PR，0个issue，0次review，5个发布。发布v1.13.0至v1.15.0，新增损坏状态标记、MCP探测安全防护、发布准备脚本、skills.sh一键安装，以及注册表优先的主机命令扫描。同时改进了无障碍、OG标签和404页面文档。"
+          "text": "72 次本人提交，0 次自动提交，0 个 PR、0 个 issue、0 次评审、5 个 release。版本从 v1.13.0 到 v1.15.0，加入 broken 状态标记、安全护栏、skills.sh 安装、发布准备脚本和以注册表为先的主机命令扫描，文档方面补充了无障碍、404 样式和发布说明范围规则。"
         },
         {
           "repo": "sogeisetsu/sopen-translate",
-          "text": "50次本人提交，另有0次自动提交，0个PR，0个issue，0次review，0个发布。构建了双语MV3浏览器翻译扩展，包含协议层、提供者预设、术语表管道、分块拆分、断路器、DOM冒烟测试和JSDoc类型检查。移除了选区翻译，仅保留页面翻译。"
+          "text": "50 次本人提交，0 次自动提交，0 个 PR、0 个 issue、0 次评审、0 个 release。仓库从 MV3 骨架起步，先做页面与划词翻译，随后加入供应商协议层、预设与术语表流程、双语渲染与分块切分、熔断和冒烟测试，最后重构移除划词翻译。"
         },
         {
           "repo": "sogeisetsu/opencode-skill-management",
-          "text": "31次本人提交，另有0次自动提交，0个PR，0个issue，0次review，2个发布。实现了`skill_management`插件，支持list、inspect、disable和enable操作，向全局配置写入单条权限规则。发布v0.2.0和v1.0.0，后者冻结了1.x的API表面。"
+          "text": "31 次本人提交，0 次自动提交，0 个 PR、0 个 issue、0 次评审、2 个 release。实现了 `skill_management` 插件及 list、inspect、disable、enable 四个动作，修订规范并做可行性评估，在 rc 版本验证 OIDC 发布后推出 v0.2.0 与 v1.0.0。"
         },
         {
           "repo": "openchamber/openchamber",
-          "text": "0次本人提交，另有0次自动提交，0个PR，30个issue，0次review，0个发布。提交并评论了30个bug报告和功能想法，涵盖AGENTS.md静默覆盖、缺少自动更新清单、上下文面板计算错误、MCP子进程残留、浏览器截图分辨率、模型切换思维级别bug和多运行UI问题。"
+          "text": "0 次本人提交，0 次自动提交，0 个 PR、30 个 issue、0 次评审、0 个 release。反馈集中在多轮运行的进程泄漏与 worktree 删除失败、v2.0.1 缺少自动更新清单、外部修改 AGENTS.md 后保存静默覆盖、上下文占比条、浏览器截图分辨率和切换模型时的思考等级，另有多条功能建议。"
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
-          "text": "24次本人提交，另有0次自动提交，0个PR，0个issue，0次review，4个发布。发布v1.0.0至v1.4.0，新增智能体发现脚本、快照摘要工具、网络脚本代理支持、两问模式诊断，以及可扫描的三部分推荐表和可直接粘贴的配置块。"
+          "text": "24 次本人提交，0 次自动提交，0 个 PR、0 个 issue、0 次评审、4 个 release。v1.0.0 发布按套餐分配模型的 skill，后续版本加入三段式输出与配置附录、discover-agents 与 snapshot-summary 脚本、代理支持助手，并修复刷新时快照偏好保留和 schemaVersion 对齐问题。"
         },
         {
           "repo": "sogeisetsu/opencode-agent-sandbox",
-          "text": "22次本人提交，另有0次自动提交，0个PR，0个issue，0次review，0个发布。在`knowledge/`知识库中归档了OpenCode V2分发、架构、认证、Windows路径问题、oh-my-opencode-slim实测发现和远程分支删除风险，配有Excalidraw草图。"
+          "text": "22 次本人提交，0 次自动提交，0 个 PR、0 个 issue、0 次评审、0 个 release。仓库包含 AGENTS.md 与知识库，归档 OpenCode V2 的分发、架构、认证和 Windows 路径坑，oh-my-opencode-slim 的实测结论，并更正了子命令列表、随包 skill 数量等过期结论。"
         },
         {
           "repo": "anomalyco/opencode",
-          "text": "0次本人提交，另有0次自动提交，0个PR，12个issue，0次review，0个发布。提交并评论了12个issue，涵盖MiMo-V2.6-flash图片输入HTTP 400拒绝、子智能体model_coming_soon失败、多图片后读取旧图片、Windows CLI可用性、auth.json移除行为和websearch tinyfish HTTP 400错误。"
+          "text": "0 次本人提交，0 次自动提交，0 个 PR、12 个 issue、0 次评审、0 个 release。提交并跟进的问题包括 MiMo-V2.6-Flash 读到过期图片、Go 端点拒绝图片输入、子代理出现 model_coming_soon、Tinyfish 搜索 400、worktree 删除恢复，以及 Windows 桌面版无法使用 CLI。"
         },
         {
           "repo": "antongulin/opencode-skill-creator",
-          "text": "0次本人提交，另有0次自动提交，8个PR，4个issue，0次review，0个发布。开启了8个PR，修复插件卸载时review服务器清理、frontmatter验证中的CRLF处理、平台特定浏览器启动、解析和聚合中的eval健壮性，以及dist重建膨胀问题。还提交了OpenCode V2兼容性和构建内联打包的issue。"
+          "text": "0 次本人提交，0 次自动提交，8 个 PR、4 个 issue、0 次评审、0 个 release。四个 PR 均已开启并关闭，涉及 CRLF 前置元数据校验、插件卸载时释放评审服务器、按平台启动浏览器和评测健壮性；issue 涉及 OpenCode V2 插件加载失败与 dist 重建膨胀。"
         },
         {
           "repo": "sogeisetsu/myBlog",
-          "text": "3次本人提交，另有0次自动提交，0个PR，0个issue，0次review，0个发布。添加了三个OpenChamber截图样本：桌面1440x900截图、面板区域1:1裁剪和移动端390x844截图。"
+          "text": "3 次本人提交，0 次自动提交，0 个 PR、0 个 issue、0 次评审、0 个 release。唯一改动是新增三张 OpenChamber 截图样例：1440x900 桌面截图、1:1 面板区域截图和 390x844 移动端截图。"
         },
         {
           "repo": "alvinunreal/oh-my-opencode-slim",
-          "text": "0次本人提交，另有0次自动提交，0个PR，2个issue，0次review，0个发布。提交bug报告称`reflect --sessions`查询旧版V1表，在OpenCode V2上返回0个会话，并在issue关闭前进行了评论。"
+          "text": "0 次本人提交，0 次自动提交，0 个 PR、2 个 issue、0 次评审、0 个 release。其中一条反馈指出 `reflect --sessions` 查询旧版 V1 表，在 OpenCode V2 上返回 0 个会话，该 issue 后被关闭。"
         },
         {
           "repo": "iOfficeAI/OfficeCLI",
-          "text": "0次本人提交，另有0次自动提交，0个PR，2个issue，0次review，0个发布。提交issue报告OpenCode检测和技能安装路径指向`~/.opencode`而非`~/.config/opencode`，并提交功能请求以修复OpenCode v2集成的技能安装路径并添加MCP目标。"
+          "text": "0 次本人提交，0 次自动提交，0 个 PR、2 个 issue、0 次评审、0 个 release。反馈指出 OpenCode 检测与 skill 安装路径指向 ~/.opencode 而非 ~/.config/opencode，并请求做 v2 集成，修正安装路径并增加 MCP 目标。"
         },
         {
           "repo": "vercel-labs/skills",
-          "text": "0次本人提交，另有0次自动提交，0个PR，2个issue，0次review，0个发布。提交了两个列表请求：一个索引sogeisetsu/asset-inventory，一个索引sogeisetsu/opencode-go-model-picker。"
+          "text": "0 次本人提交，0 次自动提交，0 个 PR、2 个 issue、0 次评审、0 个 release。两条收录请求分别要求索引 sogeisetsu/asset-inventory 和 sogeisetsu/opencode-go-model-picker。"
         },
         {
           "repo": "OpenSenseNova/SenseNova-Skills",
-          "text": "0次本人提交，另有0次自动提交，0个PR，1个issue，0次review，0个发布。提交了关于OpenCode V2兼容性的issue，涉及SKILL.md frontmatter和运行时假设。"
+          "text": "0 次本人提交，0 次自动提交，0 个 PR、1 个 issue、0 次评审、0 个 release。该 issue 提出 OpenCode V2 兼容性问题，涉及 SKILL.md 前置元数据与运行时假设。"
         },
         {
           "repo": "OpenSenseNova/SenseNova-Skills-DeepResearch",
-          "text": "0次本人提交，另有0次自动提交，0个PR，1个issue，0次review，0个发布。提交功能请求，要求使harness可扩展以支持OpenCode等平台，并考虑以MCP形式对外暴露。"
+          "text": "0 次本人提交，0 次自动提交，0 个 PR、1 个 issue、0 次评审、0 个 release。功能请求建议让 harness 可扩展到 OpenCode、Pi 等环境，并考虑以 MCP 形式对外暴露。"
         },
         {
           "repo": "VoltAgent/awesome-agent-skills",
-          "text": "0次本人提交，另有0次自动提交，1个PR，0个issue，0次review，0个发布。提交PR将sogeisetsu/asset-inventory技能添加到awesome-agent-skills列表中；该PR随后被关闭。"
+          "text": "0 次本人提交，0 次自动提交，1 个 PR、0 个 issue、0 次评审、0 个 release。提交了一个收录 PR，把 sogeisetsu/asset-inventory 加入该列表。"
         },
         {
           "repo": "sogeisetsu/opencode-skill-creator",
-          "text": "0次本人提交，另有5次自动提交，0个PR，0个issue，0次review，0个发布。在此窗口内收到5次自动提交，无手动活动。"
+          "text": "0 次本人提交，5 次自动提交，0 个 PR、0 个 issue、0 次评审、0 个 release。活动仅限于自动提交，窗口内没有记录到人工改动。"
         }
       ]
     }
   },
-  "aiProvider": "sensenova",
-  "aiModel": "glm-5.2",
+  "aiProvider": "opencode-go-deepseek",
+  "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null
 }
