@@ -1,6 +1,15 @@
 {
-  "version": 1,
-  "note": "人工维护的一次性归属修正名单：名单里的 sha 算作本人提交。只按 sha 认，绝不按名字 / 邮箱匹配（作者字符串由提交者自己写，PR 也能伪造）。新增条目请写完整 40 位 sha，并填 repo / author / ts / reason 便于日后核对。",
+  "version": 2,
+  "note": "人工维护的归属修正数据（代码只读本文件，不要把这些规则写进代码）。两段独立：commits 只按完整 40 位 sha 认，identities 按 name+email 精确配对认（可再限定自有仓 / 要求作者未关联 GitHub 账号）。commits 新增条目请写完整 40 位 sha，并填 repo / author / ts / reason 便于日后核对。",
+  "identities": [
+    {
+      "name": "jinansu",
+      "email": "suyuesheng@duck.com",
+      "ownReposOnly": true,
+      "requireUnlinkedAuthor": true,
+      "reason": "本地昵称身份（纺织三厂时期自定），GitHub 账号未关联该邮箱；限定自有仓 + 未关联账号，避免同名他人被误算"
+    }
+  ],
   "commits": [
     {
       "sha": "982f9166004509d1ec2949fe9ada138f19687413",
@@ -56,6 +65,27 @@
       "repo": "sogeisetsu/sopen-translate",
       "author": "opencode <opencode@local>",
       "ts": "2026-10-23T15:50:18Z",
+      "reason": "同上"
+    },
+    {
+      "sha": "6db0a3fa3a47e6c2e2aa5318960a68df9e47b72e",
+      "repo": "sogeisetsu/opencode-skill-creator",
+      "author": "opencode-agent <agent@localhost>",
+      "ts": "2026-09-30T23:20:00Z",
+      "reason": "agent 占位身份；该日期早于日报数据起点（2026-10-02），列在此供完整性核对，不会命中现有窗口"
+    },
+    {
+      "sha": "c59c30debedd833976068c7b0224950593866501",
+      "repo": "sogeisetsu/opencode-skill-creator",
+      "author": "opencode-agent <agent@localhost>",
+      "ts": "2026-09-30T23:14:03Z",
+      "reason": "同上"
+    },
+    {
+      "sha": "ca035969cf0aaf9478849b0e11cbe4562f2c08ab",
+      "repo": "sogeisetsu/opencode-skill-creator",
+      "author": "opencode-agent <agent@localhost>",
+      "ts": "2026-09-30T22:24:15Z",
       "reason": "同上"
     }
   ]

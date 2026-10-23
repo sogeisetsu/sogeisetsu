@@ -377,21 +377,59 @@ async function fetchRepoCommits(token, owner, repoName, win) {
   return all;
 }
 
-// ---------------------------------------------------------------- 2b. 一次性归属修正名单
+// ---------------------------------------------------------------- 2b. 归属修正数据（data/attribution.json）
 
 const FULL_SHA_RE = /^[0-9a-f]{40}$/i;
 
+/** 空归属数据：文件缺失 / 解析失败时的统一形状（哨兵，别改对象的引用比较）。 */
+export function emptyAttribution() {
+  return { commits: new Map(), identities: [] };
+}
+
 /**
- * 解析名单对象 → `Map<sha小写, entry>`。
+ * 解析归属数据 → `{ commits: Map<sha小写, entry>, identities: [{name,email,ownReposOnly,requireUnlinkedAuthor}] }`。
  *
- * 容错（手写文件不该弄挂采集）：非对象、commits 不是数组、元素不是对象、sha 缺失 /
- * 不是 40 位十六进制 / 重复 → 逐条跳过并 warn 一次；repo / author / ts / reason 只作说明，
- * 不参与判定。全空也返回空 Map（等价于没有名单）。
+ * 两段互相独立：
+ *   · commits —— 只按完整 40 位 sha 认（sha 全局唯一、不可伪造），repo / author / ts / reason 仅作说明；
+ *   · identities —— 按 name + email 精确配对认，可选 ownReposOnly（仓库属主必须是本人）与
+ *     requireUnlinkedAuthor（作者的 GitHub 账号未与该邮箱关联）。用于"整批同身份的本地提交"，
+ *     因为几百条 sha 无法逐条维护。
+ *
+ * 容错（手写文件不该弄挂采集）：非对象、列表不是数组、元素不是对象、字段缺失 / 类型不对 /
+ * 重复 → 逐条跳过并 warn 一次。全空等价于没有修正数据。
  */
 export function parseAttribution(parsed, warn = () => {}) {
-  const out = new Map();
-  const list = parsed && typeof parsed === "object" && Array.isArray(parsed.commits) ? parsed.commits : [];
-  for (const [i, entry] of list.entries()) {
+  const out = emptyAttribution();
+  const root = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+
+  const identityList = Array.isArray(root.identities) ? root.identities : [];
+  for (const [i, entry] of identityList.entries()) {
+    if (!entry || typeof entry !== "object") {
+      warn(`identities[${i}] 不是对象，已跳过`);
+      continue;
+    }
+    const name = String(entry.name ?? "").trim();
+    const email = String(entry.email ?? "").trim();
+    if (!name || !email) {
+      warn(`identities[${i}] 必须同时给 name 与 email，已跳过`);
+      continue;
+    }
+    const rule = {
+      name: name.toLowerCase(),
+      email: email.toLowerCase(),
+      // 两条都默认为 true：默认最保守（只认自有仓、只认未关联账号），要放宽必须显式写 false
+      ownReposOnly: entry.ownReposOnly !== false,
+      requireUnlinkedAuthor: entry.requireUnlinkedAuthor !== false,
+    };
+    if (out.identities.some((r) => r.name === rule.name && r.email === rule.email && r.ownReposOnly === rule.ownReposOnly)) {
+      warn(`identities[${i}] 与前面的 ${name} <${email}> 重复，以第一条为准`);
+      continue;
+    }
+    out.identities.push(rule);
+  }
+
+  const commitList = Array.isArray(root.commits) ? root.commits : [];
+  for (const [i, entry] of commitList.entries()) {
     if (!entry || typeof entry !== "object") {
       warn(`attribution[${i}] 不是对象，已跳过`);
       continue;
@@ -402,11 +440,11 @@ export function parseAttribution(parsed, warn = () => {}) {
       continue;
     }
     const key = sha.toLowerCase();
-    if (out.has(key)) {
+    if (out.commits.has(key)) {
       warn(`attribution[${i}] 的 sha ${key.slice(0, 7)} 重复，以第一条为准`);
       continue;
     }
-    out.set(key, {
+    out.commits.set(key, {
       repo: String(entry.repo ?? "").trim(),
       author: String(entry.author ?? "").trim(),
       ts: String(entry.ts ?? "").trim(),
@@ -417,33 +455,55 @@ export function parseAttribution(parsed, warn = () => {}) {
 }
 
 /**
- * 读名单文件。文件不存在 / 读取失败 / JSON 坏了都返回空 Map（各 warn 一次），
- * 绝不因此中断采集 —— 名单是修正手段，不是采集的前置条件。
+ * 读归属数据文件。文件不存在 / 读取失败 / JSON 坏了都返回空数据（各 warn 一次），
+ * 绝不因此中断采集 —— 这是修正手段，不是采集的前置条件。
  */
 export function loadAttribution(file = ATTRIBUTION_PATH) {
   let text;
   try {
     text = readFileSync(file, "utf8");
   } catch (e) {
-    if (e && e.code !== "ENOENT") console.warn(`${LOG} 读不到归属名单 ${file}：${e.message}`);
-    return new Map();
+    if (e && e.code !== "ENOENT") console.warn(`${LOG} 读不到归属数据 ${file}：${e.message}`);
+    return emptyAttribution();
   }
   let parsed;
   try {
     parsed = JSON.parse(text);
   } catch (e) {
-    console.warn(`${LOG} 归属名单 JSON 解析失败（当作空名单）：${e.message}`);
-    return new Map();
+    console.warn(`${LOG} 归属数据 JSON 解析失败（当作空数据）：${e.message}`);
+    return emptyAttribution();
   }
   return parseAttribution(parsed, (msg) => console.warn(`${LOG} ${msg}`));
 }
 
-/** 命中返回条目，未命中返回 null。sha 大小写不敏感（必须整条 40 位，不做前缀匹配）。 */
-export function attributionLookup(map, sha) {
+/** sha 命中返回条目，未命中返回 null。大小写不敏感，必须整条 40 位（不做前缀匹配）。 */
+export function attributionLookup(attribution, sha) {
+  const map = attribution && attribution.commits;
   if (!map || map.size === 0) return null;
   const key = String(sha ?? "").trim().toLowerCase();
   if (!FULL_SHA_RE.test(key)) return null;
   return map.get(key) || null;
+}
+
+/**
+ * 身份规则命中返回规则本身，未命中返回 null。
+ *
+ * `commit` 形状：{ name, email, ownRepo, linked }；`linked` = 该提交的作者是否关联了 GitHub 账号
+ * （REST 的 `author.login` 非空）。ownReposOnly / requireUnlinkedAuthor 为 true 时对应条件必须满足。
+ */
+export function identityLookup(attribution, commit) {
+  const rules = attribution && attribution.identities;
+  if (!Array.isArray(rules) || rules.length === 0) return null;
+  const name = String(commit && commit.name != null ? commit.name : "").trim().toLowerCase();
+  const email = String(commit && commit.email != null ? commit.email : "").trim().toLowerCase();
+  if (!name || !email) return null;
+  for (const rule of rules) {
+    if (rule.name !== name || rule.email !== email) continue;
+    if (rule.ownReposOnly && !commit.ownRepo) continue;
+    if (rule.requireUnlinkedAuthor && commit.linked) continue;
+    return rule;
+  }
+  return null;
 }
 
 /**
@@ -458,8 +518,9 @@ export function attributionLookup(map, sha) {
  *     → count += 1，messages.push({sha, message 首行, ts})；
  *   其他人类提交 → 忽略。
  * ts = committer.date || author.date，必须落在窗口内（防御）；全局按 sha 去重。
- * 命中 data/attribution.json 的 sha（`attribution` 参数）在“其他人类”这一档改判为本人，
- * message 项带 `by: "attribution"` 便于事后核对；其余判定（合并提交 / 机器人 / 窗口 / 去重）不变。
+ * 命中 data/attribution.json 的 sha（`attribution.commits`）或 name+email 身份规则（`attribution.identities`）
+ * 在“其他人类”这一档改判为本人，message 项带 `by: "attribution-<sha|identity>"` 便于事后核对；
+ * 其余判定（合并提交 / 机器人 / 窗口 / 去重）不变。
  * count>0 或 automated>0 的仓库才进表；messages 按 ts 倒序，automatedBots 去重后排序。
  */
 async function buildCommits(rawEvents, token, username, win, ownRepos, attribution = loadAttribution()) {
@@ -503,8 +564,18 @@ async function buildCommits(rawEvents, token, username, win, ownRepos, attributi
       const sha = String(c.sha ?? "");
       if (!sha || seenSha.has(sha)) continue;
       seenSha.add(sha);
-      // 名单只接管“其他人类”这一档：isBot / isUser 命中时名单不参与，避免改变既有口径
-      const forced = isBot || isUser ? null : attributionLookup(attribution, sha);
+      // 修正数据只接管“其他人类”这一档：isBot / isUser 命中时不参与，避免改变既有口径
+      const forcedSha = isBot || isUser ? null : attributionLookup(attribution, sha);
+      const forcedIdentity =
+        isBot || isUser || forcedSha
+          ? null
+          : identityLookup(attribution, {
+              name,
+              email: c.commit?.author?.email || "",
+              ownRepo: isOwnRepoName(full, username),
+              linked: Boolean(login),
+            });
+      const forced = forcedSha ? "sha" : forcedIdentity ? "identity" : null;
       if (isBot) {
         slot.automated += 1; // 机器人提交：只进 automated，不进 totals
         const who = login || name;
@@ -515,11 +586,11 @@ async function buildCommits(rawEvents, token, username, win, ownRepos, attributi
           sha,
           message: collapse(String(c.commit?.message ?? "").split("\n")[0], COMMIT_MSG_MAX),
           ts,
-          ...(forced ? { by: "attribution" } : {}),
+          ...(forced ? { by: `attribution-${forced}` } : {}),
         });
         if (forced) {
           const who = `${name || login || "?"} <${c.commit?.author?.email || "?"}>`;
-          console.log(`${LOG} attribution: ${sha.slice(0, 7)} 按本人计入（${full}，作者 ${who}）`);
+          console.log(`${LOG} attribution(${forced}): ${sha.slice(0, 7)} 按本人计入（${full}，作者 ${who}）`);
         }
       }
       // 其他人类提交：忽略
