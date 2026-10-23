@@ -17,9 +17,9 @@
 ## 动手前要先知道的几条
 
 - `scripts/cst.mjs` 是三条线共用的 **+08 自然日**口径（零 import）。`cstDateOf` 是唯一正确的「时间戳 → 日期」；**别用 `toISOString().slice(0,10)`**（那是 UTC 日，会把 +08 的 00:00–08:00 归错天）。
-- `scripts/daily/render.mjs` 里是**全站 CSS**（`pageStyle`），也定义了首页卡片能用的全部类名；总结页专属样式只能经 `htmlDoc({ extraCss })` 注入，而 **index 页没有这个钩子** —— 卡片上只能用 `pageStyle` 里已有的类。
+- **全站 CSS 在 `scripts/site/css.mjs`**（`pageStyle`），它也定义了首页卡片能用的全部类名；总结页专属样式只能经 `htmlDoc({ extraCss })` 注入，而 **index 页没有这个钩子** —— 卡片上只能用 `pageStyle` 里已有的类。页面外壳 / Markdown / 首页分别在 `scripts/site/{shell,md,indexPage}.mjs`，`scripts/daily/render.mjs` 只剩日报正文。
 - `docs/` 是**生成物但必须提交**（Pages Source = `main` / `docs`）：绝不手改、绝不手工合并 HTML/JSON；改了渲染层 / CSS 后要重跑两条 `--rerender` 并提交，否则 CI 的 `verify.mjs` 会红（它拿仓库里的 `docs/` 跟不变式比对）。
-- 往 `scripts/**` 加新脚本，记得同时加进 `scripts/daily/check.mjs` 的 `syntaxTargets`，否则永远不会被语法检查。
+- `check.mjs` 的语法检查是**递归扫描** `scripts/` 下每个 `.mjs`（没有清单要维护）；新脚本自动纳入。但**新增跨目录 import 要过 `scripts/test-boundaries.mjs`**：七条禁边（lib 不回指表现层、表现层不碰采集/AI、两个 render 不互引、`fileURLToPath` 只许在 `lib/paths.mjs` 等）+ 名称级归属。写错了它在 `check.mjs` 里直接红。
 - `data/backfill/<date>.json` 在 `docs/` 之外 → **不站点可见**、不出现在归档列表。
 - `ops/**` 推 `main` 会被 Cloudflare Workers Builds 自动构建 + 部署（watchdog，补 GitHub 丢掉的 schedule 触发）；与内容生成无关，细节见 `ops/README.md`。
 - 每文件职责、数据流、模块边界以 `codemap.md` 为准（文末有「映射是否过期」的判断方法）；本文件只留会改变你行为的部分。
@@ -35,7 +35,7 @@ node scripts/daily/index.mjs --no-ai [--dry-run]   # 跳过 AI / 只打印不写
 node scripts/summary/index.mjs                     # 近 30 天总结（--rerender / --no-ai / --dry-run / --force 同理）
 node scripts/summary/backfill.mjs --from=… --to=… [--force] [--dry-run]   # 一次性 Search 回填，不挂 workflow
 node scripts/preview.mjs                           # fixtures → scripts/preview-*.svg（活动卡片目测）
-node scripts/daily/check.mjs                       # 全量预检：语法检查 + 5 套测试 + providers check + verify（提交前必跑）
+node scripts/daily/check.mjs                       # 全量预检：递归语法检查 + 分层边界 + 调度对账 + 7 套测试 + providers check + verify（提交前必跑）
 node scripts/daily/verify.mjs [--quiet]            # 只跑 docs/ 不变式自检
 # provider 配置（改链路 / 改参数 / 加腿；写操作先打印 diff，--yes 才落盘）：
 node scripts/providers.mjs list --lane=daily       # 链顺序 + 每条的 key 状态
@@ -43,12 +43,15 @@ node scripts/providers.mjs status                  # 本机 env / repo secret / 
 node scripts/providers.mjs check                   # 配置 schema + workflow 接线硬断言（只读）
 node scripts/providers.mjs probe --lane=daily --prompt=real   # 按生产同一套 prompt 探一遍（要 key）
 # 单套测试（改哪块跑哪块，比全量快；都是零依赖、不触网、不需要 key）：
+node scripts/test-boundaries.mjs       # 分层边界 / 名称级归属（合成图自测，不触网）
+node scripts/test-schedule.mjs         # 调度对账：workflow cron ↔ Worker TARGETS
 node scripts/daily/test-ai.mjs         # AI 适配层（假 HTTP 服务器）
 node scripts/daily/test-render.mjs     # 渲染 / 规范化
 node scripts/summary/test-summary.mjs  # 30 天总结链路
 node scripts/test-activity-window.mjs  # 活动卡片口径 / 可见性
 node scripts/test-providers.mjs        # provider 配置 / lane 解析 / 写操作 / 接线断言 / lane 预算
 node scripts/daily/test-attribution.mjs # data/attribution.json 归属修正名单
+node scripts/daily/test-dataset.mjs    # 数据契约 DAY_FIELDS / HASH_EXCLUDED + 已发布数据哈希复算
 ```
 
 - 本地看页面：没有 dev server。`python -m http.server <port> --directory docs`，再开 `http://localhost:<port>/index.html`。**`.wrap > *` 有入场动画（最多约 1.1s），刚打开就截图会拍到空白** —— 中间插一次 snapshot / scroll 再 capture。
@@ -59,7 +62,7 @@ node scripts/daily/test-attribution.mjs # data/attribution.json 归属修正名�
 
 ## AI 生成：provider 链、参数与失败可见性
 
-**唯一事实来源是 `config/providers.json`**（提交进仓；JSON 而非 JS：CLI 改写安全、diff 干净）。`scripts/daily/lib/providers.mjs` 解析它，`scripts/daily/lib/ai.mjs` 只保留执行细节（`generateStructured` / `attemptProvider`），页面 / 诊断 / 测试都不再各抄一份链。
+**唯一事实来源是 `config/providers.json`**（提交进仓；JSON 而非 JS：CLI 改写安全、diff 干净）。`scripts/daily/lib/providers.mjs` 解析它，AI 执行细节在 `scripts/daily/lib/ai/`（`structured.mjs` 的 `generateStructured` + `transport.mjs` 的 `attemptProvider`；`ai.mjs` 只是 re-export 的桶），页面 / 诊断 / 测试都不再各抄一份链。
 
 - `endpoints`：每个端点一组 `baseUrl` / `keyEnv`，可选 `keyEnvAliases`（本地便利，如 OpenChamber 项目变量叫 `Nvidia`）/ `headers` / `modelsUrl` / `shape`（`chat`|`responses`）。`headers` 里的 `${session}` 在**一次调用**里展开成同一个 UUID（一次运行 = 一个会话，Go 的路由与提示缓存有依据）。
 - `models`：`slug`（**稳定身份** —— `attempts[].provider`、页面徽章、历史数据都用它）→ `endpoint` + `apiModel`（真实 API id）+ 可选 `enabled` / `note` / `params`。
@@ -112,7 +115,7 @@ node scripts/daily/test-attribution.mjs # data/attribution.json 归属修正名�
 ## 发布流程
 
 1. 生成 / 重渲染（见上）。
-2. `node scripts/daily/check.mjs` 全绿（= 语法检查 + test-ai + test-render + test-summary + test-activity-window + test-providers + test-attribution + providers check + verify）。
+2. `node scripts/daily/check.mjs` 全绿（= 递归语法检查 + test-boundaries + test-schedule + test-ai + test-render + test-summary + test-activity-window + test-providers + test-attribution + test-dataset + providers check + verify）。
 3. `git add scripts config docs assets README.md data/backfill data/attribution.json .github AGENTS.md` → 提交（**中文提交信息用 `git commit -F <msgfile>`，不要用 `-m` 传中文**）→ `git pull --rebase --autostash origin main` → `git push`。（代码修改走分支：新建分支 → 合并回 `main` → push；`config/**` 在日报 workflow 的 push 白名单里，所以合并会自动跑一次真实日报）
 4. push 后**手动触发 Action，不要等 cron**：
    - 日报：`gh workflow run update-daily-report.yml --ref main`
@@ -141,7 +144,7 @@ git push
 ## 口径与约束
 
 - 公开口径：只用公开活动；**不泄露私有仓库名 / 数量**。
-- 提交按 **commit date** 统计；本人与机器人（`[bot]`）**分开且相加**（`count` 与 `automated` 互不相交）；**不含合并提交**（parents>1）。AI 正文（日报叙述 / 总结 overview 与 byRepo）里自动提交也必须写成相加（「另有 M 次」/「plus」），出现「其中/包含…自动提交」会被校验器拒收重试；`AUTOMATED_OVERLAP_RE`（`scripts/daily/lib/ai.mjs`）是唯一口径，`verify.mjs` 共用。
+- 提交按 **commit date** 统计；本人与机器人（`[bot]`）**分开且相加**（`count` 与 `automated` 互不相交）；**不含合并提交**（parents>1）。AI 正文（日报叙述 / 总结 overview 与 byRepo）里自动提交也必须写成相加（「另有 M 次」/「plus」），出现「其中/包含…自动提交」会被校验器拒收重试；`AUTOMATED_OVERLAP_RE`（`scripts/lib/rules.mjs`）是唯一口径，`verify.mjs` / 日报叙述 / 总结校验共用同一份。
 - 提交归属＝`login` 或 `commit.author.name` 命中 `sogeisetsu` 或别名（`COMMIT_AUTHOR_ALIASES`，见 `scripts/daily/lib/github.mjs`，如 `suyue`），大小写不敏感；GitHub 按提交邮箱关联账号，未关联的署名（如本地邮箱 `suyue@localhost`）须列别名才计入本人。
 - **`data/attribution.json` 是归属修正数据（两段独立，代码只读它、不内置任何规则）**：`commits` 只按**完整 40 位 sha** 认，不按名字 / 邮箱（作者字符串提交者自己就能写，PR 也能伪造；sha 全局唯一）；`identities` 按 **name + email 精确配对**认，`ownReposOnly`（仓库属主必须是本人）与 `requireUnlinkedAuthor`（作者未关联 GitHub 账号）**默认都是 true**，要放宽必须显式写 false —— 用于"整批同身份的本地提交"（如 `jinansu <suyuesheng@duck.com>`），因为几百条 sha 无法逐条维护。两段都只把「其他人类提交（原本静默丢弃）」改判为本人，`messages` 项带 `by: "attribution-sha"` / `"attribution-identity"` 便于核对；**合并提交 / 机器人 / 窗口过滤 / sha 去重一律不受影响**。不要用它做"占位身份"的长期归一 —— 环境层面的正解是把仓库/全局 `user.name`、`user.email` 配好。
 - **事件动作时间一律取 payload 里的业务时间**（`issue/PR.created_at` / `closed_at` / `merged_at`、`comment.created_at`、`review.submitted_at`），不是事件的 `created_at`：GitHub 会重放旧 `IssuesEvent`（实证 #5489 于 10-23 10:57Z 创建、12:28Z 关闭，事件流却在 17:09Z 又投一条 `opened`），用事件时间会把昨天已关闭的 issue 算进今天、还标成「开启」。同一 (仓库, 编号, 动作) 只保留最早一条；评论与评审按各自 id 去重。

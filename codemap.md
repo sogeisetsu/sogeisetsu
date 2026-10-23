@@ -1,7 +1,7 @@
 # Repository Atlas: sogeisetsu
 
-> **映射基线**：`f20fa6a`（2026-10-23）· **覆盖范围**：`scripts/**` + `ops/**` 的代码与配置。
-> **判断是否过期**：`git log --oneline f20fa6a..HEAD -- scripts ops` —— 有输出即说明映射覆盖的代码已变，动手前先复核受影响目录的 `codemap.md`。
+> **映射基线**：`bdf6e62`（2026-10-24）· **覆盖范围**：`scripts/**` + `ops/**` 的代码与配置。
+> **判断是否过期**：`git log --oneline bdf6e62..HEAD -- scripts ops` —— 有输出即说明映射覆盖的代码已变，动手前先复核受影响目录的 `codemap.md`。
 > **为什么不是「和 HEAD 比提交号」**：本仓每 2 小时就有 bot 自动提交生成物（`docs/` / `README.md` / `assets/`），那些提交与架构无关。裸比提交号会在两小时内必然报"过期"，等于没有信号——所以过期判断必须限定到 `scripts` 与 `ops` 这两条路径。
 
 ## Project Responsibility
@@ -28,7 +28,9 @@
 | `scripts/generate-activity.mjs` | 活动卡片：抓数 → 出 SVG → 回写 README marker 区块（+08 窗口、只取公开） | `--dry-run` / `--dump-data=FILE` |
 | `scripts/summary/index.mjs` | 30 天总结编排：聚合 → 去重 → AI → 写站点 | `--rerender` / `--force` / `--dry-run` / `--no-ai` |
 | `scripts/summary/backfill.mjs` | 一次性 Search API 历史回填（不挂 workflow） | `--from=` / `--to=` / `--force` / `--dry-run` |
-| `scripts/daily/check.mjs` | **本地预检总入口**（唯一的"测试命令"）：语法检查 + 三个确定性测试 + `docs/` 不变式自检 | `--quiet` |
+| `scripts/daily/check.mjs` | **本地预检总入口**（唯一的"测试命令"）：递归语法检查 + 分层边界 + 调度对账 + 7 套确定性测试 + providers 接线 + `docs/` 不变式自检 | `--quiet` |
+| `scripts/test-boundaries.mjs` | 分层边界：七条禁边 + 名称级归属（见 `AGENTS.md` / 本文件 Flow） | — |
+| `scripts/test-schedule.mjs` | 调度对账：三份 workflow 的 cron ↔ Cloudflare Worker 的 `TARGETS` | — |
 | `scripts/preview.mjs` | 用 `scripts/fixtures/*.json` 出本地 SVG 预览目测 | — |
 
 根级资产：`README.md`（活动卡片回写目标 + 站点入口）、`AGENTS.md`（**权威规格书，改代码前先读**：跑法、口径、发布流程、冲突处理）、`repo-overview.excalidraw`（一页速览草图：仓库用途 + 四条 Action 的「多久一次 / 更新什么 / 依据什么」矩阵）、本 `codemap.md` 与 6 个分目录 `codemap.md`、`.gitignore`、`.gitattributes`。根目录**没有可执行代码**——全部逻辑在 `scripts/` 与 `ops/`。
@@ -40,8 +42,10 @@ CI：`.github/workflows/` 下四个 workflow —— `update-daily-report.yml`（
 | Directory | Responsibility Summary | Detailed Map |
 | --- | --- | --- |
 | `scripts/` | 内容流水线根：活动卡片线（generate-activity / render-svg / preview）在此直管，日报、总结、预检三条线在此接线但不展开内部实现。 | [View Map](scripts/codemap.md) |
-| `scripts/daily/` | 日报引擎 + **全站共享渲染层**（`render.mjs` 被 summary 复用）+ `docs/` 不变式自检（`verify.mjs`）与本地预检总入口（`check.mjs`）。 | [View Map](scripts/daily/codemap.md) |
-| `scripts/daily/lib/` | **全仓共享内核**：+08 日期/哈希口径（`days.mjs`）、GitHub 采集（`github.mjs`）、AI provider 责任链与结构化生成（`ai.mjs`）；日报与总结两侧复用。 | [View Map](scripts/daily/lib/codemap.md) |
+| `scripts/lib/` | **共享规则层**（零内部依赖）：仓库根 `paths.mjs`、数据侧判定 `domain.mjs`、叙述口径 `rules.mjs`、数据契约 `dataset.mjs`。三条产品线共用。 | 见 `scripts/codemap.md` |
+| `scripts/site/` | **表现层**：全站 CSS（`css.mjs`）、页面外壳（`shell.mjs`）、Markdown 子集（`md.mjs`）、首页归档页（`indexPage.mjs`）。纯函数，不碰网络 / IO / AI。 | 见 `scripts/codemap.md` |
+| `scripts/daily/` | 日报引擎（报告页 / md 版）+ `docs/` 不变式自检（`verify.mjs`）与本地预检总入口（`check.mjs`）。全站外壳已下沉到 `scripts/site/`。 | [View Map](scripts/daily/codemap.md) |
+| `scripts/daily/lib/` | 日报适配器（+08 日期/哈希口径 `days.mjs`、GitHub 采集 `github.mjs`、provider 配置 `providers.mjs`、AI 传输与叙述 `ai/`）；`days.mjs` 被总结侧复用。 | [View Map](scripts/daily/lib/codemap.md) |
 | `scripts/summary/` | 近 30 天 AI 总结线：聚合-校验-渲染三段式，白名单校验 + URL 注入 + 确定数字条；含一次性回填 CLI。 | [View Map](scripts/summary/codemap.md) |
 | `ops/` | 运维自动化容器：**无代码**，只是索引（`README.md`）与两张链路图，把运维面与内容生成面隔开。 | [View Map](ops/codemap.md) |
 | `ops/cloudflare-cron/` | Cloudflare Worker 定时任务 watchdog：按 `TARGETS` 逐线判断"最近该跑的时点有没有 run"，缺则补 `workflow_dispatch`；fail-loud 可观测性。 | [View Map](ops/cloudflare-cron/codemap.md) |
@@ -60,20 +64,34 @@ CI：`.github/workflows/` 下四个 workflow —— `update-daily-report.yml`（
 
 ```
 GitHub API ──┬─ collectDailyData() ──> 日报 JSON ──> generateNarrative() ──> render ──> docs/
-             │        (lib/github.mjs)                    (lib/ai.mjs)        (daily/render.mjs)
+             │        (lib/github.mjs)            (lib/ai/narrative.mjs)  (daily/render.mjs
+             │                                                             + site/*)
              ├─ GraphQL+events ────> renderActivityCard() ──> assets/*.svg + README 区块
              └─ docs/data ∪ data/backfill ──> collectSummaryData() ──> validate ──> docs/summary.*
                                                   (summary/collect.mjs)   (summary/validate-summary.mjs)
+                                                  ↑ 外壳/首页来自 scripts/site/**
 
 config/providers.json ──> providersForLane("daily"|"summary") ──> generateNarrative / generateStructured
-       (AI 链 / 模型 / 参数 / 预算)      (lib/providers.mjs)              (lib/ai.mjs 的责任链 + lane 预算)
+       (AI 链 / 模型 / 参数 / 预算)      (lib/providers.mjs)              (lib/ai/structured.mjs + ai/transport.mjs)
 ```
 
-三条线共享两处：`lib/days.mjs`（日期与哈希口径）与 `lib/ai.mjs`（provider 责任链 + `generateStructured` 重试循环）；AI 链本身由根级 `config/providers.json` 决定（`lib/providers.mjs` 解析）。渲染层由 `daily/render.mjs` 供 summary 侧复用。各段内部流程见对应子 map。
+三条线共享两处：`lib/days.mjs`（日期与哈希口径）与 `lib/ai.mjs`（**只 re-export**：provider 责任链在 `lib/ai/structured.mjs`，单腿重试在 `lib/ai/transport.mjs`，叙述在 `lib/ai/narrative.mjs`，文本标尺在 `lib/ai/prose.mjs`）；AI 链本身由根级 `config/providers.json` 决定（`lib/providers.mjs` 解析）。页面表现层由 `scripts/site/**` 供给 daily / summary 两条线，`scripts/lib/**` 放三条线共用的零依赖规则（`paths` / `domain` / `rules` / `dataset`）。各段内部流程见对应子 map。
+
+## 分层边界（import 方向，`scripts/test-boundaries.mjs` 锁）
+
+| 目录 | 角色 | 允许依赖 |
+| --- | --- | --- |
+| `scripts/cst.mjs`、`scripts/lib/**` | 共享规则（零内部依赖） | 只有 `lib/paths.mjs` 可 import `node:path` / `node:url` |
+| `scripts/daily/lib/**` | 日报适配器（网络 → 数据、IO、provider、AI 传输） | 可以依赖共享规则；**不得** import `render*` / `site/**` / `summary/**` |
+| `scripts/{daily,summary}/*.mjs`（index / collect / prompt / validate） | 编排 | 可以依赖适配器**与表现层** |
+| `scripts/site/**`、各 `render*.mjs` | 表现（纯函数：数据 → 字符串） | 只许 `site/**` / `ai/prose` / `lib/rules`；**不得** import 采集 / IO / AI 传输（含 `lib/ai.mjs` 桶） |
+| `scripts/daily/{verify,check}.mjs`、`scripts/test-*.mjs`、`scripts/daily/test-*.mjs` | 校验 | 只读文件、跑断言；测试可以 import 任何东西 |
+
+七条禁边：说明符只许 `node:` / 相对路径（且必须解析到仓内文件）、无环、契约叶子零内部依赖、lib 不回指表现层、表现层不碰采集/AI、两个 render 模块不互引、`fileURLToPath` 只许出现在 `lib/paths.mjs`。另有名称级归属：`HEADLINE_MAX_CHARS` / `AUTOMATED_OVERLAP_RE` / `narrativeWordingOk` / `fitHeadline` / `fitText` / `countSentences` 只许在归属文件**声明**。
 
 ## Notes
 
-- **`.github/` 无法被 codemap 覆盖**：`codemap.mjs` 的 `walkFiles()` 跳过所有以 `.` 开头的目录（`if (!entry.name.startsWith('.'))`），所以 `--include ".github/workflows/*.yml"` 匹配不到任何文件。这是脚本的硬限制，不是配置错误；workflow 的时点与职责只能靠本文件与 `ops/cloudflare-cron/codemap.md` 记录。改 workflow 时两边（workflow 的 cron 与 watchdog 的 `TARGETS`）必须一起改。
+- **`.github/` 无法被 codemap 覆盖**：`codemap.mjs` 的 `walkFiles()` 跳过所有以 `.` 开头的目录（`if (!entry.name.startsWith('.'))`），所以 `--include ".github/workflows/*.yml"` 匹配不到任何文件。这是脚本的硬限制，不是配置错误；workflow 的时点与职责只能靠本文件与 `ops/cloudflare-cron/codemap.md` 记录。改 workflow 的 cron 时，`scripts/test-schedule.mjs` 会拿它跟 `ops/cloudflare-cron/worker.mjs` 的 `TARGETS` 逐项对账（`check.mjs` 会跑）。
 - **`.slim/` 是本地工具状态，已被 `.gitignore` 忽略**：它只是 `codemap.mjs` 的变更检测缓存，不入库；各目录的 `codemap.md` 才入库。
 - **刷新本映射**（改了代码后）：`node <skill>/scripts/codemap.mjs changes --root ./` 看变更 → 只更新受影响目录的 `codemap.md` → `node <skill>/scripts/codemap.mjs update --root ./` 存新状态。`init` 只在首次（无 `.slim/codemap.json`）时用。**刷完记得把顶部的「映射基线」换成新的提交号**，否则过期判断会一直停在旧基线。
 - **过期判断只认 `scripts` 与 `ops`**：`codemap.mjs` 还索引了根级 `README.md` / `AGENTS.md`（`*.md` include），但 `README.md` 的活动卡片区块每 2 小时被 bot 改写、与架构无关；把它们纳入过期判断会天天误报。真正有架构意义的是 `scripts/**` 与 `ops/**`。

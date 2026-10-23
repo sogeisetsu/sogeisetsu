@@ -9,7 +9,7 @@
 3. **30 天 AI 总结线**：编排入口 `summary/index.mjs`（详见 `scripts/summary/codemap.md`）。
 4. **本地预检**：`daily/check.mjs` = 语法检查 + 确定性测试 + `verify.mjs`（其覆盖范围见 Notes）。
 
-跨线共享件：`cst.mjs` —— **+08 自然日口径的唯一本体**（零 import，三条产物线都从它取日期），`daily/lib/days.mjs` 只做转出。`providers.mjs` —— provider 配置的薄 CLI（`add` / `probe` / `status` / `check` / `list` / `show` / `lane` / `set` / `enable|disable`），逻辑在 `daily/lib/providers.mjs`，事实来源是根级 `config/providers.json`。
+跨线共享件：`cst.mjs` —— **+08 自然日口径的唯一本体**（零 import，三条产物线都从它取日期），`daily/lib/days.mjs` 只做转出。`lib/` —— 三条线共用的零依赖规则（`paths` 根目录 / `domain` 可见段 / `rules` 叙述口径与 headline 上限 / `dataset` 数据字段与哈希排除名单）。`site/` —— daily 与 summary 共用的表现层（`css` / `shell` / `md` / `indexPage`）。`providers.mjs` —— provider 配置的薄 CLI（`add` / `probe` / `status` / `check` / `list` / `show` / `lane` / `set` / `enable|disable`），逻辑在 `daily/lib/providers.mjs`，事实来源是根级 `config/providers.json`。
 
 本 codemap 只展开 1；2/3 各有子目录 codemap，此处仅记接口接线。
 
@@ -37,7 +37,7 @@
 
 **预览线**（`node scripts/preview.mjs`）：`fixtures/{real,sample,empty}.json` → `renderActivityCard()` → `scripts/preview-{real,normal,empty}.svg`；fixture 缺失只 `skip` 不中断，`done: n written, m skipped` 收尾。
 
-**日报/总结线**只记交接：`daily/index.mjs` = `collectDailyData() → generateNarrative() → renderReportPage()/renderMarkdown()/renderIndexPage()`，`summary/index.mjs` = `collectSummaryData() → generateStructured() → renderSummaryPage()/summaryCard()`，两者共享 `daily/lib/`（`ai.mjs`、`providers.mjs`、`days.mjs`）与 `dataHash`「无变化跳过」机制——内部实现见各自 codemap。AI provider 链由根级 `config/providers.json` 驱动（`daily` / `summary` 各一条 lane），`daily/lib/providers.mjs` 是它唯一的读取者。
+**日报/总结线**只记交接：`daily/index.mjs` = `collectDailyData() → generateNarrative() → renderReportPage()/renderMarkdown()/renderIndexPage()`，`summary/index.mjs` = `collectSummaryData() → generateStructured() → renderSummaryPage()/summaryCard()`，两者共享 `daily/lib/`（`ai/` 子目录：`prose` / `transport` / `structured` / `narrative` / `defaults`，桶 `ai.mjs` 只 re-export；`providers.mjs`、`days.mjs`）与 `dataHash`「无变化跳过」机制——内部实现见各自 codemap。页面表现层（CSS / 外壳 / Markdown / 首页）在 `scripts/site/`，两条线各自只剩「数据 → 正文」。AI provider 链由根级 `config/providers.json` 驱动（`daily` / `summary` 各一条 lane），`daily/lib/providers.mjs` 是它唯一的读取者。
 
 ## Integration
 
@@ -56,5 +56,5 @@
 
 - `README.md` 的 `<!--START:activity-->` / `<!--END:activity-->` **必须各出现且仅一次且顺序正确**，否则 `replaceReadmeBlock()` 直接 `fail` 退出码 1；改 README 时不要碰这对 marker。
 - `scripts/preview-*.svg` 与 `assets/_preview.html` 已被 `.gitignore` 忽略，预览产物不入库；`fixtures/*.json` 入库。
-- `daily/check.mjs` 的 `syntaxTargets` 现已含 `cst.mjs` / `generate-activity.mjs` / `render-svg.mjs` / `preview.mjs` / `test-activity-window.mjs` / `providers.mjs` / `test-providers.mjs` / `daily/lib/providers.mjs`，并跑 `scripts/test-activity-window.mjs`（+08 窗口、分桶、可见性、totals 恒等式的确定性回归）与 `scripts/test-providers.mjs` + `providers check`（provider 配置 / 接线）——活动卡片线与 provider 配置都已在本地预检与 `check.yml` 覆盖范围内。
+- `daily/check.mjs` **不再维护语法清单**：递归扫描 `scripts/` 下每一个 `.mjs` 跑 `node --check`（新文件自动纳入），再跑 `test-boundaries.mjs`（分层边界 + 名称级归属 + 合成图自测）、`test-schedule.mjs`（cron ↔ Worker `TARGETS`）、`test-ai` / `test-render` / `test-summary` / `test-activity-window` / `test-providers` / `test-attribution` / `test-dataset`、`providers check` 与 `verify.mjs` —— 这就是「全量测试命令」，`check.yml` 跑的就是它。
 - SVG 是原子写入、README 不是；README 写入虽有"变了才写"比对，但中途失败会留下半写风险（`writeFileSync` 非 tmp+rename）。
