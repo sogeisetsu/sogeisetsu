@@ -43,6 +43,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 import { ROOT } from "../lib/paths.mjs";
+import { DAY_FIELDS } from "../lib/dataset.mjs";
 import { BACKFILL_DIR, cstDayMinus, dateRange, readJsonIfExists } from "./lib/days.mjs";
 import { AUTOMATED_OVERLAP_RE } from "../lib/rules.mjs";
 import { hasVisibleActivity } from "../lib/domain.mjs";
@@ -279,6 +280,16 @@ function main() {
     }
     if (typeof j.dataHash !== "string" || j.dataHash === "") bad.push("dataHash 缺失");
     check(`${label}: schema`, bad.length === 0, bad.join("; "));
+
+    // 字段集归口（独立 check，不动上面的手写 schema 判定）：
+    // 名单在 scripts/lib/dataset.mjs，方向是「⊆」——历史文件缺可选段不算问题，
+    // 但出现名单外的字段就红，提醒「新字段必须顺手登记」。
+    const unknownFields = Object.keys(j).filter((k) => !DAY_FIELDS.includes(k));
+    check(
+      `${label}: fields ⊆ DAY_FIELDS`,
+      unknownFields.length === 0,
+      `名单外字段: ${unknownFields.join(", ")}（登记到 scripts/lib/dataset.mjs）`
+    );
 
     // Discussions（可选段：新增字段，历史数据允许缺失；存在则校验结构与窗口）
     if (j.discussions !== undefined) {

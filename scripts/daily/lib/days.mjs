@@ -20,6 +20,7 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 
 import { ROOT } from "../../lib/paths.mjs";
+import { HASH_EXCLUDED } from "../../lib/dataset.mjs";
 import { hasVisibleActivity } from "../../lib/domain.mjs";
 import { DATE_RE } from "../../cst.mjs";
 
@@ -95,12 +96,17 @@ export function workflowFromEnv(env = process.env) {
 }
 
 /**
- * 内容哈希：忽略 generatedAt / ai / aiProvider / aiModel / aiFailure / dataHash，其余参与比较。
- * aiModel / aiFailure 是 AI 运行状态（成败与所用模型），不属于「数据内容」——
- * 同一份数据重跑一次 AI 就可能翻转，不能因此判定「内容有变化」触发重采集。
+ * 内容哈希：忽略 HASH_EXCLUDED（generatedAt / ai / aiProvider / aiModel / aiFailure / dataHash），
+ * 其余参与比较。排除名单在 scripts/lib/dataset.mjs —— 抽常量时逐项等于原名单，
+ * 所以同一份数据算出的哈希与抽取前完全一致（scripts/daily/test-dataset.mjs 用它做回归）。
+ *
+ * 键序沿用原对象的插入顺序（与原解构 rest 一致），换了顺序哈希就会变。
  */
 export function contentHash(data) {
-  const { generatedAt, ai, aiProvider, aiModel, aiFailure, dataHash, ...rest } = data;
+  const rest = {};
+  for (const [key, value] of Object.entries(data || {})) {
+    if (!HASH_EXCLUDED.includes(key)) rest[key] = value;
+  }
   return createHash("sha256").update(JSON.stringify(rest)).digest("hex");
 }
 
