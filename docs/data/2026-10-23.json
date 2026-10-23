@@ -3,10 +3,10 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T07:37:17.953Z",
+  "generatedAt": "2026-10-23T08:11:52.095Z",
   "empty": false,
   "totals": {
-    "commits": 14,
+    "commits": 23,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,54 @@
   "commits": [
     {
       "repo": "sogeisetsu/sopen-translate",
-      "count": 14,
+      "count": 23,
       "own": true,
       "messages": [
+        {
+          "sha": "cd233ce7ba7fb7f6f23c82065fbda572d9d89e48",
+          "message": "fix(providers): use own-property lookup for protocol ids",
+          "ts": "2026-10-23T07:49:28Z"
+        },
+        {
+          "sha": "bf2bbeab662ba1a7b38b9a4bcbe065bc9e442002",
+          "message": "fix(review): cap the review budget per page instead of per batch",
+          "ts": "2026-10-23T07:46:56Z"
+        },
+        {
+          "sha": "921a13ac7d725e16dbf3d445fe0d95729bc4becd",
+          "message": "feat(providers): add the keyless Google web endpoint as an unverified preset",
+          "ts": "2026-10-23T07:38:40Z"
+        },
+        {
+          "sha": "fe0818af6dc2040815c0eb411d011c4acb4ce274",
+          "message": "docs(plan): record Microsoft MT and optional review acceptance",
+          "ts": "2026-10-23T07:30:38Z"
+        },
+        {
+          "sha": "84ece8ddaccc691097718d7923e8376fc5eb682d",
+          "message": "docs(plan): record viewport-first acceptance and the batch-shape fix",
+          "ts": "2026-10-23T07:26:22Z"
+        },
+        {
+          "sha": "0983738951b415c61ff0872dbf042265309153fb",
+          "message": "perf(page): cap viewport batches so the first translation lands sooner",
+          "ts": "2026-10-23T07:24:56Z"
+        },
+        {
+          "sha": "1532f39f87cd826d5fe6b2f782c84986038c18d0",
+          "message": "perf(page): cap viewport batches so the first translation lands sooner",
+          "ts": "2026-10-23T07:11:22Z"
+        },
+        {
+          "sha": "eb61551c01fd973d9928e51926a2844c242c666c",
+          "message": "feat(providers): add Microsoft MT and an optional LLM review pass",
+          "ts": "2026-10-23T06:42:03Z"
+        },
+        {
+          "sha": "22fb310c80dd373d763e2cdbe6c0837ff3e21dd0",
+          "message": "feat(page): translate the viewport first and continue on scroll",
+          "ts": "2026-10-23T06:31:12Z"
+        },
         {
           "sha": "4e6e0f1ac2e2bbb9c90886c70d3b6716b6a21625",
           "message": "docs(plan): assess proxy options for Index-Translate by user experience",
@@ -96,13 +141,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 20,
+      "automated": 21,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 20,
+  "automatedCommits": 21,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -225,18 +270,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "14 commits in sopen-translate: translation batching and provider docs",
-      "summary": "On 2026-10-23 the user made **14 own commits**, all in `sogeisetsu/sopen-translate`, plus 20 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`, for 14 commits in the overall totals. The `sopen-translate` work focused on performance: batches now follow provider policy with bounded concurrency and adaptive splitting, the batch budget was raised to 8k/400 with **8 lanes** and retries for failed batches, and thinking is disabled per preset or model with a fallback on HTTP 400. Documentation updates covered proxy options for Index-Translate judged by user experience, keyless Bilibili and browser free-translation options (Edge, Google, on-device), and Microsoft Translator with a targeted AI repair phase and a KISS reference boundary; the agent guidance was reconciled with batching, reasoning and real-device testing. The user also added a requirement for a branch workflow with a refreshed E/F execution plan and ignored locally installed agent skills. No pull requests, reviews, issues, releases, stars, replies or discussions were recorded.",
+      "headline": "sogeisetsu: 23 own commits in sopen-translate plus 21 automated commits",
+      "summary": "The day's work was concentrated in `sogeisetsu/sopen-translate`, with **23 own commits** and no pull requests, reviews, issues, or releases. Provider work added two options: a keyless Google web endpoint as an unverified preset, and Microsoft MT together with an optional LLM review pass; protocol-id lookups now use own-property checks. Performance changes made translation viewport-first, translating the visible area and continuing on scroll, and capped viewport batches so the first translation lands sooner; the review budget is now capped per page rather than per batch. Planning docs recorded Microsoft MT and optional review acceptance, viewport-first acceptance with the batch-shape fix, and an assessment of proxy options for Index-Translate by user experience. Separately, the profile repo `sogeisetsu/sogeisetsu` received 21 automated commits by `github-actions[bot]`. Overall totals were 23 commits.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sopen-translate 提交 14 次：翻译批处理与提供商文档",
-      "summary": "2026-10-23，用户在 `sogeisetsu/sopen-translate` 完成了 **14 次本人提交**，另在 `sogeisetsu/sogeisetsu` 有 `github-actions[bot]` 的 20 次自动提交，总计 14 次提交。`sopen-translate` 的重心是性能：批处理改为按提供商策略分组，加入有界并发与自适应拆分，批次预算提升到 8k/400、**8 条通道**并支持失败批次重试，同时按预设或模型关闭思考，遇到 400 时回退。文档方面补充了以用户体验为标准的 Index-Translate 代理方案评估、无需密钥的 Bilibili 与浏览器免费翻译选项（Edge、Google、端侧），以及 Microsoft Translator 加定向 AI 修复阶段和 KISS 参考边界；代理指引也与批处理、推理和真机测试保持一致。此外还要求走分支工作流并更新 E/F 执行计划，并忽略本地安装的代理技能。当天没有记录 PR、评审、issue、发布、star、回复或讨论。",
+      "headline": "sogeisetsu：sopen-translate 有 23 次本人提交，另有 21 次自动提交",
+      "summary": "当天的工作集中在 `sogeisetsu/sopen-translate`，共有 **23 次本人提交**，没有 pull request、review、issue 或 release。提供方方面新增两个选项：将无密钥的 Google 网页端点作为未验证预设，以及 Microsoft MT 配合可选的 LLM 审校流程；协议 id 查找改为仅检查自有属性。性能上改为视口优先翻译，先翻译可见区域并在滚动时继续，同时限制视口批次，让首次翻译更快出现；审校预算改为按页限制而非按批次。计划文档记录了 Microsoft MT 与可选审校的验收、视口优先与批次形态修复的验收，以及按用户体验评估 Index-Translate 的代理方案。此外，个人主页仓库 `sogeisetsu/sogeisetsu` 有 21 次由 `github-actions[bot]` 完成的自动提交。总体共计 23 次提交。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "b403b673a23bfdf6e044f9db53ece1a82ab5381e641604c19c5eacb5c872f9a3"
+  "dataHash": "eafd02cfda366e0756e0b69b4a8b7f1d808ccfd7f2dac2a1c2fc70d3e842f3f4"
 }
