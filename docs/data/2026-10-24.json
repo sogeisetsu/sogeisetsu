@@ -3,10 +3,10 @@
   "windowStart": "2026-10-24T00:00:00+08:00",
   "windowEnd": "2026-10-25T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T20:51:06.574Z",
+  "generatedAt": "2026-10-23T22:39:35.509Z",
   "empty": false,
   "totals": {
-    "commits": 11,
+    "commits": 24,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,64 @@
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 5,
+      "count": 16,
       "own": true,
       "messages": [
+        {
+          "sha": "dafeb1efa223bd373e661f3d4f6ab33f5ebd000c",
+          "message": "docs(codemap): 映射基线定到重构合并后的 HEAD，过期判断排除 *.md",
+          "ts": "2026-10-23T22:38:36Z"
+        },
+        {
+          "sha": "88207a70e6ad1f9d6d5d118dde696e7483456232",
+          "message": "docs(codemap): 同步分层重构后的映射与跑法",
+          "ts": "2026-10-23T22:38:36Z"
+        },
+        {
+          "sha": "dda533c8b6a725ea3cd7b98690fb7a3166811a93",
+          "message": "test(schedule): P5' 调度对账（cron ↔ Worker TARGETS），Worker 零改动",
+          "ts": "2026-10-23T22:38:36Z"
+        },
+        {
+          "sha": "be7c400a0ea35ae92d3c42a11261c5246db4a1f5",
+          "message": "refactor(rules): P4' 常量收敛到名称级归属",
+          "ts": "2026-10-23T22:38:35Z"
+        },
+        {
+          "sha": "d357e268163bbd1e4d9a9ba48ac6100f6709d40b",
+          "message": "refactor(data): P3' 数据契约归口（DAY_FIELDS / HASH_EXCLUDED）+ 只读断言",
+          "ts": "2026-10-23T22:38:35Z"
+        },
+        {
+          "sha": "406cdc27e91319af1d75689afe39bc1b4ae6458a",
+          "message": "refactor(site): P2d 首页下沉到 site/indexPage.mjs，断开两个 render 互引",
+          "ts": "2026-10-23T22:38:35Z"
+        },
+        {
+          "sha": "99d05185b14d930c164b5f47e1972dae80f9a3b6",
+          "message": "refactor(site): P2c 抽出 Markdown 子集渲染到 scripts/site/md.mjs",
+          "ts": "2026-10-23T22:38:35Z"
+        },
+        {
+          "sha": "91283fd6ba360fe8f9ddc586574864eb35bd4f55",
+          "message": "refactor(site): P2b 抽出站点外壳到 scripts/site/shell.mjs",
+          "ts": "2026-10-23T22:38:35Z"
+        },
+        {
+          "sha": "7714151d2d616e369e4acbab32deb052dd955a70",
+          "message": "refactor(site): P2a 抽出全站基础样式到 scripts/site/css.mjs",
+          "ts": "2026-10-23T22:38:35Z"
+        },
+        {
+          "sha": "0474e13cb7e027c7e2b4692a5dac15b769d47e86",
+          "message": "refactor(ai): P1 拆开 ai.mjs（prose / transport / narrative / structured / defaults + 桶）",
+          "ts": "2026-10-23T22:38:35Z"
+        },
+        {
+          "sha": "b1b4835efaa2a8fd6262a2cd0b0b2239434a6bb2",
+          "message": "refactor(layers): P0 切掉 days→render，P0' 收敛 ROOT + 分层边界测试",
+          "ts": "2026-10-23T22:38:35Z"
+        },
         {
           "sha": "89d94704bde5f20673a8f86360b02463d203d06f",
           "message": "fix(events): 动作时间改用 payload 业务时间，重放的旧事件不再串到第二天",
@@ -43,7 +98,7 @@
           "ts": "2026-10-23T17:18:27Z"
         }
       ],
-      "automated": 11,
+      "automated": 13,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -79,9 +134,19 @@
     },
     {
       "repo": "sogeisetsu/sopen-translate",
-      "count": 2,
+      "count": 4,
       "own": true,
       "messages": [
+        {
+          "sha": "d2d96406d2281e27151c6bdbe74c342098b7d6dc",
+          "message": "feat(google): add a public test key button for Google 2",
+          "ts": "2026-10-23T18:54:27Z"
+        },
+        {
+          "sha": "fe132870a0e7879ae2caa5c6683425d2bbcfdebf",
+          "message": "feat(google): add Google 1 and Google 2 presets",
+          "ts": "2026-10-23T18:12:52Z"
+        },
         {
           "sha": "0c99a3d02e33f3592b8882889c3038fcdcebace4",
           "message": "docs(agents): require the user's global git identity for commits",
@@ -97,7 +162,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 11,
+  "automatedCommits": 13,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -220,18 +285,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "11 commits across three repositories, with 11 automated commits",
-      "summary": "The day recorded **11 commits** across three repositories, plus 11 automated commits by `github-actions[bot]`. In `sogeisetsu/sogeisetsu`, five own commits changed event timestamps to use payload business time, added three public-access gates to submission scanning, split attribution correction data into SHA and identity stages, refreshed the merged local documentation for 10-23, and repaired missed personal commits using a SHA list. In `sogeisetsu/opencode-skill-management`, four own commits adjusted the site theme and language menus, heading spacing and card margins, made README internal links absolute and clickable, and improved equal-height cards, sans-serif headings, orange interactions, and example boxes. In `sogeisetsu/sopen-translate`, two own commits required the user's global Git identity for commits and added Chrome built-in translation with split contributor documentation. No pull requests, issues, reviews, releases, or discussions were recorded.",
+      "headline": "24 commits across three repositories, with 13 automated by github-actions[bot]",
+      "summary": "**24 commits** were recorded across `sogeisetsu/sogeisetsu`, `sogeisetsu/opencode-skill-management`, and `sogeisetsu/sopen-translate`. In `sogeisetsu/sogeisetsu`, 16 own commits reorganized site rendering, AI modules, data contracts, rules, and scheduling checks, including extracting `scripts/site/md.mjs`, `scripts/site/shell.mjs`, and `scripts/site/css.mjs`; 13 automated commits were additionally made by `github-actions[bot]`. In `sogeisetsu/opencode-skill-management`, 4 own commits adjusted theme and language menus, card sizing, typography, README links, and interaction colors. In `sogeisetsu/sopen-translate`, 4 own commits added Google translation presets and a public test key button, Chrome built-in translation, contributor documentation, and a requirement for the user's global git identity. No pull requests, issues, reviews, releases, or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "三个仓库共 11 次提交，另有 11 次自动提交",
-      "summary": "当天在三个仓库共记录 **11 次提交**，另有 11 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sogeisetsu` 的 5 次本人提交将动作时间改用 payload 业务时间，为提交扫描加入三道公开性闸门，把归属修正数据拆成 SHA 与身份两段，按本地整份重取 10-23 并重渲染合并后的文档，并用 SHA 名单修复漏计的本人提交。`sogeisetsu/opencode-skill-management` 的 4 次本人提交调整了站点主题与语言菜单、标题行距和卡片外边距，将 README 内部文档链接改为绝对地址并设为可点击，还改进了卡片等高、无衬线标题、橙色交互与示例框。`sogeisetsu/sopen-translate` 的 2 次本人提交要求提交使用用户的全局 Git 身份，并新增 Chrome 内置翻译及拆分后的贡献者文档。当天没有记录拉取请求、issue、评审、发布或讨论。",
+      "headline": "三个仓库共 24 次提交，其中 13 次由 github-actions[bot] 自动提交",
+      "summary": "当天在 `sogeisetsu/sogeisetsu`、`sogeisetsu/opencode-skill-management` 和 `sogeisetsu/sopen-translate` 共记录 **24 次提交**。在 `sogeisetsu/sogeisetsu` 中，16 次本人提交重组了站点渲染、AI 模块、数据契约、规则与调度校验，并抽出 `scripts/site/md.mjs`、`scripts/site/shell.mjs` 和 `scripts/site/css.mjs`；另有 13 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/opencode-skill-management` 中，4 次本人提交调整了主题与语言菜单、卡片尺寸、字体、README 链接和交互配色。在 `sogeisetsu/sopen-translate` 中，4 次本人提交新增 Google 翻译预设与公开测试密钥按钮、Chrome 内置翻译、贡献者文档，并要求使用用户的全局 git 身份。当天没有记录拉取请求、issue、评审、发布或讨论。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "c23c8a9a918b8cf861216560c70add6c254cafeb644c5cf6f880159d8d0900f8"
+  "dataHash": "d922f7073dba4e01c2788e09b1a33b008dc90dca15842a837db9ab56faabee42"
 }
