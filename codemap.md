@@ -1,7 +1,7 @@
 # Repository Atlas: sogeisetsu
 
-> **映射基线**：`6a28af6`（2026-10-24，分层重构合并后的 HEAD）· **覆盖范围**：`scripts/**` + `ops/**` 的代码与配置。
-> **判断是否过期**：`git log --oneline 6a28af6..HEAD -- scripts ops ':(exclude)*.md'` —— 有输出即说明映射覆盖的**代码**已变，动手前先复核受影响目录的 `codemap.md`。`*.md` 被排除掉是刻意的：改 codemap 本身不该让映射自己报过期。
+> **映射基线**：`dafeb1e`（2026-10-24，分层重构落地后的最后一个代码提交）· **覆盖范围**：`scripts/**` + `ops/**` 的代码与配置。
+> **判断是否过期**：`git log --oneline dafeb1e..HEAD -- scripts ops ':(exclude)*.md'` —— 有输出即说明映射覆盖的**代码**已变，动手前先复核受影响目录的 `codemap.md`。`*.md` 被排除掉是刻意的：改 codemap 本身不该让映射自己报过期。
 > **为什么不是「和 HEAD 比提交号」**：本仓每 2 小时就有 bot 自动提交生成物（`docs/` / `README.md` / `assets/`），那些提交与架构无关。裸比提交号会在两小时内必然报"过期"，等于没有信号——所以过期判断必须限定到 `scripts` 与 `ops` 这两条路径。
 
 ## Project Responsibility
