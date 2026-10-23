@@ -36,6 +36,7 @@ const {
   repoPayloadIsPublic,
   filterPublicRepos,
   selectScanRepos,
+  mapEvents,
 } = await import(new URL("./lib/github.mjs", import.meta.url).href);
 
 // ---------------------------------------------------------------- 断言收集
@@ -764,8 +765,82 @@ check("pageStyle: 失败可见性 / provider 旁注样式在基础样式里（in
   ];
 });
 
-// ---------------------------------------------------------------- 公开性闸门：私有仓绝不进提交扫描
+// ---------------------------------------------------------------- 事件时间：只用 payload 业务时间
 
+check("mapEvents: 复活的旧 opened 事件按 payload 时间落窗（不串到第二天）", () => {
+  const win = {
+    startMs: Date.parse("2026-10-24T00:00:00+08:00"),
+    endMs: Date.parse("2026-10-25T00:00:00+08:00"),
+  };
+  // 线上实证：#5489 创建于 10-23 10:57Z、12:28Z 关闭，事件流却在 17:09Z 重放了一条 opened
+  const replayed = {
+    type: "IssuesEvent",
+    created_at: "2026-10-23T17:09:18Z",
+    repo: { name: "openchamber/openchamber" },
+    payload: {
+      action: "opened",
+      issue: { number: 5489, title: "old", html_url: "u5489", created_at: "2026-10-23T10:57:44Z" },
+    },
+  };
+  const todayIssue = {
+    type: "IssuesEvent",
+    created_at: "2026-10-24T01:00:00Z",
+    repo: { name: "me/repo" },
+    payload: {
+      action: "opened",
+      issue: { number: 7, title: "today", html_url: "u7", created_at: "2026-10-24T01:00:00Z" },
+    },
+  };
+  const duplicate = { ...todayIssue, created_at: "2026-10-24T05:00:00Z" }; // 同一动作重复投递
+  const mergedPr = {
+    type: "PullRequestEvent",
+    created_at: "2026-10-24T06:00:00Z",
+    repo: { name: "me/repo" },
+    payload: {
+      action: "closed",
+      pull_request: {
+        number: 9,
+        title: "pr9",
+        merged: true,
+        created_at: "2026-10-20T00:00:00Z",
+        closed_at: "2026-10-24T06:00:00Z",
+        merged_at: "2026-10-24T06:00:00Z",
+      },
+    },
+  };
+  const oldPrOpened = {
+    type: "PullRequestEvent",
+    created_at: "2026-10-24T07:00:00Z",
+    repo: { name: "me/repo" },
+    payload: {
+      action: "opened",
+      pull_request: { number: 10, title: "pr10", created_at: "2026-10-01T00:00:00Z" },
+    },
+  };
+  const oldComment = {
+    type: "IssueCommentEvent",
+    created_at: "2026-10-24T08:00:00Z",
+    actor: { login: "tester" },
+    repo: { name: "x/y" },
+    payload: {
+      comment: { id: 1, created_at: "2026-10-20T00:00:00Z" },
+      issue: { number: 3, title: "z" },
+    },
+  };
+  const out = mapEvents([replayed, todayIssue, duplicate, mergedPr, oldPrOpened, oldComment], "tester", win);
+  const issueRows = out.issues.filter((i) => i.action !== "commented");
+  return [
+    ["noReplay", !out.issues.some((i) => i.number === 5489)],
+    ["issueCount", issueRows.length === 1],
+    ["deduped", issueRows[0] && issueRows[0].number === 7 && issueRows[0].action === "opened"],
+    ["earliestTs", issueRows[0] && issueRows[0].ts === "2026-10-24T01:00:00.000Z"],
+    ["prMerged", out.pullRequests.length === 1 && out.pullRequests[0].action === "merged"],
+    ["prNoOldOpened", !out.pullRequests.some((p) => p.number === 10)],
+    ["commentDropped", !out.issues.some((i) => i.action === "commented")],
+  ];
+});
+
+// ---------------------------------------------------------------- 公开性闸门：私有仓绝不进提交扫描
 check("repos: 私有 / internal / 窗口外仓库都不进提交扫描队列", () => {
   const win = {
     startMs: Date.parse("2026-10-03T00:00:00+08:00"),
