@@ -3,7 +3,7 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T15:57:25.080Z",
+  "generatedAt": "2026-10-23T16:51:02.976Z",
   "empty": false,
   "totals": {
     "commits": 50,
@@ -237,7 +237,7 @@
           "ts": "2026-10-23T08:25:40Z"
         }
       ],
-      "automated": 36,
+      "automated": 37,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -301,7 +301,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 36,
+  "automatedCommits": 37,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -457,23 +457,23 @@
   "ai": {
     "en": {
       "headline": "50 commits across four repositories and one v1.0.0 release",
-      "summary": "**50 commits** were recorded across four repositories, with 36 additional automated commits by `github-actions[bot]`. In `sogeisetsu/sopen-translate`, 32 own commits adopted Apache-2.0, added a GitHub-renderable MT/LLM/DeepL diagram, scoped toast CSS selectors, exposed review flags, validated review responses, and improved provider protocol lookup. In `sogeisetsu/sogeisetsu`, 10 own commits added CLI help, documented `scripts/providers.mjs`, decoupled provider chains into `config/providers.json`, connected Nvidia legs, and retired the minimax and longcat free legs. In `sogeisetsu/opencode-skill-management`, 7 own commits added an Astro + Starlight bilingual documentation site, aligned the landing page with mobile behavior, and prepared the `v1.0.0` release. The `v1.0.0` release introduced a skill switchboard with `list`, `inspect`, and permission-based disable operations that do not modify skill files. `sogeisetsu/opencode-agent-sandbox` received one own commit documenting planning capabilities. Separately, `openchamber/openchamber` issue #5489, titled \"[Bug] \\\"Run as goal\\\" on a plan's Improve action arms an implement objective, so the agent starts executing the plan\", received a reply from `openchamber-bot[bot]` and was closed by `yulia-ivashko`.",
+      "summary": "**50 commits** were recorded across four repositories, with 37 additional automated commits by `github-actions[bot]`. In `sogeisetsu/sopen-translate`, work covered Apache-2.0 licensing, debug logging plans, a GitHub-renderable MT/LLM/DeepL diagram, scoped toast selectors, review-flag exposure, term-retention samples, a four-page MT versus MT+review A/B, stricter review-response validation, and own-property provider lookups. In `sogeisetsu/sogeisetsu`, the CLI gained built-in `--help` and `help <command>` usage, provider chains moved to `config/providers.json`, Nvidia was connected to the daily-report chain, fallback lanes were corrected, and the free chain became deepseek → sensenova. `sogeisetsu/opencode-skill-management` added an Astro + Starlight bilingual documentation site, mobile and theme fixes, GitHub Actions deployment, release policy, and the `v1.0.0` release. `sogeisetsu/opencode-agent-sandbox` added a planning-capability knowledge table. Issue `openchamber/openchamber#5489`, “Run as goal” on a plan's Improve action arms an implement objective, was closed by `yulia-ivashko` after a reply from `openchamber-bot[bot]` traced the unconditional arming behavior.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.0.0",
-          "summary": "The first stable release provides a switchboard for OpenCode skills, including `list` and `inspect` actions. Disabling a skill writes one `skill` permission rule with `effect: \"deny\"` or `\"ask\"` without deleting, moving, or rewriting skill files."
+          "summary": "The first stable release of `skill_management` provides a switchboard for OpenCode skills, including `list` and `inspect` actions. Disabling a skill writes a single `skill` permission rule with `effect: \"deny\"` or `\"ask\"` rather than deleting or rewriting skill files, and the 1.x surface is frozen."
         }
       ]
     },
     "zh": {
       "headline": "四个仓库共 50 次提交，并发布 v1.0.0",
-      "summary": "当天共记录 **50 次提交**，涉及四个仓库，另有 36 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sopen-translate` 的 32 次本人提交涵盖 Apache-2.0 许可、可在 GitHub 渲染的 MT/LLM/DeepL 路径图、toast CSS 选择器范围、review 标志、review 响应校验及 provider 协议查找。`sogeisetsu/sogeisetsu` 的 10 次本人提交新增 CLI 帮助、补充 `scripts/providers.mjs` 文档、将 provider 链解耦到 `config/providers.json`、接入 Nvidia 两条链，并下线 minimax 与 longcat 免费链。`sogeisetsu/opencode-skill-management` 的 7 次本人提交新增 Astro + Starlight 双语文档站、对齐落地页与移动端行为，并完成 `v1.0.0` 发布准备。`v1.0.0` 发布技能切换面板，提供 `list`、`inspect` 及基于权限规则的禁用操作，不会修改技能文件。`sogeisetsu/opencode-agent-sandbox` 有 1 次本人提交，整理规划类能力文档。此外，`openchamber/openchamber` 的 #5489“ [Bug] \\\"Run as goal\\\" on a plan's Improve action arms an implement objective, so the agent starts executing the plan”收到 `openchamber-bot[bot]` 回复，并由 `yulia-ivashko` 关闭。",
+      "summary": "当天在四个仓库记录了 **50 次提交**，另有 37 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sopen-translate` 涉及 Apache-2.0 许可、调试日志计划、可在 GitHub 渲染的 MT/LLM/DeepL 路径图、toast 选择器作用域、review 标记、术语保留样本、四页 MT 与 MT+review A/B、更严格的 review 响应校验，以及 provider 协议 ID 的自有属性查找。`sogeisetsu/sogeisetsu` 为 CLI 内置 `--help` 与 `help <命令>` 完整用法，provider 链解耦到 `config/providers.json`，将 Nvidia 接入日报链首，修正兜底目录 lanes，并把免费链调整为 deepseek → sensenova。`sogeisetsu/opencode-skill-management` 新增 Astro + Starlight 双语文档站，修复移动端与主题持久化，加入 GitHub Actions 部署、发布政策，并发布 `v1.0.0`。`sogeisetsu/opencode-agent-sandbox` 收录了规划类能力全表。`openchamber/openchamber#5489`“Run as goal” on a plan's Improve action arms an implement objective 在 `openchamber-bot[bot]` 回复定位无条件触发行为后，由 `yulia-ivashko` 关闭。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.0.0",
-          "summary": "首个稳定版本提供 OpenCode 技能切换面板，包含 `list` 和 `inspect` 操作。禁用技能时仅写入一条 `skill` 权限规则，`effect` 为 `\"deny\"` 或 `\"ask\"`，不会删除、移动或重写技能文件。"
+          "summary": "`skill_management` 的首个稳定版本提供 OpenCode 技能开关板，包含 `list` 与 `inspect` 操作。禁用技能时只写入一条 `skill` 权限规则，`effect` 为 `\"deny\"` 或 `\"ask\"`，不会删除或重写技能文件，并冻结 1.x 接口。"
         }
       ]
     }
@@ -481,5 +481,5 @@
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "fe880eea2aa3ed4edd32736bfc42f22280e9c3463204d997bf3968783a822242"
+  "dataHash": "15b2cb70c1d1fde5c93bec5b85e58629ca5ef33db6c4f7010b5ebaee07a8d0cf"
 }
