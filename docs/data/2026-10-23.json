@@ -3,7 +3,7 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T17:07:18.361Z",
+  "generatedAt": "2026-10-23T17:41:06.343Z",
   "empty": false,
   "totals": {
     "commits": 58,
@@ -21,49 +21,49 @@
           "sha": "00191c6490cd2bc76a97dbe415d4421f5ded62c8",
           "message": "docs: call the help marker by its name",
           "ts": "2026-10-23T15:50:18Z",
-          "by": "attribution"
+          "by": "attribution-sha"
         },
         {
           "sha": "2ec72621f2fc58d1693acc59503a894b40fdd667",
           "message": "fix(debug): expose providerCount in the settings summary",
           "ts": "2026-10-23T15:23:11Z",
-          "by": "attribution"
+          "by": "attribution-sha"
         },
         {
           "sha": "0b7ff6a47e76247703428a7c852dc23495b49e1f",
           "message": "feat(ui): redesign options and popup with a shared theme",
           "ts": "2026-10-23T15:22:48Z",
-          "by": "attribution"
+          "by": "attribution-sha"
         },
         {
           "sha": "85e0b3ea60003e05c6acee11f5005ce0f535071d",
           "message": "fix(review): drop queued candidates after the page budget is exhausted",
           "ts": "2026-10-23T15:22:09Z",
-          "by": "attribution"
+          "by": "attribution-sha"
         },
         {
           "sha": "917025181b6fb82493b855e157a975e2b8343b68",
           "message": "docs: merge third-party notices into NOTICE",
           "ts": "2026-10-23T15:21:42Z",
-          "by": "attribution"
+          "by": "attribution-sha"
         },
         {
           "sha": "ccfba27c9df01b0a997b11c437c174ce6397dc45",
           "message": "docs: rewrite README for async review, NVIDIA and debug log",
           "ts": "2026-10-23T11:37:11Z",
-          "by": "attribution"
+          "by": "attribution-sha"
         },
         {
           "sha": "7a39d6818edb5711bb9c5c83e38479937a194eb9",
           "message": "feat: NVIDIA presets, Riva protocol and local debug log backend",
           "ts": "2026-10-23T11:33:03Z",
-          "by": "attribution"
+          "by": "attribution-sha"
         },
         {
           "sha": "982f9166004509d1ec2949fe9ada138f19687413",
           "message": "feat(review): async review with id-based patches and undo",
           "ts": "2026-10-23T11:15:48Z",
-          "by": "attribution"
+          "by": "attribution-sha"
         },
         {
           "sha": "acda830e376b45d31f15ce31cd5ffeeb02df574e",
@@ -505,23 +505,23 @@
   "ai": {
     "en": {
       "headline": "58 commits across four repositories and one v1.0.0 release",
-      "summary": "The day included **58 commits** across four repositories, with no pull requests, issues, or reviews recorded. In `sogeisetsu/sopen-translate`, 40 own commits redesigned the options and popup UI, added NVIDIA presets and Riva protocol support, introduced asynchronous review with ID-based patches and undo, and added a local debug log backend. In `sogeisetsu/sogeisetsu`, 10 own commits added CLI help, decoupled provider chains into `config/providers.json`, connected NVIDIA to the daily-report chain, and retired the minimax and longcat free legs; 37 additional automated commits were created by `github-actions[bot]`. In `sogeisetsu/opencode-skill-management`, 7 own commits added a bilingual Astro and Starlight documentation site, aligned its mobile landing page, and prepared the `v1.0.0` release. The `v1.0.0` release introduced a skill switchboard with `list` and `inspect` actions and permission-rule-based disabling that does not modify skill files. One further own commit in `sogeisetsu/opencode-agent-sandbox` documented planning capabilities. Issue `openchamber/openchamber#5489` received a reply from `openchamber-bot[bot]` and was closed by `yulia-ivashko`.",
+      "summary": "**58 commits** were recorded across four repositories, with 37 additional automated commits by `github-actions[bot]`. In `sogeisetsu/sopen-translate`, 40 own commits redesigned the options and popup UI, added NVIDIA presets, Riva protocol support, a local debug log backend, and asynchronous review with ID-based patches and undo. In `sogeisetsu/sogeisetsu`, 10 own commits added built-in CLI help, decoupled provider chains into `config/providers.json`, connected NVIDIA to the daily-report chain, and retired the Minimax and Longcat free legs. The `sogeisetsu/opencode-skill-management` repository received 7 own commits for an Astro and Starlight bilingual documentation site, Pages deployment, release policy, and the `v1.0.0` release. One further own commit in `sogeisetsu/opencode-agent-sandbox` documented planning capabilities. The `openchamber/openchamber` issue #5489, titled \"[Bug] \"Run as goal\" on a plan's Improve action arms an implement objective, so the agent starts executing the plan\", received a reply from `openchamber-bot[bot]` and was closed by `yulia-ivashko`.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.0.0",
-          "summary": "This first stable release provides a switchboard for OpenCode skills, including `list` and `inspect` actions. Disabling a skill writes a single `skill` permission rule with `effect: \"deny\"` or `\"ask\"` rather than deleting, moving, or rewriting skill files."
+          "summary": "This first stable release provides a switchboard for OpenCode skills, with `list` and `inspect` actions and reversible permission-based disabling. Disabling writes one `skill` permission rule to global configuration without deleting, moving, or rewriting skill files, and the 1.x surface is frozen."
         }
       ]
     },
     "zh": {
       "headline": "四个仓库共 58 次提交，并发布 v1.0.0",
-      "summary": "当天在四个仓库完成 **58 次提交**，未记录拉取请求、issue 或评审。`sogeisetsu/sopen-translate` 的 40 次本人提交重做了选项与弹窗界面，加入 NVIDIA 预设、Riva 协议、基于 ID 的异步评审与撤销功能，并增加本地调试日志后端。`sogeisetsu/sogeisetsu` 的 10 次本人提交加入 CLI 帮助，将 provider 链解耦到 `config/providers.json`，把 NVIDIA 接入日报链首，并下线 minimax 与 longcat 免费链；另有 37 次由 `github-actions[bot]` 自动提交。`sogeisetsu/opencode-skill-management` 的 7 次本人提交新增 Astro 与 Starlight 双语文档站，对齐移动端落地页，并完成 `v1.0.0` 发布准备。`v1.0.0` 发布技能切换面板，提供 `list` 与 `inspect` 操作，停用技能时仅写入一条权限规则，不修改技能文件。`sogeisetsu/opencode-agent-sandbox` 另有 1 次本人提交，整理规划类能力文档。`openchamber/openchamber#5489` 收到 `openchamber-bot[bot]` 的回复，随后由 `yulia-ivashko` 关闭。",
+      "summary": "当天共记录 **58 次提交**，另有 37 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sopen-translate` 的 40 次本人提交重做了选项与弹窗界面，加入 NVIDIA 预设、Riva 协议、本地调试日志后端，以及基于 ID 的异步审查补丁与撤销功能。`sogeisetsu/sogeisetsu` 的 10 次本人提交加入 CLI 内置帮助，将 provider 链解耦到 `config/providers.json`，把 NVIDIA 接入日报链首，并下线 Minimax 与 Longcat 免费链。`sogeisetsu/opencode-skill-management` 的 7 次本人提交建设 Astro 与 Starlight 双语文档站、配置 Pages 部署、发布政策，并完成 `v1.0.0` 发布。`sogeisetsu/opencode-agent-sandbox` 的 1 次本人提交收录了规划类能力。`openchamber/openchamber` 的 #5489“ [Bug] \"Run as goal\" on a plan's Improve action arms an implement objective, so the agent starts executing the plan”收到 `openchamber-bot[bot]` 回复，随后由 `yulia-ivashko` 关闭。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.0.0",
-          "summary": "首个稳定版本提供 OpenCode 技能切换面板，包含 `list` 与 `inspect` 操作。停用技能时仅写入一条 `skill` 权限规则，设置 `effect: \"deny\"` 或 `\"ask\"`，不会删除、移动或重写技能文件。"
+          "summary": "首个稳定版提供 OpenCode 技能管理入口，包含 `list` 与 `inspect` 操作，并支持基于权限的可逆禁用。禁用仅向全局配置写入一条 `skill` 权限规则，不删除、移动或重写技能文件，1.x 接口范围已冻结。"
         }
       ]
     }
@@ -529,5 +529,5 @@
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "606710308d75af547416159c297453e52f20f087d7ee9d7b4edfdf78718d670a"
+  "dataHash": "1ead286ec45aa6751cdfffe52690bc2c28301e36bed0512a191e65077c86bf9e"
 }
