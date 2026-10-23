@@ -3,7 +3,7 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T06:51:06.253Z",
+  "generatedAt": "2026-10-23T07:37:17.953Z",
   "empty": false,
   "totals": {
     "commits": 14,
@@ -96,13 +96,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 18,
+      "automated": 20,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 18,
+  "automatedCommits": 20,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -225,18 +225,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu: 14 commits to sopen-translate, plus 18 automated commits",
-      "summary": "On 2026-10-23, `sogeisetsu` made **14 own commits**, all in `sogeisetsu/sopen-translate`, alongside 18 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The day's work was mostly planning and documentation: the commit messages assess proxy options for Index-Translate, weigh browser free-translation routes from Edge, Google and on-device, and add a keyless Bilibili Index-Translate provider option. Further docs commits add a Microsoft Translator route with a targeted AI-repair phase and a KISS reference boundary, reconcile `AGENTS` guidance with batching, reasoning and real-device testing, and require a branch workflow while refreshing the remaining E/F execution plan. Performance work landed as well: providers now disable thinking per preset/model and fall back on a 400 response, while page batching rises to a budget of 8k/400 with 8 lanes, retries for failed batches, provider-policy batching, bounded concurrency and adaptive splitting. A final chore commit ignores locally installed agent skills. There were no pull requests, reviews, issues, releases or discussions in the window, and no section was truncated.",
+      "headline": "14 commits in sopen-translate: translation batching and provider docs",
+      "summary": "On 2026-10-23 the user made **14 own commits**, all in `sogeisetsu/sopen-translate`, plus 20 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`, for 14 commits in the overall totals. The `sopen-translate` work focused on performance: batches now follow provider policy with bounded concurrency and adaptive splitting, the batch budget was raised to 8k/400 with **8 lanes** and retries for failed batches, and thinking is disabled per preset or model with a fallback on HTTP 400. Documentation updates covered proxy options for Index-Translate judged by user experience, keyless Bilibili and browser free-translation options (Edge, Google, on-device), and Microsoft Translator with a targeted AI repair phase and a KISS reference boundary; the agent guidance was reconciled with batching, reasoning and real-device testing. The user also added a requirement for a branch workflow with a refreshed E/F execution plan and ignored locally installed agent skills. No pull requests, reviews, issues, releases, stars, replies or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu：sopen-translate 提交 14 次，另有 18 次自动提交",
-      "summary": "2026-10-23，`sogeisetsu` 共完成 **14 次本人提交**，全部位于 `sogeisetsu/sopen-translate`；同一天，`sogeisetsu/sogeisetsu` 还有 `github-actions[bot]` 的 18 次自动提交。当天工作以规划和文档为主：提交内容评估了 Index-Translate 的代理方案，比较 Edge、Google 与端侧等浏览器免费翻译路径，并新增了无需密钥的 Bilibili Index-Translate 提供方选项。文档提交还加入了 Microsoft Translator 方案与定向 AI 修复阶段、KISS 参考边界，使 `AGENTS` 指引与批处理、推理、真机测试保持一致，并要求分支工作流、刷新剩余的 E/F 执行计划。性能方面也有改动：各提供方按预设/模型关闭 thinking，遇到 400 时回退；页面批处理预算提升至 8k/400，启用 8 条通道，失败批次重试，按提供方策略分批，并加入有界并发与自适应拆分。最后一次杂项提交忽略本地安装的 agent 技能。该时间窗口内没有拉取请求、评审、issue、发布或讨论，也没有任何部分被截断。",
+      "headline": "sopen-translate 提交 14 次：翻译批处理与提供商文档",
+      "summary": "2026-10-23，用户在 `sogeisetsu/sopen-translate` 完成了 **14 次本人提交**，另在 `sogeisetsu/sogeisetsu` 有 `github-actions[bot]` 的 20 次自动提交，总计 14 次提交。`sopen-translate` 的重心是性能：批处理改为按提供商策略分组，加入有界并发与自适应拆分，批次预算提升到 8k/400、**8 条通道**并支持失败批次重试，同时按预设或模型关闭思考，遇到 400 时回退。文档方面补充了以用户体验为标准的 Index-Translate 代理方案评估、无需密钥的 Bilibili 与浏览器免费翻译选项（Edge、Google、端侧），以及 Microsoft Translator 加定向 AI 修复阶段和 KISS 参考边界；代理指引也与批处理、推理和真机测试保持一致。此外还要求走分支工作流并更新 E/F 执行计划，并忽略本地安装的代理技能。当天没有记录 PR、评审、issue、发布、star、回复或讨论。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "a4276a2b001163cf2cf2f9d1d616fab1b15a17701cdb8bac15afc92831b155df"
+  "dataHash": "b403b673a23bfdf6e044f9db53ece1a82ab5381e641604c19c5eacb5c872f9a3"
 }
