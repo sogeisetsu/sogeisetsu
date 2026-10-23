@@ -3,10 +3,10 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T08:26:25.107Z",
+  "generatedAt": "2026-10-23T08:31:42.756Z",
   "empty": false,
   "totals": {
-    "commits": 24,
+    "commits": 25,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -138,22 +138,27 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 1,
+      "count": 2,
       "own": true,
       "messages": [
+        {
+          "sha": "f20b6a3212fa283ef3ff353aa481d0a8acf54153",
+          "message": "chore(ci): /oc 与诊断叙述的模型从 longcat 换成 opencode-go/deepseek-v4.1-flash",
+          "ts": "2026-10-23T08:31:07Z"
+        },
         {
           "sha": "6c40fa7b65e11f946d49c754876cde9dd9b1acf9",
           "message": "chore(ai): 下线 minimax 与 longcat 两条免费腿，链变为 deepseek → sensenova",
           "ts": "2026-10-23T08:25:40Z"
         }
       ],
-      "automated": 22,
+      "automated": 23,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 22,
+  "automatedCommits": 23,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -276,18 +281,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "24 commits on 2026-10-23: sopen-translate viewport and provider work",
-      "summary": "On 2026-10-23 the user logged **24 own commits** across two repositories. In `sogeisetsu/sopen-translate` there were 23 own commits: provider work added the keyless Google web endpoint as an unverified preset plus Microsoft MT and an optional LLM review pass, protocol-id lookup was switched to own-property checks, and the review budget was capped per page rather than per batch. Page performance also changed: viewport batches are capped so the first translation lands sooner, and the viewport is translated first with the rest continuing on scroll. Plan docs recorded the Microsoft MT and optional review acceptance, the viewport-first acceptance with the batch-shape fix, and an assessment of proxy options for Index-Translate by user experience. In `sogeisetsu/sogeisetsu` there was 1 own commit, which took the minimax and longcat free fallbacks offline and left the chain as `deepseek → sensenova`, plus **22 automated commits by `github-actions[bot]`**. No pull requests, reviews, issues, releases, stars, discussions, or replies were recorded.",
+      "headline": "sogeisetsu: 25 commits, 23 from github-actions[bot] in sogeisetsu/sogeisetsu",
+      "summary": "The day's work centred on `sogeisetsu/sopen-translate`, which received **23 own commits**. In that repository the commits fixed provider protocol-id lookups to use own-property access, capped the review budget per page instead of per batch, and added a keyless Google web endpoint as an unverified preset. Further changes introduced Microsoft MT and an optional LLM review pass, and made the page translate the viewport first while capping viewport batches so the first translation lands sooner. Plan documentation recorded acceptance of the Microsoft MT and optional review work, viewport-first acceptance alongside the batch-shape fix, and an assessment of proxy options for Index-Translate by user experience. In `sogeisetsu/sogeisetsu` the user made **2 own commits**: one switched the model behind `/oc` and diagnostic narration from longcat to `opencode-go/deepseek-v4.1-flash`, the other retired the minimax and longcat free legs so the chain became deepseek → sensenova. In addition, **23 automated commits by `github-actions[bot]`** were recorded in that same repository. No pull requests, reviews, issues, releases or discussion activity were logged, and no collection section hit its cap.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "2026-10-23 共 24 次提交：sopen-translate 视口与 provider 改动",
-      "summary": "2026-10-23，用户在两个仓库共记录 **24 次本人提交**。其中 `sogeisetsu/sopen-translate` 有 23 次本人提交：provider 方面新增了免密钥的 Google 网页端点（作为未验证预设）、Microsoft MT 以及可选的 LLM 审查环节，协议 id 查找改为自有属性判断，审查预算由按批次改为按页面设上限。页面性能也有调整：限制视口批次规模，让首次翻译更早出现；优先翻译视口内容，其余部分随滚动继续处理。计划文档记录了 Microsoft MT 与可选审查的验收结论、视口优先及批次形态修复的验收结论，以及针对 Index-Translate 按用户体验评估代理方案的调研。`sogeisetsu/sogeisetsu` 有 1 次本人提交，下线 minimax 与 longcat 两条免费回退，链路调整为 `deepseek → sensenova`，另有 **22 次由 `github-actions[bot]` 完成的自动提交**。当日没有 PR、审查、issue、发布、star、讨论或回复记录。",
+      "headline": "sogeisetsu 共 25 次提交，另有 23 次由 github-actions[bot] 提交",
+      "summary": "当天的工作主要集中在 `sogeisetsu/sopen-translate`，该仓库共 **23 次本人提交**。该仓库的提交修复了 provider 协议 ID 查找改用自有属性访问，将 review 预算改为按页而非按批次限制，并新增了无需密钥的 Google 网页端点作为未验证预设。其他改动引入了 Microsoft MT 和可选的 LLM review 环节，并让页面优先翻译视口区域、限制视口批次，使首次翻译更快完成。计划文档记录了 Microsoft MT 与可选 review 的验收情况、视口优先的验收结果及批次形态修复，还记录了按用户体验评估 Index-Translate 代理选项的内容。在 `sogeisetsu/sogeisetsu` 中，用户本人提交了 **2 次**：一次将 `/oc` 与诊断叙述所用的模型从 longcat 换成 `opencode-go/deepseek-v4.1-flash`，另一次下线 minimax 与 longcat 两条免费链路，使调用链变为 deepseek → sensenova。此外，同一仓库还记录了 **23 次由 `github-actions[bot]` 完成的自动提交**。当天没有 pull request、review、issue、release 或讨论活动，各采集部分均未触及上限。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "bf0d60f183c3e6400ed8990ad4182f24a9fcef4604bce9246a2a4712b2b29544"
+  "dataHash": "7942848ba863f457bc79e11a1d566cd9223cfb0441eecb615568c5c482c8244b"
 }
