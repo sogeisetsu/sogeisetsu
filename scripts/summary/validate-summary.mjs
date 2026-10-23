@@ -25,7 +25,7 @@
  *   · 自动提交是相加项（`count` 与 `automated` 互不相交）：overview / byRepo 里出现
  *     「其中/包含 … 自动提交」「includes … automated commits」这类包含式说法就拒收，
  *     让 summaryFeedback 提示改成「本人 N 次，另有 M 次」。正则见
- *     daily/lib/ai.mjs 的 AUTOMATED_OVERLAP_RE（verify 共用同一份）。
+ *     scripts/lib/rules.mjs 的 AUTOMATED_OVERLAP_RE（verify 共用同一份）。
  *   · reason 用中文、简短可执行 —— 它会打进日志并被 summaryFeedback 消费。
  *
  * 导出：
@@ -36,7 +36,8 @@
  * 用法：validate: (parsed) => validateSummary(parsed, ctx)   // generateStructured 的同步校验器
  */
 
-import { AUTOMATED_OVERLAP_RE, countSentences, fitHeadline, fitText } from "../daily/lib/ai.mjs";
+import { AUTOMATED_OVERLAP_RE } from "../lib/rules.mjs";
+import { countSentences, fitHeadline, fitText } from "../daily/lib/ai/prose.mjs";
 
 // ---------------------------------------------------------------- 常量
 

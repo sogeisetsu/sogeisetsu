@@ -20,7 +20,7 @@
  *     flips data-lang on <html>, updates lang, and remembers the choice.
  */
 
-import { sanitizeReason } from './lib/ai.mjs';
+import { sanitizeReason } from './lib/ai/prose.mjs';
 import { hasVisibleActivity } from '../lib/domain.mjs';
 
 const FONT_STACK =

@@ -487,7 +487,48 @@ try {
     ]);
   }
 
-  // ------------------------------------------------------------ 8 安全线
+  // ------------------------------------------------------------ 8 结构化生成契约
+  {
+    // generateStructured 是 CLI probe / test-providers / summary 的公共缝：返回值被冻结为
+    // { value, provider, model, attempts }。它一变形，页面会静默降级成「无叙述」。
+    const server = http.createServer((_req, res) => {
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end(
+        JSON.stringify({
+          choices: [{ message: { content: '{"ok":true}', reasoning: "" }, finish_reason: "stop" }],
+          usage: { total_tokens: 3 },
+        })
+      );
+    });
+    await new Promise((r) => server.listen(0, "127.0.0.1", r));
+    const port = server.address().port;
+    const result = await generateStructured({
+      system: "s",
+      user: "u",
+      validate: (parsed) => ({ ok: true, value: parsed }),
+      providers: [
+        {
+          name: "contract-leg",
+          endpoint: "mock",
+          baseUrl: `http://127.0.0.1:${port}/v1`,
+          apiKey: "k",
+          model: "contract-model",
+          shape: "chat",
+        },
+      ],
+    });
+    server.close();
+
+    check("structured-contract", [
+      ["keysFrozen", result != null && Object.keys(result).sort().join(",") === "attempts,model,provider,value"],
+      ["valuePassedThrough", result?.value?.ok === true],
+      ["providerIsSlug", result?.provider === "contract-leg"],
+      ["modelIsApiId", result?.model === "contract-model"],
+      ["attemptsEmptyOnFirstLegWin", Array.isArray(result?.attempts) && result.attempts.length === 0],
+    ]);
+  }
+
+  // ------------------------------------------------------------ 9 安全线
   {
     const configText = readFileSync(CONFIG_FILE, "utf8");
     const cliText = readFileSync(CLI, "utf8");
@@ -516,7 +557,7 @@ try {
     ]);
   }
 
-  // ------------------------------------------------------------ 9 内置帮助
+  // ------------------------------------------------------------ 10 内置帮助
   {
     const runCli = (args) => spawnSync(process.execPath, [CLI, ...args], { encoding: "utf8" });
     const global = runCli(["--help"]);

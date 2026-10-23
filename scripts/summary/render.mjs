@@ -51,7 +51,7 @@ import {
   aiInlineToHtml,
   splitParagraphs,
 } from '../daily/render.mjs';
-import { sanitizeReason } from '../daily/lib/ai.mjs';
+import { sanitizeReason } from '../daily/lib/ai/prose.mjs';
 
 // ---------------------------------------------------------------- 防御小工具
 

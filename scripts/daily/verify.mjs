@@ -44,7 +44,7 @@ import path from "node:path";
 
 import { ROOT } from "../lib/paths.mjs";
 import { BACKFILL_DIR, cstDayMinus, dateRange, readJsonIfExists } from "./lib/days.mjs";
-import { AUTOMATED_OVERLAP_RE } from "./lib/ai.mjs";
+import { AUTOMATED_OVERLAP_RE } from "../lib/rules.mjs";
 import { hasVisibleActivity } from "../lib/domain.mjs";
 
 // ---------------------------------------------------------------- 常量与参数
