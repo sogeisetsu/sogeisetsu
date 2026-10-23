@@ -3,10 +3,10 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T10:51:10.847Z",
+  "generatedAt": "2026-10-23T11:27:31.214Z",
   "empty": false,
   "totals": {
-    "commits": 33,
+    "commits": 38,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,19 @@
   "commits": [
     {
       "repo": "sogeisetsu/sopen-translate",
-      "count": 30,
+      "count": 32,
       "own": true,
       "messages": [
+        {
+          "sha": "acda830e376b45d31f15ce31cd5ffeeb02df574e",
+          "message": "chore: adopt Apache-2.0 and document debug logging plan",
+          "ts": "2026-10-23T10:55:08Z"
+        },
+        {
+          "sha": "01fad8ab5613a83e2bef22f690ec87696270cb4d",
+          "message": "docs(agents): reconcile review, plan status and verification notes",
+          "ts": "2026-10-23T10:38:21Z"
+        },
         {
           "sha": "542c95cf5d8de6882e20a420e68c13979c36c1dc",
           "message": "docs(readme): add a GitHub-renderable MT/LLM/DeepL path diagram",
@@ -172,6 +182,30 @@
       "automatedBots": []
     },
     {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "count": 3,
+      "own": true,
+      "messages": [
+        {
+          "sha": "5235582e1aa362fd974a887c645ec58ab8813b93",
+          "message": "docs: 补发布政策（annotated tag / Release 正文范围 / 附件必须有工具包）与 v1.0.0 中文发布说明",
+          "ts": "2026-10-23T11:00:30Z"
+        },
+        {
+          "sha": "153263252165468e478fd707c358622bf6ef69c1",
+          "message": "docs(acceptance): 记录 1.0.0 发布结果（npm latest / CI 双平台 / 校验和）",
+          "ts": "2026-10-23T10:52:43Z"
+        },
+        {
+          "sha": "4b566be4ae934cf470a0d63949df0e60313d90b8",
+          "message": "chore: 1.0.0",
+          "ts": "2026-10-23T10:47:04Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 2,
       "own": true,
@@ -187,31 +221,40 @@
           "ts": "2026-10-23T08:25:40Z"
         }
       ],
-      "automated": 25,
+      "automated": 27,
       "automatedBots": [
         "github-actions[bot]"
       ]
     },
     {
-      "repo": "sogeisetsu/opencode-skill-management",
+      "repo": "sogeisetsu/opencode-agent-sandbox",
       "count": 1,
       "own": true,
       "messages": [
         {
-          "sha": "4b566be4ae934cf470a0d63949df0e60313d90b8",
-          "message": "chore: 1.0.0",
-          "ts": "2026-10-23T10:47:04Z"
+          "sha": "0535fd68d4de139b778a912982dade403cf9df0b",
+          "message": "docs(knowledge): 收录从想法到计划的规划类能力全表",
+          "ts": "2026-10-23T11:05:56Z"
         }
       ],
       "automated": 0,
       "automatedBots": []
     }
   ],
-  "automatedCommits": 25,
+  "automatedCommits": 27,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
-  "releases": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "tag": "v1.0.0",
+      "name": "v1.0.0",
+      "url": "https://github.com/sogeisetsu/opencode-skill-management/releases/tag/v1.0.0",
+      "publishedAt": "2026-10-23T11:02:59Z",
+      "notes": "## What this is\n\n`skill_management` adds a switchboard for the skills installed in your OpenCode setup: see what is installed, find out why one will not load, take one out of the model's view, and put it back.\n\nDisabling never touches skill files. It writes **one** `skill` permission rule into your global config (`effect: \"deny\"`, or `\"ask\"` for a soft disable). Nothing is deleted, moved or rewritten, and removing that rule restores the skill exactly as it was.\n\nThis is the first stable release: the surface described below is frozen for 1.x.\n\n## What it does\n\n| Action | What it does | Writes config |\n|---|---|---|\n| `list` | Every registered skill with its effective state for the calling agent (`available` / `disabled` / `ask`) | no |\n| `inspect` | Why one skill is (un)available: the matching rule, per-agent differences, how its id was derived | no |\n| `disable` | Hide it from the model and reject loading it (`effect: \"ask\"` keeps it listed and asks on load) | yes |\n| `enable` | Remove the blocking rule again, whoever wrote it | yes |\n\nHow a permission is resolved: the host reads the rule set of **the agent that is calling**, takes the last match (`findLast`) with `*` / `?` globs, and — when nothing matches — falls back to `ask`, not `allow`. That is why `list` and `inspect` evaluate per agent and name the agent they used.\n\n`disable` writes exactly this line (the trailing comm…"
+    }
+  ],
   "stars": [],
   "starInventory": [
     {
@@ -307,7 +350,19 @@
       "total": 0
     }
   ],
-  "replies": [],
+  "replies": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 5489,
+      "title": "[Bug] \"Run as goal\" on a plan's Improve action arms an implement objective, so the agent starts executing the plan",
+      "url": "https://github.com/openchamber/openchamber/issues/5489",
+      "author": "openchamber-bot[bot]",
+      "excerpt": "**For the maintainer:** `fix-ready` — cause traced Your analysis is right; I verified each link in it against current `main`, and the arm is unconditional for the improve action. `handleConfirmPlanSe…",
+      "kind": "issue_comment",
+      "ts": "2026-10-23T11:01:16.000Z",
+      "own": false
+    }
+  ],
   "stateChanges": [],
   "truncated": {
     "events": {
@@ -330,18 +385,30 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu: 33 commits on 2026-10-23, mostly sopen-translate fixes",
-      "summary": "On 2026-10-23, `sogeisetsu` made **33 own commits** across three repositories, with no pull requests, issues, reviews, releases, or discussions recorded. Most of the work landed in `sogeisetsu/sopen-translate` with 30 commits: documentation updates charting a GitHub-renderable MT/LLM/DeepL path diagram, viewport scroll-to-bottom coverage, an F5 term-retention sample, and a four-page MT vs MT+review A/B result; CSS toast selectors scoped under the overlay host; provider fixes for own-property protocol id lookup and a new keyless Google web endpoint preset marked unverified; and review changes to expose review flags, validate index/corrected review responses, and cap the review budget per page rather than per batch. In `sogeisetsu/sogeisetsu` there were 2 own commits switching the `/oc` and diagnostic model from longcat to `opencode-go/deepseek-v4.1-flash` and retiring the minimax and longcat free legs in favor of a deepseek → sensenova chain, plus 25 automated commits by `github-actions[bot]`. A single commit in `sogeisetsu/opencode-skill-management` carried the `1.0.0` version bump. No collection section hit its cap, so the day's record is complete.",
-      "releaseNotes": []
+      "headline": "38 commits across 4 repos; opencode-skill-management ships v1.0.0",
+      "summary": "On 2026-10-23 the user made 38 own commits, with 32 in `sogeisetsu/sopen-translate`, 3 in `sogeisetsu/opencode-skill-management`, 2 in `sogeisetsu/sogeisetsu` and 1 in `sogeisetsu/opencode-agent-sandbox`. The sopen-translate work moved Apache-2.0 licensing and README/agent docs forward, added an MT/LLM/DeepL path diagram, and fixed CSS toast scoping, review flag handling, provider protocol-id lookup, and strict validation of index/corrected review responses. The opencode-skill-management commits added Chinese release policy and acceptance notes and cut the 1.0.0 version. `sogeisetsu/sogeisetsu` also received **27 automated commits by github-actions[bot]**, whose contents were not detailed. That repo's two own commits switched model legs in `/oc` and diagnostics and retired the minimax and longcat free legs. The day also brought one reply on `openchamber/openchamber` issue #5489, plus the **v1.0.0** release below. Totals were 38 commits, 0 PRs, 0 issues and 0 reviews.",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/opencode-skill-management",
+          "tag": "v1.0.0",
+          "summary": "First stable release of `skill_management`, a switchboard for skills installed in an OpenCode setup. Disabling a skill writes a single `skill` permission rule (`effect: \"deny\"`, or `\"ask\"` for a soft disable) into the global config without touching skill files. The surface is frozen for 1.x and includes `list` and `inspect` actions."
+        }
+      ]
     },
     "zh": {
-      "headline": "sogeisetsu 2026-10-23 提交 33 次，主要修 sopen-translate",
-      "summary": "2026-10-23，`sogeisetsu` 在三个仓库共完成 **33 次本人提交**，当天没有 pull request、issue、review、release 或 discussion 记录。主要工作集中在 `sogeisetsu/sopen-translate`，共 30 次提交：文档方面补充了可在 GitHub 渲染的 MT/LLM/DeepL 路径图、视口滚动到底部覆盖情况、F5 术语保留样例结果，以及四页 MT 与 MT+review 的 A/B 结果；CSS 方面把 toast 选择器限定在 overlay 宿主之下；provider 方面修复协议 id 的自有属性查找，并新增无需密钥的 Google 网页端点作为未验证预设；review 方面暴露 review 标记、校验 index/corrected 两种 review 响应逐项内容，并把 review 预算改为按页面而非按批次限制。`sogeisetsu/sogeisetsu` 有 2 次本人提交，把 `/oc` 与诊断所用模型从 longcat 换成 `opencode-go/deepseek-v4.1-flash`，并下线 minimax 与 longcat 两条免费腿，链变为 deepseek → sensenova；另有 25 次由 `github-actions[bot]` 自动提交。`sogeisetsu/opencode-skill-management` 的 1 次提交用于 `1.0.0` 版本号更新。各采集分区均未触及上限，当天记录完整。",
-      "releaseNotes": []
+      "headline": "4 个仓库共 38 次提交，opencode-skill-management 发布 v1.0.0",
+      "summary": "2026-10-23，用户本人共提交 38 次：`sogeisetsu/sopen-translate` 32 次、`sogeisetsu/opencode-skill-management` 3 次、`sogeisetsu/sogeisetsu` 2 次、`sogeisetsu/opencode-agent-sandbox` 1 次。sopen-translate 的改动推进了 Apache-2.0 许可与 README、agent 文档，新增 MT/LLM/DeepL 路径图，并修复了 CSS toast 作用域、review 标记处理、provider 协议 id 查找以及 index/corrected review 响应逐项校验等问题。opencode-skill-management 的提交补充了中文发布政策与验收记录，并打出 1.0.0 版本。`sogeisetsu/sogeisetsu` 另有 **27 次由 github-actions[bot] 完成的自动提交**，未展开其内容；该仓库本人 2 次提交则更换了 `/oc` 与诊断链路的模型，并下线 minimax 与 longcat 两条免费腿。当天还收到 `openchamber/openchamber` issue #5489 的一条回复，并发布了下方 **v1.0.0**。总计 38 次提交、0 个 PR、0 个 issue、0 次 review。",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/opencode-skill-management",
+          "tag": "v1.0.0",
+          "summary": "`skill_management` 首个稳定版，为已安装的 OpenCode 技能提供统一管理。禁用技能只在全局配置中写入一条 `skill` 权限规则（`effect: \"deny\"`，软禁用为 `\"ask\"`），不会改动技能文件。接口在 1.x 内冻结，包含 `list` 与 `inspect` 两个动作。"
+        }
+      ]
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "93025fa0150e209b587b231d7561db6d6690cdd96eac6f32be8cff8e7958ea61"
+  "dataHash": "459e9bd7b7151ac59582ba5ddd3b70eb494b13fa456a253e9f22d33d14aaefac"
 }
