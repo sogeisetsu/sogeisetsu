@@ -523,31 +523,29 @@ export function identityLookup(attribution, commit) {
  * 其余判定（合并提交 / 机器人 / 窗口 / 去重）不变。
  * count>0 或 automated>0 的仓库才进表；messages 按 ts 倒序，automatedBots 去重后排序。
  */
-async function buildCommits(rawEvents, token, username, win, ownRepos, attribution = loadAttribution()) {
+async function buildCommits(
+  rawEvents,
+  token,
+  username,
+  win,
+  ownRepos,
+  attribution = loadAttribution(),
+  repoVisibility = new Map()
+) {
   // 本人身份集合（username + 别名，大小写不敏感）：提交归属判定用（见 COMMIT_AUTHOR_ALIASES）
   const me = new Set([username, ...COMMIT_AUTHOR_ALIASES].map((s) => String(s).toLowerCase()));
   // --- 扫描仓库集：(a) PushEvent 仓库优先，再补 (b) 窗口内推送过的自有仓库 ---
-  const seenRepos = new Set();
-  const queue = [];
-  const addRepo = (full) => {
-    if (!full || seenRepos.has(full) || queue.length >= COMMIT_SCAN_REPOS_MAX) return;
-    const m = /^([^/]+)\/(.+)$/.exec(full);
-    if (!m) return;
-    seenRepos.add(full);
-    queue.push({ owner: m[1], repoName: m[2], full });
-  };
-  for (const ev of rawEvents || []) {
-    if (ev.type !== "PushEvent" || !inWindow(tsOf(ev.created_at), win)) continue;
-    addRepo(ev.repo && ev.repo.name); // (a)
-  }
-  for (const r of ownRepos || []) {
-    if (tsOf(r.pushed_at) < win.startMs) continue; // (b)
-    addRepo(r.full_name || `${r.owner && r.owner.login}/${r.name}`);
-  }
+  const queue = selectScanRepos(rawEvents, ownRepos, win, username);
 
   const seenSha = new Set(); // 全局 sha 去重（fork 会带来同一提交出现在多个扫描仓库的情况）
   const entries = [];
   for (const { owner, repoName, full } of queue) {
+    // 公开口径闸门（与 replies / stateChanges 共用同一份缓存）：非公开仓库的提交绝不采集，
+    // 否则仓库名 + 提交标题 + 次数都会进 docs/（私有仓只在本地高权限 token 下才可见）
+    if (!(await isPublicRepo(owner, repoName, token, repoVisibility))) {
+      console.log(`${LOG} 跳过非公开仓库的提交扫描：${full}`);
+      continue;
+    }
     const list = await fetchRepoCommits(token, owner, repoName, win);
     if (list.length === 0) continue;
     const slot = { count: 0, messages: [], automated: 0, bots: new Set() };
@@ -612,7 +610,55 @@ async function buildCommits(rawEvents, token, username, win, ownRepos, attributi
 
 // ---------------------------------------------------------------- 3. 自有仓库 + Release
 
-/** 自有仓库列表：type=owner&sort=pushed，最多 3 页；失败返回 null。 */
+/**
+ * 仓库 JSON（`/users/:u/repos` 的元素，或 `/repos/:o/:r` 的响应体）是否公开。
+ * 口径：`private === true` 或 `visibility` 存在且非 `"public"` → 不公开；拿不到对象 → 不公开。
+ */
+export function repoPayloadIsPublic(d) {
+  if (!d || typeof d !== "object") return false;
+  const privateFlag = d.private === true;
+  const nonPublicVisibility = typeof d.visibility === "string" && d.visibility !== "public";
+  return !privateFlag && !nonPublicVisibility;
+}
+
+/**
+ * 只留公开仓库（公开口径的入口闸门）。
+ * `/users/:u/repos` 对带 `repo` 权限的 token 会连私有仓一起返回，而提交扫描会把它们
+ * 算成"本人提交"并写进 docs/（仓库名 + 提交标题 + 次数全部公开）——所以在这里就丢掉。
+ * 响应缺 `private` / `visibility` 字段时按 repoPayloadIsPublic 的既有口径（未知＝公开）。
+ */
+export function filterPublicRepos(list) {
+  return (Array.isArray(list) ? list : []).filter((r) => repoPayloadIsPublic(r));
+}
+
+/**
+ * 提交扫描的仓库队列（纯函数，便于确定性测试）：(a) 窗口内 PushEvent 的仓库优先
+ * （公共事件流本身只含公开活动），再补 (b) ownRepos 中 pushed_at ≥ 窗口起点的仓库，
+ * 按 owner/repo 去重、上限 COMMIT_SCAN_REPOS_MAX。返回 [{ owner, repoName, full }]。
+ */
+export function selectScanRepos(rawEvents, ownRepos, win, username) {
+  const seenRepos = new Set();
+  const queue = [];
+  const addRepo = (full) => {
+    if (!full || seenRepos.has(full) || queue.length >= COMMIT_SCAN_REPOS_MAX) return;
+    const m = /^([^/]+)\/(.+)$/.exec(full);
+    if (!m) return;
+    seenRepos.add(full);
+    queue.push({ owner: m[1], repoName: m[2], full });
+  };
+  for (const ev of rawEvents || []) {
+    if (ev.type !== "PushEvent" || !inWindow(tsOf(ev.created_at), win)) continue;
+    addRepo(ev.repo && ev.repo.name); // (a)
+  }
+  for (const r of ownRepos || []) {
+    if (tsOf(r.pushed_at) < win.startMs) continue; // (b)
+    if (!repoPayloadIsPublic(r)) continue; // 双保险：私有 / internal 仓绝不入队
+    addRepo(r.full_name || `${r.owner && r.owner.login}/${r.name}`);
+  }
+  return queue;
+}
+
+/** 自有仓库列表：type=owner&sort=pushed，最多 3 页；失败返回 null。只返回公开仓库。 */
 async function fetchOwnRepos(token, username) {
   const repos = [];
   let hasNext = true;
@@ -631,7 +677,7 @@ async function fetchOwnRepos(token, username) {
     if (chunk.length === 0) break;
     hasNext = /rel="next"/.test(got.link) ? true : chunk.length === 100;
   }
-  return repos;
+  return filterPublicRepos(repos);
 }
 
 /** 窗口内的 Release：按 pushed 降序扫描，遇到窗口起点之前推送的仓库即截断 + 硬上限。 */
@@ -1632,11 +1678,12 @@ export async function collectDailyData({ token, username, date, previousData, ex
   reviews.sort(byTsDesc);
   issues.sort(byTsDesc);
 
-  // --- 2. 自有仓库（提交扫描 / Release / 星标三段共用）---
+  // --- 2. 自有仓库（提交扫描 / Release / 星标三段共用；非公开仓库在这里已被过滤）---
   const ownRepos = await fetchOwnRepos(token, username);
+  const repoVisibility = new Map(); // 仓库公开性缓存（提交扫描 / 回复 / 状态变更共用，每仓只查一次）
 
   // --- 3. 提交：按提交日期扫描仓库历史，拆分用户本人 vs 机器人 ---
-  const commits = await buildCommits(rawEvents, token, username, win, ownRepos);
+  const commits = await buildCommits(rawEvents, token, username, win, ownRepos, loadAttribution(), repoVisibility);
 
   // --- 4. 自有仓库 → Release ---
   const releases = await fetchReleases(token, username, ownRepos, win);
@@ -1648,7 +1695,6 @@ export async function collectDailyData({ token, username, date, previousData, ex
 
   // --- 6. 我发起的条目（Search 定位，回复与状态变更共用同一目标列表与公开性缓存）---
   const { targets, truncated: targetsTruncated } = await searchAuthoredTargets(token, username, win);
-  const repoVisibility = new Map(); // 仓库公开性缓存（每仓只查一次，两段共用）
   const { replies, truncated: repliesTruncated } = await fetchReplies(
     token,
     username,
@@ -1789,7 +1835,7 @@ export async function collectHistoricalData({ token, username, date, previousDat
   const ownRepos = await fetchOwnRepos(token, username);
 
   // --- 3. 提交：仓库历史扫描是准确的（不传事件流，扫描集只剩窗口内推送过的自有仓库）---
-  const commits = await buildCommits([], token, username, win, ownRepos);
+  const commits = await buildCommits([], token, username, win, ownRepos, loadAttribution(), repoVisibility);
 
   // --- 4. Release：自有仓库扫描，口径与日报一致 ---
   const releases = await fetchReleases(token, username, ownRepos, win);
