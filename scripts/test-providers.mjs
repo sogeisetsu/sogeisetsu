@@ -197,6 +197,12 @@ try {
       ["invalidSchemaWarns", /FALLBACK_CHAIN/.test(warn2)],
       ["missingFileFallback", list3.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova"],
       ["fallbackKeepsParams", list3.at(-1)?.extraBody?.thinking?.type === "disabled"],
+      [
+        "fallbackCatalogueLanes",
+        providers
+          .catalogue(env, { configPath: missingFile })
+          .every((r) => r.lanes.join(",") === "daily,summary" && r.configured === true),
+      ],
       ["warnOnce", providers.providersForLane("daily", env, { configPath: brokenFile }).length === 2 && drainStderr() === ""],
     ]);
   }

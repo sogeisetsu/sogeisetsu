@@ -46,7 +46,7 @@ CI：`.github/workflows/` 下四个 workflow —— `update-daily-report.yml`（
 | `ops/` | 运维自动化容器：**无代码**，只是索引（`README.md`）与两张链路图，把运维面与内容生成面隔开。 | [View Map](ops/codemap.md) |
 | `ops/cloudflare-cron/` | Cloudflare Worker 定时任务 watchdog：按 `TARGETS` 逐线判断"最近该跑的时点有没有 run"，缺则补 `workflow_dispatch`；fail-loud 可观测性。 | [View Map](ops/cloudflare-cron/codemap.md) |
 
-未被映射的目录（均为**生成物或外部目录**，已按 codemap 规则排除）：
+未纳入映射的目录（生成物 / 外部目录 / 人员维护的配置）：
 
 | Directory | 性质 |
 | --- | --- |

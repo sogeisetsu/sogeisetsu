@@ -2,7 +2,7 @@
 
 ## Responsibility
 
-全仓共享内核：日报与 30 天总结两侧共用的「日期/哈希口径 + GitHub 采集 + AI 适配 + provider 配置」四件套，零依赖 ESM（Node 20 内置 `fetch`）。四个文件各管一层、互不 import（唯一的上层依赖 `days.mjs` → `render.mjs` 见 Notes）：
+全仓共享内核：日报与 30 天总结两侧共用的「日期/哈希口径 + GitHub 采集 + AI 适配 + provider 配置」四件套，零依赖 ESM（Node 20 内置 `fetch`）。四个文件各管一层（依赖方向：`ai.mjs` → `providers.mjs`，其余互不 import；唯一的上层依赖 `days.mjs` → `render.mjs` 见 Notes）：
 
 - `days.mjs` —— **口径单点**：路径常量（`ROOT`/`DATA_DIR`/`REPORT_DIR`/`BACKFILL_DIR`/`ARCHIVE_LIMIT=60`）、+08 自然日推算（`cstDayMinus`/`prevDateOf`/`nextDateOf`/`dateRange`）、原子写入 `writeAtomic`、内容哈希 `contentHash`、`docs/data` 扫描（`listDateStrings`/`listDays`）。两线的日期与哈希口径必须从这里走，保证逐字一致。
 - `github.mjs` —— **采集层**：`collectDailyData()`（事件流主通道，按 1–10 段编号组装）与 `collectHistoricalData()`（Search API 历史回填通道，同 shape + `source`/`backfillLimits`），以及被确定性测试直接断言的纯函数（`normalizeNotes`/`buildTargetQueries`/`filterTargetCandidates`/`orderTargetCandidates`/`isPullRow`/`commentTotalOf`/`groupCommentCountTargets`/`attachCommentCounts`）；提交归属别名表 `COMMIT_AUTHOR_ALIASES = ["suyue"]`。

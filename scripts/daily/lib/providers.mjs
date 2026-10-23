@@ -457,7 +457,7 @@ export function catalogue(env = process.env, opts = {}) {
         configured: Boolean(apiKey),
         enabled: true,
         endpointEnabled: true,
-        lanes: [...FALLBACK_SLUGS],
+        lanes: ["daily", "summary"],
         params: {},
         note: "内置兜底链（配置不可用时）",
         resolved: false,
