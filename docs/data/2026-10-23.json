@@ -3,10 +3,10 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T16:51:02.976Z",
+  "generatedAt": "2026-10-23T17:07:18.361Z",
   "empty": false,
   "totals": {
-    "commits": 50,
+    "commits": 58,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -504,24 +504,24 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "50 commits across four repositories and one v1.0.0 release",
-      "summary": "**50 commits** were recorded across four repositories, with 37 additional automated commits by `github-actions[bot]`. In `sogeisetsu/sopen-translate`, work covered Apache-2.0 licensing, debug logging plans, a GitHub-renderable MT/LLM/DeepL diagram, scoped toast selectors, review-flag exposure, term-retention samples, a four-page MT versus MT+review A/B, stricter review-response validation, and own-property provider lookups. In `sogeisetsu/sogeisetsu`, the CLI gained built-in `--help` and `help <command>` usage, provider chains moved to `config/providers.json`, Nvidia was connected to the daily-report chain, fallback lanes were corrected, and the free chain became deepseek → sensenova. `sogeisetsu/opencode-skill-management` added an Astro + Starlight bilingual documentation site, mobile and theme fixes, GitHub Actions deployment, release policy, and the `v1.0.0` release. `sogeisetsu/opencode-agent-sandbox` added a planning-capability knowledge table. Issue `openchamber/openchamber#5489`, “Run as goal” on a plan's Improve action arms an implement objective, was closed by `yulia-ivashko` after a reply from `openchamber-bot[bot]` traced the unconditional arming behavior.",
+      "headline": "58 commits across four repositories and one v1.0.0 release",
+      "summary": "The day included **58 commits** across four repositories, with no pull requests, issues, or reviews recorded. In `sogeisetsu/sopen-translate`, 40 own commits redesigned the options and popup UI, added NVIDIA presets and Riva protocol support, introduced asynchronous review with ID-based patches and undo, and added a local debug log backend. In `sogeisetsu/sogeisetsu`, 10 own commits added CLI help, decoupled provider chains into `config/providers.json`, connected NVIDIA to the daily-report chain, and retired the minimax and longcat free legs; 37 additional automated commits were created by `github-actions[bot]`. In `sogeisetsu/opencode-skill-management`, 7 own commits added a bilingual Astro and Starlight documentation site, aligned its mobile landing page, and prepared the `v1.0.0` release. The `v1.0.0` release introduced a skill switchboard with `list` and `inspect` actions and permission-rule-based disabling that does not modify skill files. One further own commit in `sogeisetsu/opencode-agent-sandbox` documented planning capabilities. Issue `openchamber/openchamber#5489` received a reply from `openchamber-bot[bot]` and was closed by `yulia-ivashko`.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.0.0",
-          "summary": "The first stable release of `skill_management` provides a switchboard for OpenCode skills, including `list` and `inspect` actions. Disabling a skill writes a single `skill` permission rule with `effect: \"deny\"` or `\"ask\"` rather than deleting or rewriting skill files, and the 1.x surface is frozen."
+          "summary": "This first stable release provides a switchboard for OpenCode skills, including `list` and `inspect` actions. Disabling a skill writes a single `skill` permission rule with `effect: \"deny\"` or `\"ask\"` rather than deleting, moving, or rewriting skill files."
         }
       ]
     },
     "zh": {
-      "headline": "四个仓库共 50 次提交，并发布 v1.0.0",
-      "summary": "当天在四个仓库记录了 **50 次提交**，另有 37 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sopen-translate` 涉及 Apache-2.0 许可、调试日志计划、可在 GitHub 渲染的 MT/LLM/DeepL 路径图、toast 选择器作用域、review 标记、术语保留样本、四页 MT 与 MT+review A/B、更严格的 review 响应校验，以及 provider 协议 ID 的自有属性查找。`sogeisetsu/sogeisetsu` 为 CLI 内置 `--help` 与 `help <命令>` 完整用法，provider 链解耦到 `config/providers.json`，将 Nvidia 接入日报链首，修正兜底目录 lanes，并把免费链调整为 deepseek → sensenova。`sogeisetsu/opencode-skill-management` 新增 Astro + Starlight 双语文档站，修复移动端与主题持久化，加入 GitHub Actions 部署、发布政策，并发布 `v1.0.0`。`sogeisetsu/opencode-agent-sandbox` 收录了规划类能力全表。`openchamber/openchamber#5489`“Run as goal” on a plan's Improve action arms an implement objective 在 `openchamber-bot[bot]` 回复定位无条件触发行为后，由 `yulia-ivashko` 关闭。",
+      "headline": "四个仓库共 58 次提交，并发布 v1.0.0",
+      "summary": "当天在四个仓库完成 **58 次提交**，未记录拉取请求、issue 或评审。`sogeisetsu/sopen-translate` 的 40 次本人提交重做了选项与弹窗界面，加入 NVIDIA 预设、Riva 协议、基于 ID 的异步评审与撤销功能，并增加本地调试日志后端。`sogeisetsu/sogeisetsu` 的 10 次本人提交加入 CLI 帮助，将 provider 链解耦到 `config/providers.json`，把 NVIDIA 接入日报链首，并下线 minimax 与 longcat 免费链；另有 37 次由 `github-actions[bot]` 自动提交。`sogeisetsu/opencode-skill-management` 的 7 次本人提交新增 Astro 与 Starlight 双语文档站，对齐移动端落地页，并完成 `v1.0.0` 发布准备。`v1.0.0` 发布技能切换面板，提供 `list` 与 `inspect` 操作，停用技能时仅写入一条权限规则，不修改技能文件。`sogeisetsu/opencode-agent-sandbox` 另有 1 次本人提交，整理规划类能力文档。`openchamber/openchamber#5489` 收到 `openchamber-bot[bot]` 的回复，随后由 `yulia-ivashko` 关闭。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.0.0",
-          "summary": "`skill_management` 的首个稳定版本提供 OpenCode 技能开关板，包含 `list` 与 `inspect` 操作。禁用技能时只写入一条 `skill` 权限规则，`effect` 为 `\"deny\"` 或 `\"ask\"`，不会删除或重写技能文件，并冻结 1.x 接口。"
+          "summary": "首个稳定版本提供 OpenCode 技能切换面板，包含 `list` 与 `inspect` 操作。停用技能时仅写入一条 `skill` 权限规则，设置 `effect: \"deny\"` 或 `\"ask\"`，不会删除、移动或重写技能文件。"
         }
       ]
     }
@@ -529,5 +529,5 @@
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "15b2cb70c1d1fde5c93bec5b85e58629ca5ef33db6c4f7010b5ebaee07a8d0cf"
+  "dataHash": "606710308d75af547416159c297453e52f20f087d7ee9d7b4edfdf78718d670a"
 }
