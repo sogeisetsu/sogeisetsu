@@ -29,7 +29,7 @@
 1. **进入**：`index.mjs main()` → `collectSummaryData({ username })` 逐日读 `docs/data/<date>.json`（缺失则试 `data/backfill/<date>.json`，再缺失记入 `missing`），`normalizeDay()` 补齐缺段，累加 totals、合并 commits/items、统计每仓库数字，产出 `{ windowStart/End, missing, totals, automatedCommits, sources, backfilled, backfillLimits, daily, aiPayload, dataHash }`。
 2. **去重判断**：读已存 `docs/summary.json`；`dataHash` 相同且非 `--force` 且已有叙述 → 跳过 AI 与写入（无变化跳过）。`missingAi`（hash 同但上一次没拿到叙述）例外：仍重试 AI，与日报 missingAi 逻辑对齐。
 3. **AI 前置门**：`--no-ai` 或 `hasAnyActivity()` 判定窗口无可叙述活动（空跑日）→ 跳过 AI；若窗口未变且已有叙述则沿用。
-4. **AI 段**：`buildItemIndex(collected.daily)` 建白名单 → `buildSummaryPrompts({ collected })` 把 `aiPayload` 压成 user prompt → `generateStructured({ system, user, validate, providers: defaultProviders(), feedback: summaryFeedback })`（总结线重排后：deepseek → opencode-go-minimax → opencode-go-longcat → sensenova）。校验失败经 `summaryFeedback` 转成纠正提示重试。
+4. **AI 段**：`buildItemIndex(collected.daily)` 建白名单 → `buildSummaryPrompts({ collected })` 把 `aiPayload` 压成 user prompt → `generateStructured({ system, user, validate, providers: defaultProviders(), feedback: summaryFeedback })`（总结线重排后：deepseek → sensenova）。校验失败经 `summaryFeedback` 转成纠正提示重试。
 5. **状态转移（AI 结果）**：
    - 成功 → `ai = res.value`
    - 全失败且已有带叙述的 `summary.json` → 沿用旧 `ai`，**`!DRY_RUN` 时直接 return，不写任何文件**（页面不降级）

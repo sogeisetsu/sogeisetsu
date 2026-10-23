@@ -18,7 +18,7 @@
  *   · empty:true（totals 全 0）但 discussion 非空 → 仍会调用 provider
  *     （锁住「可见性判断只在调用方，generateNarrative 不按 empty 自行拦截」）
  *   · provider.headers 原样进请求头（OpenCode Go 的 user-agent / 会话 id 走这条）
- *   · defaultProviders 的列表与顺序（OpenCode Go minimax → longcat → deepseek → sensenova，不触网）
+ *   · defaultProviders 的列表与顺序（OpenCode Go deepseek → sensenova，不触网）
  *   · orderProvidersForSummary 把 deepseek 提前（总结线重排，不触网）
  *   · sanitizeReason 脱敏（Bearer / sk-·oc_ / 长串 / URL + 300 字符截断，不触网）
  *   · 全 provider 失败 → generateNarrative 返回 null，且 onProviderFailure 逐条收到
@@ -188,7 +188,7 @@ const cases = [
     },
   },
   {
-    // provider.reasoningEffort 覆盖默认的 "none"：minimax 那条免费腿只认 low/minimal/medium
+    // provider.reasoningEffort 覆盖默认的 "none"（机制保留：将来接回只认 low/minimal/medium 的腿时用）
     name: "provider-reasoning-effort-override",
     provider: { ...provider, name: "mock-go-minimax", reasoningEffort: "low" },
     script: [chatResp(JSON.stringify(validNarrative()))],
@@ -207,18 +207,15 @@ const cases = [
       const sessions = new Set(go.map((p) => p.headers?.["x-opencode-session"]));
       return [
         ["noKeysEmpty", none.length === 0],
-        ["goOnlyThree", goOnly.length === 3 && goOnly.every((p) => p.name.startsWith("opencode-go-"))],
+        ["goOnlyOne", goOnly.length === 1 && goOnly.every((p) => p.name.startsWith("opencode-go-"))],
         [
           "order",
-          both.map((p) => p.name).join(",") ===
-            "opencode-go-minimax,opencode-go-longcat,opencode-go-deepseek,sensenova",
+          both.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova",
         ],
-        ["minimaxReasoningLow", go[0]?.reasoningEffort === "low" && go[1]?.reasoningEffort === undefined],
+        ["goNoReasoningOverride", go[0]?.reasoningEffort === undefined],
         [
           "goModels",
-          go[0]?.model === "minimax-m3.1-flash-free" &&
-            go[1]?.model === "longcat-2.5-preview-free" &&
-            go[2]?.model === "deepseek-v4.1-flash",
+          go[0]?.model === "deepseek-v4.1-flash",
         ],
         [
           "goShape",
@@ -249,11 +246,10 @@ const cases = [
       const before = list.map((p) => p.name).join(",");
       const ordered = orderProvidersForSummary(list);
       return [
-        ["beforeIsDailyOrder", before === "opencode-go-minimax,opencode-go-longcat,opencode-go-deepseek,sensenova"],
+        ["beforeIsDailyOrder", before === "opencode-go-deepseek,sensenova"],
         [
           "summaryOrder",
-          ordered.map((p) => p.name).join(",") ===
-            "opencode-go-deepseek,opencode-go-minimax,opencode-go-longcat,sensenova",
+          ordered.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova",
         ],
         ["sameLength", ordered.length === list.length],
         ["noMutation", list.map((p) => p.name).join(",") === before],

@@ -30,7 +30,7 @@
  *   generateStructured({ system, user, validate, providers, feedback, onProviderFailure })
  *                                            // 通用结构化生成入口：日报与 30 天总结共用同一套重试/校验循环
  *   defaultProviders(env = process.env)      // 同步返回 provider 列表（没 key 的跳过）
- *   orderProvidersForSummary(list)           // 总结线重排：deepseek 提前（longcat 结构上做不了 30 天总结）
+ *   orderProvidersForSummary(list)           // 总结线重排：deepseek 提前（历史上 longcat 做不了 30 天总结）
  *   sanitizeReason(text, maxLen?)            // 失败原因脱敏：key / Bearer / 长 token / URL 一律替换 + 截断
  *
  * provider 结构：{ name, baseUrl, apiKey, model, shape, headers?, extraBody? }
@@ -39,7 +39,7 @@
  *   headers（可选）      → 追加到请求头（OpenCode Go 要求自报 user-agent / 会话 id）
  *   reasoningEffort（可选）→ chat 形态的 reasoning_effort 取值，默认 "none"（关思考）。
  *                         minimax 不认 "none"（400），去掉参数又会让它无约束地思考到超时，
- *                         所以它单独写 "low"（实测 11s 出内容）
+ *                         所以它当时单独配了 "low"（该腿 2026-10-23 下线，机制保留）
  *   extraBody（可选）    → 合并进 chat 请求体（sensenova 借它发 thinking:{type:"disabled"} 关思考）
  *
  * 用法：node scripts/daily/lib/ai.mjs --data=path.json
@@ -147,9 +147,10 @@ export function sanitizeReason(text, maxLen = 300) {
 
 /**
  * 按优先级返回可用 provider；没有 key 的直接跳过。
- * 顺序：OpenCode Go 三条在前（两条限时免费 → 付费额度内模型）、sensenova 殿后。
- * 免费腿里 minimax 在前、longcat 在后：2026-10-21 起 longcat 的上游推理端点持续 402 /
- * 挂满超时（`/models` 里模型仍在列），所以换一条免费腿先顶上，longcat 留作第二候选。
+ * 顺序：OpenCode Go 的 deepseek 在首位、sensenova 殿后。
+ * 两条限时免费腿（minimax-m3.1-flash-free、longcat-2.5-preview-free）已于 2026-10-23 下线：
+ * longcat 是上游端点持续 402 / 挂满超时，minimax 在「能压到 low 思考」之后仍不稳定，
+ * 都退出了链（代码与实测记录见 git 历史，要接回来在下面按原样 push 即可）。
  * 商汤的模型不再动态解析（/models 挑出来的模型在长提示词下把预算全烧在思考上、永不产出），
  * 写死 glm-5.2 并关掉思考（extraBody 仅这一条带）。
  */
@@ -164,25 +165,6 @@ export function defaultProviders(env = process.env) {
       "user-agent": OPENCODE_GO_USER_AGENT,
       "x-opencode-session": `sogeisetsu-daily-report-${randomUUID()}`,
     };
-    list.push({
-      name: "opencode-go-minimax",
-      baseUrl: OPENCODE_GO_BASE,
-      apiKey: env.OPENCODE_API_KEY,
-      model: "minimax-m3.1-flash-free", // 限时免费、不限量
-      shape: "chat",
-      // 它认 reasoning_effort，但不收 "none"（400）；一旦把参数整个去掉，思考就不受约束，
-      // 真实日报 prompt 在 300s 内连响应头都没有。实测 "low" 10.9s 出内容。
-      reasoningEffort: "low",
-      headers,
-    });
-    list.push({
-      name: "opencode-go-longcat",
-      baseUrl: OPENCODE_GO_BASE,
-      apiKey: env.OPENCODE_API_KEY,
-      model: "longcat-2.5-preview-free", // 限时免费、不限量
-      shape: "chat",
-      headers,
-    });
     list.push({
       name: "opencode-go-deepseek",
       baseUrl: OPENCODE_GO_BASE,
@@ -211,13 +193,10 @@ export function defaultProviders(env = process.env) {
 /**
  * 总结线专用重排：把 deepseek 提到最前，其余保持原顺序。
  *
- * 原因（实测）：`longcat-2.5-preview-free` 结构上做不了 30 天总结（≈306s 后连接被掐），
- * 而 `deepseek-v4.1-flash` 是唯一稳定过校验的腿。重排只作用于总结线，
- * `defaultProviders` 保持 Go 内部的「免费优先」顺序 —— 日报是每 2 小时的高频任务，
- * 不该因为总结线的需要而放弃免费腿。
- *
- * `minimax-m3.1-flash-free` 还没有跑过 30 天总结（口径未验证）：重排后它落在 deepseek 之后、
- * longcat 之前，最坏情况是多花一次超时才落到 longcat，不会顶掉唯一稳定的那条腿。
+ * 历史原因（实测）：`longcat-2.5-preview-free` 结构上做不了 30 天总结（≈306s 后连接被掐），
+ * 而 `deepseek-v4.1-flash` 是当时唯一稳定过校验的腿，所以总结线单独把它提到最前。
+ * 两条免费腿 2026-10-23 下线后 `defaultProviders` 已经是 deepseek 打头，这里成了空操作 ——
+ * 函数与测试保留，是为了将来重新接入免费腿时不必再想一遍顺序。
  */
 export function orderProvidersForSummary(list) {
   const arr = Array.isArray(list) ? list : [];
