@@ -21,6 +21,7 @@
  */
 
 import { sanitizeReason } from './lib/ai.mjs';
+import { hasVisibleActivity } from '../lib/domain.mjs';
 
 const FONT_STACK =
   '-apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif';
@@ -1614,24 +1615,6 @@ ${body}
  * 就会出现「只发了 discussion 的一天被渲染成安静的一天」。渲染层与 index 归档
  * 都用本函数决定空状态，empty 仍原样保留给 totals 语义与校验。
  */
-export function hasVisibleActivity(data) {
-  const d = data && typeof data === 'object' ? data : {};
-  // commits 要按「用户本人提交数」判定：混合日会把只有机器人提交的仓库也放进 commits[]（count=0），
-  // 单看数组长度会把「纯机器人跑了一天」误当成有活动。
-  const hasUserCommits = A(d.commits).some((c) => Number(c && c.count) > 0);
-  return (
-    hasUserCommits ||
-    A(d.pullRequests).length > 0 ||
-    A(d.reviews).length > 0 ||
-    A(d.issues).length > 0 ||
-    A(d.stateChanges).length > 0 ||
-    A(d.discussions).length > 0 ||
-    A(d.releases).length > 0 ||
-    A(d.stars).length > 0 ||
-    A(d.replies).length > 0
-  );
-}
-
 export function renderReportPage({ data, ai } = {}) {
   const d = data && typeof data === 'object' ? data : {};
   const totals = d.totals && typeof d.totals === 'object' ? d.totals : {};

@@ -18,10 +18,14 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
-import { hasVisibleActivity } from "../render.mjs";
+import { ROOT } from "../../lib/paths.mjs";
+import { hasVisibleActivity } from "../../lib/domain.mjs";
 import { DATE_RE } from "../../cst.mjs";
+
+// ROOT 的唯一来源是 scripts/lib/paths.mjs（零依赖）；这里原样转出，
+// 既有 `import { ROOT } from "./lib/days.mjs"` 的调用方一个字都不用改。
+export { ROOT };
 
 // +08 自然日口径本身住在 scripts/cst.mjs（三条产物线共用）；这里原样转出，
 // 保证既有 `from "./lib/days.mjs"` 的引用一个字都不用改。
@@ -42,9 +46,6 @@ export {
 export { DATE_RE };
 
 // ---------------------------------------------------------------- 常量
-
-/** 仓库根（scripts/daily/lib/ → 上三级）。 */
-export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 
 export const ARCHIVE_LIMIT = 60;
 

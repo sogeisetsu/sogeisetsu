@@ -29,12 +29,11 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, existsSync
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
-const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(HERE, "..");
+import { ROOT, SCRIPTS_DIR } from "./lib/paths.mjs";
+
 const CONFIG_FILE = path.join(ROOT, "config", "providers.json");
-const CLI = path.join(HERE, "providers.mjs");
+const CLI = path.join(SCRIPTS_DIR, "providers.mjs");
 
 const providers = await import(new URL("./daily/lib/providers.mjs", import.meta.url).href);
 const { generateStructured } = await import(new URL("./daily/lib/ai.mjs", import.meta.url).href);

@@ -44,9 +44,9 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 import { generateNarrative, generateStructured } from "./daily/lib/ai.mjs";
+import { ROOT } from "./lib/paths.mjs";
 import {
   CONFIG_PATH,
-  ROOT,
   addProvider,
   catalogue,
   checkWorkflowWiring,

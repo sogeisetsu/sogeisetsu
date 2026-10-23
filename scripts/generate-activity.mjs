@@ -38,8 +38,9 @@
 
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { pathToFileURL } from "node:url";
 
+import { ROOT } from "./lib/paths.mjs";
 import { cstDateNextStartMs, cstDateOf, cstDateShift, cstDateStartMs, dateRange } from "./cst.mjs";
 import { renderActivityCard } from "./render-svg.mjs";
 
@@ -52,7 +53,6 @@ const DRY_RUN = process.argv.includes("--dry-run");
 // --dump-data=FILE：把组装好的 data 原样导出为 JSON（调试/设计复核用），不改变其它行为
 const DUMP_DATA = (process.argv.find((a) => a.startsWith("--dump-data=")) || "").slice(12) || null;
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const README_PATH = path.join(ROOT, "README.md");
 const SVG_PATH = path.join(ROOT, "assets", "30-day-activity.svg");
 

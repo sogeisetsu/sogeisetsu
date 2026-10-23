@@ -23,10 +23,9 @@
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
-const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(HERE, "..", "..");
+import { ROOT } from "../lib/paths.mjs";
+
 const LIVE_FILE = path.join(ROOT, "data", "attribution.json");
 
 const { parseAttribution, loadAttribution, attributionLookup, identityLookup } = await import(

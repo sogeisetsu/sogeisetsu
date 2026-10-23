@@ -41,15 +41,13 @@
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
+import { ROOT } from "../lib/paths.mjs";
 import { BACKFILL_DIR, cstDayMinus, dateRange, readJsonIfExists } from "./lib/days.mjs";
 import { AUTOMATED_OVERLAP_RE } from "./lib/ai.mjs";
-import { hasVisibleActivity } from "./render.mjs";
+import { hasVisibleActivity } from "../lib/domain.mjs";
 
 // ---------------------------------------------------------------- 常量与参数
-
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 const args = process.argv.slice(2);
 const argVal = (name) => {

@@ -35,12 +35,12 @@
 import { createHash, randomUUID } from "node:crypto";
 import { readFileSync, renameSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+
+import { ROOT } from "../../lib/paths.mjs";
 
 const LOG = "[providers]";
 
-/** 仓库根（scripts/daily/lib → ../../..）。刻意不 import days.mjs：那边会把整层渲染拖进来。 */
-export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+// ROOT 的唯一来源是 scripts/lib/paths.mjs（零依赖）。刻意不 import days.mjs：那边会带进渲染层。
 export const CONFIG_PATH = path.join(ROOT, "config", "providers.json");
 export const WORKFLOW_DIR = path.join(ROOT, ".github", "workflows");
 export const CONFIG_VERSION = 1;

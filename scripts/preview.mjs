@@ -14,12 +14,11 @@
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import { renderActivityCard } from './render-svg.mjs';
+import { SCRIPTS_DIR } from './lib/paths.mjs';
 
-const here = dirname(fileURLToPath(import.meta.url));
-const fixturesDir = join(here, 'fixtures');
+const fixturesDir = join(SCRIPTS_DIR, 'fixtures');
 
 const jobs = [
   { src: 'real.json', out: 'preview-real.svg' },

@@ -49,7 +49,9 @@
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { pathToFileURL } from "node:url";
+
+import { ROOT } from "../../lib/paths.mjs";
 
 // ---------------------------------------------------------------- 环境与常量
 
@@ -79,11 +81,7 @@ const COMMIT_AUTHOR_ALIASES = ["suyue"];
 // 只按 sha 认，绝不按名字 / 邮箱 —— 作者字符串是提交者自己写的，PR 作者也能照抄成任意身份，
 // 只有 sha 全局唯一、不可伪造。命中者只把“其他人类提交（原本会被丢弃）”改判为本人；
 // 多父提交（merge）、机器人、窗口过滤与 sha 去重一律照旧，不受名单影响。
-const ATTRIBUTION_PATH = path.join(
-  path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", ".."),
-  "data",
-  "attribution.json"
-);
+const ATTRIBUTION_PATH = path.join(ROOT, "data", "attribution.json");
 const DISCUSSION_SEARCH_MAX = 50; // Discussion search 每个别名取的节点上限（GraphQL first ≤100）
 const DISCUSSION_COMMENTS_MAX = 100; // 每条讨论拉取的评论节点上限（连接尾部=最新，comments(last: N)）
 const REPLIES_PAGE_SIZE = 30; // /issues|pulls/:n/comments 单页大小（显式传 per_page，与截断判定一致）
@@ -1991,8 +1989,7 @@ function dayBefore(date) {
 
 /** 读取指定日 docs/data/YYYY-MM-DD.json；文件缺失或损坏 → null（不打日志）。 */
 function loadDataFile(date) {
-  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
-  const file = path.join(root, "docs", "data", `${date}.json`);
+  const file = path.join(ROOT, "docs", "data", `${date}.json`);
   try {
     return JSON.parse(readFileSync(file, "utf8"));
   } catch {

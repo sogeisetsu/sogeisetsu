@@ -22,8 +22,9 @@
  * 输出：每个用例一行 PASS/FAIL；结尾 N/M；有失败退出码 1。
  */
 
-const { aiInlineToHtml, mdBlockToHtml, i18nInline, splitParagraphs, renderReportPage, hasVisibleActivity } =
+const { aiInlineToHtml, mdBlockToHtml, i18nInline, splitParagraphs, renderReportPage } =
   await import(new URL("./render.mjs", import.meta.url).href);
+const { hasVisibleActivity } = await import(new URL("../lib/domain.mjs", import.meta.url).href);
 const {
   normalizeNotes,
   buildTargetQueries,
