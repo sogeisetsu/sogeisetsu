@@ -9,9 +9,9 @@ _Updated automatically: 2026-10-23_
 
 - 📝 Pushed 125 commits to `sogeisetsu/meld-deepresearch`
 - 📝 Pushed 114 commits to `sogeisetsu/sogeisetsu`
-- 📝 Pushed 46 commits to `sogeisetsu/sopen-translate`
+- 📝 Pushed 52 commits to `sogeisetsu/sopen-translate`
 - 📝 Pushed 32 commits to `sogeisetsu/opencode-go-model-picker`
-- 📝 Pushed 25 commits to `sogeisetsu/opencode-skill-management`
+- 📝 Pushed 27 commits to `sogeisetsu/opencode-skill-management`
 - 📝 Pushed 20 commits to `sogeisetsu/opencode-agent-sandbox`
 - 📝 Pushed 1 commit to `sogeisetsu/myBlog`
 - 🐛 Opened issue [\[test\] opencode /oc smoke（临时，验完即关）](https://github.com/sogeisetsu/sogeisetsu/issues/9) in `sogeisetsu/sogeisetsu`
@@ -22,6 +22,7 @@ _Updated automatically: 2026-10-23_
 
 <details><summary>🌐 Contributed to</summary>
 
+- 🐛 Opened issue [\[Bug\] "Run as goal" on a plan's Improve action arms an implement objective, so the agent starts executing the plan](https://github.com/openchamber/openchamber/issues/5489) in `openchamber/openchamber`
 - 🐛 Opened issue [\[Bug\] Project actions menu: Auto-discover dev server runs the first saved action instead of discovering a server](https://github.com/openchamber/openchamber/issues/5293) in `openchamber/openchamber`
 - 💬 Commented on [openchamber/openchamber#4939](https://github.com/openchamber/openchamber/issues/4939): \[Bug\] Text selected inside an openchamber_render page never opens the comment menu
 - 💬 Commented on [anomalyco/opencode#50823](https://github.com/anomalyco/opencode/issues/50823): opencode-go: mimo-v2.6-flash vision reads a stale image after ≥5 images in one session
@@ -31,7 +32,6 @@ _Updated automatically: 2026-10-23_
 - 💬 Commented on [anomalyco/opencode#55785](https://github.com/anomalyco/opencode/issues/55785): go: mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image \(400\)
 - 💬 Commented on [anomalyco/opencode#50823](https://github.com/anomalyco/opencode/issues/50823): opencode-go: mimo-v2.6-flash vision reads a stale image after ≥5 images in one session
 - 🐛 Opened issue [go: mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image \(400\)](https://github.com/anomalyco/opencode/issues/55785) in `anomalyco/opencode`
-- 💬 Commented on [anomalyco/opencode#51281](https://github.com/anomalyco/opencode/pull/51281): fix\(core\): recover worktree removal blocked by cached locations
 
 </details>
 <!--END:activity-->
