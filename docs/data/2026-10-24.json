@@ -3,10 +3,10 @@
   "windowStart": "2026-10-24T00:00:00+08:00",
   "windowEnd": "2026-10-25T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T22:39:35.509Z",
+  "generatedAt": "2026-10-23T23:11:54.439Z",
   "empty": false,
   "totals": {
-    "commits": 24,
+    "commits": 26,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 16,
+      "count": 17,
       "own": true,
       "messages": [
+        {
+          "sha": "c70ca963fcb0ded9c1c5de1985f3de80ca5c7bd0",
+          "message": "docs(codemap): 映射基线改用 rebase 后仍存在的提交（6a28af6 已被 rebase 拍平）",
+          "ts": "2026-10-23T22:46:53Z"
+        },
         {
           "sha": "dafeb1efa223bd373e661f3d4f6ab33f5ebd000c",
           "message": "docs(codemap): 映射基线定到重构合并后的 HEAD，过期判断排除 *.md",
@@ -98,16 +103,21 @@
           "ts": "2026-10-23T17:18:27Z"
         }
       ],
-      "automated": 13,
+      "automated": 15,
       "automatedBots": [
         "github-actions[bot]"
       ]
     },
     {
       "repo": "sogeisetsu/opencode-skill-management",
-      "count": 4,
+      "count": 5,
       "own": true,
       "messages": [
+        {
+          "sha": "31ee874987bd1628ca7aee9abecff07431fdc8da",
+          "message": "fix(site): 区分菜单的选中态与悬停态",
+          "ts": "2026-10-23T22:47:38Z"
+        },
         {
           "sha": "6b28f4ebdc02d88758383f9dbdeb6efa766d8bad",
           "message": "fix(site): 自定义主题/语言菜单、修正标题行距与卡片外边距",
@@ -162,7 +172,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 13,
+  "automatedCommits": 15,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -285,18 +295,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "24 commits across three repositories, with 13 automated by github-actions[bot]",
-      "summary": "**24 commits** were recorded across `sogeisetsu/sogeisetsu`, `sogeisetsu/opencode-skill-management`, and `sogeisetsu/sopen-translate`. In `sogeisetsu/sogeisetsu`, 16 own commits reorganized site rendering, AI modules, data contracts, rules, and scheduling checks, including extracting `scripts/site/md.mjs`, `scripts/site/shell.mjs`, and `scripts/site/css.mjs`; 13 automated commits were additionally made by `github-actions[bot]`. In `sogeisetsu/opencode-skill-management`, 4 own commits adjusted theme and language menus, card sizing, typography, README links, and interaction colors. In `sogeisetsu/sopen-translate`, 4 own commits added Google translation presets and a public test key button, Chrome built-in translation, contributor documentation, and a requirement for the user's global git identity. No pull requests, issues, reviews, releases, or discussions were recorded.",
+      "headline": "26 commits across three repos; 15 automated by github-actions[bot]",
+      "summary": "The day produced **26** total commits. In `sogeisetsu/sogeisetsu`, 17 own commits plus 15 automated commits by `github-actions[bot]` advanced the layered refactor: codemap baseline rebased to post-restructure HEAD, scheduling reconciliation (cron ↔ Worker TARGETS), constant convergence, data contracts (`DAY_FIELDS` / `HASH_EXCLUDED`) with read-only assertions, and site decomposition into `css.mjs`, `shell.mjs`, `md.mjs`, and `indexPage.mjs` to break circular renders. In `sogeisetsu/opencode-skill-management`, 5 own commits fixed menu selected vs hover states, custom theme/language menus, title line-height and card margins, README internal links made absolute and clickable, and card equal-height, sans-serif titles, orange interactions, and example boxes. In `sogeisetsu/sopen-translate`, 4 own commits added a public test key button for Google 2, Google 1 and Google 2 presets, required global git identity for agent commits, and added Chrome built-in translation with split contributor docs. No PRs, issues, reviews, releases, stars, replies, or discussions were recorded. Only the first 300 events, 25 targets, 30 replies, and 100 state changes were examined; more may exist.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "三个仓库共 24 次提交，其中 13 次由 github-actions[bot] 自动提交",
-      "summary": "当天在 `sogeisetsu/sogeisetsu`、`sogeisetsu/opencode-skill-management` 和 `sogeisetsu/sopen-translate` 共记录 **24 次提交**。在 `sogeisetsu/sogeisetsu` 中，16 次本人提交重组了站点渲染、AI 模块、数据契约、规则与调度校验，并抽出 `scripts/site/md.mjs`、`scripts/site/shell.mjs` 和 `scripts/site/css.mjs`；另有 13 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/opencode-skill-management` 中，4 次本人提交调整了主题与语言菜单、卡片尺寸、字体、README 链接和交互配色。在 `sogeisetsu/sopen-translate` 中，4 次本人提交新增 Google 翻译预设与公开测试密钥按钮、Chrome 内置翻译、贡献者文档，并要求使用用户的全局 git 身份。当天没有记录拉取请求、issue、评审、发布或讨论。",
+      "headline": "三个仓库共 26 次提交；github-actions[bot] 自动提交 15 次",
+      "summary": "全天共 **26** 次提交。在 `sogeisetsu/sogeisetsu` 中，17 次本人提交另有 15 次由 `github-actions[bot]` 自动提交，推进分层重构：codemap 基线重定到重构合并后的 HEAD、调度对账（cron ↔ Worker TARGETS）、常量收敛到名称级归属、数据契约（`DAY_FIELDS` / `HASH_EXCLUDED`）加只读断言、站点拆解为 `css.mjs`、`shell.mjs`、`md.mjs`、`indexPage.mjs` 以打破循环渲染。在 `sogeisetsu/opencode-skill-management` 中，5 次本人提交修复菜单选中态与悬停态、自定义主题/语言菜单、标题行高与卡片外边距、README 内部链接改为绝对可点击、卡片等高、无衬线标题、橙色交互与示例框。在 `sogeisetsu/sopen-translate` 中，4 次本人提交新增 Google 2 公开测试密钥按钮、Google 1 与 Google 2 预设、要求 Agent 提交使用全局 git 身份、新增 Chrome 内置翻译并拆分贡献者文档。当天无 PR、Issue、审查、发布、Star、回复或讨论。仅检查了前 300 条事件、25 个目标、30 条回复、100 条状态变更，部分内容可能未收录。",
       "releaseNotes": []
     }
   },
-  "aiProvider": "nvidia-minimax-flash",
-  "aiModel": "minimaxai/minimax-m3.1-flash",
+  "aiProvider": "nvidia-nemotron-ultra",
+  "aiModel": "nvidia/nemotron-3-ultra-550b-a55b",
   "aiFailure": null,
-  "dataHash": "d922f7073dba4e01c2788e09b1a33b008dc90dca15842a837db9ab56faabee42"
+  "dataHash": "1f6bed324c8163e81224afb498b101e1eec066ac969cf0cffa84b9e9d53b0e28"
 }
