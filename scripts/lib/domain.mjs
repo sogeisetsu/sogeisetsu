@@ -16,6 +16,18 @@
 
 const A = (x) => (Array.isArray(x) ? x : []);
 
+/**
+ * 这一天是否有任何「可见段」可渲染。
+ *
+ * 判定口径 = 报告会实际渲染的所有分区，而不只是 totals 的四项：
+ *   commits / pullRequests / reviews / issues（totals 组成部分）
+ *   + stateChanges / discussions / releases / stars / replies（不计入 totals 的附加段）
+ *
+ * 不要用 data.empty 代替它：empty 是 totals 口径（仅 commits/prs/issues/reviews），
+ * 按设计不含 discussions 等附加段；若用 empty 决定「整页是否渲染」，
+ * 就会出现「只发了 discussion 的一天被渲染成安静的一天」。渲染层与 index 归档
+ * 都用本函数决定空状态，empty 仍原样保留给 totals 语义与校验。
+ */
 export function hasVisibleActivity(data) {
   const d = data && typeof data === 'object' ? data : {};
   // commits 要按「用户本人提交数」判定：混合日会把只有机器人提交的仓库也放进 commits[]（count=0），
