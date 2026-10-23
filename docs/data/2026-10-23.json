@@ -3,10 +3,10 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T08:11:52.095Z",
+  "generatedAt": "2026-10-23T08:26:25.107Z",
   "empty": false,
   "totals": {
-    "commits": 23,
+    "commits": 24,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -138,16 +138,22 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 0,
+      "count": 1,
       "own": true,
-      "messages": [],
-      "automated": 21,
+      "messages": [
+        {
+          "sha": "6c40fa7b65e11f946d49c754876cde9dd9b1acf9",
+          "message": "chore(ai): 下线 minimax 与 longcat 两条免费腿，链变为 deepseek → sensenova",
+          "ts": "2026-10-23T08:25:40Z"
+        }
+      ],
+      "automated": 22,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 21,
+  "automatedCommits": 22,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -270,18 +276,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu: 23 own commits in sopen-translate plus 21 automated commits",
-      "summary": "The day's work was concentrated in `sogeisetsu/sopen-translate`, with **23 own commits** and no pull requests, reviews, issues, or releases. Provider work added two options: a keyless Google web endpoint as an unverified preset, and Microsoft MT together with an optional LLM review pass; protocol-id lookups now use own-property checks. Performance changes made translation viewport-first, translating the visible area and continuing on scroll, and capped viewport batches so the first translation lands sooner; the review budget is now capped per page rather than per batch. Planning docs recorded Microsoft MT and optional review acceptance, viewport-first acceptance with the batch-shape fix, and an assessment of proxy options for Index-Translate by user experience. Separately, the profile repo `sogeisetsu/sogeisetsu` received 21 automated commits by `github-actions[bot]`. Overall totals were 23 commits.",
+      "headline": "24 commits on 2026-10-23: sopen-translate viewport and provider work",
+      "summary": "On 2026-10-23 the user logged **24 own commits** across two repositories. In `sogeisetsu/sopen-translate` there were 23 own commits: provider work added the keyless Google web endpoint as an unverified preset plus Microsoft MT and an optional LLM review pass, protocol-id lookup was switched to own-property checks, and the review budget was capped per page rather than per batch. Page performance also changed: viewport batches are capped so the first translation lands sooner, and the viewport is translated first with the rest continuing on scroll. Plan docs recorded the Microsoft MT and optional review acceptance, the viewport-first acceptance with the batch-shape fix, and an assessment of proxy options for Index-Translate by user experience. In `sogeisetsu/sogeisetsu` there was 1 own commit, which took the minimax and longcat free fallbacks offline and left the chain as `deepseek → sensenova`, plus **22 automated commits by `github-actions[bot]`**. No pull requests, reviews, issues, releases, stars, discussions, or replies were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu：sopen-translate 有 23 次本人提交，另有 21 次自动提交",
-      "summary": "当天的工作集中在 `sogeisetsu/sopen-translate`，共有 **23 次本人提交**，没有 pull request、review、issue 或 release。提供方方面新增两个选项：将无密钥的 Google 网页端点作为未验证预设，以及 Microsoft MT 配合可选的 LLM 审校流程；协议 id 查找改为仅检查自有属性。性能上改为视口优先翻译，先翻译可见区域并在滚动时继续，同时限制视口批次，让首次翻译更快出现；审校预算改为按页限制而非按批次。计划文档记录了 Microsoft MT 与可选审校的验收、视口优先与批次形态修复的验收，以及按用户体验评估 Index-Translate 的代理方案。此外，个人主页仓库 `sogeisetsu/sogeisetsu` 有 21 次由 `github-actions[bot]` 完成的自动提交。总体共计 23 次提交。",
+      "headline": "2026-10-23 共 24 次提交：sopen-translate 视口与 provider 改动",
+      "summary": "2026-10-23，用户在两个仓库共记录 **24 次本人提交**。其中 `sogeisetsu/sopen-translate` 有 23 次本人提交：provider 方面新增了免密钥的 Google 网页端点（作为未验证预设）、Microsoft MT 以及可选的 LLM 审查环节，协议 id 查找改为自有属性判断，审查预算由按批次改为按页面设上限。页面性能也有调整：限制视口批次规模，让首次翻译更早出现；优先翻译视口内容，其余部分随滚动继续处理。计划文档记录了 Microsoft MT 与可选审查的验收结论、视口优先及批次形态修复的验收结论，以及针对 Index-Translate 按用户体验评估代理方案的调研。`sogeisetsu/sogeisetsu` 有 1 次本人提交，下线 minimax 与 longcat 两条免费回退，链路调整为 `deepseek → sensenova`，另有 **22 次由 `github-actions[bot]` 完成的自动提交**。当日没有 PR、审查、issue、发布、star、讨论或回复记录。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "eafd02cfda366e0756e0b69b4a8b7f1d808ccfd7f2dac2a1c2fc70d3e842f3f4"
+  "dataHash": "bf0d60f183c3e6400ed8990ad4182f24a9fcef4604bce9246a2a4712b2b29544"
 }
