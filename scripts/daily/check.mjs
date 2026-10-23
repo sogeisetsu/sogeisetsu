@@ -14,6 +14,7 @@
  *      scripts/summary/test-summary.mjs —— 30 天总结确定性回归（假数据 + 假服务器）
  *      scripts/test-activity-window.mjs —— 活动卡片线口径/可见性确定性回归
  *      scripts/test-providers.mjs —— provider 配置 / lane 解析 / 写操作 / 接线断言 / lane 预算回归
+ *      scripts/daily/test-attribution.mjs —— data/attribution.json 归属修正名单回归
  *      providers.mjs check —— 配置 schema + workflow 接线硬断言（漏配 secret 直接红）
  *   3) scripts/daily/verify.mjs      —— docs/ 生成物不变式自检
  *
@@ -65,6 +66,7 @@ const syntaxTargets = [
   "../summary/index.mjs",
   "../test-activity-window.mjs",
   "../test-providers.mjs",
+  "test-attribution.mjs",
 ];
 let failed = 0;
 
@@ -76,6 +78,7 @@ if (!run("test-render.mjs（渲染/规范化回归）", [path.join(DIR, "test-re
 if (!run("test-summary.mjs（30 天总结回归）", [path.join(DIR, "..", "summary", "test-summary.mjs")])) failed += 1;
 if (!run("test-activity-window.mjs（活动卡片口径/可见性回归）", [path.join(DIR, "..", "test-activity-window.mjs")])) failed += 1;
 if (!run("test-providers.mjs（provider 配置回归）", [path.join(DIR, "..", "test-providers.mjs")])) failed += 1;
+if (!run("test-attribution.mjs（归属修正名单回归）", [path.join(DIR, "test-attribution.mjs")])) failed += 1;
 if (!run("providers check（配置 schema + workflow 接线）", [path.join(DIR, "..", "providers.mjs"), "check"])) failed += 1;
 if (!run("verify.mjs（docs 不变式）", [path.join(DIR, "verify.mjs"), "--quiet"])) failed += 1;
 

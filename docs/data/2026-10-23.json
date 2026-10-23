@@ -14,9 +14,57 @@
   "commits": [
     {
       "repo": "sogeisetsu/sopen-translate",
-      "count": 32,
+      "count": 40,
       "own": true,
       "messages": [
+        {
+          "sha": "00191c6490cd2bc76a97dbe415d4421f5ded62c8",
+          "message": "docs: call the help marker by its name",
+          "ts": "2026-10-23T15:50:18Z",
+          "by": "attribution"
+        },
+        {
+          "sha": "2ec72621f2fc58d1693acc59503a894b40fdd667",
+          "message": "fix(debug): expose providerCount in the settings summary",
+          "ts": "2026-10-23T15:23:11Z",
+          "by": "attribution"
+        },
+        {
+          "sha": "0b7ff6a47e76247703428a7c852dc23495b49e1f",
+          "message": "feat(ui): redesign options and popup with a shared theme",
+          "ts": "2026-10-23T15:22:48Z",
+          "by": "attribution"
+        },
+        {
+          "sha": "85e0b3ea60003e05c6acee11f5005ce0f535071d",
+          "message": "fix(review): drop queued candidates after the page budget is exhausted",
+          "ts": "2026-10-23T15:22:09Z",
+          "by": "attribution"
+        },
+        {
+          "sha": "917025181b6fb82493b855e157a975e2b8343b68",
+          "message": "docs: merge third-party notices into NOTICE",
+          "ts": "2026-10-23T15:21:42Z",
+          "by": "attribution"
+        },
+        {
+          "sha": "ccfba27c9df01b0a997b11c437c174ce6397dc45",
+          "message": "docs: rewrite README for async review, NVIDIA and debug log",
+          "ts": "2026-10-23T11:37:11Z",
+          "by": "attribution"
+        },
+        {
+          "sha": "7a39d6818edb5711bb9c5c83e38479937a194eb9",
+          "message": "feat: NVIDIA presets, Riva protocol and local debug log backend",
+          "ts": "2026-10-23T11:33:03Z",
+          "by": "attribution"
+        },
+        {
+          "sha": "982f9166004509d1ec2949fe9ada138f19687413",
+          "message": "feat(review): async review with id-based patches and undo",
+          "ts": "2026-10-23T11:15:48Z",
+          "by": "attribution"
+        },
         {
           "sha": "acda830e376b45d31f15ce31cd5ffeeb02df574e",
           "message": "chore: adopt Apache-2.0 and document debug logging plan",

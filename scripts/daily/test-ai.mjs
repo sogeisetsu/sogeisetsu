@@ -8,6 +8,7 @@
  * 按脚本依次返回受控响应，验证 generateNarrative 在各失败形态下的处理：
  *   · summary / headline 超长 → 代码确定性截断到上限后接受（不整段失败）
  *   · JSON 夹在散文里 / 字符串内有未转义换行 → 仍能提取解析
+ *   · 模型把输入里的 \\" 照抄进正文（JSON 转义残留）→ unescapeProse 归一后再校验
  *   · finish_reason=length 截断 → 翻倍 max_tokens 重试
  *   · 200 但 content 为空（reasoning 吃光预算，finish_reason 仍是 stop）→ 同法翻倍重试
  *   · HTTP 400（带 reasoning_effort）→ 去掉该参数重试
@@ -30,7 +31,7 @@
 
 import http from "node:http";
 
-const { generateNarrative, defaultProviders, sanitizeReason, narrativeWordingOk } = await import(
+const { generateNarrative, defaultProviders, sanitizeReason, narrativeWordingOk, unescapeProse } = await import(
   new URL("./lib/ai.mjs", import.meta.url).href
 );
 const { providersForLane, laneOrder, catalogue } = await import(new URL("./lib/providers.mjs", import.meta.url).href);
@@ -111,6 +112,35 @@ const cases = [
   { name: "trims-overlong-headline", script: [chatResp(JSON.stringify(jsonWith({ enHeadline: "x".repeat(96) })))], expect: { ok: true, calls: 1, maxHeadlineLen: 80 } },
   { name: "json-wrapped-in-prose", script: [chatResp(`Here is the report:\n${JSON.stringify(validNarrative())}\nDone.`)], expect: { ok: true, calls: 1 } },
   { name: "json-unescaped-newline", script: [chatResp(JSON.stringify(validNarrative()).replace("One. Two. Three. Four.", "One.\nTwo. Three. Four."))], expect: { ok: true, calls: 1 } },
+  {
+    // 模型把输入里的 \" 照抄进自己的 JSON 字符串 → parse 后正文带字面反斜杠（10-23 线上实证）
+    name: "unescapes-backslash-quotes",
+    script: [
+      chatResp(
+        JSON.stringify(
+          jsonWith({
+            enSummary: 'Issue #1 titled \\"Run as goal\\" was closed. Two. Three. Four.',
+            zhSummary: "issue #1「\\\"Run as goal\\\"」已关闭。二。三。四。",
+          })
+        )
+      ),
+    ],
+    expect: { ok: true, calls: 1, noBackslash: true, summaryIncludes: '"Run as goal"' },
+  },
+  {
+    // 纯函数：转义残留归一，覆盖 \" \' \\ \/ 与字面 \n \t，不碰普通文本
+    name: "unescape-prose-unit",
+    fn: () => [
+      ["quote", unescapeProse('a \\"b\\" c') === 'a "b" c'],
+      ["single", unescapeProse("a \\'b\\'") === "a 'b'"],
+      ["backslash", unescapeProse("a \\\\ b") === "a \\ b"],
+      ["slash", unescapeProse("a \\/ b") === "a / b"],
+      ["literalNewline", unescapeProse("a \\n b") === "a   b"],
+      ["literalTab", unescapeProse("a \\t b") === "a   b"],
+      ["plain", unescapeProse("plain 文本 a\\b") === "plain 文本 a\\b"],
+      ["nullish", unescapeProse(null) === ""],
+    ],
+  },
   { name: "truncation-then-double", script: [chatResp("", "length"), chatResp(JSON.stringify(validNarrative()))], expect: { ok: true, calls: 2, secondMaxTokens: 65536 } },
   {
     // Go 系模型（longcat / deepseek）常见：reasoning 吃光预算 → 200 + content 空 + finish_reason=stop，
@@ -356,6 +386,12 @@ for (const c of cases) {
   if (c.expect.headerUA !== undefined) checks.push(["headerUA", (requests.at(-1)?.headers?.["user-agent"] || "") === c.expect.headerUA]);
   if (c.expect.headerSession !== undefined) checks.push(["headerSession", (requests.at(-1)?.headers?.["x-opencode-session"] || "") === c.expect.headerSession]);
   if (c.expect.maxSummaryLen !== undefined) checks.push(["summaryLen", res && res.en.summary.length <= c.expect.maxSummaryLen]);
+  if (c.expect.noBackslash) {
+    checks.push(["noBackslash", Boolean(res && !/\\/.test(res.en.summary) && !/\\/.test(res.zh.summary))]);
+  }
+  if (c.expect.summaryIncludes) {
+    checks.push(["summaryIncludes", Boolean(res && res.en.summary.includes(c.expect.summaryIncludes))]);
+  }
   if (c.expect.maxHeadlineLen !== undefined) checks.push(["headlineLen", res && res.en.headline.length <= c.expect.maxHeadlineLen]);
   if (c.expect.model !== undefined) checks.push(["model", Boolean(res && res.model === c.expect.model)]);
   if (c.expect.attempts !== undefined) checks.push(["attempts", collectedAttempts.length === c.expect.attempts]);

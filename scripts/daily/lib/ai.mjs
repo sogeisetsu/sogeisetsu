@@ -179,6 +179,7 @@ const SYSTEM_PROMPT = [
   "- zh must be natural Simplified Chinese, not a literal machine translation.",
   "- Neutral and factual: no hype, no speculation, no invented facts; keep repo names, numbers and tags verbatim from the input.",
   "- Inline formatting: inside SUMMARY (not the headline) use EXACTLY two Markdown markers and nothing else — inline code with a single backtick `like-this`, and bold with double asterisks **like this**. Inline code is expected, not optional: wrap EVERY literal identifier in backticks — repository names such as `sogeisetsu/sogeisetsu` and `iOfficeAI/OfficeCLI`, bot logins such as `github-actions[bot]`, file/script paths such as `scripts/daily/verify.mjs` and `~/.opencode`, config keys, commands, commit SHAs, version/tag names, and anything else literal that you judge should be code. Bold is also expected, not optional: in the summary, bold the single most important number or outcome (e.g. one key commit total, a standout figure like a 0%→100% success jump, or the headline result). Aim for 1–3 bolded spans total so emphasis stays meaningful. The headline must be PLAIN TEXT — no backticks, no asterisks, no other markup of any kind. Do NOT use any other Markdown anywhere (no headings, no lists, no links, no italic, no tables, no code fences). Keep raw HTML out. The JSON envelope itself must stay pure JSON with no markdown.",
+  "- Escaping: the JSON envelope is JSON, but the PROSE inside it is plain text — write quotation marks as ordinary characters (\" or “”), never backslash-escaped (no \\\" inside the summary text), and never emit literal \\n / \\t.",
 ].join("\n");
 
 /**
@@ -374,8 +375,7 @@ export function splitSentences(text) {
 }
 
 /** 拼接句子：前句以中文句末标点结尾时不留空格（中文句间通常无空格），否则用空格。 */
-function joinSentences(sentences) {
-  let out = "";
+function joinSentences(sentences) {  let out = "";
   for (let i = 0; i < sentences.length; i += 1) {
     if (i === 0) { out = sentences[i]; continue; }
     const prev = sentences[i - 1];
@@ -452,8 +452,8 @@ function validateNarrative(raw, data) {
     if (!sec || typeof sec !== "object") return { ok: false, reason: `缺少 ${lang} 段` };
 
     // 硬性长度用代码强制（模型无法稳定遵守字符上限）：超长按句界/词界截断，而不是整段拒绝
-    const headline = fitHeadline(String(sec.headline ?? "").trim(), HEADLINE_MAX_CHARS);
-    const summaryRaw = String(sec.summary ?? "").trim();
+    const headline = fitHeadline(unescapeProse(String(sec.headline ?? "")).trim(), HEADLINE_MAX_CHARS);
+    const summaryRaw = unescapeProse(String(sec.summary ?? "")).trim();
     // 自动提交写成「其中/包含」的包含关系 → 拒收重试（本人与机器人提交是相加关系）
     const overlap = AUTOMATED_OVERLAP_RE.exec(summaryRaw);
     if (overlap) {
@@ -490,7 +490,10 @@ function validateNarrative(raw, data) {
       }
       const repo = String(note.repo ?? "").trim();
       const tag = String(note.tag ?? "").trim();
-      const text = fitSentences(String(note.summary ?? "").trim(), RELEASE_NOTE_MAX_SENTENCES);
+      const text = fitSentences(
+        unescapeProse(String(note.summary ?? "")).trim(),
+        RELEASE_NOTE_MAX_SENTENCES
+      );
       if (!releaseKeys.has(`${repo}@@${tag}`)) {
         return { ok: false, reason: `${lang}.releaseNotes 出现输入之外的 release: ${repo}@${tag}` };
       }
@@ -505,9 +508,21 @@ function validateNarrative(raw, data) {
   return { ok: true, value };
 }
 
+/**
+ * 剥掉模型写进正文里的「JSON 转义残留」：`\"` `\'` `\\` `\/` 还原成对应字符，字面 `\n` `\r` `\t`
+ * 换成空格。起因是 `buildPrompts` 用 `JSON.stringify` 把输入塞进 user 消息，模型看到输入里
+ * issue 标题的 `\"` 会照抄进自己的 JSON 字符串，`JSON.parse` 之后正文就带着反斜杠上页面
+ * （线上实证：2026-10-23 的 "[Bug] \"Run as goal\"…"）。
+ * 只处理转义序列本身，不碰普通反斜杠；对已经干净的文本是幂等的。
+ */
+export function unescapeProse(text) {
+  return String(text == null ? "" : text).replace(/\\(["'\\/nrt])/g, (_m, ch) =>
+    ch === "n" || ch === "r" || ch === "t" ? " " : ch
+  );
+}
+
 /** 按 shape 从响应 JSON 中取回文本。 */
-function extractContent(json, shape) {
-  if (shape === "responses") {
+function extractContent(json, shape) {  if (shape === "responses") {
     if (typeof json.output_text === "string" && json.output_text.trim()) {
       return json.output_text;
     }

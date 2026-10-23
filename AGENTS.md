@@ -48,6 +48,7 @@ node scripts/daily/test-render.mjs     # 渲染 / 规范化
 node scripts/summary/test-summary.mjs  # 30 天总结链路
 node scripts/test-activity-window.mjs  # 活动卡片口径 / 可见性
 node scripts/test-providers.mjs        # provider 配置 / lane 解析 / 写操作 / 接线断言 / lane 预算
+node scripts/daily/test-attribution.mjs # data/attribution.json 归属修正名单
 ```
 
 - 本地看页面：没有 dev server。`python -m http.server <port> --directory docs`，再开 `http://localhost:<port>/index.html`。**`.wrap > *` 有入场动画（最多约 1.1s），刚打开就截图会拍到空白** —— 中间插一次 snapshot / scroll 再 capture。
@@ -111,8 +112,8 @@ node scripts/test-providers.mjs        # provider 配置 / lane 解析 / 写操�
 ## 发布流程
 
 1. 生成 / 重渲染（见上）。
-2. `node scripts/daily/check.mjs` 全绿（= 语法检查 + test-ai + test-render + test-summary + test-activity-window + test-providers + providers check + verify）。
-3. `git add scripts config docs assets README.md data/backfill .github AGENTS.md` → 提交（**中文提交信息用 `git commit -F <msgfile>`，不要用 `-m` 传中文**）→ `git pull --rebase --autostash origin main` → `git push`。（代码修改走分支：新建分支 → 合并回 `main` → push；`config/**` 在日报 workflow 的 push 白名单里，所以合并会自动跑一次真实日报）
+2. `node scripts/daily/check.mjs` 全绿（= 语法检查 + test-ai + test-render + test-summary + test-activity-window + test-providers + test-attribution + providers check + verify）。
+3. `git add scripts config docs assets README.md data/backfill data/attribution.json .github AGENTS.md` → 提交（**中文提交信息用 `git commit -F <msgfile>`，不要用 `-m` 传中文**）→ `git pull --rebase --autostash origin main` → `git push`。（代码修改走分支：新建分支 → 合并回 `main` → push；`config/**` 在日报 workflow 的 push 白名单里，所以合并会自动跑一次真实日报）
 4. push 后**手动触发 Action，不要等 cron**：
    - 日报：`gh workflow run update-daily-report.yml --ref main`
    - 总结：`gh workflow run update-summary.yml --ref main [ -f force=true ]`
@@ -142,6 +143,7 @@ git push
 - 公开口径：只用公开活动；**不泄露私有仓库名 / 数量**。
 - 提交按 **commit date** 统计；本人与机器人（`[bot]`）**分开且相加**（`count` 与 `automated` 互不相交）；**不含合并提交**（parents>1）。AI 正文（日报叙述 / 总结 overview 与 byRepo）里自动提交也必须写成相加（「另有 M 次」/「plus」），出现「其中/包含…自动提交」会被校验器拒收重试；`AUTOMATED_OVERLAP_RE`（`scripts/daily/lib/ai.mjs`）是唯一口径，`verify.mjs` 共用。
 - 提交归属＝`login` 或 `commit.author.name` 命中 `sogeisetsu` 或别名（`COMMIT_AUTHOR_ALIASES`，见 `scripts/daily/lib/github.mjs`，如 `suyue`），大小写不敏感；GitHub 按提交邮箱关联账号，未关联的署名（如本地邮箱 `suyue@localhost`）须列别名才计入本人。
+- **`data/attribution.json` 是一次性归属修正名单**：只按**完整 40 位 sha** 认，不按名字 / 邮箱（作者字符串提交者自己就能写，PR 也能伪造；sha 全局唯一）。命中者只把「其他人类提交（原本静默丢弃）」改判为本人，`messages` 项带 `by: "attribution"` 便于核对；**合并提交 / 机器人 / 窗口过滤 / sha 去重一律不受影响**。新增条目必须人工核对后手写，不要批量生成、不要用它做"占位身份"的长期归一 —— 环境层面的正解是把仓库/全局 `user.name`、`user.email` 配好。
 - `totals` 只由展示数据求和；页面数字与 AI 摘要数字都以此为准。
 - Discussions：我发起（`started`）/ 我评论（`commented`）+ 他人回复并入 replies（`kind=discussion_comment`）；仅公开仓库；不进 `totals` / `empty`（与 releases / stars 一致）。
 - Issue/PR 行的评论数（REST 取，含机器人与本人，仅展示用，不进 `totals`；仓库非公开或读取失败则不显示）：**Issue＝会话评论**（`/issues/:n` 的 `comments`），**PR＝会话评论＋行内评审评论**（`/pulls/:n` 的 `comments + review_comments`，与 Replies 段 `issue_comment + review_comment` 口径对齐）；**窗口已关闭的定稿日冻结已存 `docs/data/<date>.json` 里的快照**，重采集不取实时值，避免计数漂移改写定稿页面（「今天」滚动报仍取实时值；`--force` 会一并重取实时值，是口径变更后的逃生口）。重跑已关闭日期时 `replies` / `stateChanges` 可能比原产物多（历史漏采被补录，属修复而非漂移），被冻结的只有评论数这一项。

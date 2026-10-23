@@ -75,6 +75,15 @@ const COMMIT_MSG_MAX = 160; // 提交标题（message 首行）折叠空白后�
 // 于是既匹配不上 username、也过不了 isBot，被当成“其他人类提交”丢弃。
 // 这里列出的身份与 username 一并视为“本人”（大小写不敏感），仅用于提交归属判定。
 const COMMIT_AUTHOR_ALIASES = ["suyue"];
+// 一次性归属修正名单：data/attribution.json（人工维护，见该文件 note）。
+// 只按 sha 认，绝不按名字 / 邮箱 —— 作者字符串是提交者自己写的，PR 作者也能照抄成任意身份，
+// 只有 sha 全局唯一、不可伪造。命中者只把“其他人类提交（原本会被丢弃）”改判为本人；
+// 多父提交（merge）、机器人、窗口过滤与 sha 去重一律照旧，不受名单影响。
+const ATTRIBUTION_PATH = path.join(
+  path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", ".."),
+  "data",
+  "attribution.json"
+);
 const DISCUSSION_SEARCH_MAX = 50; // Discussion search 每个别名取的节点上限（GraphQL first ≤100）
 const DISCUSSION_COMMENTS_MAX = 100; // 每条讨论拉取的评论节点上限（连接尾部=最新，comments(last: N)）
 const REPLIES_PAGE_SIZE = 30; // /issues|pulls/:n/comments 单页大小（显式传 per_page，与截断判定一致）
@@ -368,6 +377,75 @@ async function fetchRepoCommits(token, owner, repoName, win) {
   return all;
 }
 
+// ---------------------------------------------------------------- 2b. 一次性归属修正名单
+
+const FULL_SHA_RE = /^[0-9a-f]{40}$/i;
+
+/**
+ * 解析名单对象 → `Map<sha小写, entry>`。
+ *
+ * 容错（手写文件不该弄挂采集）：非对象、commits 不是数组、元素不是对象、sha 缺失 /
+ * 不是 40 位十六进制 / 重复 → 逐条跳过并 warn 一次；repo / author / ts / reason 只作说明，
+ * 不参与判定。全空也返回空 Map（等价于没有名单）。
+ */
+export function parseAttribution(parsed, warn = () => {}) {
+  const out = new Map();
+  const list = parsed && typeof parsed === "object" && Array.isArray(parsed.commits) ? parsed.commits : [];
+  for (const [i, entry] of list.entries()) {
+    if (!entry || typeof entry !== "object") {
+      warn(`attribution[${i}] 不是对象，已跳过`);
+      continue;
+    }
+    const sha = String(entry.sha ?? "").trim();
+    if (!FULL_SHA_RE.test(sha)) {
+      warn(`attribution[${i}] 的 sha 必须是完整 40 位十六进制（当前 "${sha}"），已跳过`);
+      continue;
+    }
+    const key = sha.toLowerCase();
+    if (out.has(key)) {
+      warn(`attribution[${i}] 的 sha ${key.slice(0, 7)} 重复，以第一条为准`);
+      continue;
+    }
+    out.set(key, {
+      repo: String(entry.repo ?? "").trim(),
+      author: String(entry.author ?? "").trim(),
+      ts: String(entry.ts ?? "").trim(),
+      reason: String(entry.reason ?? "").trim(),
+    });
+  }
+  return out;
+}
+
+/**
+ * 读名单文件。文件不存在 / 读取失败 / JSON 坏了都返回空 Map（各 warn 一次），
+ * 绝不因此中断采集 —— 名单是修正手段，不是采集的前置条件。
+ */
+export function loadAttribution(file = ATTRIBUTION_PATH) {
+  let text;
+  try {
+    text = readFileSync(file, "utf8");
+  } catch (e) {
+    if (e && e.code !== "ENOENT") console.warn(`${LOG} 读不到归属名单 ${file}：${e.message}`);
+    return new Map();
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch (e) {
+    console.warn(`${LOG} 归属名单 JSON 解析失败（当作空名单）：${e.message}`);
+    return new Map();
+  }
+  return parseAttribution(parsed, (msg) => console.warn(`${LOG} ${msg}`));
+}
+
+/** 命中返回条目，未命中返回 null。sha 大小写不敏感（必须整条 40 位，不做前缀匹配）。 */
+export function attributionLookup(map, sha) {
+  if (!map || map.size === 0) return null;
+  const key = String(sha ?? "").trim().toLowerCase();
+  if (!FULL_SHA_RE.test(key)) return null;
+  return map.get(key) || null;
+}
+
 /**
  * 按提交日期归属统计各仓窗口内的提交（不再走 PushEvent / compare —— 推送时间 ≠ 提交时间会漏计）：
  * 扫描仓库集 = (a) 窗口内 PushEvent 的仓库（优先） + (b) ownRepos 中 pushed_at ≥ 窗口起点的仓库，
@@ -380,9 +458,11 @@ async function fetchRepoCommits(token, owner, repoName, win) {
  *     → count += 1，messages.push({sha, message 首行, ts})；
  *   其他人类提交 → 忽略。
  * ts = committer.date || author.date，必须落在窗口内（防御）；全局按 sha 去重。
+ * 命中 data/attribution.json 的 sha（`attribution` 参数）在“其他人类”这一档改判为本人，
+ * message 项带 `by: "attribution"` 便于事后核对；其余判定（合并提交 / 机器人 / 窗口 / 去重）不变。
  * count>0 或 automated>0 的仓库才进表；messages 按 ts 倒序，automatedBots 去重后排序。
  */
-async function buildCommits(rawEvents, token, username, win, ownRepos) {
+async function buildCommits(rawEvents, token, username, win, ownRepos, attribution = loadAttribution()) {
   // 本人身份集合（username + 别名，大小写不敏感）：提交归属判定用（见 COMMIT_AUTHOR_ALIASES）
   const me = new Set([username, ...COMMIT_AUTHOR_ALIASES].map((s) => String(s).toLowerCase()));
   // --- 扫描仓库集：(a) PushEvent 仓库优先，再补 (b) 窗口内推送过的自有仓库 ---
@@ -423,17 +503,24 @@ async function buildCommits(rawEvents, token, username, win, ownRepos) {
       const sha = String(c.sha ?? "");
       if (!sha || seenSha.has(sha)) continue;
       seenSha.add(sha);
+      // 名单只接管“其他人类”这一档：isBot / isUser 命中时名单不参与，避免改变既有口径
+      const forced = isBot || isUser ? null : attributionLookup(attribution, sha);
       if (isBot) {
         slot.automated += 1; // 机器人提交：只进 automated，不进 totals
         const who = login || name;
         if (who) slot.bots.add(who);
-      } else if (isUser) {
+      } else if (isUser || forced) {
         slot.count += 1;
         slot.messages.push({
           sha,
           message: collapse(String(c.commit?.message ?? "").split("\n")[0], COMMIT_MSG_MAX),
           ts,
+          ...(forced ? { by: "attribution" } : {}),
         });
+        if (forced) {
+          const who = `${name || login || "?"} <${c.commit?.author?.email || "?"}>`;
+          console.log(`${LOG} attribution: ${sha.slice(0, 7)} 按本人计入（${full}，作者 ${who}）`);
+        }
       }
       // 其他人类提交：忽略
     }
