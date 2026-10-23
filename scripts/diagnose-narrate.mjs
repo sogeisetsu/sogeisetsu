@@ -20,7 +20,7 @@
  *
  * 用法：node scripts/diagnose-narrate.mjs
  * 环境变量：
- *   DIAG_MODEL    诊断用的模型（默认 opencode-go/longcat-2.5-preview-free；
+ *   DIAG_MODEL    诊断用的模型（默认 opencode-go/deepseek-v4.1-flash；
  *                 Go 整体不可用时换成 sensenova/glm-5.2 —— provider 定义由 workflow 的
  *                 OPENCODE_CONFIG_CONTENT 提供）
  *   OPENCODE_BIN  opencode 可执行文件（默认 `opencode`；本地在 Windows 上跑时指到 .exe）
@@ -39,7 +39,7 @@ import { DIAGNOSIS_PROMPT } from "./diagnose-providers.mjs";
 const LOG = "[diagnose-narrate]";
 const EVIDENCE_PATH = path.join(ROOT, "data", "ai-diagnosis.md");
 const SECTION_HEADER = "\n---\n\n## LLM 叙述\n\n";
-const DEFAULT_MODEL = "opencode-go/longcat-2.5-preview-free";
+const DEFAULT_MODEL = "opencode-go/deepseek-v4.1-flash";
 // 比 workflow 的 timeout-minutes: 10 早一点收手，让日志里能看到「为什么没产出」而不是被 CI 硬杀
 const RUN_TIMEOUT_MS = 9 * 60 * 1000;
 const STDERR_KEEP = 200; // 失败原因只留一段，且先脱敏
@@ -83,6 +83,8 @@ function extractText(stdout) {
  *
  * 为什么不直接用 lib/ai.mjs 的 sanitizeReason：它会把任意 ≥24 位 `[A-Za-z0-9_-]` 串也替换掉，
  * 而 `longcat-2.5-preview-free` 恰好就是 24 位 —— 一替换，叙述里所有模型 id 都成 `<redacted>`。
+ * （那条腿 2026-10-23 已下线，现用 `deepseek-v4.1-flash` 只有 20 位；这条规则仍然要留着，
+ * 因为 id 长度会随模型更换而变，不能靠"当前 id 够短"侥幸。）
  * 证据层（第一层）仍然全程用 sanitizeReason：那边处理的是 provider 返回的异常正文，宁可过杀。
  */
 function scrub(text) {

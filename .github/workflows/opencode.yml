@@ -74,8 +74,8 @@ jobs:
             {"$schema":"https://opencode.ai/config.json","provider":{"opencode-go":{"options":{"apiKey":"{env:OPENCODE_API_KEY}"}},"sensenova":{"npm":"@ai-sdk/openai-compatible","name":"SenseNova","options":{"baseURL":"https://token.sensenova.cn/v1","apiKey":"{env:SENSENOVA_API_KEY}"},"models":{"glm-5.2":{"name":"GLM-5.2"}}}}}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # 首选免费腿（限时免费不限量）；不够用再换 opencode-go/deepseek-v4.1-flash（改这一行）
-          model: opencode-go/longcat-2.5-preview-free
+          # 免费腿（longcat / minimax）2026-10-23 下线后改走 Go 套餐内的 deepseek；要换回免费模型就改这一行
+          model: opencode-go/deepseek-v4.1-flash
           use_github_token: true # 不装 OpenCode App、不要 id-token: write
           share: false # 公开仓库默认 true（会把会话做成可分享链接），这里明确关掉
           prompt: |
