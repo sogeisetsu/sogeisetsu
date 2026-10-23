@@ -3,7 +3,7 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T17:41:06.343Z",
+  "generatedAt": "2026-10-23T17:42:13.071Z",
   "empty": false,
   "totals": {
     "commits": 58,
@@ -505,23 +505,23 @@
   "ai": {
     "en": {
       "headline": "58 commits across four repositories and one v1.0.0 release",
-      "summary": "**58 commits** were recorded across four repositories, with 37 additional automated commits by `github-actions[bot]`. In `sogeisetsu/sopen-translate`, 40 own commits redesigned the options and popup UI, added NVIDIA presets, Riva protocol support, a local debug log backend, and asynchronous review with ID-based patches and undo. In `sogeisetsu/sogeisetsu`, 10 own commits added built-in CLI help, decoupled provider chains into `config/providers.json`, connected NVIDIA to the daily-report chain, and retired the Minimax and Longcat free legs. The `sogeisetsu/opencode-skill-management` repository received 7 own commits for an Astro and Starlight bilingual documentation site, Pages deployment, release policy, and the `v1.0.0` release. One further own commit in `sogeisetsu/opencode-agent-sandbox` documented planning capabilities. The `openchamber/openchamber` issue #5489, titled \"[Bug] \"Run as goal\" on a plan's Improve action arms an implement objective, so the agent starts executing the plan\", received a reply from `openchamber-bot[bot]` and was closed by `yulia-ivashko`.",
+      "summary": "**58 commits** were recorded across four repositories, with 37 additional automated commits by `github-actions[bot]`. In `sogeisetsu/sopen-translate`, 40 own commits redesigned the options and popup UI, added NVIDIA presets, Riva protocol support, a local debug log backend, and asynchronous review with ID-based patches and undo. In `sogeisetsu/sogeisetsu`, 10 own commits added CLI help, decoupled providers into `config/providers.json`, connected NVIDIA to the daily-report chain, and retired the Minimax and Longcat free legs. The `sogeisetsu/opencode-skill-management` repository received 7 own commits for a bilingual Astro and Starlight documentation site, Pages deployment, release policy, and version preparation. `sogeisetsu/opencode-agent-sandbox` added one own commit documenting planning capabilities. `sogeisetsu/opencode-skill-management` published `v1.0.0`, introducing a stable skill switchboard with list, inspect, disable, and restore operations that modify only a global permission rule. Separately, `yulia-ivashko` closed `openchamber/openchamber` issue #5489 after `openchamber-bot[bot]` confirmed that the Improve action armed an implement objective unconditionally.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.0.0",
-          "summary": "This first stable release provides a switchboard for OpenCode skills, with `list` and `inspect` actions and reversible permission-based disabling. Disabling writes one `skill` permission rule to global configuration without deleting, moving, or rewriting skill files, and the 1.x surface is frozen."
+          "summary": "This first stable release adds a switchboard for OpenCode skills, supporting list, inspect, disable, and restore operations. Disabling writes one `skill` permission rule with `effect: \"deny\"` or `\"ask\"` and does not delete, move, or rewrite skill files; the described surface is frozen for 1.x."
         }
       ]
     },
     "zh": {
       "headline": "四个仓库共 58 次提交，并发布 v1.0.0",
-      "summary": "当天共记录 **58 次提交**，另有 37 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sopen-translate` 的 40 次本人提交重做了选项与弹窗界面，加入 NVIDIA 预设、Riva 协议、本地调试日志后端，以及基于 ID 的异步审查补丁与撤销功能。`sogeisetsu/sogeisetsu` 的 10 次本人提交加入 CLI 内置帮助，将 provider 链解耦到 `config/providers.json`，把 NVIDIA 接入日报链首，并下线 Minimax 与 Longcat 免费链。`sogeisetsu/opencode-skill-management` 的 7 次本人提交建设 Astro 与 Starlight 双语文档站、配置 Pages 部署、发布政策，并完成 `v1.0.0` 发布。`sogeisetsu/opencode-agent-sandbox` 的 1 次本人提交收录了规划类能力。`openchamber/openchamber` 的 #5489“ [Bug] \"Run as goal\" on a plan's Improve action arms an implement objective, so the agent starts executing the plan”收到 `openchamber-bot[bot]` 回复，随后由 `yulia-ivashko` 关闭。",
+      "summary": "当天共记录 **58 次提交**，另有 37 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sopen-translate` 的 40 次本人提交重做了选项与弹窗界面，加入 NVIDIA 预设、Riva 协议、本地调试日志后端，以及基于 ID 补丁和撤销功能的异步审查。`sogeisetsu/sogeisetsu` 的 10 次本人提交新增 CLI 帮助，将 provider 解耦到 `config/providers.json`，把 NVIDIA 接入日报链首，并下线 Minimax 与 Longcat 免费链。`sogeisetsu/opencode-skill-management` 的 7 次本人提交涵盖双语 Astro 与 Starlight 文档站、Pages 部署、发布政策和版本准备。`sogeisetsu/opencode-agent-sandbox` 的 1 次本人提交收录了规划类能力。`sogeisetsu/opencode-skill-management` 发布 `v1.0.0`，提供稳定的技能开关面板，支持列出、检查、禁用和恢复技能，禁用时仅写入一条全局权限规则。此外，`openchamber-bot[bot]` 确认 Improve 操作会无条件设置 implement 目标后，`yulia-ivashko` 关闭了 `openchamber/openchamber` issue #5489。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.0.0",
-          "summary": "首个稳定版提供 OpenCode 技能管理入口，包含 `list` 与 `inspect` 操作，并支持基于权限的可逆禁用。禁用仅向全局配置写入一条 `skill` 权限规则，不删除、移动或重写技能文件，1.x 接口范围已冻结。"
+          "summary": "首个稳定版本提供 OpenCode 技能开关面板，支持列出、检查、禁用和恢复。禁用操作仅写入一条 `skill` 权限规则，`effect` 为 `\"deny\"` 或 `\"ask\"`，不会删除、移动或重写技能文件；所述功能在 1.x 版本冻结。"
         }
       ]
     }
