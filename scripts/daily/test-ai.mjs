@@ -18,8 +18,8 @@
  *   · empty:true（totals 全 0）但 discussion 非空 → 仍会调用 provider
  *     （锁住「可见性判断只在调用方，generateNarrative 不按 empty 自行拦截」）
  *   · provider.headers 原样进请求头（OpenCode Go 的 user-agent / 会话 id 走这条）
- *   · defaultProviders 的列表与顺序（OpenCode Go deepseek → sensenova，不触网）
- *   · orderProvidersForSummary 把 deepseek 提前（总结线重排，不触网）
+ *   · defaultProviders 的列表与顺序（读 config/providers.json，不触网）
+ *   · lane 顺序来自配置：总结线仍 deepseek 打头（不触网）
  *   · sanitizeReason 脱敏（Bearer / sk-·oc_ / 长串 / URL + 300 字符截断，不触网）
  *   · 全 provider 失败 → generateNarrative 返回 null，且 onProviderFailure 逐条收到
  *     { provider, model, reason }（失败可见性链路的输入）
@@ -30,9 +30,10 @@
 
 import http from "node:http";
 
-const { generateNarrative, defaultProviders, orderProvidersForSummary, sanitizeReason, narrativeWordingOk } = await import(
+const { generateNarrative, defaultProviders, sanitizeReason, narrativeWordingOk } = await import(
   new URL("./lib/ai.mjs", import.meta.url).href
 );
+const { providersForLane, laneOrder, catalogue } = await import(new URL("./lib/providers.mjs", import.meta.url).href);
 
 // ---------------------------------------------------------------- 受控输入
 
@@ -195,12 +196,14 @@ const cases = [
     expect: { ok: true, calls: 1, reasoningEffort: "low" },
   },
   {
-    // 不触网：只验 defaultProviders 的列表、顺序（Go 两条在前、商汤殿后）与商汤腿写死 glm-5.2 + 关思考
-    name: "default-providers-order-and-go-headers",
+    // 不触网：defaultProviders 现在就是 providersForLane("daily") —— 列表、顺序、参数全部来自
+    // config/providers.json（本用例只验与配置一致，字面顺序由 test-providers.mjs 断言）
+    name: "default-providers-follow-config",
     fn: () => {
       const none = defaultProviders({});
       const goOnly = defaultProviders({ OPENCODE_API_KEY: "go-key" });
       const both = defaultProviders({ SENSENOVA_API_KEY: "k", OPENCODE_API_KEY: "go-key" });
+      const fromConfig = providersForLane("daily", { SENSENOVA_API_KEY: "k", OPENCODE_API_KEY: "go-key" });
       const go = goOnly;
       const sense = both.at(-1);
       const ua = String(go[0]?.headers?.["user-agent"] || "");
@@ -208,10 +211,8 @@ const cases = [
       return [
         ["noKeysEmpty", none.length === 0],
         ["goOnlyOne", goOnly.length === 1 && goOnly.every((p) => p.name.startsWith("opencode-go-"))],
-        [
-          "order",
-          both.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova",
-        ],
+        ["order", both.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova"],
+        ["sameAsLane", both.map((p) => p.name).join(",") === fromConfig.map((p) => p.name).join(",")],
         ["goNoReasoningOverride", go[0]?.reasoningEffort === undefined],
         [
           "goModels",
@@ -223,14 +224,15 @@ const cases = [
             (p) =>
               p.baseUrl === "https://opencode.ai/inference/go/openai/v1" &&
               p.shape === "chat" &&
-              p.apiKey === "go-key"
+              p.apiKey === "go-key" &&
+              p.endpoint === "opencode-go"
           ),
         ],
         // 自报 UA：形如 name/版本，且不是 SDK / HTTP 库的默认名
         ["selfIdentifiedUA", /^[A-Za-z0-9._-]+\/[\d.]+/.test(ua) && !/undici|axios|node-fetch|^node\//i.test(ua)],
         ["stableSession", sessions.size === 1 && String([...sessions][0] || "").length > 8],
         ["noZen", !both.some((p) => p.name === "zen" || /zen/i.test(String(p.baseUrl)))],
-        // 商汤腿：写死 glm-5.2（不再动态解析）+ thinking 关闭；Go 两条不带 extraBody
+        // 商汤腿：写死 glm-5.2（不再动态解析）+ thinking 关闭；Go 腿不带 extraBody
         ["senseModel", sense?.model === "glm-5.2"],
         ["senseThinkingOff", sense?.extraBody?.thinking?.type === "disabled"],
         ["senseNoExtraBodyOnGo", go.every((p) => p.extraBody === undefined)],
@@ -239,21 +241,34 @@ const cases = [
     },
   },
   {
-    // 不触网：总结线重排 —— deepseek 提前，其余保持原顺序；不改动入参数组
-    name: "order-providers-for-summary",
+    // 不触网：每条 lane 的顺序来自配置（`lanes.<lane>.order`），不在调用点重排。
+    // 字面顺序断言走 `laneOrder`（原始顺序），所以临时 `disable <slug>` 的回滚演练不会弄红这里；
+    // 「enabled:false 会被跳过」由 test-providers.mjs 用专门 fixture 断言。
+    name: "lanes-order-from-config",
     fn: () => {
-      const list = defaultProviders({ SENSENOVA_API_KEY: "k", OPENCODE_API_KEY: "go-key" });
-      const before = list.map((p) => p.name).join(",");
-      const ordered = orderProvidersForSummary(list);
+      const env = { SENSENOVA_API_KEY: "k", OPENCODE_API_KEY: "go-key" };
+      const allKeys = { ...env, NVIDIA_API_KEY: "nv-key" };
+      const summary = providersForLane("summary", env);
+      const daily = providersForLane("daily", env);
+      const dailyAll = providersForLane("daily", allKeys);
+      const dailyOrder = laneOrder("daily");
+      const summaryOrder = laneOrder("summary");
+      const minimax = catalogue(allKeys).find((r) => r.name === "nvidia-minimax-flash");
+      const names = dailyAll.map((p) => p.name);
       return [
-        ["beforeIsDailyOrder", before === "opencode-go-deepseek,sensenova"],
+        ["summaryOrder", summaryOrder.join(",") === "opencode-go-deepseek,sensenova"],
+        ["summaryStartsWithDeepseek", summary[0]?.name === "opencode-go-deepseek"],
+        ["summaryHasNoNvidia", !summary.some((p) => p.endpoint === "nvidia")],
         [
-          "summaryOrder",
-          ordered.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova",
+          "dailyFullOrder",
+          dailyOrder.join(",") === "nvidia-minimax-flash,nvidia-nemotron-ultra,opencode-go-deepseek,sensenova",
         ],
-        ["sameLength", ordered.length === list.length],
-        ["noMutation", list.map((p) => p.name).join(",") === before],
-        ["emptySafe", orderProvidersForSummary(undefined).length === 0],
+        ["dailyFollowsLaneOrder", names.every((n, i) => dailyOrder.includes(n) && (i === 0 || dailyOrder.indexOf(n) > dailyOrder.indexOf(names[i - 1])))],
+        ["dailyMinimaxLow", minimax?.params?.reasoningEffort === "low"],
+        ["dailyUltraNone", catalogue(allKeys).find((r) => r.name === "nvidia-nemotron-ultra")?.params?.reasoningEffort === undefined],
+        ["dailyWithoutNvidiaKeyStillHasTwo", daily.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova"],
+        ["noMutation", providersForLane("summary", env).map((p) => p.name).join(",") === summary.map((p) => p.name).join(",")],
+        ["unknownLaneEmpty", providersForLane("no-such-lane", env).length === 0],
       ];
     },
   },

@@ -23,22 +23,23 @@
  * 所以本文件里绝不出现 key / token / 凭据；异常文本一律先过 sanitizeReason。
  * 首行是一条机器标记 `<!-- ai-diagnosis ... -->`，回帖 step 用它做「同一失败事件不重复贴」的去重。
  *
- * provider 目录不在此抄一份：name / baseUrl / model / 链顺序全部来自 lib/ai.mjs 的
- * `defaultProviders`（总结线再用 `orderProvidersForSummary` 对齐实际尝试顺序），
- * 所以 ai.mjs 改了模型或端点，这里自动跟上。
+ * provider 目录不在此抄一份：slug / baseUrl / model / 链顺序全部来自 `config/providers.json`
+ * （`scripts/daily/lib/providers.mjs` 的 `catalogue()` 与 `lanes[scope].order`），
+ * 所以配置改了模型或端点，这里自动跟上。
  *
  * 用法：
  *   node scripts/diagnose-providers.mjs            # 采集证据 → 写 data/ai-diagnosis.md
  *   node scripts/diagnose-providers.mjs --prompt   # 只打印「自动档 / `/oc`」共用的诊断提示词
  *
- * 环境变量：OPENCODE_API_KEY / SENSENOVA_API_KEY（缺哪条就只把它标成「未配置」，不探查也不报错）；
- *           GITHUB_RUN_ID（本地无此变量时标记为 local）。
+ * 环境变量：`config/providers.json` 里每个 enabled endpoint 的 `keyEnv`（缺哪条就只把它标成
+ *           「未配置」，不探查也不报错）；`GITHUB_RUN_ID`（本地无此变量时标记为 local）。
  */
 
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { defaultProviders, orderProvidersForSummary, sanitizeReason } from "./daily/lib/ai.mjs";
+import { sanitizeReason } from "./daily/lib/ai.mjs";
+import { catalogue, laneOrder } from "./daily/lib/providers.mjs";
 import { AI_FAILURE_PATH, ROOT, readJsonIfExists, writeAtomic } from "./daily/lib/days.mjs";
 
 // ---------------------------------------------------------------- 常量
@@ -47,12 +48,6 @@ const LOG = "[diagnose-providers]";
 const OUT_PATH = path.join(ROOT, "data", "ai-diagnosis.md");
 const MODELS_TIMEOUT_MS = 20000; // /models 只是列目录：20s 足够，且别把诊断拖成发布阻塞
 const NEAR_MATCH_CAP = 5; // 「家族相近」候选 id 最多列 5 个（只是判断改名的线索，不是全量列表）
-
-/** provider 名 → 它需要的环境变量名（只用于「未配置」时的提示文本，不参与探查）。 */
-const KEY_ENV = {
-  "opencode-go-deepseek": "OPENCODE_API_KEY",
-  sensenova: "SENSENOVA_API_KEY",
-};
 
 // ---------------------------------------------------------------- 共享提示词
 
@@ -65,7 +60,7 @@ export const DIAGNOSIS_PROMPT = [
   "你在本仓（sogeisetsu/sogeisetsu）的 CI 检出里做一次 AI provider 失败诊断；这是失败诊断，不是日常开发任务。",
   "",
   "输入证据：`data/ai-diagnosis.md` 里已经有一份纯脚本采集的证据（失败记录 + 各 provider `/models` 现状 + 机械对账结论）。",
-  "请再读 `scripts/daily/lib/ai.mjs`（provider 链 `defaultProviders` / `orderProvidersForSummary`、单腿尝试 `attemptProvider`）与 `scripts/notify-ai-failure.mjs`，把证据与代码对上。",
+  "请再读 `config/providers.json`（provider 链、模型与参数的唯一事实来源）、`scripts/daily/lib/providers.mjs`（lane 解析）与 `scripts/daily/lib/ai.mjs`（单腿尝试 `attemptProvider`），以及 `scripts/notify-ai-failure.mjs`，把证据与代码对上。",
   "",
   "只输出下面三段 markdown，不要别的章节：",
   "",
@@ -90,24 +85,26 @@ export const DIAGNOSIS_PROMPT = [
 /**
  * 全量 provider 目录 + 本进程哪几条腿真的配了 key。
  *
- * 为什么要跑两遍 `defaultProviders`：它按「有没有 key」过滤，直接调用拿不到「未配置的腿」——
- * 而诊断恰恰要说清「哪条腿没配」。所以再用占位 key 跑一遍拿全量 name / baseUrl / model；
- * 占位 key 绝不用于任何网络请求（探查只对 configured 的腿发起）。
- * model id 与顺序永远跟着 ai.mjs 走，本脚本不抄第二份。
+ * `catalogue(env)` 直接返回**配置里的每一条 model**（含缺 key 的、含没进任何 lane 的），
+ * 所以不再需要「拿占位 key 再跑一遍 defaultProviders」那种 hack。
+ * model id、baseUrl、`/models` 端点全部跟着 `config/providers.json` 走，本脚本不抄第二份。
  */
 function providerCatalogue(env = process.env) {
-  const configuredNames = new Set(defaultProviders(env).map((p) => p.name));
-  const all = defaultProviders({
-    ...env,
-    OPENCODE_API_KEY: env.OPENCODE_API_KEY || "unconfigured",
-    SENSENOVA_API_KEY: env.SENSENOVA_API_KEY || "unconfigured",
-  });
-  return all.map((p) => ({ ...p, configured: configuredNames.has(p.name) }));
+  return catalogue(env);
 }
 
-/** 实际尝试顺序：总结线把 deepseek 提前（与 ai.mjs 的 orderProvidersForSummary 同口径）。 */
-function orderForScope(catalogue, scope) {
-  return scope === "summary" ? orderProvidersForSummary(catalogue) : catalogue;
+/**
+ * 实际尝试顺序：先按 lane 顺序（`lanes[scope].order`），再把没进这条 lane 的腿按配置顺序接在后面。
+ * scope 缺省（没有失败记录）时按日报线排 —— 诊断表仍按最可能用到的顺序排。
+ */
+function orderForScope(catalogueRows, scope) {
+  const lane = scope === "summary" ? "summary" : "daily";
+  const order = laneOrder(lane);
+  const rank = (row) => {
+    const idx = order.indexOf(row.name);
+    return idx === -1 ? Number.MAX_SAFE_INTEGER : idx;
+  };
+  return [...catalogueRows].sort((a, b) => rank(a) - rank(b));
 }
 
 // ---------------------------------------------------------------- /models 探查
@@ -115,15 +112,13 @@ function orderForScope(catalogue, scope) {
 /**
  * 该 provider 的 `/models` 列表端点。
  *
- * OpenAI 兼容形态直接在 baseUrl 后接 `/models`（商汤：`/v1/models`）。
- * OpenCode Go 是例外：它的 chat 走 `/inference/go/openai/v1/chat/completions`，
- * 列表端点却在 `/inference/go/v1/models` —— 实测 `/openai/v1/models` 是 404（空响应），
- * 而 `/go/v1/models` 会带结构化鉴权错误（说明路由存在）。所以把 `/openai/v1` 换回 `/v1`。
- * 这里不写死完整 URL：baseUrl 变了它跟着变，只有「Go 的列表在 Go 根下」这一条形状假设。
+ * 优先用配置里的 `endpoint.modelsUrl`（OpenCode Go 的 chat 在 `/openai/v1`、列表却在 `/go/v1`，
+ * 这条形状差异现在只写在配置里，不再硬编码在诊断脚本里）；没有才按 `<baseUrl>/models` 派生。
  */
 function modelsUrl(provider) {
+  if (provider.modelsUrl) return provider.modelsUrl;
   const base = String(provider.baseUrl || "").replace(/\/+$/, "");
-  return `${base.replace(/\/openai\/v1$/, "/v1")}/models`;
+  return `${base}/models`;
 }
 
 /**
@@ -188,7 +183,7 @@ function familyPrefix(model) {
 /** 机械对账：一条腿一条结论，只做规则判断，不做判断性叙述。 */
 function reconcile(provider, probe) {
   if (!provider.configured) {
-    const env = KEY_ENV[provider.name] || "对应的 API key";
+    const env = provider.keyEnv || "对应的 API key";
     return `未配置（缺 \`${env}\`），未探查`;
   }
   if (probe.error) return `\`/models\` 取不到（${probe.error}）→ 疑似整体不可用`;
@@ -264,18 +259,19 @@ function failureSection(record) {
 /** 第 2 段：provider 现状表 + 逐条明细。 */
 function providerSection(rows) {
   const lines = ["## 2. provider `/models` 现状", ""];
-  lines.push("| provider | model（本仓写死） | 配置 | `GET /models` | 模型数 | 该 model 在列表 |");
-  lines.push("| --- | --- | --- | --- | --- | --- |");
+  lines.push("| provider | model（配置里的 apiModel） | lanes | 配置 | `GET /models` | 模型数 | 该 model 在列表 |");
+  lines.push("| --- | --- | --- | --- | --- | --- | --- |");
   for (const { provider, probe } of rows) {
+    const lanes = Array.isArray(provider.lanes) && provider.lanes.length ? provider.lanes.join(", ") : "—";
     if (!provider.configured) {
-      lines.push(`| \`${provider.name}\` | \`${provider.model}\` | 未配置 | 未探查 | — | — |`);
+      lines.push(`| \`${provider.name}\` | \`${provider.model}\` | ${lanes} | 未配置 | 未探查 | — | — |`);
       continue;
     }
     const http = probe.error ? "网络失败" : `${probe.status}`;
     const count = probe.ids ? String(probe.ids.length) : "—";
     const hit = probe.ids ? (probe.ids.includes(provider.model) ? "✅" : "❌") : "—";
     lines.push(
-      `| \`${provider.name}\` | \`${provider.model}\` | 已配置 | ${cell(http)} | ${count} | ${hit} |`
+      `| \`${provider.name}\` | \`${provider.model}\` | ${lanes} | 已配置 | ${cell(http)} | ${count} | ${hit} |`
     );
   }
   lines.push("");
@@ -302,7 +298,7 @@ function reconcileSection(rows, record) {
     lines.push(`- \`${provider.name}\` / \`${provider.model}\`：${reconcile(provider, probe)}${correlation(record, provider, probe)}`);
   }
   for (const { provider } of rows.filter((r) => !r.provider.configured)) {
-    lines.push(`- \`${provider.name}\` / \`${provider.model}\`：未配置（缺 \`${KEY_ENV[provider.name] || "对应的 API key"}\`），本次不是它。`);
+    lines.push(`- \`${provider.name}\` / \`${provider.model}\`：未配置（缺 \`${provider.keyEnv || "对应的 API key"}\`），本次不是它。`);
   }
   if (configured.length === 0) {
     lines.push("- ⚠️ 一条腿都没配 key：无法用 `/models` 对账，只能看第 1 段的失败记录。");
@@ -311,7 +307,7 @@ function reconcileSection(rows, record) {
   }
   // Go 列表端点的鉴权口径与 chat 不一致（实测）：同一 key chat 调用成功、/models 却回 401
   // api_key_expired —— 所以 401 只等于「列表端点被拒」，不能直接推成「key 一定不可用」。
-  if (configured.some((r) => /^opencode-go-/.test(r.provider.name) && (r.probe.status === 401 || r.probe.status === 403))) {
+  if (configured.some((r) => r.provider.endpoint === "opencode-go" && (r.probe.status === 401 || r.probe.status === 403))) {
     lines.push("");
     lines.push(
       "- 注意（实测口径）：OpenCode Go 的 `/models` 与 chat 的鉴权**可能不一致** —— 同一 key 实测 chat 调用成功、`/models` 却回 401 `api_key_expired`。所以 Go 腿的 401 只说明「列表端点被拒」，不等价于「key 一定不可用」，请结合第 1 段失败记录判断。"
@@ -358,7 +354,7 @@ export async function buildEvidence() {
     "# AI provider 失败诊断证据",
     "",
     "由 `scripts/diagnose-providers.mjs` 在 AI 叙述全失败后自动采集（纯脚本，不依赖 LLM）。",
-    "provider 链与 model id 取自 `scripts/daily/lib/ai.mjs`，此处不复制第二份。",
+    "provider 链与 model id 取自 `config/providers.json`，此处不复制第二份。",
     "",
     ...failureSection(record),
     "",

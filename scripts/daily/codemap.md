@@ -7,9 +7,9 @@
 - `index.mjs` —— 编排器：`collectDailyData()` → `generateNarrative()` → `renderReportPage()` / `renderMarkdown()` → `writeAtomic()`，产出 `docs/report/YYYY-MM-DD.{html,md}`、`docs/data/YYYY-MM-DD.json`（结构化真相源，含 `dataHash`）、`docs/index.html`（最新一天 + 归档 ≤60 天 + 30 天总结卡片）。
 - `render.mjs` —— 共享 UI/渲染层：页面外壳、全站 CSS、双语机制、各活动分区与安全 markdown 子集；**被 `scripts/summary/` 复用**（跨目录共享点，见 Integration）。
 - `verify.mjs` —— `docs/` 生成物不变式自检（A–J 检查项，逐条 `OK`/`FAIL`，失败 exit 1）。
-- `check.mjs` —— 本地预检总入口：`node --check` 语法 + 三个确定性测试 + `verify.mjs`，任一失败 exit 1。
+- `check.mjs` —— 本地预检总入口：`node --check` 语法 + 五套确定性测试 + `providers check`（配置 schema + workflow 接线）+ `verify.mjs`，任一失败 exit 1。
 - `test-ai.mjs` / `test-render.mjs` —— 确定性回归：本地假 HTTP 服务器冒充 SenseNova / 纯函数断言，**不触网、不需要 key**。
-- `lib/` —— 采集与 AI 适配的内部实现，有自己的 codemap（`scripts/daily/lib/codemap.md`），此处只按路径引用。
+- `lib/` —— 采集、AI 适配与 provider 配置的内部实现，有自己的 codemap（`scripts/daily/lib/codemap.md`），此处只按路径引用。`lib/providers.mjs` 是 `config/providers.json` 的唯一读取者；`scripts/providers.mjs`（CLI）与 `scripts/test-providers.mjs`（回归）在上一层。
 
 ## Design
 
@@ -19,7 +19,7 @@
 - **页面即纯函数**：`renderReportPage({ data, ai })` / `renderIndexPage({ days, generatedAt, username, summaryCardHtml })` / `renderMarkdown({ data, ai })`，全部字符串拼接；`htmlDoc({ title, body, assetPrefix, extraCss })` 是文档外壳，`pageStyle(assetPrefix, extraCss)` 是全站 CSS（含 Chomsky `@font-face` —— 资产保留，但标题栈已改版为系统衬线、不再引用它），`extraCss` 是 summary 页注入专属样式的唯一钩子。
 - **渲染单元抽象**：`section(icon, titleEn, titleZh, pillHtml, body)` 卡片骨架、`pill(total, fallback)`（**0 是合法总数**，不回退成行数）、`statsStrip(totals)` 数字条、`truncationNotice()` 采集上限提示。
 - **安全边界**：所有动态串过 `esc()`，链接过 `safeHref()`；不可信文本（他人评论、release notes）只走白名单子集——`aiInlineToHtml`（仅 `code`+`**bold**`）、`mdInlineToHtml`、`mdBlockToHtml`（先转义再展开、fence 未闭合也收尾、GFM 管道表格成真表、`maxChars` 截断），内部链接一律相对路径（站点挂在 subpath）。
-- **`check.mjs` 编排**：`spawnSync(process.execPath, ...)` 依次跑 ① `node --check` 11 个脚本（daily 侧 `lib/ai` `lib/days` `render` `lib/github` `index` + summary 侧 `collect` `prompt` `validate-summary` `render` `backfill` `index`）→ ② `test-ai.mjs` → ③ `test-render.mjs` → ④ `summary/test-summary.mjs` → ⑤ `verify.mjs --quiet`，汇总数失败项后统一 exit。
+- **`check.mjs` 编排**：`spawnSync(process.execPath, ...)` 依次跑 ① `node --check` 全部脚本（daily 侧 `lib/ai` `lib/providers` `lib/days` `render` `lib/github` `index` + 根级 `providers`/`test-providers`/`cst`/活动卡片线/诊断两件套 + summary 侧 `collect` `prompt` `validate-summary` `render` `backfill` `index`）→ ② `test-ai.mjs` → ③ `test-render.mjs` → ④ `summary/test-summary.mjs` → ⑤ `test-activity-window.mjs` → ⑥ `test-providers.mjs` → ⑦ `providers check` → ⑧ `verify.mjs --quiet`，汇总数失败项后统一 exit。
 
 ## Flow
 
@@ -28,7 +28,7 @@
 1. 校验 `DATE_RE`；读上一日 JSON（`previousData`，原样传给采集层）与本日已存 JSON（`existing`，同时充当快照源与 `dataHash` 比较基准）。
 2. `collectDailyData({ token, username, date, previousData, existingData: FORCE ? null : existing })` —— 定稿日的评论数快照默认冻结自 `existing`；`--force` 传 `null` 连快照一起重取（口径/提示词变更的逃生口）。
 3. `contentHash` 比较：无变化且不缺 AI → 返回 `{ changed: false }`（不进 AI、不写盘）。
-4. AI 分支：无可见活动 → 跳过（页面走空状态卡）；`--no-ai` → 跳过；否则 `generateNarrative({ data, providers: defaultProviders() })`。**失败降级**：数据未变且 `existing.ai` 在 → 沿用上一次叙述；否则 `ai = null`（页面显示「AI 摘要暂不可用」）。
+4. AI 分支：无可见活动 → 跳过（页面走空状态卡）；`--no-ai` → 跳过；否则 `generateNarrative({ data, providers: defaultProviders(), budgetMs: laneBudgetMs("daily") })`（链 = `config/providers.json` 的 `lanes.daily`，整条链有 8 分钟总预算）。**失败降级**：数据未变且 `existing.ai` 在 → 沿用上一次叙述；否则 `ai = null`（页面显示「AI 摘要暂不可用」）。
 5. 回填 `data.ai` / `data.aiProvider` / `data.dataHash` → `renderReportPage` + `renderMarkdown`。
 6. `--dry-run` 到此返回（只打印字节数）；否则 `writeAtomic` 三件套：`docs/data/<date>.json`、`docs/report/<date>.html`、`docs/report/<date>.md`。
 7. 回到 `main()`：任一日期 `changed` → `listDays()` 重写 `docs/index.html`（`summaryCardHtml()` 读 `docs/summary.json`，缺失时安静地返回 null 不报错）；**全部无变化 → index 不动**。
@@ -48,9 +48,9 @@
   - `scripts/summary/index.mjs` —— `import { renderIndexPage } from "../daily/render.mjs"` 重写 `docs/index.html`（带总结卡片）。
   - 手动发布流程：`node scripts/daily/index.mjs` → `node scripts/daily/check.mjs` → push → 手动 dispatch workflow。
 - **Depends on:**
-  - `scripts/daily/lib/github.mjs`（采集）、`lib/ai.mjs`（`generateNarrative` + `defaultProviders` provider 链）、`lib/days.mjs`（+08 日期推算、`contentHash`、`writeAtomic`、`listDays`、路径常量）—— 内部实现见 `scripts/daily/lib/codemap.md`。
+  - `scripts/daily/lib/github.mjs`（采集）、`lib/ai.mjs`（`generateNarrative` + `generateStructured` + `defaultProviders`）、`lib/providers.mjs`（`config/providers.json` → chain，`laneBudgetMs`）、`lib/days.mjs`（+08 日期推算、`contentHash`、`writeAtomic`、`listDays`、路径常量）—— 内部实现见 `scripts/daily/lib/codemap.md`。
   - `scripts/summary/render.mjs` 的 `summaryCard`（`index.mjs` 反向 import，读 `docs/summary.json`）—— 与 summary 形成双向但不对称的依赖（daily 只要卡片片段，summary 复用整层渲染）。
-  - 环境变量 `GITHUB_TOKEN`、`GITHUB_REPOSITORY_OWNER`（及 AI 侧 `SENSENOVA_API_KEY` 等，密钥细节归 `lib/codemap`）。
+  - 环境变量 `GITHUB_TOKEN`、`GITHUB_REPOSITORY_OWNER`（及 AI 侧 `config/providers.json` 各 endpoint 的 `keyEnv`，密钥细节归 `lib/codemap`）。
   - 实体资产 `docs/favicon.svg`、`docs/assets/fonts/chomsky.woff2`（verify C 检查的前提）。
 
 ## Notes

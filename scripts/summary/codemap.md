@@ -29,7 +29,7 @@
 1. **进入**：`index.mjs main()` → `collectSummaryData({ username })` 逐日读 `docs/data/<date>.json`（缺失则试 `data/backfill/<date>.json`，再缺失记入 `missing`），`normalizeDay()` 补齐缺段，累加 totals、合并 commits/items、统计每仓库数字，产出 `{ windowStart/End, missing, totals, automatedCommits, sources, backfilled, backfillLimits, daily, aiPayload, dataHash }`。
 2. **去重判断**：读已存 `docs/summary.json`；`dataHash` 相同且非 `--force` 且已有叙述 → 跳过 AI 与写入（无变化跳过）。`missingAi`（hash 同但上一次没拿到叙述）例外：仍重试 AI，与日报 missingAi 逻辑对齐。
 3. **AI 前置门**：`--no-ai` 或 `hasAnyActivity()` 判定窗口无可叙述活动（空跑日）→ 跳过 AI；若窗口未变且已有叙述则沿用。
-4. **AI 段**：`buildItemIndex(collected.daily)` 建白名单 → `buildSummaryPrompts({ collected })` 把 `aiPayload` 压成 user prompt → `generateStructured({ system, user, validate, providers: defaultProviders(), feedback: summaryFeedback })`（总结线重排后：deepseek → sensenova）。校验失败经 `summaryFeedback` 转成纠正提示重试。
+4. **AI 段**：`buildItemIndex(collected.daily)` 建白名单 → `buildSummaryPrompts({ collected })` 把 `aiPayload` 压成 user prompt → `generateStructured({ system, user, validate, providers: providersForLane("summary"), feedback: summaryFeedback })`（链 = `config/providers.json` 的 `lanes.summary`，现状 deepseek → sensenova；总结线不设 lane 预算）。校验失败经 `summaryFeedback` 转成纠正提示重试。
 5. **状态转移（AI 结果）**：
    - 成功 → `ai = res.value`
    - 全失败且已有带叙述的 `summary.json` → 沿用旧 `ai`，**`!DRY_RUN` 时直接 return，不写任何文件**（页面不降级）
@@ -39,7 +39,7 @@
 
 ## Integration
 - Consumed by: `.github/workflows/update-summary.yml`（cron `17 22 * * *` UTC，CI 里跑 `node scripts/summary/index.mjs` 并回推生成物）；`scripts/daily/check.mjs`（语法检查 + 本目录 `test-summary.mjs` + `verify.mjs`，含总结窗口数字一致性自检）；`scripts/daily/render.mjs` 的 `renderIndexPage()`（接收本线产出的 `summaryCardHtml` 片段）。用户侧入口：Pages 的 `index.html` 卡片与 `summary.html`。
-- Depends on: `scripts/daily/lib/days.mjs`（`cstDayMinus`/`dateRange`/`readJsonIfExists`/`writeAtomic`/`contentHash`/`DATA_DIR`/`BACKFILL_DIR`/各路径常量）；`scripts/daily/lib/ai.mjs`（`generateStructured`/`defaultProviders`/`fitHeadline`/`fitText`/`countSentences`）；`scripts/daily/render.mjs`（页面皮与双语组件全套）；`scripts/daily/lib/github.mjs`（`collectHistoricalData`，仅 backfill 用）。
+- Depends on: `scripts/daily/lib/days.mjs`（`cstDayMinus`/`dateRange`/`readJsonIfExists`/`writeAtomic`/`contentHash`/`DATA_DIR`/`BACKFILL_DIR`/各路径常量）；`scripts/daily/lib/ai.mjs`（`generateStructured`/`fitHeadline`/`fitText`/`countSentences`）；`scripts/daily/lib/providers.mjs`（`providersForLane("summary")`，链来自 `config/providers.json`）；`scripts/daily/render.mjs`（页面皮与双语组件全套）；`scripts/daily/lib/github.mjs`（`collectHistoricalData`，仅 backfill 用）。
 
 ## Notes
 - `data/backfill/` **不在 `docs/` 下**，因此不站点可见、不出现在归档列表 —— 它只是 collect 的次级数据源；`--rerender` 会重写整个 `docs/index.html`，依赖 `listDays()` 与日报一致。

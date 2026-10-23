@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "endpoints": {
+    "nvidia": {
+      "baseUrl": "https://integrate.api.nvidia.com/v1",
+      "keyEnv": "NVIDIA_API_KEY",
+      "keyEnvAliases": [
+        "Nvidia"
+      ]
+    },
+    "opencode-go": {
+      "baseUrl": "https://opencode.ai/inference/go/openai/v1",
+      "modelsUrl": "https://opencode.ai/inference/go/v1/models",
+      "keyEnv": "OPENCODE_API_KEY",
+      "headers": {
+        "user-agent": "sogeisetsu-daily-report/1.0 (+https://github.com/sogeisetsu/sogeisetsu)",
+        "x-opencode-session": "sogeisetsu-daily-report-${session}"
+      }
+    },
+    "sensenova": {
+      "baseUrl": "https://token.sensenova.cn/v1",
+      "keyEnv": "SENSENOVA_API_KEY"
+    }
+  },
+  "models": {
+    "nvidia-minimax-flash": {
+      "endpoint": "nvidia",
+      "apiModel": "minimaxai/minimax-m3.1-flash",
+      "params": {
+        "reasoningEffort": "low"
+      },
+      "note": "P0：low 比 none 更快且中英对称（8.9–9.8s，3/3 过校验）；连续快调会 429（真实路径未复现）"
+    },
+    "nvidia-nemotron-ultra": {
+      "endpoint": "nvidia",
+      "apiModel": "nvidia/nemotron-3-ultra-550b-a55b",
+      "note": "P0：none 27–33s、事实 3/3；改 low 会到 37–106s（逼近 180s 超时），别改"
+    },
+    "opencode-go-deepseek": {
+      "endpoint": "opencode-go",
+      "apiModel": "deepseek-v4.1-flash",
+      "note": "Go 套餐内额度；总结线的链首（长输出 + 强校验只有它稳定过）"
+    },
+    "sensenova": {
+      "endpoint": "sensenova",
+      "apiModel": "glm-5.2",
+      "params": {
+        "extraBody": {
+          "thinking": {
+            "type": "disabled"
+          }
+        }
+      },
+      "note": "额度独立于 Go 账号；必须关思考，否则 reasoning 吃光预算、content 恒为空"
+    }
+  },
+  "lanes": {
+    "daily": {
+      "order": [
+        "nvidia-minimax-flash",
+        "nvidia-nemotron-ultra",
+        "opencode-go-deepseek",
+        "sensenova"
+      ],
+      "budgetMs": 480000
+    },
+    "summary": {
+      "order": [
+        "opencode-go-deepseek",
+        "sensenova"
+      ]
+    }
+  }
+}

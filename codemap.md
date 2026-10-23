@@ -1,7 +1,7 @@
 # Repository Atlas: sogeisetsu
 
-> **映射基线**：`d93ea4d`（2026-10-21）· **覆盖范围**：`scripts/**` + `ops/**` 的代码与配置。
-> **判断是否过期**：`git log --oneline d93ea4d..HEAD -- scripts ops` —— 有输出即说明映射覆盖的代码已变，动手前先复核受影响目录的 `codemap.md`。
+> **映射基线**：`10a42fd`（2026-10-23）· **覆盖范围**：`scripts/**` + `ops/**` 的代码与配置。
+> **判断是否过期**：`git log --oneline 10a42fd..HEAD -- scripts ops` —— 有输出即说明映射覆盖的代码已变，动手前先复核受影响目录的 `codemap.md`。
 > **为什么不是「和 HEAD 比提交号」**：本仓每 2 小时就有 bot 自动提交生成物（`docs/` / `README.md` / `assets/`），那些提交与架构无关。裸比提交号会在两小时内必然报"过期"，等于没有信号——所以过期判断必须限定到 `scripts` 与 `ops` 这两条路径。
 
 ## Project Responsibility
@@ -50,6 +50,7 @@ CI：`.github/workflows/` 下四个 workflow —— `update-daily-report.yml`（
 
 | Directory | 性质 |
 | --- | --- |
+| `config/` | **人员维护的配置，不进扫描**：`providers.json` 是 AI provider 链 / 模型 / 参数 / lane 预算的唯一事实来源（`scripts/daily/lib/providers.mjs` 读取，`scripts/providers.mjs` 改写）。不在 `scripts/**` + `ops/**` 的映射范围内，所以这里的表只登记它、不展开。 |
 | `docs/` | **生成物**（Pages Source）：`index.html` / `data/<date>.json` / `report/<date>.{html,md}` / `summary.json` / `summary.html` / `favicon.svg` / `assets/fonts/chomsky.woff2`。可丢弃、**绝不手改或手工合并**，本地重新生成覆盖。 |
 | `data/backfill/` | 生成物：一次性 Search API 回填的日数据（带 `source` / `backfillLimits`）。**故意放在 `docs/` 外**，故站点不可见、不进归档列表，仅作总结的次级数据源。 |
 | `assets/` | 生成物：`30-day-activity.svg`。 |
@@ -63,9 +64,12 @@ GitHub API ──┬─ collectDailyData() ──> 日报 JSON ──> generateN
              ├─ GraphQL+events ────> renderActivityCard() ──> assets/*.svg + README 区块
              └─ docs/data ∪ data/backfill ──> collectSummaryData() ──> validate ──> docs/summary.*
                                                   (summary/collect.mjs)   (summary/validate-summary.mjs)
+
+config/providers.json ──> providersForLane("daily"|"summary") ──> generateNarrative / generateStructured
+       (AI 链 / 模型 / 参数 / 预算)      (lib/providers.mjs)              (lib/ai.mjs 的责任链 + lane 预算)
 ```
 
-三条线共享两处：`lib/days.mjs`（日期与哈希口径）与 `lib/ai.mjs`（provider 链 + `generateStructured` 重试循环）；渲染层由 `daily/render.mjs` 供 summary 侧复用。各段内部流程见对应子 map。
+三条线共享两处：`lib/days.mjs`（日期与哈希口径）与 `lib/ai.mjs`（provider 责任链 + `generateStructured` 重试循环）；AI 链本身由根级 `config/providers.json` 决定（`lib/providers.mjs` 解析）。渲染层由 `daily/render.mjs` 供 summary 侧复用。各段内部流程见对应子 map。
 
 ## Notes
 

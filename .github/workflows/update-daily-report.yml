@@ -8,6 +8,9 @@ on:
     paths:
       - "scripts/daily/**"
       - "scripts/notify-ai-failure.mjs"
+      # provider 链 / 模型 / 参数 / lane 预算的单一事实来源：改它就等于改 AI 生成行为，
+      # 合并后立刻跑一次真实日报（这条也是 A1 的验收证据）。
+      - "config/**"
       - ".github/workflows/update-daily-report.yml"
   schedule:
     # 每 2 小时（UTC）：每次定稿「昨天」+ 滚动刷新「今天」。
@@ -62,6 +65,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
+          # 日报链首两条腿（config/providers.json 的 lanes.daily）；provider check 会挡漏配
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
 
       - name: AI 失败可见性（开/关 issue + 回写 + 重渲染）
         id: notify
@@ -107,6 +112,8 @@ jobs:
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
+          # 诊断会探每个 enabled endpoint 的 /models，缺 key 会误报「未配置」
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
         run: node scripts/diagnose-providers.mjs
 
       - name: 诊断-叙述（LLM，追加结论；LLM 起不来就只留证据）

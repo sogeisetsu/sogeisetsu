@@ -34,6 +34,7 @@ import { appendFileSync } from "node:fs";
 
 import { collectDailyData } from "./lib/github.mjs";
 import { defaultProviders, generateNarrative, narrativeWordingOk } from "./lib/ai.mjs";
+import { laneBudgetMs } from "./lib/providers.mjs";
 import { renderIndexPage, renderMarkdown, renderReportPage, hasVisibleActivity } from "./render.mjs";
 import {
   AI_FAILURE_PATH,
@@ -173,6 +174,8 @@ async function processDate(date) {
     const res = await generateNarrative({
       data,
       providers: defaultProviders(),
+      // 整条日报链的总预算（config/providers.json 的 lanes.daily.budgetMs；没配 = 不设上限）
+      budgetMs: laneBudgetMs("daily"),
       onProviderFailure: (a) => attempts.push(a),
     });
     if (res) {

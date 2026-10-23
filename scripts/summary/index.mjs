@@ -7,7 +7,8 @@
  * 数据流：
  *   collectSummaryData()  → 最近 30 个已定稿 +08 自然日的聚合（docs/data ∪ data/backfill）
  *                           数字条全部由代码逐日求和，不经 AI
- *   generateStructured()  → 主商汤 / 备 OpenCode Go（deepseek），按严格 schema 产出 en+zh 结构化叙述（失败则 null）
+ *   generateStructured()  → 按 `config/providers.json` 的 `lanes.summary`（deepseek → sensenova）
+ *                           产出 en+zh 结构化叙述（失败则 null）
  *   renderSummaryPage()   → docs/summary.html（独立页，中英内联切换）
  *   summaryCard()         → docs/index.html 顶部的总结卡片片段
  *   docs/summary.json 为结构化真相源（只留最新一份），含 dataHash 供「无变化跳过」。
@@ -36,7 +37,8 @@
 
 import { appendFileSync } from "node:fs";
 
-import { defaultProviders, generateStructured, orderProvidersForSummary } from "../daily/lib/ai.mjs";
+import { providersForLane } from "../daily/lib/providers.mjs";
+import { generateStructured } from "../daily/lib/ai.mjs";
 import {
   AI_FAILURE_PATH,
   INDEX_PATH,
@@ -227,10 +229,11 @@ async function main() {
       system,
       user,
       validate: (raw) => validateSummary(raw, { ...index, missing: collected.missing }),
-      // 总结线的 provider 顺序与日报不同（重排只在这条线上做，绝不推回 defaultProviders）：
-      // 历史上是因为 longcat-2.5-preview-free 结构上做不了 30 天总结（连接约 306s 后被掐断），
-      // 而 deepseek-v4.1-flash 是唯一稳定腿 → 总结先 deepseek。免费腿下线后这里是空操作。
-      providers: orderProvidersForSummary(defaultProviders()),
+      // 总结线读自己那条 lane（config/providers.json 的 lanes.summary）：顺序就是那份配置，
+      // 不再在调用点重排。历史上 longcat-2.5-preview-free 做不了 30 天总结（连接约 306s 后被掐断），
+      // 所以 summary lane 把 deepseek 放在第一位 —— 那条历史现在只体现在配置里。
+      // 总结线不设 budgetMs（现状：deepseek 实测 51.8–83.0s + sensenova 兜底）。
+      providers: providersForLane("summary"),
       feedback: summaryFeedback,
       onProviderFailure: (a) => attempts.push(a),
     });

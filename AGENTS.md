@@ -8,7 +8,7 @@
 
 | 产物 | 入口 | 触发 |
 | --- | --- | --- |
-| 日报 → `docs/data/`、`docs/report/`、`docs/index.html` | `scripts/daily/index.mjs` | `update-daily-report.yml`：cron `17 */2 * * *`，另有 push 触发（白名单 `scripts/daily/**`、`scripts/notify-ai-failure.mjs`、它自己） |
+| 日报 → `docs/data/`、`docs/report/`、`docs/index.html` | `scripts/daily/index.mjs` | `update-daily-report.yml`：cron `17 */2 * * *`，另有 push 触发（白名单 `scripts/daily/**`、`scripts/notify-ai-failure.mjs`、`config/**`、它自己） |
 | 近 30 天总结 → `docs/summary.{json,html}` + 首页卡片 | `scripts/summary/index.mjs` | `update-summary.yml`：cron `17 22 * * *`（UTC）—— **没有 push 触发，改完必须手动 dispatch** |
 | 近 30 天活动卡片 → `assets/30-day-activity.svg` + `README.md` | `scripts/generate-activity.mjs` | `update-activity.yml`：cron `30 */2 * * *`（无 AI） |
 
@@ -26,7 +26,7 @@
 
 ## 本地运行
 
-环境变量：`GITHUB_TOKEN`（`gh auth token`；**可省** —— 无 token 只跑公开段，stars / discussions 等 GraphQL 段静默降级为空）、`OPENCODE_API_KEY` / `SENSENOVA_API_KEY`（provider key；**不得提交明文、不得轮换用户的 key**）、`SENSENOVA_MODEL`（可选，覆盖商汤模型名）、`GITHUB_REPOSITORY_OWNER`（默认 `sogeisetsu`，异地复跑用）。
+环境变量：`GITHUB_TOKEN`（`gh auth token`；**可省** —— 无 token 只跑公开段，stars / discussions 等 GraphQL 段静默降级为空）、provider key（**不得提交明文、不得轮换用户的 key**）—— 需要哪些只看 `config/providers.json` 的 `keyEnv`：`NVIDIA_API_KEY`（本地 OpenChamber 项目变量叫 `Nvidia`，配置里以 `keyEnvAliases` 表达）/ `OPENCODE_API_KEY` / `SENSENOVA_API_KEY`、`GITHUB_REPOSITORY_OWNER`（默认 `sogeisetsu`，异地复跑用）。
 
 ```
 node scripts/daily/index.mjs                      # 昨天（定稿）+ 今天（滚动）；--date=YYYY-MM-DD 只跑一天
@@ -35,39 +35,84 @@ node scripts/daily/index.mjs --no-ai [--dry-run]   # 跳过 AI / 只打印不写
 node scripts/summary/index.mjs                     # 近 30 天总结（--rerender / --no-ai / --dry-run / --force 同理）
 node scripts/summary/backfill.mjs --from=… --to=… [--force] [--dry-run]   # 一次性 Search 回填，不挂 workflow
 node scripts/preview.mjs                           # fixtures → scripts/preview-*.svg（活动卡片目测）
-node scripts/daily/check.mjs                       # 全量预检：语法检查 + 4 套测试 + verify（提交前必跑）
+node scripts/daily/check.mjs                       # 全量预检：语法检查 + 5 套测试 + providers check + verify（提交前必跑）
 node scripts/daily/verify.mjs [--quiet]            # 只跑 docs/ 不变式自检
+# provider 配置（改链路 / 改参数 / 加腿；写操作先打印 diff，--yes 才落盘）：
+node scripts/providers.mjs list --lane=daily       # 链顺序 + 每条的 key 状态
+node scripts/providers.mjs status                  # 本机 env / repo secret / 配置 三方对照（只读）
+node scripts/providers.mjs check                   # 配置 schema + workflow 接线硬断言（只读）
+node scripts/providers.mjs probe --lane=daily --prompt=real   # 按生产同一套 prompt 探一遍（要 key）
 # 单套测试（改哪块跑哪块，比全量快；都是零依赖、不触网、不需要 key）：
 node scripts/daily/test-ai.mjs         # AI 适配层（假 HTTP 服务器）
 node scripts/daily/test-render.mjs     # 渲染 / 规范化
 node scripts/summary/test-summary.mjs  # 30 天总结链路
 node scripts/test-activity-window.mjs  # 活动卡片口径 / 可见性
+node scripts/test-providers.mjs        # provider 配置 / lane 解析 / 写操作 / 接线断言 / lane 预算
 ```
 
 - 本地看页面：没有 dev server。`python -m http.server <port> --directory docs`，再开 `http://localhost:<port>/index.html`。**`.wrap > *` 有入场动画（最多约 1.1s），刚打开就截图会拍到空白** —— 中间插一次 snapshot / scroll 再 capture。
 - 无变化时脚本**自行跳过 AI 与写入** —— 这是设计，不是 bug。
 - `--force`：绕过 dataHash 跳过，强制重取 + 重调 AI（改了提示词 / 数据口径后用）。日报侧会顺带重取定稿日的评论数**实时值**，属口径变更，慎用。
-- 两个 provider key 都没有时，日报 / 总结只能出「确定数字 + AI 暂不可用」版（`--no-ai` 的行为）；真实叙述由 CI 生成。
+- 配置里的 provider 一个 key 都没配时，日报 / 总结只能出「确定数字 + AI 暂不可用」版（`--no-ai` 的行为）；真实叙述由 CI 生成。
 - `check.mjs` 变红先看 `verify.mjs` 的 summary 窗口那项：它比的是「**最近一次该写出的**总结窗口」（`cstDayMinus(30)..cstDayMinus(1)`；在今天那次总结的写入时点之前 —— cron `22:17` UTC = `06:17` +08，另留 1h 余量 —— 也接受前一天那次的窗口），所以**本地 `docs/` 落后一天、或当天总结还没到点都不算回归**；只有窗口停在两天前（总结连续没写出）才 FAIL。仍先 `git pull --rebase --autostash` 排除本地落后。
 
-## AI 生成：provider 链与失败可见性
+## AI 生成：provider 链、参数与失败可见性
 
-- 链顺序（`defaultProviders`，`scripts/daily/lib/ai.mjs`）：`opencode-go-deepseek`（`deepseek-v4.1-flash`，计入 Go 套餐额度）→ sensenova `glm-5.2`；Go 腿用 `OPENCODE_API_KEY`。**两条限时免费腿已于 2026-10-23 下线**：`opencode-go-longcat`（上游端点持续回 `402 Endpoint is unavailable` / 挂满超时，`/models` 里模型仍在列）与 `opencode-go-minimax`（`minimax-m3.1-flash-free` 认 `reasoning_effort` 但不收 `"none"`、压到 `low` 后能出内容但不够稳定）。要接回来：在 `defaultProviders` 里按原样 push 一条（minimax 需要 `reasoningEffort: "low"`）。
-- 商汤腿写死 `glm-5.2`（不再从 `GET /models` 动态挑）且带 `extraBody:{thinking:{type:"disabled"}}` 关思考 —— 不关则 reasoning 吃光预算、content 恒为空；`SENSENOVA_MODEL` 可覆盖。
-- **总结线单独重排**：`orderProvidersForSummary` 把 deepseek 提到最前（历史上是因为 `longcat-2.5-preview-free` 做不了 30 天总结）。免费腿下线后 `defaultProviders` 已是 deepseek 打头，这个重排成了空操作 —— 函数与测试保留，将来接回免费腿时不用再想一遍顺序。重排只加在总结线，别推回 `defaultProviders`。
-- `MAX_TOKENS = 49152`（截断时翻倍到上限 65536）；`CHAT_TIMEOUT_MS = 180000`。abort / 网络异常**不重试**，直接换下一条。
+**唯一事实来源是 `config/providers.json`**（提交进仓；JSON 而非 JS：CLI 改写安全、diff 干净）。`scripts/daily/lib/providers.mjs` 解析它，`scripts/daily/lib/ai.mjs` 只保留执行细节（`generateStructured` / `attemptProvider`），页面 / 诊断 / 测试都不再各抄一份链。
+
+- `endpoints`：每个端点一组 `baseUrl` / `keyEnv`，可选 `keyEnvAliases`（本地便利，如 OpenChamber 项目变量叫 `Nvidia`）/ `headers` / `modelsUrl` / `shape`（`chat`|`responses`）。`headers` 里的 `${session}` 在**一次调用**里展开成同一个 UUID（一次运行 = 一个会话，Go 的路由与提示缓存有依据）。
+- `models`：`slug`（**稳定身份** —— `attempts[].provider`、页面徽章、历史数据都用它）→ `endpoint` + `apiModel`（真实 API id）+ 可选 `enabled` / `note` / `params`。
+- `params` 只有三个字段：`reasoningEffort`（chat 的 `reasoning_effort`，默认 `"none"`）、`extraBody`（合并进 chat 请求体）、`responseFormat`（`false` = 从不发 `json_object`）。**刻意没有** per-model `maxTokens` / `maxTokensCap` / `temperature` / `timeoutMs`：P0 实测三条 NIM 腿对 `max_tokens=49152` 全部 200，慢腿由 lane 预算统一兜住 —— 少开口子 = 少一处能配错的地方。
+- `lanes`：`daily` / `summary` 各自 `order`（slug 数组）+ 可选 `budgetMs`。日报 `480000`（8 分钟），总结线不设预算。
+- 链现状（2026-10-23）：`daily` = `nvidia-minimax-flash`（`reasoningEffort:"low"`）→ `nvidia-nemotron-ultra` → `opencode-go-deepseek` → `sensenova`；`summary` = `opencode-go-deepseek` → `sensenova`（30 天总结要长输出 + 强校验，只有 deepseek 稳定过；免费额度的限流会拖垮唯一稳定的腿）。
+- 商汤腿必须带 `extraBody:{thinking:{type:"disabled"}}` 关思考 —— 不关则 reasoning 吃光预算、content 恒为空。`SENSENOVA_MODEL` 覆盖已删除：配置就是唯一入口，留着两处会漂。
+- 配置缺失 / JSON 损坏 / schema 不合法 → `providers.mjs` warn 并回落内置 `FALLBACK_CHAIN`（deepseek → sensenova），CI 不因一个坏 JSON 全挂；`node scripts/providers.mjs check`（`check.mjs` 会跑）让坏配置在提交前就红。
+- `MAX_TOKENS = 49152`（截断时翻倍到上限 65536）；`CHAT_TIMEOUT_MS = 180000`。lane 预算的收敛方式：每次发请求前剩余 ≤1s 就放弃，否则 `timeout = min(180s, 剩余)`；预算在腿之间耗尽 → 对**剩余每条腿各补一条合成 attempt**（`未尝试（超出 lane 预算 8 分钟）`）并照常走失败可见性链路，**绝不静默截断**。abort / 网络异常不重试，直接换下一条。
 - **全失败的可见性**：编排器写 `data/ai-failure.json`（**gitignore 的 run 状态，不发布、不提交**）+ 把 `aiFailure` 写进 `docs/data/<date>.json` / `docs/summary.json`；`node scripts/notify-ai-failure.mjs` 开 / 追加**常驻** issue（label `ai-failure`）、把 issue 号回写进数据文件并重渲染页面。两个 workflow 都保持 0 退出（生成物照常提交），可见性靠 issue + `::warning::` + `$GITHUB_STEP_SUMMARY` —— 为此这两个 workflow 需要 `issues: write`。
 - **动 notifier 之前先读它的头注释**，两条都是实测踩过的坑，别"简化"掉：① 记录里的 `state:"ok"|"failed"` 才是恢复信号 —— **「没有记录」不等于已恢复**（CI 每次全新 checkout，文件在运行开始时必然不存在，一次跳过 AI 的运行会误关仍然有效的 issue）；② issue 列表（search 与 REST 也一样）在新建后有几秒可见延迟 —— 所以它走 REST `/issues`、只在"准备创建"前多确认几次，并在看到多条 open 时保留编号最小的一条、其余追加说明后关闭（自愈）。
-- **AI 全失败后的自动诊断（触发点）**：只有**本次新建**了常驻 issue（＝ ok→failed 的首次转换）才诊断 —— notifier 在那条分支往 `$GITHUB_OUTPUT` 写 `should_diagnose` / `issue_number`，两个生成 workflow 于是在**「提交并推送」之后**跑三件套：安装 opencode CLI → `scripts/diagnose-providers.mjs`（纯脚本证据：失败记录 + 各 provider `/models` 现状 + 机械对账，**不依赖 LLM**）→ `scripts/diagnose-narrate.mjs`（`opencode run` 读证据与 `lib/ai.mjs` 追加结论，LLM 起不来就只留证据）→ `gh issue comment`（回帖是 workflow 的动作；agent 那步不注入任何 GitHub token，并先摘掉 checkout 的 git 凭据）。追加评论的路径不诊断 → 天然去重；同一失败事件另按产物首行的 `<!-- ai-diagnosis … -->` 标记再查一次重。
-- **`DIAGNOSE=1`（workflow_dispatch 勾 `diagnose`）是逃生口**：强制写 `should_diagnose`，让「追加评论」的路径也再诊断一次（手动补查 / 本地演练用）。诊断模型走仓库变量 `DIAG_MODEL`（默认 `opencode-go/longcat-2.5-preview-free`；Go 整体挂掉时换 `sensenova/glm-5.2`）。**凭据不依赖 auth.json**：`OPENCODE_CONFIG_CONTENT` 用 `{env:OPENCODE_API_KEY}` / `{env:SENSENOVA_API_KEY}` 注入仓库已有的两个 secret（实测 auth.json 为空也能调通），`OPENCODE_AUTH_CONTENT` 配了也只当额外来源。
-- **`/oc` 手动入口（`.github/workflows/opencode.yml`）**：门是 `comment.user.login == 'sogeisetsu'`（比 `author_association` 严）且评论含 `/oc`（先 `toLower`）—— **别人评论的表现是 job `skipped`，不是失败、不产生 run 计费**。它先跑同一个证据脚本，再把 `diagnose-providers.mjs --prompt` 的共用提示词 + 评论正文交给 `anomalyco/opencode/github@latest`。
+- **AI 全失败后的自动诊断（触发点）**：只有**本次新建**了常驻 issue（＝ ok→failed 的首次转换）才诊断 —— notifier 在那条分支往 `$GITHUB_OUTPUT` 写 `should_diagnose` / `issue_number`，两个生成 workflow 于是在**「提交并推送」之后**跑三件套：安装 opencode CLI → `scripts/diagnose-providers.mjs`（纯脚本证据：失败记录 + 各 provider `/models` 现状 + 机械对账，**不依赖 LLM**）→ `scripts/diagnose-narrate.mjs`（`opencode run` 读证据与配置 / `attemptProvider` 追加结论，LLM 起不来就只留证据）→ `gh issue comment`（回帖是 workflow 的动作；agent 那步不注入任何 GitHub token，并先摘掉 checkout 的 git 凭据）。追加评论的路径不诊断 → 天然去重；同一失败事件另按产物首行的 `<!-- ai-diagnosis … -->` 标记再查一次重。
+- **`DIAGNOSE=1`（workflow_dispatch 勾 `diagnose`）是逃生口**：强制写 `should_diagnose`，让「追加评论」的路径也再诊断一次（手动补查 / 本地演练用）。诊断模型走仓库变量 `DIAG_MODEL`（默认 `opencode-go/deepseek-v4.1-flash`；Go 整体挂掉时换 `sensenova/glm-5.2`）。**凭据不依赖 auth.json**：`OPENCODE_CONFIG_CONTENT` 用 `{env:OPENCODE_API_KEY}` / `{env:SENSENOVA_API_KEY}` 注入仓库已有的两个 secret（实测 auth.json 为空也能调通），`OPENCODE_AUTH_CONTENT` 配了也只当额外来源。
+- **`/oc` 手动入口（`.github/workflows/opencode.yml`）**：门是 `comment.user.login == 'sogeisetsu'`（比 `author_association` 严）且评论含 `/oc` —— **别人评论的表现是 job `skipped`，不是失败、不产生 run 计费**。它先跑同一个证据脚本，再把 `diagnose-providers.mjs --prompt` 的共用提示词 + 评论正文交给 `anomalyco/opencode/github@latest`。
 - 诊断产物 `data/ai-diagnosis.md` 与 `data/ai-failure.json` 同类：**gitignore 的 run 状态**，不发布、不提交；回帖正文里不出现 key / token（证据层异常文本一律过 `sanitizeReason`）。
+- NIM 的思考正文在 `message.reasoning_content`（不是 `reasoning`）；空输出诊断两种都读（只影响日志可读性，不影响判定）。
+
+### 为什么这几条腿在链里（P0 实测，2026-10-23）
+
+只测了 `docs/data/2026-10-22.json` 一份 fixture、1–3 次采样，prompt 与生产完全相同（`buildPrompts` + `validateNarrative`）；**事实 / 中英对称 / 格式**三项是人工比稿结论，脚本能自动挡住的只有「3/3 结构合法 + 单次 ≤90s」。
+
+| 腿 | `reasoning_effort` | 3 次耗时 | 事实 | 中英对称 | 格式 | 判定 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `minimaxai/minimax-m3.1-flash` | `low` | 8.9 / 9.8 / 9.8s | 3/3 | 3/3 | 合规 | **入链 · 链首** |
+| 同上 | `none` | 10.9 / 13.8 / 15.1s | 3/3 | 2/3（两次 en 漏 `#5293`） | 合规 | 次优（所以配 `low`） |
+| `nvidia/nemotron-3-ultra-550b-a55b` | `none` | 27.5 / 32.5 / 27.7s | 3/3 | 3/3 | 合规 | **入链 · 第二** |
+| 同上 | `low` | 37.6 / 105.7s | 2/2 合法 | — | — | 别改（逼近 180s 超时） |
+| `nvidia/nemotron-3.5-lightning-30b-a3b` | `none` | 6.6 / 16.2 / 18.9s | **2/3**（把 `#5293` 的关闭写成本人） | 3/3 | **3/3 不合规**（无加粗、两次无反引号） | **淘汰** |
+| 同上 | `low` | 180s × 3 全部 aborted | — | — | — | 不可用 |
+
+参数面：三条腿对 `reasoning_effort` none/low、`response_format:json_object`、`max_tokens` 8192–49152 全部 200，没有一项需要退让；`usage.completion_tokens_details.reasoning_tokens` 在 `none` 下为 0（真关掉）。`lightning` 是三条里最快的，但**唯一能用的设置下事实会错**、开思考就挂满 180s —— 要复议就带上这两条判据重测。
+
+局限（别当成保证）：CI 在 ubuntu-latest、本地探测在本机，NIM 的境内外可达性与延迟可能不同 —— 合并后第一次真实运行才是终局证据；更重的日子 prompt 更大（`SECTION_CAP=30` 封顶，不会爆炸）；minimax 连续快调会 429（2/7，真实路径未复现），线上开始频繁 429 先看是不是同一天跑了两次 AI（定稿 + 滚动）；免费层随时可能下架（`longcat-2.5-preview-free` / `minimax-m3.1-flash-free` 已在 2026-10-23 走过这条路），所以删一条腿的成本必须仍然只是「改 JSON 里一行」。
+
+## 加一条腿 / 改链路（一条命令）
+
+`node scripts/providers.mjs add <slug> --endpoint=<ep> --api-model=<id> [--param k=v]... [--lane=daily] [--yes]`
+
+1. 打印配置 unified diff（不带 `--yes` 只干跑：**不联网、不落盘**）。
+2. `--yes`：真实探测 3/3（默认 `--prompt=real`，与生产同一条代码路径；门槛 = 每次 ≤90s + 输出非空 + 过校验）—— **不通过就不写配置、不推密钥**。
+3. 落盘；secret 只做干跑预览（name / 长度 / sha256 前 8 位），`--push-secret` 才真的 `gh secret set NAME`（值走 stdin，绝不 `--body`，输出永不含明文）。
+4. 打印该抄的那行 `KEY: ${{ secrets.KEY }}`；`node scripts/providers.mjs check` 会指出还缺哪些 workflow / 哪一步。最后跑 `node scripts/daily/check.mjs`。
+
+- 接线是**硬断言**（`providers check`，纯文本扫描、先剔 `#` 注释行）：跑 `scripts/daily/index.mjs` 的 workflow 必须有 daily lane 每个 endpoint 的 `secrets.<KEY_ENV>`；跑 `scripts/summary/index.mjs` 的必须有 summary lane 的；跑 `scripts/diagnose-providers.mjs` 的必须有**每个 enabled endpoint** 的（诊断探所有 `/models`，缺 key 会误报「未配置」）。
+- 常用命令：`list --lane=daily`（链顺序 + key 状态）、`status`（本机 env / repo secret / 配置三方对照）、`probe --lane=daily --prompt=real`、`probe <slug> --compare=<slug>`（同一份数据并排看两腿输出）、`set <slug> params.reasoningEffort=low`、`enable|disable <slug>`、`lane add|move|remove`。
+- 所有写操作：先打印 unified diff，`--yes` 才落盘，`--dry-run` 显式只读（CI 与本地都能随便跑的只有 `status` / `check` / `list` / `show` / `probe`）。
+- **回滚只改往后**：`disable <slug>` 即可（测试断言的是 lane 顺序、不依赖某条腿 enabled，所以 `check.mjs` 仍绿）；**不重写历史日期**、不碰 `--force` —— 那是口径变更的逃生口。
+- `config/**` 在日报 workflow 的 push 白名单里：**合并即触发一次真实运行**，这既是验收也是第一次真实证据。
 
 ## 发布流程
 
 1. 生成 / 重渲染（见上）。
-2. `node scripts/daily/check.mjs` 全绿（= 语法检查 + test-ai + test-render + test-summary + test-activity-window + verify）。
-3. `git add scripts docs assets README.md data/backfill .github AGENTS.md` → 提交（**中文提交信息用 `git commit -F <msgfile>`，不要用 `-m` 传中文**）→ `git pull --rebase --autostash origin main` → `git push`。（代码修改走分支：新建分支 → 合并回 `main` → push）
+2. `node scripts/daily/check.mjs` 全绿（= 语法检查 + test-ai + test-render + test-summary + test-activity-window + test-providers + providers check + verify）。
+3. `git add scripts config docs assets README.md data/backfill .github AGENTS.md` → 提交（**中文提交信息用 `git commit -F <msgfile>`，不要用 `-m` 传中文**）→ `git pull --rebase --autostash origin main` → `git push`。（代码修改走分支：新建分支 → 合并回 `main` → push；`config/**` 在日报 workflow 的 push 白名单里，所以合并会自动跑一次真实日报）
 4. push 后**手动触发 Action，不要等 cron**：
    - 日报：`gh workflow run update-daily-report.yml --ref main`
    - 总结：`gh workflow run update-summary.yml --ref main [ -f force=true ]`

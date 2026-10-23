@@ -26,39 +26,36 @@
  *   }
  *
  * 导出：
- *   generateNarrative({ data, providers })   // 是否有内容值得叙述由调用方判断；本函数不按 empty 自行拦截
- *   generateStructured({ system, user, validate, providers, feedback, onProviderFailure })
+ *   generateNarrative({ data, providers, budgetMs? })   // 是否有内容值得叙述由调用方判断；本函数不按 empty 自行拦截
+ *   generateStructured({ system, user, validate, providers, feedback, onProviderFailure, budgetMs })
  *                                            // 通用结构化生成入口：日报与 30 天总结共用同一套重试/校验循环
- *   defaultProviders(env = process.env)      // 同步返回 provider 列表（没 key 的跳过）
- *   orderProvidersForSummary(list)           // 总结线重排：deepseek 提前（历史上 longcat 做不了 30 天总结）
+ *   defaultProviders(env = process.env)      // = providersForLane("daily", env)（配置在 config/providers.json）
  *   sanitizeReason(text, maxLen?)            // 失败原因脱敏：key / Bearer / 长 token / URL 一律替换 + 截断
  *
- * provider 结构：{ name, baseUrl, apiKey, model, shape, headers?, extraBody? }
+ * provider 结构：{ name, endpoint, baseUrl, apiKey, model, shape, headers?, reasoningEffort?, extraBody?, responseFormat? }
+ *   name = **稳定 slug**（`attempts[].provider` / 页面徽章用它），model = 真实 API id
+ *   链顺序 / 参数 / 预算一律来自 `config/providers.json`（`scripts/daily/lib/providers.mjs` 解析），
+ *   本文件不再持有「哪条腿在链里」这类事实。
  *   shape = "chat"      → POST {baseUrl}/chat/completions
  *   shape = "responses" → POST {baseUrl}/responses
  *   headers（可选）      → 追加到请求头（OpenCode Go 要求自报 user-agent / 会话 id）
  *   reasoningEffort（可选）→ chat 形态的 reasoning_effort 取值，默认 "none"（关思考）。
- *                         minimax 不认 "none"（400），去掉参数又会让它无约束地思考到超时，
- *                         所以它当时单独配了 "low"（该腿 2026-10-23 下线，机制保留）
  *   extraBody（可选）    → 合并进 chat 请求体（sensenova 借它发 thinking:{type:"disabled"} 关思考）
+ *   responseFormat（可选）→ false 表示从不发 `response_format:{type:"json_object"}`（默认发）
+ *   endpoint（可选）     → endpoint 名（`sensenova` 的 404/405 → responses 形态特判按它判断）
  *
  * 用法：node scripts/daily/lib/ai.mjs --data=path.json
  */
 
-import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
+import { providersForLane } from "./providers.mjs";
+
 // ---------------------------------------------------------------- 常量
 
 const LOG = "[daily-report]";
-const SENSENOVA_BASE = "https://token.sensenova.cn/v1";
-// OpenCode Go 订阅端点（与 chat/completions 同形态）：https://opencode.ai/docs/go
-const OPENCODE_GO_BASE = "https://opencode.ai/inference/go/openai/v1";
-// Go 明确要求客户端自报身份，别用 SDK / HTTP 库的默认 UA（见 Go 文档「Where can I use it?」）
-const OPENCODE_GO_USER_AGENT =
-  "sogeisetsu-daily-report/1.0 (+https://github.com/sogeisetsu/sogeisetsu)";
 const SECTION_CAP = 30; // 每个板块最多喂 30 条
 const COMMIT_MSG_CAP = 10; // 每个仓库最多喂 10 条 commit message
 const COMMIT_MSG_LEN = 200; // 每条 commit message 截断到 200 字符
@@ -73,6 +70,7 @@ const RELEASE_NOTE_MAX_SENTENCES = 3;
 const RETRY_WAIT_MS = 2000; // 429/5xx 重试前等待 ~2s
 const MAX_ROUNDS = 12; // 单 provider 内部循环安全上限（json 重试×3 + rf-400 退让 + 429 重试 + 形态切换 + 截断重试）
 const CHAT_TIMEOUT_MS = 180000; // chat/responses POST 超时；总结线唯一的稳定腿实测 51.8–83.0s，90s 太贴边
+const MIN_ATTEMPT_MS = 1000; // 剩余 lane 预算低于这个值就别再发请求（否则一定在预算外拖一个必败的往返）
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -146,62 +144,17 @@ export function sanitizeReason(text, maxLen = 300) {
 // ---------------------------------------------------------------- provider 列表
 
 /**
- * 按优先级返回可用 provider；没有 key 的直接跳过。
- * 顺序：OpenCode Go 的 deepseek 在首位、sensenova 殿后。
- * 两条限时免费腿（minimax-m3.1-flash-free、longcat-2.5-preview-free）已于 2026-10-23 下线：
- * longcat 是上游端点持续 402 / 挂满超时，minimax 在「能压到 low 思考」之后仍不稳定，
- * 都退出了链（代码与实测记录见 git 历史，要接回来在下面按原样 push 即可）。
- * 商汤的模型不再动态解析（/models 挑出来的模型在长提示词下把预算全烧在思考上、永不产出），
- * 写死 glm-5.2 并关掉思考（extraBody 仅这一条带）。
+ * 日报线的 provider 列表 —— 等价 `providersForLane("daily", env)`。
+ *
+ * 链顺序、模型 id、参数（reasoningEffort / extraBody / responseFormat）、endpoint 头**全部**来自
+ * `config/providers.json`；本文件不再写死任何一条腿。改链路 / 改参数 = 改那个 JSON + 跑
+ * `node scripts/providers.mjs check`（`check.mjs` 里会跑）。
+ *
+ * 配置缺失 / JSON 损坏 / schema 不合法时，`providers.mjs` 会 warn 并回落到内置 FALLBACK_CHAIN
+ * （deepseek → sensenova）：CI 不能因为一个坏 JSON 全挂，但提交前预检会让坏配置直接红。
  */
 export function defaultProviders(env = process.env) {
-  const list = [];
-
-  // OpenCode Go（首选）：端点仍是 chat/completions 形态，直接可用。
-  // Go 要求客户端自报 user-agent，并带稳定会话 ID（一次运行 = 一个会话）：既满足文档，
-  // 也让路由与提示缓存有依据 —— 降低被它「针对第三方客户端」的滥用监控挡下的概率。
-  if (env.OPENCODE_API_KEY) {
-    const headers = {
-      "user-agent": OPENCODE_GO_USER_AGENT,
-      "x-opencode-session": `sogeisetsu-daily-report-${randomUUID()}`,
-    };
-    list.push({
-      name: "opencode-go-deepseek",
-      baseUrl: OPENCODE_GO_BASE,
-      apiKey: env.OPENCODE_API_KEY,
-      model: "deepseek-v4.1-flash", // 计入 Go 套餐月度额度
-      shape: "chat",
-      headers,
-    });
-  }
-
-  // 商汤 SenseNova（殿后：额度独立于 OpenCode 账号，OpenCode Go 侧的限流 / 滥用监控影响不到它）
-  if (env.SENSENOVA_API_KEY) {
-    list.push({
-      name: "sensenova",
-      baseUrl: SENSENOVA_BASE,
-      apiKey: env.SENSENOVA_API_KEY,
-      model: env.SENSENOVA_MODEL || "glm-5.2", // 写死：不再动态挑模型
-      shape: "chat",
-      extraBody: { thinking: { type: "disabled" } }, // 关思考：不关则 reasoning 吃光预算、content 恒为空
-    });
-  }
-
-  return list;
-}
-
-/**
- * 总结线专用重排：把 deepseek 提到最前，其余保持原顺序。
- *
- * 历史原因（实测）：`longcat-2.5-preview-free` 结构上做不了 30 天总结（≈306s 后连接被掐），
- * 而 `deepseek-v4.1-flash` 是当时唯一稳定过校验的腿，所以总结线单独把它提到最前。
- * 两条免费腿 2026-10-23 下线后 `defaultProviders` 已经是 deepseek 打头，这里成了空操作 ——
- * 函数与测试保留，是为了将来重新接入免费腿时不必再想一遍顺序。
- */
-export function orderProvidersForSummary(list) {
-  const arr = Array.isArray(list) ? list : [];
-  const isDeepseek = (p) => /deepseek/i.test(String((p && p.name) || ""));
-  return [...arr.filter(isDeepseek), ...arr.filter((p) => !isDeepseek(p))];
+  return providersForLane("daily", env);
 }
 
 // ---------------------------------------------------------------- prompt 构建
@@ -590,11 +543,15 @@ function extractContent(json, shape) {
  *     它又会无约束地思考到超时，所以它单独配 "low"
  *   · provider.headers（可选）原样追加进请求头（OpenCode Go 的 user-agent / 会话 id 走这里）
  *   · provider.extraBody（可选）合并进 chat 请求体（sensenova 的 thinking:{type:"disabled"} 走这里）
+ *   · provider.responseFormat === false → 从不发 json_object（默认发）
+ *   · deadline（可选，epoch ms）→ lane 总预算：每次发请求前剩余 ≤ MIN_ATTEMPT_MS 就立刻放弃，
+ *     否则 timeout = min(CHAT_TIMEOUT_MS, 剩余)。**这是本函数唯一为 lane 预算加的分支**
+ *     ——重试 / 纠正 / 截断翻倍 / JSON 模式退让 / 形态切换一律不动。
  *
  * `validate(parsed)` 是同步校验器，返回 { ok:true, value } 或 { ok:false, reason }；
  * `feedback(reason, n)` 按失败原因生成可执行的纠正提示（默认 buildRetryFeedback，日报专用）。
  */
-async function attemptProvider(provider, system, user, validate, feedback = buildRetryFeedback) {
+async function attemptProvider(provider, system, user, validate, feedback = buildRetryFeedback, deadline = Infinity) {
   const base = String(provider.baseUrl || "").replace(/\/+$/, "");
   const providerKey = `${provider.name}\u0000${base}`;
   let shape = provider.shape === "responses" ? "responses" : "chat";
@@ -608,10 +565,16 @@ async function attemptProvider(provider, system, user, validate, feedback = buil
   let maxTokens = MAX_TOKENS; // 截断时自适应翻倍（上限 MAX_TOKENS_CAP）
 
   for (let round = 0; round < MAX_ROUNDS; round += 1) {
+    // lane 预算：剩余 ≤ 1s 就不再发请求（否则一定在预算外拖一个必败的往返）
+    const remaining = deadline - Date.now();
+    if (remaining <= MIN_ATTEMPT_MS) {
+      return { ok: false, reason: "lane 预算耗尽" };
+    }
+    const timeoutMs = Number.isFinite(deadline) ? Math.min(CHAT_TIMEOUT_MS, remaining) : CHAT_TIMEOUT_MS;
     const url = `${base}/${shape === "responses" ? "responses" : "chat/completions"}`;
-    // chat 形态请求 JSON 模式；已知该 provider 不支持则跳过
+    // chat 形态请求 JSON 模式；已知该 provider 不支持（或配置写死 responseFormat:false）则跳过
     const useJsonMode =
-      shape === "chat" && !jsonModeUnsupported.has(providerKey);
+      shape === "chat" && provider.responseFormat !== false && !jsonModeUnsupported.has(providerKey);
     const body =
       shape === "responses"
         ? {
@@ -651,7 +614,7 @@ async function attemptProvider(provider, system, user, validate, feedback = buil
           },
           body: JSON.stringify(body),
         },
-        CHAT_TIMEOUT_MS
+        timeoutMs
       );
     } catch (err) {
       return { ok: false, reason: `网络异常 ${err && err.message}` };
@@ -670,10 +633,11 @@ async function attemptProvider(provider, system, user, validate, feedback = buil
       return { ok: false, reason: `HTTP ${res.status}（已重试仍失败）` };
     }
 
-    // SenseNova chat 形态 404/405：同一 provider 换 /responses 形态再试一次
+    // SenseNova chat 形态 404/405：同一 provider 换 /responses 形态再试一次。
+    // 按 endpoint 判断（不按 name）：name 是可随便改的稳定 slug，线上历史数据与测试都依赖它不变。
     if (
       (res.status === 404 || res.status === 405) &&
-      provider.name === "sensenova" &&
+      provider.endpoint === "sensenova" &&
       shape === "chat" &&
       !triedResponses
     ) {
@@ -723,8 +687,8 @@ async function attemptProvider(provider, system, user, validate, feedback = buil
       const finish = json?.choices?.[0]?.finish_reason ?? json?.status ?? "?";
       const usage = json?.usage ? JSON.stringify(json.usage) : "n/a";
       const reasoningLen =
-        typeof json?.choices?.[0]?.message?.reasoning === "string"
-          ? json.choices[0].message.reasoning.length
+        typeof (json?.choices?.[0]?.message?.reasoning ?? json?.choices?.[0]?.message?.reasoning_content) === "string"
+          ? String(json?.choices?.[0]?.message?.reasoning ?? json?.choices?.[0]?.message?.reasoning_content).length
           : 0;
       console.error(
         `${LOG} ${provider.name}: ${truncated ? "输出被截断" : "输出为空"}（finish_reason=${finish}, content_len=${content.length}, reasoning_len=${reasoningLen}, max_tokens=${maxTokens}, usage=${usage}）`
@@ -801,6 +765,12 @@ function normalizeProvider(raw) {
  *
  * `onProviderFailure({ provider, model, reason })`（可选）：每有一条 provider 失败就回调一次 —
  * 调用方（日报 / 总结编排）据此收集 attempts，写失败记录并开常驻 issue。
+ *
+ * `budgetMs`（可选）：**整条 lane 的总预算**（来自 `config/providers.json` 的 `lanes.<lane>.budgetMs`）。
+ * 入口算 deadline，交给 attemptProvider 收敛每条腿的单次超时；预算在腿之间耗尽时，
+ * 对**剩余每条腿各补一条合成 attempt**（reason=「未尝试（超出 lane 预算 N 分钟）」）并照常回调
+ * onProviderFailure —— 于是自然落进现有的失败记录 + 常驻 issue + 页面失败卡，**绝不静默截断**。
+ * 不传 = 不设预算（总结线现状：deepseek 实测 51.8–83.0s + sensenova 兜底）。
  */
 export async function generateStructured({
   system,
@@ -809,6 +779,7 @@ export async function generateStructured({
   providers,
   feedback,
   onProviderFailure,
+  budgetMs,
 } = {}) {
   const list = Array.isArray(providers) ? providers : [];
   if (list.length === 0) {
@@ -820,12 +791,51 @@ export async function generateStructured({
     return null;
   }
 
-  const attempts = [];
+  const hasBudget = Number.isFinite(budgetMs) && budgetMs > 0;
+  const deadline = hasBudget ? Date.now() + budgetMs : Infinity;
+  const budgetLabel = hasBudget
+    ? budgetMs >= 60000
+      ? `${Math.round(budgetMs / 60000)} 分钟`
+      : `${Math.round(budgetMs / 1000)} 秒`
+    : "";
+  const budgetReason = `未尝试（超出 lane 预算 ${budgetLabel}）`;
+
+  const notifyFailure = (failed) => {
+    if (typeof onProviderFailure !== "function") return;
+    try {
+      onProviderFailure(failed);
+    } catch (err) {
+      // 回调是调用方的可见性旁路，它的异常不该影响生成流程
+      console.error(`${LOG} onProviderFailure 回调异常: ${err && err.message ? err.message : String(err)}`);
+    }
+  };
+
+  // 先规范化整条链，预算耗尽时才能对「剩余每条腿」都补出 provider/model 正确的合成 attempt
+  const normalized = [];
   for (const raw of list) {
     const provider = await normalizeProvider(raw);
-    if (!provider) continue;
+    if (provider) normalized.push(provider);
+  }
+  if (normalized.length === 0) {
+    console.error(`${LOG} 没有可用 provider（条目都不完整）`);
+    return null;
+  }
+
+  const attempts = [];
+  for (let i = 0; i < normalized.length; i += 1) {
+    const provider = normalized[i];
+    // 预算在腿之间耗尽：剩下的腿全部记成「未尝试」，不留「这条腿没提过」的黑洞
+    if (deadline - Date.now() <= MIN_ATTEMPT_MS) {
+      for (const skipped of normalized.slice(i)) {
+        const failed = { provider: skipped.name, model: skipped.model, reason: budgetReason };
+        console.error(`${LOG} ${skipped.name}: 跳过 — ${budgetReason}`);
+        attempts.push(failed);
+        notifyFailure(failed);
+      }
+      break;
+    }
     console.error(`${LOG} ${provider.name}: 尝试（shape=${provider.shape}, model=${provider.model}）`);
-    const outcome = await attemptProvider(provider, system, user, validate, feedback);
+    const outcome = await attemptProvider(provider, system, user, validate, feedback, deadline);
     if (outcome.ok) {
       console.error(`${LOG} ${provider.name}: 成功`);
       return { value: outcome.value, provider: provider.name, model: provider.model, attempts };
@@ -833,14 +843,7 @@ export async function generateStructured({
     console.error(`${LOG} ${provider.name}: 失败 — ${outcome.reason}`);
     const failed = { provider: provider.name, model: provider.model, reason: outcome.reason };
     attempts.push(failed);
-    if (typeof onProviderFailure === "function") {
-      try {
-        onProviderFailure(failed);
-      } catch (err) {
-        // 回调是调用方的可见性旁路，它的异常不该影响生成流程
-        console.error(`${LOG} onProviderFailure 回调异常: ${err && err.message ? err.message : String(err)}`);
-      }
-    }
+    notifyFailure(failed);
   }
 
   console.error(`${LOG} 所有 provider 均失败`);
@@ -856,7 +859,7 @@ export async function generateStructured({
  * 与 totals 口径的 data.empty 并不等价。历史上在这里按 data.empty 二次拦截，
  * 导致「只发了 discussion 的一天」永远拿不到叙述，并让上游每轮空转重试。
  */
-export async function generateNarrative({ data, providers, onProviderFailure }) {
+export async function generateNarrative({ data, providers, onProviderFailure, budgetMs }) {
   if (data == null) {
     console.error(`${LOG} data 为空，跳过`);
     return null;
@@ -869,6 +872,7 @@ export async function generateNarrative({ data, providers, onProviderFailure }) 
     validate: (parsed) => validateNarrative(parsed, data),
     providers,
     onProviderFailure,
+    budgetMs,
   });
   if (!res) return null;
   return {

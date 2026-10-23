@@ -55,6 +55,8 @@ jobs:
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
+          # 诊断会探每个 enabled endpoint 的 /models，缺 key 会误报「未配置」
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
         run: |
           node scripts/diagnose-providers.mjs
           {
