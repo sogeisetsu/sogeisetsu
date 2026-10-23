@@ -30,7 +30,7 @@ import { BACKFILL_DIR, DATA_DIR, cstDayMinus, dateRange, readJsonIfExists } from
 
 // ---------------------------------------------------------------- 常量
 
-const COMMIT_MSG_CAP = 10; // 每仓库最多喂 10 条 commit message
+const SUMMARY_COMMIT_MSG_CAP = 10; // 每仓库最多喂 10 条 commit message（总结口径；与日报同名上限只是巧合同值，不是同一口径）
 const COMMIT_MSG_LEN = 160; // 每条 commit message 截断到 160 字符
 const RELEASE_NOTES_LEN = 800; // 每条 release notes 最多 800 字符
 
@@ -254,7 +254,7 @@ export function collectSummaryData({ username, start, end, dataDir, backfillDir 
       repo: c.repo,
       count: c.count,
       automated: c.automated,
-      messages: c.messages.slice(0, COMMIT_MSG_CAP),
+      messages: c.messages.slice(0, SUMMARY_COMMIT_MSG_CAP),
     }))
     .sort((a, b) => b.count - a.count || a.repo.localeCompare(b.repo));
 

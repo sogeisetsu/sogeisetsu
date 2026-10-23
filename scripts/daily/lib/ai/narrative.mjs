@@ -20,7 +20,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { AUTOMATED_OVERLAP_RE } from "../../../lib/rules.mjs";
+import { AUTOMATED_OVERLAP_RE, HEADLINE_MAX_CHARS } from "../../../lib/rules.mjs";
 import { LOG } from "./transport.mjs";
 import { generateStructured } from "./structured.mjs";
 import { defaultProviders } from "./defaults.mjs";
@@ -29,14 +29,13 @@ import { countSentences, fitHeadline, fitSentences, fitText, unescapeProse } fro
 // ---------------------------------------------------------------- 常量与 prompt 体积上限
 
 const SECTION_CAP = 30; // 每个板块最多喂 30 条
-const COMMIT_MSG_CAP = 10; // 每个仓库最多喂 10 条 commit message
+const DAILY_COMMIT_MSG_CAP = 10; // 每个仓库最多喂 10 条 commit message（日报口径；与总结的同名上限只是巧合同值）
 const COMMIT_MSG_LEN = 200; // 每条 commit message 截断到 200 字符
 const RELEASE_NOTES_CAP = 800; // 每条 release notes 最多 800 字符
 
 const SUMMARY_MIN_SENTENCES = 2; // 提示词目标 4-8 句；校验放宽容差，避免把「9 句」这种好结果误拒
 const SUMMARY_MAX_SENTENCES = 12;
 const SUMMARY_MAX_CHARS = 1400; // summary 目标 ~900 字符；模型偶写到 ~1800，超出部分按句界截断而非拒绝
-const HEADLINE_MAX_CHARS = 80; // headline 硬上限；超出按分隔符/词界截断
 const RELEASE_NOTE_MAX_SENTENCES = 3;
 
 // ---------------------------------------------------------------- prompt 构建
@@ -82,7 +81,7 @@ function buildPrompts(data) {
       automated: c?.automated,
       automatedBots: (Array.isArray(c?.automatedBots) ? c.automatedBots : []).slice(0, 3), // 最多喂 3 个 bot login
       messages: (Array.isArray(c?.messages) ? c.messages : [])
-        .slice(0, COMMIT_MSG_CAP)
+        .slice(0, DAILY_COMMIT_MSG_CAP)
         .map((m) =>
           String((m && typeof m === "object" ? m.message : m) ?? "").slice(0, COMMIT_MSG_LEN)
         )

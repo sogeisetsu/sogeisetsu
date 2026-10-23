@@ -36,12 +36,11 @@
  * 用法：validate: (parsed) => validateSummary(parsed, ctx)   // generateStructured 的同步校验器
  */
 
-import { AUTOMATED_OVERLAP_RE } from "../lib/rules.mjs";
+import { AUTOMATED_OVERLAP_RE, HEADLINE_MAX_CHARS } from "../lib/rules.mjs";
 import { countSentences, fitHeadline, fitText } from "../daily/lib/ai/prose.mjs";
 
 // ---------------------------------------------------------------- 常量
 
-const HEADLINE_MAX_CHARS = 80;
 const TEASER_MAX_CHARS = 240; // 首页卡片短文案（1–2 句）；超长按句界截断，不整段拒绝
 const OVERVIEW_MAX_CHARS = 4200; // 章节式 overview（3–6 段 + ### 小标题）的硬上限
 const OVERVIEW_MIN_SENTENCES = 6; // 提示词目标 10-16 句；校验放宽容差，避免把「8 句」好结果误拒

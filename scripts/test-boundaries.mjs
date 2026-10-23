@@ -72,6 +72,23 @@ const RENDER_PAIR = ["daily/render.mjs", "summary/render.mjs"];
 /** fileURLToPath 唯一归属（ROOT 的唯一来源）。 */
 const FILEURL_OWNER = "lib/paths.mjs";
 
+/**
+ * 名称级归属：这些符号只许在**归属文件**里声明，别处只能 import 引用。
+ *
+ * 为什么要锁：它们是「同一口径的多消费者」—— 复制一份到别处不会有报错，
+ * 只会让两处慢慢漂移（例如 headline 上限一处 80 一处 120，页面上看不出来）。
+ * 阈值类（TODO 里的字面量上限）不锁：本仓有大量同值字面量（如 dataHash 取前 10 位），
+ * 锁字面量只会误伤。
+ */
+const DECLARATION_OWNERS = {
+  HEADLINE_MAX_CHARS: "lib/rules.mjs",
+  AUTOMATED_OVERLAP_RE: "lib/rules.mjs",
+  narrativeWordingOk: "lib/rules.mjs",
+  fitHeadline: "daily/lib/ai/prose.mjs",
+  fitText: "daily/lib/ai/prose.mjs",
+  countSentences: "daily/lib/ai/prose.mjs",
+};
+
 // ---------------------------------------------------------------- 规则判定（纯函数）
 
 /**
@@ -173,6 +190,27 @@ function findCycles(files, edges) {
     if (!state.has(file)) visit(file);
   }
   return cycles;
+}
+
+// ---------------------------------------------------------------- 名称级归属（纯函数）
+
+/**
+ * 名称级归属判定：归属符号只许在归属文件里声明。
+ * @param {Array<{file: string, source: string}>} units 已剔注释的源码
+ * @returns {string[]} 违规描述（空数组 = 通过）
+ */
+export function checkDeclarations(units = []) {
+  const out = [];
+  for (const [name, owner] of Object.entries(DECLARATION_OWNERS)) {
+    const re = new RegExp(
+      `(?:^|\\n)\\s*(?:export\\s+)?(?:async\\s+)?(?:function|const|let|var|class)\\s+${name}\\b`
+    );
+    for (const { file, source } of units) {
+      if (file === owner) continue;
+      if (re.test(source)) out.push(`[decl] ${file}: ${name} 只许在 ${owner} 里声明（别处只能引用）`);
+    }
+  }
+  return out;
 }
 
 // ---------------------------------------------------------------- 扫描（唯一有 IO 的部分）
@@ -278,8 +316,10 @@ export function scanScripts(dir = SCRIPTS_DIR) {
   files.sort();
 
   const edges = [];
+  const sources = [];
   for (const file of files) {
     const src = stripComments(readFileSync(path.join(dir, file), "utf8"));
+    sources.push({ file, source: src });
     FROM_RE.lastIndex = 0;
     let m;
     while ((m = FROM_RE.exec(src))) {
@@ -288,7 +328,7 @@ export function scanScripts(dir = SCRIPTS_DIR) {
       edges.push({ from: file, to, spec, names: importedNames(m[1]) });
     }
   }
-  return { files, edges };
+  return { files, edges, sources };
 }
 
 // ---------------------------------------------------------------- 合成图自测
@@ -393,6 +433,20 @@ export function selfTest() {
       failures.push(`[自测 ${i + 1}] 规则 ${c.rule} 的合法样本被误判：${goodHits.join("；")}`);
     }
   }
+
+  // 名称级归属：一正一反
+  const goodDecl = checkDeclarations([
+    { file: "lib/rules.mjs", source: "export const HEADLINE_MAX_CHARS = 80;\n" },
+    { file: "daily/lib/ai/narrative.mjs", source: "import { HEADLINE_MAX_CHARS } from '../../../lib/rules.mjs';\n" },
+  ]);
+  if (goodDecl.length > 0) failures.push(`[自测 decl] 合法样本被误判：${goodDecl.join("；")}`);
+  const badDecl = checkDeclarations([
+    { file: "lib/rules.mjs", source: "export function fitText() {}\n" },
+    { file: "summary/validate-summary.mjs", source: "const HEADLINE_MAX_CHARS = 80;\n" },
+  ]);
+  if (!badDecl.some((v) => v.includes("HEADLINE_MAX_CHARS"))) {
+    failures.push("[自测 decl] 归属外声明没被判红");
+  }
   return failures;
 }
 
@@ -407,9 +461,9 @@ function main() {
     return;
   }
 
-  const { files, edges } = scanScripts();
+  const { files, edges, sources } = scanScripts();
   const unique = new Set(edges.map((e) => `${e.from} -> ${e.to ?? e.spec}`));
-  const violations = checkGraph({ files, edges });
+  const violations = [...checkGraph({ files, edges }), ...checkDeclarations(sources)];
 
   // 扫描结果的健全性：解析器坏掉时边集会塌成空集，那样「无违规」毫无意义
   if (files.length < 20 || edges.length < 20) {
@@ -424,7 +478,7 @@ function main() {
   }
 
   console.log(
-    `OK 分层边界：${files.length} 文件 / ${edges.length} 条 import 语句 / ${unique.size} 唯一模块对；七条禁边全部通过（合成自测 ${SELF_CASES.length} 例）`
+    `OK 分层边界：${files.length} 文件 / ${edges.length} 条 import 语句 / ${unique.size} 唯一模块对；七条禁边 + 名称级归属全部通过（合成自测 ${SELF_CASES.length} 例 + 归属 2 例）`
   );
 }
 
