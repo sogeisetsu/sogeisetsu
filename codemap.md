@@ -53,7 +53,7 @@ CI：`.github/workflows/` 下四个 workflow —— `update-daily-report.yml`（
 | `config/` | **人员维护的配置，不进扫描**：`providers.json` 是 AI provider 链 / 模型 / 参数 / lane 预算的唯一事实来源（`scripts/daily/lib/providers.mjs` 读取，`scripts/providers.mjs` 改写）。不在 `scripts/**` + `ops/**` 的映射范围内，所以这里的表只登记它、不展开。 |
 | `docs/` | **生成物**（Pages Source）：`index.html` / `data/<date>.json` / `report/<date>.{html,md}` / `summary.json` / `summary.html` / `favicon.svg` / `assets/fonts/chomsky.woff2`。可丢弃、**绝不手改或手工合并**，本地重新生成覆盖。 |
 | `data/backfill/` | 生成物：一次性 Search API 回填的日数据（带 `source` / `backfillLimits`）。**故意放在 `docs/` 外**，故站点不可见、不进归档列表，仅作总结的次级数据源。 |
-| `assets/` | 生成物：`30-day-activity.svg`。 |
+| `assets/` | 生成物：`30-day-activity.svg`。另有 **`providers-cli.md`（人工维护的 `scripts/providers.mjs` 使用教程，不是生成物）**。 |
 | `.github/` | CI 定义。**`codemap.mjs` 无法扫描它**（见 Notes）。 |
 
 ## Flow (whole-system)

@@ -271,11 +271,12 @@ function commitDiff(label, beforeText, nextConfig, { yes, configPath }) {
 // ---------------------------------------------------------------- 命令
 
 function cmdList(flags) {
-  const rows = catalogue(process.env);
+  const configPath = configPathOf(flags);
+  const rows = catalogue(process.env, { configPath });
   const lane = flags.lane ? String(flags.lane) : null;
   let filtered = rows;
   if (lane) {
-    const order = laneOrder(lane);
+    const order = laneOrder(lane, { configPath });
     filtered = order.flatMap((slug) => rows.filter((r) => r.name === slug));
     if (filtered.length === 0) {
       console.error(`${LOG} lane \`${lane}\` 里没有可用 model（先 \`show ${lane}\` 看配置）`);
@@ -311,7 +312,7 @@ function cmdList(flags) {
   console.log(cols.map(([, title]) => title.padEnd(width[title])).join("  "));
   for (const r of rowsOut) console.log(cols.map(([k]) => String(r[k]).padEnd(width[k])).join("  "));
   if (lane) {
-    const budget = laneBudgetMs(lane);
+    const budget = laneBudgetMs(lane, { configPath });
     console.log(`\n预算：${budget ? `${budget}ms（${Math.round(budget / 60000)} 分钟）` : "不设上限"}`);
   }
 }
