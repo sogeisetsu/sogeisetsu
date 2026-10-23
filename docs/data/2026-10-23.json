@@ -3,7 +3,7 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T13:31:12.773Z",
+  "generatedAt": "2026-10-23T14:51:14.058Z",
   "empty": false,
   "totals": {
     "commits": 49,
@@ -237,7 +237,7 @@
           "ts": "2026-10-23T08:25:40Z"
         }
       ],
-      "automated": 32,
+      "automated": 34,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -296,7 +296,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 32,
+  "automatedCommits": 34,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -452,23 +452,23 @@
   "ai": {
     "en": {
       "headline": "49 commits across four repositories and one v1.0.0 release",
-      "summary": "**49 commits** were recorded across four repositories, with 32 additional automated commits by `github-actions[bot]`. In `sogeisetsu/sopen-translate`, 32 own commits updated review validation, provider lookup, CSS toast scoping, translation review flags, and documentation for MT/LLM comparisons. In `sogeisetsu/sogeisetsu`, 10 own commits added CLI help, decoupled provider chains into `config/providers.json`, adjusted fallback lanes, and changed the active chain to deepseek → sensenova. In `sogeisetsu/opencode-skill-management`, 6 own commits added an Astro + Starlight documentation site, CI deployment, release policy, and the `v1.0.0` release. In `sogeisetsu/opencode-agent-sandbox`, 1 own commit documented planning capabilities. The `v1.0.0` release of `sogeisetsu/opencode-skill-management` introduced skill listing, inspection, and reversible disabling through a global `skill` permission rule. Separately, issue #5489 in `openchamber/openchamber` received a reply from `openchamber-bot[bot]` and was closed by yulia-ivashko.",
+      "summary": "The day included **49 commits** across four repositories, with no pull requests, issues, or reviews recorded. In `sogeisetsu/sopen-translate`, 32 own commits updated Apache-2.0 licensing, debug logging plans, an MT/LLM/DeepL path diagram, toast CSS scoping, review validation, provider protocol lookup, and A/B and term-retention results. In `sogeisetsu/sogeisetsu`, 10 own commits added built-in CLI help, documented `scripts/providers.mjs`, decoupled provider chains into `config/providers.json`, retired minimax and longcat legs, and adjusted CI models; 34 additional automated commits were made by `github-actions[bot]`. `sogeisetsu/opencode-skill-management` received 6 own commits for an Astro and Starlight bilingual documentation site, release policy, acceptance records, and version 1.0.0. `sogeisetsu/opencode-agent-sandbox` received 1 own commit documenting planning capabilities. `sogeisetsu/opencode-skill-management` released `v1.0.0`, introducing a stable skill switchboard with list, inspect, disable, and restore behavior that changes only a global permission rule. Separately, `openchamber/openchamber` issue #5489, “Run as goal” on a plan's Improve action arms an implement objective, so the agent starts executing the plan, received a reply from `openchamber-bot[bot]` and was closed by `yulia-ivashko`.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.0.0",
-          "summary": "This first stable release added a switchboard for OpenCode skills, including `list` and `inspect` actions. Disabling a skill writes a single `skill` permission rule with `effect: \"deny\"` or `\"ask\"` without deleting or rewriting skill files, and removing the rule restores the skill."
+          "summary": "This first stable release adds a switchboard for installed OpenCode skills, supporting list, inspect, disable, and restore operations. Disabling a skill writes one `skill` permission rule with `effect: \"deny\"` or `\"ask\"` and does not delete, move, or rewrite skill files; the described surface is frozen for 1.x."
         }
       ]
     },
     "zh": {
       "headline": "四个仓库共 49 次提交，并发布 v1.0.0",
-      "summary": "当天共记录 **49 次提交**，另有 32 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sopen-translate` 的 32 次本人提交更新了审查校验、provider 查找、CSS toast 作用域、翻译审查标记及 MT/LLM 对比文档。`sogeisetsu/sogeisetsu` 的 10 次本人提交加入 CLI 帮助，将 provider 链解耦到 `config/providers.json`，调整兜底目录，并把链路改为 deepseek → sensenova。`sogeisetsu/opencode-skill-management` 的 6 次本人提交新增 Astro + Starlight 文档站、CI 部署、发布政策及 `v1.0.0` 发布。`sogeisetsu/opencode-agent-sandbox` 的 1 次本人提交记录了规划类能力。`sogeisetsu/opencode-skill-management` 发布 `v1.0.0`，提供技能列表、检查及通过全局 `skill` 权限规则进行可逆停用的功能。此外，`openchamber/openchamber` 的 issue #5489 收到 `openchamber-bot[bot]` 的回复，并由 yulia-ivashko 关闭。",
+      "summary": "当天在四个仓库完成 **49 次提交**，未记录拉取请求、issue 或评审。`sogeisetsu/sopen-translate` 的 32 次本人提交涉及 Apache-2.0 许可、调试日志计划、MT/LLM/DeepL 路径图、toast CSS 作用域、评审校验、provider 协议查找，以及 A/B 与术语保留结果。`sogeisetsu/sogeisetsu` 的 10 次本人提交加入内置 CLI 帮助、编写 `scripts/providers.mjs` 文档、将 provider 链解耦到 `config/providers.json`、下线 minimax 与 longcat 链路并调整 CI 模型；另有 34 次由 `github-actions[bot]` 自动提交。`sogeisetsu/opencode-skill-management` 的 6 次本人提交建设 Astro 与 Starlight 双语文档站，补充发布政策、验收记录及 1.0.0 版本。`sogeisetsu/opencode-agent-sandbox` 的 1 次本人提交记录规划类能力。`sogeisetsu/opencode-skill-management` 发布 `v1.0.0`，提供稳定的技能开关面板，支持列出、检查、禁用和恢复技能，禁用时仅写入一条全局权限规则。另有 `openchamber/openchamber` issue #5489“Run as goal” on a plan's Improve action arms an implement objective, so the agent starts executing the plan，收到 `openchamber-bot[bot]` 的回复，并由 `yulia-ivashko` 关闭。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.0.0",
-          "summary": "首个稳定版本提供 OpenCode 技能管理入口，包含 `list` 和 `inspect` 操作。停用技能时仅写入一条 `effect: \"deny\"` 或 `\"ask\"` 的 `skill` 权限规则，不删除或重写技能文件，移除该规则即可恢复技能。"
+          "summary": "首个稳定版本提供已安装 OpenCode 技能的切换面板，支持列出、检查、禁用和恢复。禁用技能时仅写入一条 `skill` 权限规则，`effect` 为 `\"deny\"` 或 `\"ask\"`，不会删除、移动或重写技能文件；所述功能面在 1.x 阶段冻结。"
         }
       ]
     }
@@ -476,5 +476,5 @@
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "e4e6a99ae985891c2164d1e380814cd1e3fa902e09eb5117b08f8d44cec7feaa"
+  "dataHash": "d75b32a9e79c1bcdb76182d39d11083f980304ce5b766f42ff051eee20cc96f5"
 }
