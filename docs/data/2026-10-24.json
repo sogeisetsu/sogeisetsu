@@ -3,10 +3,10 @@
   "windowStart": "2026-10-24T00:00:00+08:00",
   "windowEnd": "2026-10-25T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T18:09:10.412Z",
+  "generatedAt": "2026-10-23T18:13:21.770Z",
   "empty": false,
   "totals": {
-    "commits": 9,
+    "commits": 10,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 4,
+      "count": 5,
       "own": true,
       "messages": [
+        {
+          "sha": "89d94704bde5f20673a8f86360b02463d203d06f",
+          "message": "fix(events): 动作时间改用 payload 业务时间，重放的旧事件不再串到第二天",
+          "ts": "2026-10-23T18:11:14Z"
+        },
         {
           "sha": "fbc1f866f009eab46a33fabce0eaaf147cc9aa2f",
           "message": "fix(collect): 提交扫描加三道公开性闸门（私有仓绝不进 docs）",
@@ -210,18 +215,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "9 own commits across three repositories, plus 7 automated commits",
-      "summary": "The day included **9 own commits** across three repositories, plus 7 automated commits by `github-actions[bot]`. In `sogeisetsu/sogeisetsu`, four commits added public-repository gates to collection, split attribution data into SHA and identity stages, refetched and rerendered the merged 10-23 documentation, and repaired missed personal commits using a SHA list. In `sogeisetsu/opencode-skill-management`, three commits changed README internal links to absolute, clickable addresses and adjusted site cards to equal height with sans-serif headings, orange interactions, and example boxes. In `sogeisetsu/sopen-translate`, two commits required the user's global Git identity for commits, added Chrome built-in translation, and split contributor documentation. There were 0 pull requests, 0 issues, and 0 reviews, and no releases were published.",
+      "headline": "10 own commits across three repositories, plus 7 automated commits",
+      "summary": "The day included **10 own commits** across three repositories, alongside 7 automated commits by `github-actions[bot]`. In `sogeisetsu/sogeisetsu`, five own commits changed event timestamps to use payload business time, added three public-repository gates to the submission scan, split attribution correction data into SHA and identity stages, refreshed the merged local documentation for 10-23, and repaired missed personal commits using a SHA list. In `sogeisetsu/opencode-skill-management`, three own commits converted README internal links to absolute clickable URLs and adjusted site cards to equal height with sans-serif headings, orange interactions, and example boxes. In `sogeisetsu/sopen-translate`, two own commits required the user's global Git identity for commits and added Chrome built-in translation while splitting contributor documentation. There were 0 pull requests, 0 issues, and 0 reviews.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "三个仓库共 9 次本人提交，另有 7 次自动提交",
-      "summary": "当天在三个仓库完成 **9 次本人提交**，另有 7 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sogeisetsu` 的 4 次提交为提交扫描加入公开仓闸门，将归属修正数据拆分为 SHA 与身份两段，合并后按本地整份重取 10-23 并重渲染，还通过 SHA 名单修复漏计的本人提交。`sogeisetsu/opencode-skill-management` 的 3 次提交将 README 内部文档链接改为绝对且可点击的地址，并统一卡片高度、采用无衬线标题、橙色交互与示例框。`sogeisetsu/sopen-translate` 的 2 次提交要求提交使用用户的全局 Git 身份，新增 Chrome 内置翻译并拆分贡献者文档。当天没有拉取请求、issue 或评审，也没有发布版本。",
+      "headline": "三个仓库共 10 次本人提交，另有 7 次自动提交",
+      "summary": "当天在三个仓库完成 **10 次本人提交**，另有 7 次由 `github-actions[bot]` 自动提交。`sogeisetsu/sogeisetsu` 的 5 次本人提交将动作时间改用 payload 业务时间，为提交扫描加入三道公开性闸门，将归属修正数据拆成 SHA 与身份两段，按本地整份重取并重渲染 10-23 文档，并用 SHA 名单修复漏计的本人提交。`sogeisetsu/opencode-skill-management` 的 3 次本人提交把 README 内部文档链接改为绝对可点击地址，并调整卡片等高、无衬线标题、橙色交互与示例框。`sogeisetsu/sopen-translate` 的 2 次本人提交要求提交使用用户的全局 Git 身份，并新增 Chrome 内置翻译及拆分贡献者文档。当天 pull request、issue 和 review 均为 0。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "683e14988d3c8493203206d66154a5d7ac1e3f69f01c9c2b4bbd61927756d3c3"
+  "dataHash": "678dab8a1ded3c7911832d1a1366c21a7d5ded194b2f01d5e5a1e87389cb8582"
 }
