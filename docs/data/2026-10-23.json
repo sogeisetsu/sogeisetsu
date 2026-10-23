@@ -3,10 +3,10 @@
   "windowStart": "2026-10-23T00:00:00+08:00",
   "windowEnd": "2026-10-24T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-23T08:31:42.756Z",
+  "generatedAt": "2026-10-23T10:51:10.847Z",
   "empty": false,
   "totals": {
-    "commits": 25,
+    "commits": 33,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,44 @@
   "commits": [
     {
       "repo": "sogeisetsu/sopen-translate",
-      "count": 23,
+      "count": 30,
       "own": true,
       "messages": [
+        {
+          "sha": "542c95cf5d8de6882e20a420e68c13979c36c1dc",
+          "message": "docs(readme): add a GitHub-renderable MT/LLM/DeepL path diagram",
+          "ts": "2026-10-23T09:16:42Z"
+        },
+        {
+          "sha": "e2b8a044b96e6dd76838dcc835d7e11ed190b5dd",
+          "message": "fix(css): scope toast selectors under the overlay host",
+          "ts": "2026-10-23T08:42:29Z"
+        },
+        {
+          "sha": "5322075add16ddc20190a4a03971eff3486ab89e",
+          "message": "docs(plan): record viewport scroll-to-bottom coverage",
+          "ts": "2026-10-23T08:41:38Z"
+        },
+        {
+          "sha": "a02c7de4de8ccc3ab8d6a9997643b2d865589fec",
+          "message": "fix(translate): expose review flags and record the post-cap LLM first-screen",
+          "ts": "2026-10-23T08:30:44Z"
+        },
+        {
+          "sha": "e6d13c2eb0d0396e08d0b6b3a1299abe7578c523",
+          "message": "docs(plan): add the F5 term-retention sample result",
+          "ts": "2026-10-23T08:27:47Z"
+        },
+        {
+          "sha": "08f09e837355767d2724051d2dc63596677443fe",
+          "message": "docs(plan): record the four-page MT vs MT+review A/B",
+          "ts": "2026-10-23T08:25:53Z"
+        },
+        {
+          "sha": "0313bb3fda191d7a4c1881a07427bf927862aa00",
+          "message": "fix(review): require index/corrected review responses and validate each item",
+          "ts": "2026-10-23T08:18:50Z"
+        },
         {
           "sha": "cd233ce7ba7fb7f6f23c82065fbda572d9d89e48",
           "message": "fix(providers): use own-property lookup for protocol ids",
@@ -152,13 +187,27 @@
           "ts": "2026-10-23T08:25:40Z"
         }
       ],
-      "automated": 23,
+      "automated": 25,
       "automatedBots": [
         "github-actions[bot]"
       ]
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "count": 1,
+      "own": true,
+      "messages": [
+        {
+          "sha": "4b566be4ae934cf470a0d63949df0e60313d90b8",
+          "message": "chore: 1.0.0",
+          "ts": "2026-10-23T10:47:04Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
     }
   ],
-  "automatedCommits": 23,
+  "automatedCommits": 25,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -281,18 +330,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "sogeisetsu: 25 commits, 23 from github-actions[bot] in sogeisetsu/sogeisetsu",
-      "summary": "The day's work centred on `sogeisetsu/sopen-translate`, which received **23 own commits**. In that repository the commits fixed provider protocol-id lookups to use own-property access, capped the review budget per page instead of per batch, and added a keyless Google web endpoint as an unverified preset. Further changes introduced Microsoft MT and an optional LLM review pass, and made the page translate the viewport first while capping viewport batches so the first translation lands sooner. Plan documentation recorded acceptance of the Microsoft MT and optional review work, viewport-first acceptance alongside the batch-shape fix, and an assessment of proxy options for Index-Translate by user experience. In `sogeisetsu/sogeisetsu` the user made **2 own commits**: one switched the model behind `/oc` and diagnostic narration from longcat to `opencode-go/deepseek-v4.1-flash`, the other retired the minimax and longcat free legs so the chain became deepseek → sensenova. In addition, **23 automated commits by `github-actions[bot]`** were recorded in that same repository. No pull requests, reviews, issues, releases or discussion activity were logged, and no collection section hit its cap.",
+      "headline": "sogeisetsu: 33 commits on 2026-10-23, mostly sopen-translate fixes",
+      "summary": "On 2026-10-23, `sogeisetsu` made **33 own commits** across three repositories, with no pull requests, issues, reviews, releases, or discussions recorded. Most of the work landed in `sogeisetsu/sopen-translate` with 30 commits: documentation updates charting a GitHub-renderable MT/LLM/DeepL path diagram, viewport scroll-to-bottom coverage, an F5 term-retention sample, and a four-page MT vs MT+review A/B result; CSS toast selectors scoped under the overlay host; provider fixes for own-property protocol id lookup and a new keyless Google web endpoint preset marked unverified; and review changes to expose review flags, validate index/corrected review responses, and cap the review budget per page rather than per batch. In `sogeisetsu/sogeisetsu` there were 2 own commits switching the `/oc` and diagnostic model from longcat to `opencode-go/deepseek-v4.1-flash` and retiring the minimax and longcat free legs in favor of a deepseek → sensenova chain, plus 25 automated commits by `github-actions[bot]`. A single commit in `sogeisetsu/opencode-skill-management` carried the `1.0.0` version bump. No collection section hit its cap, so the day's record is complete.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 共 25 次提交，另有 23 次由 github-actions[bot] 提交",
-      "summary": "当天的工作主要集中在 `sogeisetsu/sopen-translate`，该仓库共 **23 次本人提交**。该仓库的提交修复了 provider 协议 ID 查找改用自有属性访问，将 review 预算改为按页而非按批次限制，并新增了无需密钥的 Google 网页端点作为未验证预设。其他改动引入了 Microsoft MT 和可选的 LLM review 环节，并让页面优先翻译视口区域、限制视口批次，使首次翻译更快完成。计划文档记录了 Microsoft MT 与可选 review 的验收情况、视口优先的验收结果及批次形态修复，还记录了按用户体验评估 Index-Translate 代理选项的内容。在 `sogeisetsu/sogeisetsu` 中，用户本人提交了 **2 次**：一次将 `/oc` 与诊断叙述所用的模型从 longcat 换成 `opencode-go/deepseek-v4.1-flash`，另一次下线 minimax 与 longcat 两条免费链路，使调用链变为 deepseek → sensenova。此外，同一仓库还记录了 **23 次由 `github-actions[bot]` 完成的自动提交**。当天没有 pull request、review、issue、release 或讨论活动，各采集部分均未触及上限。",
+      "headline": "sogeisetsu 2026-10-23 提交 33 次，主要修 sopen-translate",
+      "summary": "2026-10-23，`sogeisetsu` 在三个仓库共完成 **33 次本人提交**，当天没有 pull request、issue、review、release 或 discussion 记录。主要工作集中在 `sogeisetsu/sopen-translate`，共 30 次提交：文档方面补充了可在 GitHub 渲染的 MT/LLM/DeepL 路径图、视口滚动到底部覆盖情况、F5 术语保留样例结果，以及四页 MT 与 MT+review 的 A/B 结果；CSS 方面把 toast 选择器限定在 overlay 宿主之下；provider 方面修复协议 id 的自有属性查找，并新增无需密钥的 Google 网页端点作为未验证预设；review 方面暴露 review 标记、校验 index/corrected 两种 review 响应逐项内容，并把 review 预算改为按页面而非按批次限制。`sogeisetsu/sogeisetsu` 有 2 次本人提交，把 `/oc` 与诊断所用模型从 longcat 换成 `opencode-go/deepseek-v4.1-flash`，并下线 minimax 与 longcat 两条免费腿，链变为 deepseek → sensenova；另有 25 次由 `github-actions[bot]` 自动提交。`sogeisetsu/opencode-skill-management` 的 1 次提交用于 `1.0.0` 版本号更新。各采集分区均未触及上限，当天记录完整。",
       "releaseNotes": []
     }
   },
   "aiProvider": "opencode-go-deepseek",
   "aiModel": "deepseek-v4.1-flash",
   "aiFailure": null,
-  "dataHash": "7942848ba863f457bc79e11a1d566cd9223cfb0441eecb615568c5c482c8244b"
+  "dataHash": "93025fa0150e209b587b231d7561db6d6690cdd96eac6f32be8cff8e7958ea61"
 }
