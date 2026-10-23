@@ -27,6 +27,9 @@
  *   node scripts/providers.mjs lane add|remove|move <lane> <slug> [--top|--bottom|--before=<slug>|--after=<slug>]
  *   node scripts/providers.mjs set <slug|lane|endpoint:NAME> <path>=<value>   # 例：set nvidia-minimax-flash params.reasoningEffort=low
  *   node scripts/providers.mjs enable|disable <slug>
+ *   node scripts/providers.mjs help [命令] | <命令> --help | -h
+ *       内置帮助：不带参数就是总览，`add --help` / `help add` 是那条命令的完整用法
+ *        （每个参数的语义、门槛、示例、退出码都在里面；本文件头只留一行摘要）
  *
  * 安全：key 只从 env / stdin 进入，**输出里永不出现明文**；`gh secret set NAME` 不带 `--body`（值走 stdin）。
  *
@@ -90,6 +93,10 @@ function parseArgs(argv) {
     if (a === "--") {
       rest.push(...argv.slice(i + 1));
       break;
+    }
+    if (a === "-h") {
+      flags.help = true;
+      continue;
     }
     if (!a.startsWith("--")) {
       rest.push(a);
@@ -438,7 +445,7 @@ async function cmdProbe(flags, rest) {
 
 async function cmdAdd(flags, rest) {
   const slug = rest[0];
-  if (!slug) throw new Error("用法：add <slug> --endpoint=<ep> --api-model=<id> [--lane=daily] [--yes]");
+  if (!slug) throw new Error("用法：add <slug> --endpoint=<ep> --api-model=<id> [--lane=<lane>] [--yes]（完整参数：providers.mjs add --help）");
   const spec = {
     slug,
     endpoint: flags.endpoint && String(flags.endpoint),
@@ -541,33 +548,255 @@ function cmdToggle(flags, rest, enabled) {
   cmdMutate(`${enabled ? "enable" : "disable"} ${slug}`, flags, (config) => setEnabled(config, slug, enabled));
 }
 
-function usage() {
-  console.log(
-    [
-      "用法：node scripts/providers.mjs <命令> [参数]",
-      "",
-      "  add <slug> --endpoint=<ep> --api-model=<id> [--param k=v]... [--lane=daily] [--note=…]",
-      "             [--top|--bottom|--before=<slug>|--after=<slug>] [--prompt=real|small] [--runs=3]",
-      "             [--yes] [--push-secret]      加一条腿：diff → 探测 3/3 → 落盘 → secret 预览",
-      "  probe <slug> | --lane=<lane> [--prompt=real|small] [--runs=N] [--compare=<slug>]",
-      "  status [--json]                          本机 env / repo secret / 配置 三方对照（只读）",
-      "  check                                    schema + workflow 接线断言（check.mjs 会跑）",
-      "  list [--lane=<lane>] [--json]            列出 model（带 key 状态与所属 lane）",
-      "  show <slug|lane|endpoint:NAME>           看一条 model / 一条 lane / 一个 endpoint",
-      "  lane add|remove|move <lane> <slug> [--top|--bottom|--before=<slug>|--after=<slug>]",
-      "  set <slug|lane|endpoint:NAME> <path>=<value>",
-      "  enable|disable <slug>",
-      "",
-      "所有写操作：先打印 unified diff，--yes 才落盘，--dry-run 显式只读。",
-    ].join("\n")
-  );
+// ---------------------------------------------------------------- 帮助
+
+const GLOBAL_HELP = `用法：node scripts/providers.mjs <命令> [参数]
+
+provider 配置（config/providers.json）的 CLI：改链路 / 换模型 / 调参数 / 加一条腿。
+所有写操作都是「先打印 unified diff，--yes 才落盘」；key 只从环境变量进，输出里不出现明文。
+
+命令：
+  add <slug> --endpoint=<ep> --api-model=<id>   加一条腿：diff → 真实探测 3/3 → 落盘 → secret 预览
+  probe <slug> | --lane=<lane>                  按生产 prompt 真跑一遍（联网，要 key）
+  status                                        本机 env / repo secret / 配置 三方对照
+  check                                         配置 schema + workflow 接线断言
+  list [--lane=<lane>] [--json]                 链顺序 + 每条腿的 key 状态
+  show <slug|lane|endpoint:NAME>                看一个节点的完整 JSON
+  lane add|remove|move <lane> <slug>            改链顺序
+  set <target> <path>=<value>                   改参数 / 预算 / 端点
+  enable|disable <slug>                         临时停用 / 恢复一条腿
+  help [命令]                                   这条命令的完整用法（等价 <命令> --help）
+
+全局参数（所有命令都认）：
+  -h, --help        看帮助（放在命令后面就是该命令的帮助，例：add --help）
+  --yes             写操作真正落盘（不带只打印 diff）
+  --dry-run         显式只读（优先于 --yes）
+  --config=<path>   改一份临时配置副本，不碰 config/providers.json
+
+例子：
+  node scripts/providers.mjs list --lane=daily
+  node scripts/providers.mjs help add
+  node scripts/providers.mjs disable nvidia-minimax-flash --yes
+  node scripts/providers.mjs add my-leg --endpoint=nvidia --api-model=vendor/model-id --lane=daily --top --yes
+  node scripts/daily/check.mjs          # 改完必须跑的全量预检（含 providers check）
+`;
+
+const COMMAND_HELP = {
+  help: `用法：node scripts/providers.mjs help [命令]
+等价于 \`<命令> --help\`；不带命令就是这份总览。
+示例：node scripts/providers.mjs help add`,
+
+  add: `用法：
+  node scripts/providers.mjs add <slug> --endpoint=<endpoint> --api-model=<apiModel>
+      [--param k=v]... [--lane=<lane>] [--note=<text>]
+      [--top | --bottom | --before=<slug> | --after=<slug>]
+      [--prompt=real|small] [--runs=3] [--yes] [--push-secret] [--config=<path>]
+
+做什么（四段）：
+  ① 打印候选配置与磁盘配置的 unified diff（不联网、不落盘）
+  ② --yes：走生产同一套 prompt/校验真跑 --runs 次（默认 3）；
+     门槛 = 每次都过校验 + 单次 ≤90s + 输出非空；不通过 → 不写配置、不推 secret，退出码 1
+  ③ 落盘（tmp + rename），写完立刻做 schema 校验
+  ④ secret 默认只预览 name / 长度 / sha256 前 8 位；--push-secret 才 gh secret set（值走 stdin）
+
+参数：
+  --endpoint          必填。config/providers.json 里已存在的 endpoints 名
+  --api-model         必填。上游真实模型 id（不是 slug）
+  --param k=v         可重复；点号表示嵌套：
+                        reasoningEffort=low / responseFormat=false / extraBody.thinking.type=disabled
+                      （params 只允许这三个字段，写 temperature 会被 schema 拒绝）
+  --lane=<lane>       同时加进哪条链；不给就只写 model、不进任何链
+  --note=<text>       写清「为什么它在链里 / 为什么不在」—— 半年后只有它能回答
+  --top / --bottom / --before=<slug> / --after=<slug>   进链位置（默认 bottom）
+  --prompt=real|small real 用 docs/data/<最新>.json 走生产路径；small 只探活（没有 fixture 时用）
+  --runs=N            探测次数（默认 3）
+  --yes               真正探测并落盘；不带只打印 diff
+  --push-secret       真的推 repo secret（默认干跑）
+  --dry-run           显式只读
+
+示例：
+  # ① 只看 diff
+  node scripts/providers.mjs add nvidia-nemotron-lightning --endpoint=nvidia ^
+    --api-model=nvidia/nemotron-3.5-lightning-30b-a3b --param reasoningEffort=none --lane=daily --top
+  # ② 确认后末尾加 --yes 真跑；③ 要推 secret 再加 --push-secret
+
+注意：脚本只能挡住「结构合法 + 耗时」，挡不住「说得对不对」——
+      入链前用 probe <slug> --compare=<稳定腿> 人工比稿（事实 / 中英对称 / 格式）。`,
+
+  probe: `用法：
+  node scripts/providers.mjs probe <slug> [--prompt=real|small] [--runs=N] [--compare=<slug>]
+  node scripts/providers.mjs probe --lane=<lane> [--prompt=real|small] [--runs=N]
+
+做什么：走 ai.mjs 与生产完全相同的代码路径真跑一遍（联网，需要该 endpoint 的 key）。
+  --prompt=real（默认）  generateNarrative + docs/data/<最新>.json 作为 fixture，结果还要过 validateNarrative
+  --prompt=small         只发一个探活 prompt（几十 token），确认端点 / 鉴权活着
+
+门槛：每次都必须过校验、单次 ≤90s、输出非空；任何一次失败 → 退出码 1。
+默认次数：单条腿 3 次（--runs 改）；整条 lane 每条腿 1 次。
+
+参数：
+  --lane=<lane>      探整条链（daily / summary）
+  --runs=N           覆盖次数
+  --compare=<slug>   把另一条腿在同一份数据上的输出并排打出来（同 prompt）
+  --prompt=real|small
+
+示例：
+  node scripts/providers.mjs probe nvidia-minimax-flash
+  node scripts/providers.mjs probe --lane=daily --prompt=real
+  node scripts/providers.mjs probe my-leg --compare=opencode-go-deepseek
+
+注意：--compare 只负责打印，事实准确性 / 中英对称 / 反引号与加粗要自己读。
+      免费层连续快调会 429（会等 2s 重试一次再换腿），别把 --runs 开很大。
+      只读：不写任何文件。`,
+
+  status: `用法：node scripts/providers.mjs status [--json]
+
+做什么：本机 env / repo secret / 配置 三方对照，回答「配置里有这条腿，为什么没生效」。
+  env 列         显示实际命中的变量名（可能是 keyEnvAliases 里的别名）
+  repo secret 列 靠 gh secret list；未登录 / 无网时显示 "? 未知"（不报错退出）
+  配置坏了会回落到内置 FALLBACK_CHAIN，这里看到的就是回落后的目录
+
+只读；任何 key 值都不打印（只看变量是否存在、secret 名是否存在）。
+示例：node scripts/providers.mjs status --json`,
+
+  check: `用法：node scripts/providers.mjs check
+
+做什么：
+  ① 配置 schema：version / endpoints（baseUrl+keyEnv）/ models（endpoint 存在、apiModel 不重复）/
+     lanes（order 只引用存在的 slug、不重复、budgetMs 为正）/ params（只允许三个字段）
+  ② workflow 接线硬断言（纯文本扫描，先剔掉以 # 开头的注释行）
+
+接线规则：
+  A  跑 scripts/daily/index.mjs 的 workflow      → daily 链里每个 endpoint 的 secrets.<KEY_ENV>
+  B  跑 scripts/summary/index.mjs 的 workflow    → summary 链里每个 endpoint 的
+  C  跑 scripts/diagnose-providers.mjs 的 workflow → 每个 enabled endpoint 的
+     （诊断会探所有 /models，缺 key 会误报「未配置」）
+
+失败时打印 文件 / 缺哪个 secrets.X / 该加在哪一步，退出码 1。
+node scripts/daily/check.mjs 与 CI 的 check.yml 都会跑它。只读，不联网。`,
+
+  list: `用法：node scripts/providers.mjs list [--lane=<lane>] [--json]
+
+列：
+  slug       稳定身份（attempts[].provider、页面 AI 徽章、历史数据都用它，别随便改）
+  endpoint   走哪个端点（决定 baseUrl / keyEnv）
+  apiModel   发给上游的真实模型 id
+  enabled    是否被 disable（model 或 endpoint 级）
+  key        ✓ 当前 shell 有 / ✗ 缺，括号里是变量名
+  lanes      它进了哪些链
+
+--lane=<lane>  只列这条链，按链顺序（末尾打印该 lane 的预算）
+--json         机器可读，已剔除 apiKey
+
+示例：
+  node scripts/providers.mjs list --lane=daily
+  node scripts/providers.mjs list --json
+
+注意：key 列只反映当前 shell；CI 以 repo secret 为准，那用 status 看。`,
+
+  show: `用法：node scripts/providers.mjs show <slug|lane|endpoint:NAME|model:SLUG|lane:LANE>
+
+目标解析：显式前缀（model: / lane: / endpoint:）优先；否则按 model → lane → endpoint 找。
+  sensenova 既是 model 也是 endpoint —— 默认命中 model；要看 endpoint 写 endpoint:sensenova。
+
+输出：该节点的完整 JSON。看 model 时额外给：
+  lanes           它进了哪些链
+  endpointDef     它所属 endpoint 的完整配置
+  keyPresent / keyEnvUsed   当前 shell 有没有 key（只给布尔与变量名，不给值）
+
+示例：
+  node scripts/providers.mjs show nvidia-minimax-flash
+  node scripts/providers.mjs show daily
+  node scripts/providers.mjs show endpoint:nvidia
+
+只读。`,
+
+  lane: `用法：node scripts/providers.mjs lane add|remove|move <lane> <slug> [位置]
+
+  add     把已有 model 加进链（已在链里会报错 —— 换位置用 move）
+  remove  从链里摘掉（model 本身保留；要彻底删还得手工删 models.<slug> 那段）
+  move    换位置（必须先在这条链里）
+
+位置（默认 --bottom）：
+  --top | --bottom | --before=<slug> | --after=<slug>
+
+写操作：先打印 diff，--yes 才落盘；--dry-run 显式只读。
+
+示例：
+  node scripts/providers.mjs lane move daily sensenova --top
+  node scripts/providers.mjs lane add summary nvidia-minimax-flash --before=sensenova --yes
+  node scripts/providers.mjs lane remove daily my-leg --yes
+
+注意：lane 预算用 \`set <lane> budgetMs=…\`，不在这里改。`,
+
+  set: `用法：node scripts/providers.mjs set <slug|lane|endpoint:NAME> <path>=<value>
+
+目标解析：显式前缀 model: / lane: / endpoint: 优先；否则 model → lane → endpoint。
+取值：true / false / null / 数字 / JSON 字面量，其余按字符串。
+  =null 是删掉该字段（例：set daily budgetMs=null 取消预算）
+路径相对目标对象，可建中间层：params.extraBody.thinking.type=disabled
+
+常见用法：
+  node scripts/providers.mjs set nvidia-minimax-flash params.reasoningEffort=low
+  node scripts/providers.mjs set nvidia-minimax-flash params.responseFormat=false
+  node scripts/providers.mjs set daily budgetMs=600000
+  node scripts/providers.mjs set endpoint:nvidia baseUrl=https://integrate.api.nvidia.com/v1
+  node scripts/providers.mjs set sensenova params.extraBody.thinking.type=disabled
+
+限制：params 只允许 reasoningEffort / extraBody / responseFormat —— 写 temperature 会被拒。
+写操作：先打印 diff，--yes 才落盘；会让 schema 不合法的改动直接抛错，不落盘。`,
+
+  enable: `用法：node scripts/providers.mjs enable <slug> [--yes]
+
+作用：删掉 models.<slug>.enabled（恢复进链）。被 disable 过的腿重新出现在 providersForLane 里。
+写操作：先打印 diff，--yes 才落盘。
+示例：node scripts/providers.mjs enable nvidia-minimax-flash --yes`,
+
+  disable: `用法：node scripts/providers.mjs disable <slug> [--yes]
+
+作用：写入 models.<slug>.enabled = false。被停用的腿不会出现在 providersForLane 里，
+      但仍出现在 list / status / 诊断目录中（便于查看与恢复）。
+回滚：这是推荐的「只改往后」的降级方式 —— 不要让已定稿日期用 --force 重跑。
+
+写操作：先打印 diff，--yes 才落盘。
+注意：disable 后 node scripts/daily/check.mjs 仍应全绿（测试断言 lane 顺序，不依赖某条腿 enabled）。
+示例：node scripts/providers.mjs disable nvidia-minimax-flash --yes`,
+};
+
+/**
+ * 打印帮助。`name` 为空 → 总览；给命令名 → 该命令的完整用法。
+ * 未知命令：打印总览 + 报错行，退出码 1（绝不静默当成空操作）。
+ */
+function printHelp(name) {
+  if (!name) {
+    console.log(GLOBAL_HELP);
+    return true;
+  }
+  const key = String(name).replace(/^-+/, "");
+  const text = COMMAND_HELP[key];
+  if (!text) {
+    console.log(GLOBAL_HELP);
+    console.error(`\n${LOG} 未知命令：${key}（上面是全部命令；看某条用法：providers.mjs help <命令>）`);
+    process.exitCode = 1;
+    return false;
+  }
+  console.log(text);
+  return true;
 }
 
 async function main() {
   const { flags, rest } = parseArgs(process.argv.slice(2));
   const cmd = rest.shift();
-  if (!cmd || cmd === "help" || flags.help) {
-    usage();
+  if (!cmd) {
+    printHelp();
+    return;
+  }
+  if (cmd === "help") {
+    printHelp(rest[0]);
+    return;
+  }
+  if (flags.help) {
+    printHelp(cmd);
     return;
   }
   switch (cmd) {
@@ -593,7 +822,7 @@ async function main() {
       return cmdToggle(flags, rest, false);
     default:
       console.error(`${LOG} 未知命令：${cmd}\n`);
-      usage();
+      printHelp();
       process.exitCode = 1;
   }
 }

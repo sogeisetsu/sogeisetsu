@@ -17,6 +17,8 @@
  *   6 接线断言         fixture 里缺 secrets.X → 报出；有 → 通过；注释行内的 secrets.X 不算数
  *   7 lane 预算        假服务器挂住 + budgetMs → 不再发起新请求、合成 attempt 数量正确、走全失败路径
  *   8 安全线           配置里没有明文 key 形态；gh 调用不带 --body；CLI 输出不含 key 值
+ *   9 内置帮助         `--help` / `-h` / 不带参数 → 总览；`add --help` / `help add` → 该命令的完整用法；
+ *                     未知命令 → 退出码 1；帮助不执行任何写操作
  *
  * 用法：node scripts/test-providers.mjs
  * 输出：每个用例一行 PASS/FAIL，结尾 N/M；有失败时退出码 1。
@@ -512,6 +514,35 @@ try {
       ["statusReportsSecret", statusRows.rows[0]?.secretStatus === "present" && statusRows.rows[0]?.envSource === "NVIDIA_API_KEY"],
       ["secretPreviewHashed", !JSON.stringify(secretPreview).includes("SUPERSECRET") && secretPreview.sha.length === 8],
       ["noKeyValueInConfigNotes", !Object.values(realConfig().models).some((m) => /nvapi-|sk-/.test(String(m.note || "")))],
+    ]);
+  }
+
+  // ------------------------------------------------------------ 9 内置帮助
+  {
+    const runCli = (args) => spawnSync(process.execPath, [CLI, ...args], { encoding: "utf8" });
+    const global = runCli(["--help"]);
+    const short = runCli(["-h"]);
+    const noArgs = runCli([]);
+    const addHelp = runCli(["add", "--help"]);
+    const helpAdd = runCli(["help", "add"]);
+    const unknown = runCli(["help", "nope"]);
+    const commands = ["add", "probe", "status", "check", "list", "show", "lane", "set", "enable", "disable", "help"];
+
+    check("cli-help", [
+      ["globalOk", global.status === 0],
+      ["listsAllCommands", commands.every((c) => global.stdout.includes(c))],
+      ["shortFlagSame", short.status === 0 && short.stdout === global.stdout],
+      ["noArgsSame", noArgs.status === 0 && noArgs.stdout === global.stdout],
+      [
+        "commandHelp",
+        addHelp.status === 0 &&
+          addHelp.stdout.includes("--api-model") &&
+          addHelp.stdout.includes("--push-secret") &&
+          addHelp.stdout.includes("不写配置"),
+      ],
+      ["helpSubcommandSame", helpAdd.status === 0 && helpAdd.stdout === addHelp.stdout],
+      ["unknownFails", unknown.status === 1 && unknown.stderr.includes("未知命令")],
+      ["helpWritesNothing", !addHelp.stdout.includes("已写入") && !global.stdout.includes("已写入")],
     ]);
   }
 } finally {

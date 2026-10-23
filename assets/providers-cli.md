@@ -12,6 +12,10 @@
 ## 0. 一分钟版
 
 ```powershell
+# 先看内置帮助（总览 / 某条命令的完整用法）
+node scripts/providers.mjs --help
+node scripts/providers.mjs help add
+
 # 看现在链路长什么样（只读）
 node scripts/providers.mjs list --lane=daily
 
@@ -56,6 +60,9 @@ $env:NVIDIA_API_KEY = $cfg.projects.'path_RTovb3BlbmNvZGUtc2tpbGxzL3JlYWRtZS9zb2
 ---
 
 ## 2. 只读命令（随便跑，不写文件、不联网）
+
+> 每条命令都有内置帮助：`node scripts/providers.mjs <命令> --help`（等价 `help <命令>`）。
+> 下面只讲「怎么用 + 怎么读输出」，参数全表以 `--help` 为准 —— 它和代码在同一个文件里，不会漂。
 
 ### 2.1 `list` —— 链的顺序 + 每条腿的 key 状态
 
@@ -405,7 +412,9 @@ node scripts/providers.mjs show <slug|lane|endpoint:NAME|model:SLUG>
 node scripts/providers.mjs lane add|remove|move <lane> <slug> [--top|--bottom|--before=<slug>|--after=<slug>]
 node scripts/providers.mjs set <slug|lane|endpoint:NAME> <path>=<value>
 node scripts/providers.mjs enable|disable <slug>
+node scripts/providers.mjs help [命令]        # 等价 <命令> --help
 
-全局：--config=<path>（改一份临时副本）· --dry-run（显式只读）· --yes（落盘）
-退出码：check / probe / add 失败 → 1；未知命令 → 1；只读命令成功 → 0
+全局：--config=<path>（改一份临时副本）· --dry-run（显式只读）· --yes（落盘）·
+      -h/--help（总览；放在命令后面是该命令的完整用法）
+退出码：check / probe / add 失败 → 1；未知命令（含 help 未知命令）→ 1；只读命令成功 → 0
 ```
