@@ -3,10 +3,10 @@
   "windowStart": "2026-10-24T00:00:00+08:00",
   "windowEnd": "2026-10-25T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-24T02:51:06.407Z",
+  "generatedAt": "2026-10-24T03:22:42.684Z",
   "empty": false,
   "totals": {
-    "commits": 27,
+    "commits": 28,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 17,
+      "count": 18,
       "own": true,
       "messages": [
+        {
+          "sha": "738e51884a8d3b8f518f834cd0cdc9acde7f06e5",
+          "message": "fix(ai): 把「自动提交写成包含式」的检查覆盖到 headline，并放宽真实句式的窗口",
+          "ts": "2026-10-24T03:22:19Z"
+        },
         {
           "sha": "c70ca963fcb0ded9c1c5de1985f3de80ca5c7bd0",
           "message": "docs(codemap): 映射基线改用 rebase 后仍存在的提交（6a28af6 已被 rebase 拍平）",
@@ -103,7 +108,7 @@
           "ts": "2026-10-23T17:18:27Z"
         }
       ],
-      "automated": 18,
+      "automated": 20,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -177,7 +182,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 18,
+  "automatedCommits": 20,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -300,18 +305,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "27 commits across three repositories, with 18 automated commits",
-      "summary": "On 2026-10-24, `sogeisetsu/sogeisetsu` received 17 own commits plus 18 automated commits by `github-actions[bot]`. The own work updated the codemap baseline after rebasing, synchronized the layered refactor, added a P5' schedule reconciliation between cron and Worker TARGETS, and refactored rules, data contracts, and site rendering into separate modules. `sogeisetsu/opencode-skill-management` received 6 own commits covering menu hover and selection states, theme and language menus, title spacing, card sizing, README links, and orange interactions. `sogeisetsu/sopen-translate` received 4 own commits adding Google 1 and Google 2 presets, a public test key button for Google 2, Chrome built-in translation, split contributor documentation, and a requirement for the user's global git identity. The daily total was **27 commits**, with 0 pull requests, 0 issues, and 0 reviews.",
+      "headline": "28 own commits plus 20 automated commits across three repositories",
+      "summary": "**28 own commits** were recorded across three repositories, alongside 20 automated commits by `github-actions[bot]`. In `sogeisetsu/sogeisetsu`, 18 own commits covered AI headline wording checks, codemap baseline updates, schedule reconciliation, and staged refactors that consolidated rules constants, data contracts, and site rendering into `scripts/site/md.mjs`, `scripts/site/shell.mjs`, and `scripts/site/indexPage.mjs`. In `sogeisetsu/opencode-skill-management`, 6 own commits adjusted menu selection and hover states, custom theme and language menus, title spacing, card sizing, and README links. In `sogeisetsu/sopen-translate`, 4 own commits added Google 1 and Google 2 presets, a public test key button for Google 2, Chrome built-in translation, split contributor documentation, and a requirement for the user's global git identity. No pull requests, issues, reviews, releases, or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "三个仓库共 27 次提交，另有 18 次自动提交",
-      "summary": "2026-10-24，`sogeisetsu/sogeisetsu` 有 17 次本人提交，另有 18 次由 `github-actions[bot]` 自动提交。本人提交更新了 rebase 后的 codemap 基线，同步分层重构，新增 P5' 调度对账以核对 cron 与 Worker TARGETS，并重构规则、数据契约及站点渲染模块。`sogeisetsu/opencode-skill-management` 有 6 次本人提交，涉及菜单悬停与选中状态、主题和语言菜单、标题行距、卡片尺寸、README 链接及橙色交互。`sogeisetsu/sopen-translate` 有 4 次本人提交，新增 Google 1 与 Google 2 预设、Google 2 公共测试密钥按钮、Chrome 内置翻译，拆分贡献者文档，并要求使用用户的全局 git 身份。当天总计 **27 次提交**，另有 0 个拉取请求、0 个 issue 和 0 次评审。",
+      "headline": "三个仓库共 28 次本人提交，另有 20 次自动提交",
+      "summary": "三个仓库共记录 **28 次本人提交**，另有 20 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/sogeisetsu` 的 18 次本人提交中，工作涉及 AI 标题措辞检查、codemap 基线更新、调度对账，以及分阶段重构，将规则常量、数据契约和站点渲染收敛到 `scripts/site/md.mjs`、`scripts/site/shell.mjs` 与 `scripts/site/indexPage.mjs`。在 `sogeisetsu/opencode-skill-management` 的 6 次本人提交中，调整了菜单选中态与悬停态、自定义主题和语言菜单、标题行距、卡片尺寸及 README 链接。在 `sogeisetsu/sopen-translate` 的 4 次本人提交中，新增 Google 1 与 Google 2 预设、Google 2 公共测试密钥按钮、Chrome 内置翻译，拆分贡献者文档，并要求提交使用用户的全局 git 身份。当天没有记录拉取请求、issue、评审、发布或讨论。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "1e566e50bb04b87c8dd49c1e826b65ff77d327bd150ec62be96bb554dfe83b3d"
+  "dataHash": "b3a9502527bf1872a6f757be1446883bccf2ba30dd508d579b1d44cdce9c4a82"
 }
