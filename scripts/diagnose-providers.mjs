@@ -337,14 +337,25 @@ function sourceSection(rows) {
 export async function buildEvidence() {
   const record = readJsonIfExists(AI_FAILURE_PATH);
   const catalogue = orderForScope(providerCatalogue(), record?.scope);
-  const rows = [];
-  for (const provider of catalogue) {
-    // 未配置的腿不发请求（apiKey 是占位串，拿它发请求毫无意义且会污染凭据日志）
-    const probe = provider.configured
-      ? await probeModels(provider)
-      : { url: modelsUrl(provider), status: null, ok: false, ids: null, bodySnippet: "", error: "" };
-    rows.push({ provider, probe });
-  }
+  // 各腿并发探测：探测彼此独立（各自的 AbortController / try-catch，不抛异常、不写日志），
+  // 串行只会让总耗时变成各腿延迟之和，最坏 N × 20s；`map` 保序，所以行序与输出不受影响。
+  // 同一端点只探一次：多条腿共用一个 endpoint 时（如 nvidia 的两条），/models 必然回同一份列表，
+  // 重复请求既浪费一次往返，也白担一次限流风险。同一次 catalogue() 里同端点的 key 与 headers 相同。
+  const probed = new Map(); // `${modelsUrl}\n${apiKey}` → Promise<probe>
+  const rows = await Promise.all(
+    catalogue.map(async (provider) => {
+      // 未配置的腿不发请求（apiKey 是占位串，拿它发请求毫无意义且会污染凭据日志）
+      if (!provider.configured) {
+        return {
+          provider,
+          probe: { url: modelsUrl(provider), status: null, ok: false, ids: null, bodySnippet: "", error: "" },
+        };
+      }
+      const key = `${modelsUrl(provider)}\n${provider.apiKey}`;
+      if (!probed.has(key)) probed.set(key, probeModels(provider));
+      return { provider, probe: await probed.get(key) };
+    })
+  );
 
   const generatedAt = record?.generatedAt || stamp();
   const marker = `<!-- ai-diagnosis run=${process.env.GITHUB_RUN_ID || "local"} generatedAt=${generatedAt} -->`;
