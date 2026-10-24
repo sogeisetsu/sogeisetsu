@@ -162,6 +162,11 @@ async function probeModels(provider) {
   }
 }
 
+/** 不发请求 / 探测异常时的占位结果，形状与 `probeModels` 的失败返回一致，下游 reconcile 无需分叉。 */
+function emptyProbe(url, error = "") {
+  return { url, status: null, ok: false, ids: null, bodySnippet: "", error };
+}
+
 /** 从 /models 响应体里抽模型 id（OpenAI 形态 data[].id，兼容 models[].id/name）；解析不出返回 null。 */
 function parseModelIds(body) {
   let json;
@@ -338,21 +343,33 @@ export async function buildEvidence() {
   const record = readJsonIfExists(AI_FAILURE_PATH);
   const catalogue = orderForScope(providerCatalogue(), record?.scope);
   // 各腿并发探测：探测彼此独立（各自的 AbortController / try-catch，不抛异常、不写日志），
-  // 串行只会让总耗时变成各腿延迟之和，最坏 N × 20s；`map` 保序，所以行序与输出不受影响。
+  // 串行的话总耗时 = 各腿延迟之和，最坏 N × 20s（当前 4 腿 / 3 端点：80s → ~20s）；
+  // `map` 保序，所以行序与输出不受影响。
   // 同一端点只探一次：多条腿共用一个 endpoint 时（如 nvidia 的两条），/models 必然回同一份列表，
-  // 重复请求既浪费一次往返，也白担一次限流风险。同一次 catalogue() 里同端点的 key 与 headers 相同。
-  const probed = new Map(); // `${modelsUrl}\n${apiKey}` → Promise<probe>
+  // 重复请求既浪费一次往返，也白担一次限流风险。**这是行为变更、不只是性能优化**：共用一次结果
+  // 意味着一次瞬时失败（429 / 网络抖动）会同时出现在该端点的所有腿上 —— 对诊断是想要的
+  // （不再有「一条 429、一条 200」那种噪声），但别当成 bug 去"修"。
+  // 去重键带上 headers：同端点的 headers 现在确实一样，但那是 catalogue() 的实现细节，
+  // 不把它写成隐式前提，免得以后 headers 支持按 model 覆盖时静默串味。
+  const probeKey = (provider) =>
+    `${modelsUrl(provider)}\n${provider.apiKey}\n${JSON.stringify(provider.headers && typeof provider.headers === "object" ? provider.headers : {})}`;
+  const probed = new Map(); // probeKey(provider) → Promise<probe>
   const rows = await Promise.all(
     catalogue.map(async (provider) => {
       // 未配置的腿不发请求（apiKey 是占位串，拿它发请求毫无意义且会污染凭据日志）
       if (!provider.configured) {
-        return {
-          provider,
-          probe: { url: modelsUrl(provider), status: null, ok: false, ids: null, bodySnippet: "", error: "" },
-        };
+        return { provider, probe: emptyProbe(modelsUrl(provider)) };
       }
-      const key = `${modelsUrl(provider)}\n${provider.apiKey}`;
-      if (!probed.has(key)) probed.set(key, probeModels(provider));
+      const key = probeKey(provider);
+      if (!probed.has(key)) {
+        // probeModels 目前绝不抛；这里再兜一层，任何意外都不能让「证据层」整份写不出来
+        probed.set(
+          key,
+          probeModels(provider).catch((err) =>
+            emptyProbe(modelsUrl(provider), sanitizeReason(err && err.message ? err.message : String(err)))
+          )
+        );
+      }
       return { provider, probe: await probed.get(key) };
     })
   );
