@@ -67,10 +67,10 @@ const LONG_SUMMARY = Array.from(
   (_, i) => `Sentence number ${i + 1} ${"detail ".repeat(70)}.`
 ).join(" ");
 
-function jsonWith({ enHeadline = "Head", enSummary = OK_EN, zhSummary = OK_ZH, releaseNotes = [] } = {}) {
+function jsonWith({ enHeadline = "Head", zhHeadline = "标题", enSummary = OK_EN, zhSummary = OK_ZH, releaseNotes = [] } = {}) {
   return {
     en: { headline: enHeadline, summary: enSummary, releaseNotes },
-    zh: { headline: "标题", summary: zhSummary, releaseNotes },
+    zh: { headline: zhHeadline, summary: zhSummary, releaseNotes },
   };
 }
 const validNarrative = () => jsonWith();
@@ -180,6 +180,33 @@ const cases = [
     name: "automated-commit-overlap-retries",
     script: [
       chatResp(JSON.stringify(jsonWith({ enSummary: "One. Two. Three. Four. The 4 commits include 1 automated commit." }))),
+      chatResp(JSON.stringify(validNarrative())),
+    ],
+    expect: { ok: true, calls: 2, userPrompt: "automated commits" },
+  },
+  {
+    // headline 里的包含式同样要拒收（2026-10-24 线上事故：headline 从未被这条规则检查过，
+    // 「24 commits … with 13 automated」被当成 24 里含 13 读，实际是 24 + 13）。
+    name: "headline-automated-commit-overlap-retries",
+    script: [
+      chatResp(
+        JSON.stringify(
+          jsonWith({ enHeadline: "24 commits across three repos, with 13 automated by github-actions[bot]" })
+        )
+      ),
+      chatResp(JSON.stringify(validNarrative())),
+    ],
+    expect: { ok: true, calls: 2, userPrompt: "automated commits" },
+  },
+  {
+    // 中文 headline 的同族写法（其中 + bot login 把窗口撑到 27 字符）同样要拒收
+    name: "zh-headline-automated-commit-overlap-retries",
+    script: [
+      chatResp(
+        JSON.stringify(
+          jsonWith({ zhHeadline: "三个仓库共 24 次提交，其中 13 次由 github-actions[bot] 自动提交" })
+        )
+      ),
       chatResp(JSON.stringify(validNarrative())),
     ],
     expect: { ok: true, calls: 2, userPrompt: "automated commits" },
@@ -331,14 +358,28 @@ const cases = [
         zh: { summary: "本人提交 99 次，另有 331 次自动提交。" },
       };
       const badZh = { ...good, zh: { summary: "本人提交 99 次，其中 331 次为自动提交。" } };
+      const badHeadline = {
+        ...good,
+        zh: {
+          headline: "三个仓库共 24 次提交，其中 13 次由 github-actions[bot] 自动提交",
+          summary: good.zh.summary,
+        },
+      };
       const badNotes = {
         ...good,
         en: { ...good.en, releaseNotes: [{ repo: "a/b", tag: "v1", summary: "4 commits, of which 1 automated." }] },
       };
+      // 放宽窗口后的误伤护栏：「其中」指的是 issue，后面才是「另有…自动提交」→ 必须放行
+      const goodMixed = {
+        en: { summary: "Closed 3 issues, 1 of them already closed; plus 13 automated commits." },
+        zh: { summary: "关闭了 3 个 issue，其中 1 个已关闭；另有 13 次由 github-actions[bot] 自动提交。" },
+      };
       return [
         ["good", narrativeWordingOk(good) === true],
         ["badZh", narrativeWordingOk(badZh) === false],
+        ["badHeadline", narrativeWordingOk(badHeadline) === false],
         ["badNotes", narrativeWordingOk(badNotes) === false],
+        ["goodMixedNotFlagged", narrativeWordingOk(goodMixed) === true],
         ["nullSafe", narrativeWordingOk(null) === true],
       ];
     },

@@ -598,9 +598,13 @@ function main() {
     }
 
     // AI 正文同样不许把自动提交写成包含式（旧规则生成的已发布文本也要拦；
-    // 正则与生成校验共用 AUTOMATED_OVERLAP_RE）
+    // 正则与生成校验共用 AUTOMATED_OVERLAP_RE）。headline 也必须扫：
+    // 10-24 的线上事故就发生在 h2.ai-headline 里，而这里过去只看 div.ai-summary。
     if (data.ai && hasVisibleActivity(data) && automated > 0) {
-      const aiText = [...html.matchAll(/<div class="ai-summary[^"]*"[^>]*>([\s\S]*?)<\/div>/g)]
+      const aiText = [
+        ...html.matchAll(/<div class="ai-summary[^"]*"[^>]*>([\s\S]*?)<\/div>/g),
+        ...html.matchAll(/<h2 class="ai-headline"[^>]*>([\s\S]*?)<\/h2>/g),
+      ]
         .map((mm) => mm[1].replace(/<[^>]*>/g, " "))
         .join(" ");
       const hit = AUTOMATED_OVERLAP_RE.exec(aiText);
@@ -953,6 +957,7 @@ function main() {
           .join(" ");
         const aiText = [
           ...summaryHtml.matchAll(/<div class="ai-summary[^"]*"[^>]*>([\s\S]*?)<\/div>/g),
+          ...summaryHtml.matchAll(/<h2 class="ai-headline"[^>]*>([\s\S]*?)<\/h2>/g),
         ]
           .map((mm) => mm[1].replace(/<[^>]*>/g, " "))
           .join(" ");

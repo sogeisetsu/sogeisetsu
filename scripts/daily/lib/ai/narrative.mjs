@@ -45,7 +45,7 @@ const SYSTEM_PROMPT = [
   "Reply with ONE strict JSON object only: no prose, no markdown, no code fences.",
   'Schema: {"en":{"headline":"...","summary":"...","releaseNotes":[{"repo":"...","tag":"...","summary":"..."}]},"zh":{...same shape...}}',
   "Rules:",
-  "- headline: one line, at most 80 characters (count them; NEVER exceed 80).",
+  "- headline: one line, at most 80 characters (count them; NEVER exceed 80). If the headline mentions automated commits at all, it MUST use the SAME additive wording as the summary — \"24 own commits plus 13 automated\" / \"24 次本人提交，另有 13 次自动提交\" — never an inclusive one (\"24 commits, of which 13 automated\" / \"24 次提交，其中 13 次自动提交\" / \"24 commits … with 13 automated\"). Keep it short by dropping detail, NOT by merging the two counts.",
   "- summary: 4-8 sentences and UNDER 1200 characters (hard limit — count characters; stay well below). Name concrete specifics from the input — repository names, issue/PR numbers and titles, who replied, what a release changed — and describe what actually happened that day, in order. No filler, no repeating the headline, no generic 'a busy day'.",
   "- releaseNotes: one entry ONLY for each release in the input, matching repo+tag exactly; each summary at most 3 sentences; use [] when there are no releases.",
   "- Commits: for the user's OWN commits (commits[].messages), summarize what they actually changed by synthesizing their commit messages — group and shorten them; do NOT list the messages verbatim.",
@@ -149,7 +149,16 @@ function validateNarrative(raw, data) {
     // 硬性长度用代码强制（模型无法稳定遵守字符上限）：超长按句界/词界截断，而不是整段拒绝
     const headline = fitHeadline(unescapeProse(String(sec.headline ?? "")).trim(), HEADLINE_MAX_CHARS);
     const summaryRaw = unescapeProse(String(sec.summary ?? "")).trim();
-    // 自动提交写成「其中/包含」的包含关系 → 拒收重试（本人与机器人提交是相加关系）
+    // 自动提交写成「其中/包含」的包含关系 → 拒收重试（本人与机器人提交是相加关系）。
+    // headline 必须单独查：它比 summary 短、最容易为了省字压成包含式，而历史上它完全不受检查
+    // （10-24 线上事故：summary 写了「另有」，headline 写了「其中」，页面自相矛盾）。
+    const overlapHeadline = AUTOMATED_OVERLAP_RE.exec(headline);
+    if (overlapHeadline) {
+      return {
+        ok: false,
+        reason: `${lang}.headline 把自动提交写成包含关系（「${overlapHeadline[0]}」），应写成「本人 N 次，另有 M 次」`,
+      };
+    }
     const overlap = AUTOMATED_OVERLAP_RE.exec(summaryRaw);
     if (overlap) {
       return {
