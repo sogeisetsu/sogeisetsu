@@ -14,3 +14,6 @@ data/ai-diagnosis.md
 .history
 # 忽略日报草图
 daily-pipeline.excalidraw
+# 只入库 .vscode/extensions.json（推荐扩展清单）；settings.json 等本地编辑配置不入库
+.vscode/*
+!.vscode/extensions.json
