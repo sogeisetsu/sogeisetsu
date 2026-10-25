@@ -4,9 +4,7 @@
     "nvidia": {
       "baseUrl": "https://integrate.api.nvidia.com/v1",
       "keyEnv": "NVIDIA_API_KEY",
-      "keyEnvAliases": [
-        "Nvidia"
-      ]
+      "keyEnvAliases": ["Nvidia"]
     },
     "opencode-go": {
       "baseUrl": "https://opencode.ai/inference/go/openai/v1",
@@ -65,10 +63,7 @@
       "budgetMs": 480000
     },
     "summary": {
-      "order": [
-        "opencode-go-deepseek",
-        "sensenova"
-      ]
+      "order": ["opencode-go-deepseek", "sensenova"]
     }
   }
 }
