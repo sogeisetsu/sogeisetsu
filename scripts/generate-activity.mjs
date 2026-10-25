@@ -130,6 +130,10 @@ query ($login: String!, $from: DateTime!, $to: DateTime!) {
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : 0);
 
+/**
+ * 打印错误信息并终止进程（调用 process.exit(1) 后续代码不会被执行）。
+ * 调用该函数会导致 Node.js 进程立即退出。
+ */
 function fail(message, detail) {
   console.error(`[generate-activity] 错误: ${message}`);
   if (detail) console.error(detail);
