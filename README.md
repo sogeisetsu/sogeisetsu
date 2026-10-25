@@ -7,7 +7,7 @@ _Updated automatically: 2026-10-25_
 
 <details><summary>🔨 Owned repos</summary>
 
-- 📝 Pushed 145 commits to `sogeisetsu/sogeisetsu`
+- 📝 Pushed 151 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 125 commits to `sogeisetsu/meld-deepresearch`
 - 📝 Pushed 57 commits to `sogeisetsu/sopen-translate`
 - 📝 Pushed 44 commits to `sogeisetsu/opencode-skill-management`
@@ -22,6 +22,7 @@ _Updated automatically: 2026-10-25_
 
 <details><summary>🌐 Contributed to</summary>
 
+- 🐛 Opened issue [\[Bug\] Quote card's arrow is a silent no-op when the quoted message is outside the loaded history](https://github.com/openchamber/openchamber/issues/5584) in `openchamber/openchamber`
 - 🐛 Opened issue [\[Bug\] Files view: dragging across line numbers to comment is unreliable \(web, desktop, VS Code extension\)](https://github.com/openchamber/openchamber/issues/5556) in `openchamber/openchamber`
 - 🐛 Opened issue [\[Bug\] "Run as goal" on a plan's Improve action arms an implement objective, so the agent starts executing the plan](https://github.com/openchamber/openchamber/issues/5489) in `openchamber/openchamber`
 - 🐛 Opened issue [\[Bug\] Project actions menu: Auto-discover dev server runs the first saved action instead of discovering a server](https://github.com/openchamber/openchamber/issues/5293) in `openchamber/openchamber`
@@ -31,7 +32,6 @@ _Updated automatically: 2026-10-25_
 - 💬 Commented on [anomalyco/opencode#55785](https://github.com/anomalyco/opencode/issues/55785): go: mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image \(400\)
 - 💬 Commented on [anomalyco/opencode#56113](https://github.com/anomalyco/opencode/issues/56113): Subagent runs fail with 'model_coming_soon' on MiMo-V2.6-Flash while the main session on the same model works fine
 - 💬 Commented on [anomalyco/opencode#55785](https://github.com/anomalyco/opencode/issues/55785): go: mimo-v2.6-flash and mimo-v2.5 advertise image input but the Go endpoint rejects every image \(400\)
-- 💬 Commented on [anomalyco/opencode#50823](https://github.com/anomalyco/opencode/issues/50823): opencode-go: mimo-v2.6-flash vision reads a stale image after ≥5 images in one session
 
 </details>
 <!--END:activity-->

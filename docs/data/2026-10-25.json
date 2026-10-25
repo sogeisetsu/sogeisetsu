@@ -3,30 +3,73 @@
   "windowStart": "2026-10-25T00:00:00+08:00",
   "windowEnd": "2026-10-26T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-24T22:33:09.469Z",
-  "empty": true,
+  "generatedAt": "2026-10-25T04:49:55.868Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 6,
     "prs": 0,
-    "issues": 0,
+    "issues": 1,
     "reviews": 0
   },
   "commits": [
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 0,
+      "count": 6,
       "own": true,
-      "messages": [],
-      "automated": 6,
+      "messages": [
+        {
+          "sha": "e482c5698fe8a9c4a1328dc1e680a3c674aa58f2",
+          "message": "chore: 更新 .gitignore，添加 .history 文件夹和日报草图的忽略规则；在 generate-activity.mjs 中添加错误处理函数的注释",
+          "ts": "2026-10-25T00:27:42Z"
+        },
+        {
+          "sha": "2c39dec85379c4e90f8ebe9b6f86c9189a0eb556",
+          "message": "refactor(diagnose): 探测去重键带上 headers，并给 probe 兜一层 catch",
+          "ts": "2026-10-24T23:15:34Z"
+        },
+        {
+          "sha": "0457001661e5453894d9db92619dd17ba09bcac9",
+          "message": "fix: 优化并发探测逻辑，减少重复请求，提升性能",
+          "ts": "2026-10-24T23:15:28Z"
+        },
+        {
+          "sha": "1333f3d9436d4b58ed59fbed6740c5687ab1a047",
+          "message": "chore: 更新 .gitignore，移除 .history/scripts/daily 的路径",
+          "ts": "2026-10-24T23:15:27Z"
+        },
+        {
+          "sha": "495d9abffb0d8c21236475fd1b31e7eb3159de14",
+          "message": "chore: 修正 .gitignore 中 .history/scripts/daily 的路径格式",
+          "ts": "2026-10-24T23:15:27Z"
+        },
+        {
+          "sha": "57a1f6ce4b60e4ae851f6a5a818605c6d7b00b86",
+          "message": "chore: 添加 .history/scripts/daily 到 .gitignore",
+          "ts": "2026-10-24T23:15:27Z"
+        }
+      ],
+      "automated": 12,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 6,
+  "automatedCommits": 12,
   "pullRequests": [],
   "reviews": [],
-  "issues": [],
+  "issues": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 5584,
+      "title": "[Bug] Quote card's arrow is a silent no-op when the quoted message is outside the loaded history",
+      "url": "https://github.com/openchamber/openchamber/issues/5584",
+      "action": "opened",
+      "ts": "2026-10-25T00:43:53.000Z",
+      "own": false,
+      "state": "open",
+      "comments": 1
+    }
+  ],
   "releases": [],
   "stars": [],
   "starInventory": [
@@ -123,7 +166,19 @@
       "total": 0
     }
   ],
-  "replies": [],
+  "replies": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 5584,
+      "title": "[Bug] Quote card's arrow is a silent no-op when the quoted message is outside the loaded history",
+      "url": "https://github.com/openchamber/openchamber/issues/5584",
+      "author": "openchamber-bot[bot]",
+      "excerpt": "**For the maintainer:** `fix-ready` — cause traced Your analysis is right at every step. The useful addition: the fix is mostly wiring — `loadHistoryUntilMessage` already sits on the `timelineControl…",
+      "kind": "issue_comment",
+      "ts": "2026-10-25T00:48:57.000Z",
+      "own": false
+    }
+  ],
   "stateChanges": [],
   "truncated": {
     "events": {
@@ -144,9 +199,20 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "ai": {
+    "en": {
+      "headline": "6 own commits plus 12 automated in sogeisetsu/sogeisetsu",
+      "summary": "**6 own commits** were made in `sogeisetsu/sogeisetsu`, plus 12 automated commits by `github-actions[bot]`. The own work updated `.gitignore` rules for `.history` and `.history/scripts/daily`, added comments to an error-handling function in `generate-activity.mjs`, and refactored `diagnose` probing so deduplication keys include headers with a `catch` fallback. It also optimized concurrent probing to reduce duplicate requests and improve performance. In `openchamber/openchamber`, the user opened issue #5584, “[Bug] Quote card's arrow is a silent no-op when the quoted message is outside the loaded history”. `openchamber-bot[bot]` replied with a `fix-ready` note stating the cause had been traced and that the fix mainly involves wiring `loadHistoryUntilMessage` into the timeline control. No pull requests, reviews, releases, or discussions were recorded.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "sogeisetsu/sogeisetsu 有 6 次本人提交，另有 12 次自动提交",
+      "summary": "在 `sogeisetsu/sogeisetsu` 完成 **6 次本人提交**，另有 12 次由 `github-actions[bot]` 自动提交。本人提交更新了 `.gitignore` 中针对 `.history` 与 `.history/scripts/daily` 的忽略规则，为 `generate-activity.mjs` 中的错误处理函数补充注释，并重构 `diagnose` 探测逻辑，使去重键包含 headers，同时为 probe 增加 `catch` 兜底。还优化了并发探测逻辑，以减少重复请求并提升性能。在 `openchamber/openchamber`，用户新开了 issue #5584 “[Bug] Quote card's arrow is a silent no-op when the quoted message is outside the loaded history”。`openchamber-bot[bot]` 回复称已定位原因并标记 `fix-ready`，指出修复主要是将 `loadHistoryUntilMessage` 接入 timeline control。当天没有 pull request、review、发布或讨论活动。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "3f96e111d7149799051530ed6c91d560d47e5ab7f12e1d39cd7af960c3dc18ee"
+  "dataHash": "7672ce89d44b72d6f65e1c6f6f537a9ec4ec3bd196de61dc54b6a2de41ffa228"
 }
