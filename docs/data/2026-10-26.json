@@ -3,12 +3,12 @@
   "windowStart": "2026-10-26T00:00:00+08:00",
   "windowEnd": "2026-10-27T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-26T00:26:16.659Z",
-  "empty": true,
+  "generatedAt": "2026-10-26T02:51:11.275Z",
+  "empty": false,
   "totals": {
     "commits": 0,
     "prs": 0,
-    "issues": 0,
+    "issues": 1,
     "reviews": 0
   },
   "commits": [
@@ -17,16 +17,27 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 7,
+      "automated": 8,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 7,
+  "automatedCommits": 8,
   "pullRequests": [],
   "reviews": [],
-  "issues": [],
+  "issues": [
+    {
+      "repo": "anomalyco/opencode",
+      "number": 55772,
+      "title": "[FEATURE]: Windows desktop ships the CLI but there is no way to run it",
+      "url": "https://github.com/anomalyco/opencode/issues/55772",
+      "action": "commented",
+      "ts": "2026-10-26T02:31:33.000Z",
+      "own": false,
+      "comments": 2
+    }
+  ],
   "releases": [],
   "stars": [],
   "starInventory": [
@@ -144,9 +155,20 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "ai": {
+    "en": {
+      "headline": "8 automated commits in sogeisetsu/sogeisetsu; 1 issue commented",
+      "summary": "The day recorded **8 automated commits** by `github-actions[bot]` in `sogeisetsu/sogeisetsu`, with no own commits. The user commented on issue #55772, “[FEATURE]: Windows desktop ships the CLI but there is no way to run it”, in `anomalyco/opencode`; the issue has 2 comments in total. No pull requests, reviews, releases, discussions, or replies were recorded, and no collection section hit its cap.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "sogeisetsu/sogeisetsu 有 8 次自动提交；评论了 1 个 issue",
+      "summary": "当天在 `sogeisetsu/sogeisetsu` 记录到 **8 次自动提交**，均由 `github-actions[bot]` 创建，无本人提交。用户在 `anomalyco/opencode` 的 issue #55772“[FEATURE]: Windows desktop ships the CLI but there is no way to run it”下发表评论，该 issue 共计 2 条评论。未记录到 pull request、review、release、讨论或回复，也没有任何采集部分触及上限。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "8c50465254ffe519ae948530f85a948b52ded2ffa2f15adce36a7aeacd875ab2"
+  "dataHash": "f781811f875a1b3b66a40d44a7464d94032c1d6e069f51e83ee0ae3051c70e73"
 }
