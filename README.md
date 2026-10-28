@@ -3,16 +3,16 @@
 ![GitHub activity over the last 30 days](./assets/30-day-activity.svg)
 
 <!--START:activity-->
-_Updated automatically: 2026-10-28_
+_Updated automatically: 2026-10-29_
 
 <details><summary>🔨 Owned repos</summary>
 
 - 📝 Pushed 149 commits to `sogeisetsu/sogeisetsu`
-- 📝 Pushed 125 commits to `sogeisetsu/meld-deepresearch`
+- 📝 Pushed 107 commits to `sogeisetsu/meld-deepresearch`
 - 📝 Pushed 57 commits to `sogeisetsu/sopen-translate`
 - 📝 Pushed 46 commits to `sogeisetsu/opencode-skill-management`
 - 📝 Pushed 35 commits to `sogeisetsu/opencode-agent-sandbox`
-- 📝 Pushed 14 commits to `sogeisetsu/opencode-go-model-picker`
+- 📝 Pushed 11 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 2 commits to `sogeisetsu/myBlog`
 - 🐛 Opened issue [\[test\] opencode /oc smoke（临时，验完即关）](https://github.com/sogeisetsu/sogeisetsu/issues/9) in `sogeisetsu/sogeisetsu`
 - 📦 Released [v1.0.0](https://github.com/sogeisetsu/opencode-skill-management/releases/tag/v1.0.0) in `sogeisetsu/opencode-skill-management`
