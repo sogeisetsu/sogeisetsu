@@ -3,27 +3,41 @@
   "windowStart": "2026-10-28T00:00:00+08:00",
   "windowEnd": "2026-10-29T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-28T10:51:07.283Z",
-  "empty": true,
+  "generatedAt": "2026-10-28T12:51:05.746Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 1,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
     {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "count": 1,
+      "own": true,
+      "messages": [
+        {
+          "sha": "730982519ee58c78d6d62d099821adbece778d5b",
+          "message": "evals: move octopus-bike to html-svg-2d-javascript/fusion-mv9kbj67",
+          "ts": "2026-10-28T12:40:29Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 12,
+      "automated": 13,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 12,
+  "automatedCommits": 13,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -144,9 +158,20 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "ai": {
+    "en": {
+      "headline": "1 own commit plus 13 automated commits",
+      "summary": "**1 own commit** was made in `sogeisetsu/opencode-agent-sandbox`, moving the `octopus-bike` evaluation to `html-svg-2d-javascript/fusion-mv9kbj67`. There were also 13 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The daily totals were 1 commit, 0 pull requests, 0 issues, and 0 reviews. No releases, discussions, replies, or state changes were recorded.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "1 次本人提交，另有 13 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **1 次本人提交**，将 `octopus-bike` 评测迁移至 `html-svg-2d-javascript/fusion-mv9kbj67`。`sogeisetsu/sogeisetsu` 另有 13 次由 `github-actions[bot]` 自动提交。当日总计为 1 次提交、0 个拉取请求、0 个 issue 和 0 次评审。未记录发布、讨论、回复或状态变更。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "52e50d75d0c0b02887f286132e4d82d5b205ebf60483ebb508c418263cd40f6b"
+  "dataHash": "9a51cec0a1ada4b413fd4edef7eff87eb98bcd1326fb28178ba95bd32700abdf"
 }
