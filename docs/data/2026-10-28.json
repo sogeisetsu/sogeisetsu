@@ -3,10 +3,10 @@
   "windowStart": "2026-10-28T00:00:00+08:00",
   "windowEnd": "2026-10-29T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-28T12:51:05.746Z",
+  "generatedAt": "2026-10-28T14:51:10.870Z",
   "empty": false,
   "totals": {
-    "commits": 1,
+    "commits": 9,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,49 @@
   "commits": [
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
-      "count": 1,
+      "count": 9,
       "own": true,
       "messages": [
+        {
+          "sha": "27640df2f2b977754d219a6c1717faed53a3fee3",
+          "message": "docs(knowledge): 标注 SenseNova 速查里两处推测（/tmp 映射、edit 子命令名）",
+          "ts": "2026-10-28T13:44:33Z"
+        },
+        {
+          "sha": "480b401566e662218810c6f3ef7830a970717b6d",
+          "message": "docs(knowledge): 收 SenseNova 图像 skill 速查，补 Windows 不必上 WSL2 的实测纠正",
+          "ts": "2026-10-28T13:43:31Z"
+        },
+        {
+          "sha": "4bb806e583db119d892dc6e4f136f9eb82180707",
+          "message": "docs: AGENTS.md 补分支纪律（工作树不碰 main）、推送代理与会话库查询坑；knowledge-ingest 不再无脑推 main",
+          "ts": "2026-10-28T13:38:12Z"
+        },
+        {
+          "sha": "64e615322300e914e2408b3ebe126d86511b1e59",
+          "message": "evals: 收录 Iceman 版鹈鹕骑车，补 eval-comparison 失效分析与验证方法",
+          "ts": "2026-10-28T13:35:15Z"
+        },
+        {
+          "sha": "62d60b645da43f7d1fd0f8aae9b78a65130c7fcd",
+          "message": "docs: 收紧 AGENTS.md，去掉过期断言，补根目录与工作树自检",
+          "ts": "2026-10-28T13:08:35Z"
+        },
+        {
+          "sha": "b58caeb2144723ec2b4678aa21fb862b099bd4c3",
+          "message": "chore: 加 knowledge-ingest 命令，evals 登记表记产出会话 id",
+          "ts": "2026-10-28T13:05:39Z"
+        },
+        {
+          "sha": "d8ff9a7e9b1ea7ca21784926cdd1602f61f4e992",
+          "message": "docs(knowledge): 补多 provider 补全并存规则与 300ms 防抖语义",
+          "ts": "2026-10-28T12:56:36Z"
+        },
+        {
+          "sha": "c1004bcbd725de7b48197b7fd02a7bca3ad558bf",
+          "message": "evals: 章鱼动画归到 deepseek-v4.1-flash，补会话库回溯笔记",
+          "ts": "2026-10-28T12:56:29Z"
+        },
         {
           "sha": "730982519ee58c78d6d62d099821adbece778d5b",
           "message": "evals: move octopus-bike to html-svg-2d-javascript/fusion-mv9kbj67",
@@ -31,13 +71,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 13,
+      "automated": 15,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 13,
+  "automatedCommits": 15,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -160,18 +200,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "1 own commit plus 13 automated commits",
-      "summary": "**1 own commit** was made in `sogeisetsu/opencode-agent-sandbox`, moving the `octopus-bike` evaluation to `html-svg-2d-javascript/fusion-mv9kbj67`. There were also 13 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The daily totals were 1 commit, 0 pull requests, 0 issues, and 0 reviews. No releases, discussions, replies, or state changes were recorded.",
+      "headline": "9 own commits plus 15 automated commits",
+      "summary": "**9 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, with no pull requests, issues, or reviews recorded. The work updated knowledge notes on SenseNova image skills, Windows usage without WSL2, multi-provider completion, and 300ms debounce behavior, while marking two uncertain SenseNova details. `AGENTS.md` was tightened with branch discipline, push-proxy and session-database caveats, and root/worktree self-checks, and `knowledge-ingest` was changed to stop pushing directly to `main`. Evaluation records were added or reorganized for the Iceman pelican, an octopus animation assigned to `deepseek-v4.1-flash`, and `octopus-bike` moved to `html-svg-2d-javascript/fusion-mv9kbj67`, including failure analysis, verification methods, and session IDs. There were also **15 automated commits** by `github-actions[bot]` in `sogeisetsu/sogeisetsu`.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "1 次本人提交，另有 13 次自动提交",
-      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **1 次本人提交**，将 `octopus-bike` 评测迁移至 `html-svg-2d-javascript/fusion-mv9kbj67`。`sogeisetsu/sogeisetsu` 另有 13 次由 `github-actions[bot]` 自动提交。当日总计为 1 次提交、0 个拉取请求、0 个 issue 和 0 次评审。未记录发布、讨论、回复或状态变更。",
+      "headline": "9 次本人提交，另有 15 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **9 次本人提交**，当日未记录拉取请求、issue 或评审。提交更新了 SenseNova 图像 skill、Windows 无需 WSL2、多 provider 补全并存及 300ms 防抖等知识笔记，并标注了两处推测信息。`AGENTS.md` 收紧分支纪律、推送代理与会话库查询注意事项，补充根目录和工作树自检，`knowledge-ingest` 不再直接推送 `main`。评测方面收录了 Iceman 版鹈鹕骑车，将章鱼动画归入 `deepseek-v4.1-flash`，并把 `octopus-bike` 移至 `html-svg-2d-javascript/fusion-mv9kbj67`，同时补充失效分析、验证方法和产出会话 ID。另有 **15 次自动提交**由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 创建。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "9a51cec0a1ada4b413fd4edef7eff87eb98bcd1326fb28178ba95bd32700abdf"
+  "dataHash": "ec45004a026d7792e468f8efeb06d5972986ea7e31c6651b6b143ce9ab8bebe5"
 }
