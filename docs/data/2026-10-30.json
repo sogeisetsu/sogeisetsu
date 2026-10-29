@@ -3,15 +3,36 @@
   "windowStart": "2026-10-30T00:00:00+08:00",
   "windowEnd": "2026-10-31T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-29T21:09:53.667Z",
+  "generatedAt": "2026-10-29T22:44:41.903Z",
   "empty": false,
   "totals": {
-    "commits": 2,
+    "commits": 4,
     "prs": 0,
     "issues": 1,
     "reviews": 0
   },
   "commits": [
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "a13f0f9fc2fa54300ef3435a8de1a2c95af53768",
+          "message": "docs(agents): 收紧 AGENTS.md，选型实测移进 MODELS.md",
+          "ts": "2026-10-29T21:14:10Z"
+        },
+        {
+          "sha": "353dfd8af22f05089839dd4ebd4d9fe1ee38e217",
+          "message": "feat(providers): 接入小红书 Dots 作为日报链尾兜底，补 MODELS.md",
+          "ts": "2026-10-29T21:09:03Z"
+        }
+      ],
+      "automated": 7,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    },
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
       "count": 1,
@@ -27,23 +48,21 @@
       "automatedBots": []
     },
     {
-      "repo": "sogeisetsu/sogeisetsu",
+      "repo": "sogeisetsu/opencode-skill-management",
       "count": 1,
       "own": true,
       "messages": [
         {
-          "sha": "353dfd8af22f05089839dd4ebd4d9fe1ee38e217",
-          "message": "feat(providers): 接入小红书 Dots 作为日报链尾兜底，补 MODELS.md",
-          "ts": "2026-10-29T21:09:03Z"
+          "sha": "de2dc723d677718194b0dec27c6152272c4370c5",
+          "message": "docs(readme): 补 npm 最小安装与 npm 包文件树",
+          "ts": "2026-10-29T22:26:03Z"
         }
       ],
-      "automated": 6,
-      "automatedBots": [
-        "github-actions[bot]"
-      ]
+      "automated": 0,
+      "automatedBots": []
     }
   ],
-  "automatedCommits": 6,
+  "automatedCommits": 7,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -178,18 +197,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "2 own commits plus 6 automated commits; 1 issue opened",
-      "summary": "**2 own commits** were made across two repositories, alongside 6 automated commits by `github-actions[bot]`. In `sogeisetsu/opencode-agent-sandbox`, the commit documented hands-on testing of the V2 plugin and tool registration, correcting two inaccuracies about the schema and Registration. In `sogeisetsu/sogeisetsu`, the commit added Xiaohongshu Dots as a fallback at the end of the daily-report chain and updated `MODELS.md`. The user opened 1 issue in `openchamber/openchamber`: #5935, “[Bug] Settings > MCP omits the Console MCP server that OpenCode adds at runtime”. No pull requests, reviews, releases, or discussions were recorded.",
+      "headline": "4 own commits plus 7 automated commits across three repositories",
+      "summary": "**4 own commits** were recorded across three repositories, alongside 7 automated commits by `github-actions[bot]`. In `sogeisetsu/sogeisetsu`, the user tightened `AGENTS.md`, moved model-selection testing notes into `MODELS.md`, and added Xiaohongshu Dots as a fallback at the end of the daily-report chain. In `sogeisetsu/opencode-agent-sandbox`, the user documented V2 plugin and tool-registration testing and corrected two inaccuracies about schema and Registration. In `sogeisetsu/opencode-skill-management`, the user added minimal npm installation instructions and the npm package file tree to the README. The user opened or closed **1 issue**: `openchamber/openchamber` issue #5935, “[Bug] Settings > MCP omits the Console MCP server that OpenCode adds at runtime”, which remains open with no comments. No pull requests, reviews, releases, or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "2 次本人提交，另有 6 次自动提交；新开 1 个 issue",
-      "summary": "**2 次本人提交**分布在两个仓库，另有 6 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/opencode-agent-sandbox` 中，提交记录了 V2 插件与工具注册的实际测试结果，并纠正了关于 schema 与 Registration 的两处错误信息。在 `sogeisetsu/sogeisetsu` 中，提交将小红书 Dots 接入日报链尾作为兜底方案，并更新了 `MODELS.md`。用户在 `openchamber/openchamber` 新开了 1 个 issue：#5935 “[Bug] Settings > MCP omits the Console MCP server that OpenCode adds at runtime”。当日没有 pull request、review、发布或讨论动态。",
+      "headline": "4 次本人提交，另有 7 次自动提交，分布于三个仓库",
+      "summary": "当天在三个仓库完成 **4 次本人提交**，另有 7 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/sogeisetsu` 中，收紧了 `AGENTS.md`，将模型选型实测内容移入 `MODELS.md`，并接入小红书 Dots 作为日报链尾兜底。在 `sogeisetsu/opencode-agent-sandbox` 中，记录了 V2 插件与工具注册实测结果，并纠正了 schema 与 Registration 两处误传。在 `sogeisetsu/opencode-skill-management` 中，为 README 补充了 npm 最小安装方式与 npm 包文件树。用户新开或关闭了 **1 个 issue**：`openchamber/openchamber` 的 #5935“[Bug] Settings > MCP omits the Console MCP server that OpenCode adds at runtime”，该 issue 仍为开放状态且无评论。当天没有拉取请求、评审、发布或讨论记录。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "608e1f6334d1a5b6ca6e0d812e851ecf7116ac89a388b9f31cb466288a67e62a"
+  "dataHash": "9ec1d2087a0e85b64a0473f32b4ae22b13b4dc50a65514c4107644c05c64c034"
 }
