@@ -7,10 +7,10 @@ _Updated automatically: 2026-10-30_
 
 <details><summary>🔨 Owned repos</summary>
 
-- 📝 Pushed 149 commits to `sogeisetsu/sogeisetsu`
+- 📝 Pushed 153 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 96 commits to `sogeisetsu/meld-deepresearch`
 - 📝 Pushed 57 commits to `sogeisetsu/sopen-translate`
-- 📝 Pushed 46 commits to `sogeisetsu/opencode-skill-management`
+- 📝 Pushed 48 commits to `sogeisetsu/opencode-skill-management`
 - 📝 Pushed 36 commits to `sogeisetsu/opencode-agent-sandbox`
 - 📝 Pushed 11 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 2 commits to `sogeisetsu/myBlog`
