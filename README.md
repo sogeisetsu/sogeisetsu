@@ -11,7 +11,7 @@ _Updated automatically: 2026-10-30_
 - 📝 Pushed 96 commits to `sogeisetsu/meld-deepresearch`
 - 📝 Pushed 57 commits to `sogeisetsu/sopen-translate`
 - 📝 Pushed 46 commits to `sogeisetsu/opencode-skill-management`
-- 📝 Pushed 35 commits to `sogeisetsu/opencode-agent-sandbox`
+- 📝 Pushed 36 commits to `sogeisetsu/opencode-agent-sandbox`
 - 📝 Pushed 11 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 2 commits to `sogeisetsu/myBlog`
 - 🐛 Opened issue [\[test\] opencode /oc smoke（临时，验完即关）](https://github.com/sogeisetsu/sogeisetsu/issues/9) in `sogeisetsu/sogeisetsu`
@@ -22,6 +22,7 @@ _Updated automatically: 2026-10-30_
 
 <details><summary>🌐 Contributed to</summary>
 
+- 🐛 Opened issue [\[Bug\] Settings > MCP omits the Console MCP server that OpenCode adds at runtime](https://github.com/openchamber/openchamber/issues/5935) in `openchamber/openchamber`
 - 🐛 Opened issue [\[Bug\] Session retention hint still describes the old "Only archived sessions" checkbox](https://github.com/openchamber/openchamber/issues/5680) in `openchamber/openchamber`
 - 💬 Commented on [anomalyco/opencode#55772](https://github.com/anomalyco/opencode/issues/55772): \[FEATURE\]: Windows desktop ships the CLI but there is no way to run it
 - 💬 Commented on [openchamber/openchamber#5584](https://github.com/openchamber/openchamber/issues/5584): \[Bug\] Quote card's arrow is a silent no-op when the quoted message is outside the loaded history
@@ -31,7 +32,6 @@ _Updated automatically: 2026-10-30_
 - 🐛 Opened issue [\[Bug\] Project actions menu: Auto-discover dev server runs the first saved action instead of discovering a server](https://github.com/openchamber/openchamber/issues/5293) in `openchamber/openchamber`
 - 💬 Commented on [openchamber/openchamber#4939](https://github.com/openchamber/openchamber/issues/4939): \[Bug\] Text selected inside an openchamber_render page never opens the comment menu
 - 💬 Commented on [anomalyco/opencode#50823](https://github.com/anomalyco/opencode/issues/50823): opencode-go: mimo-v2.6-flash vision reads a stale image after ≥5 images in one session
-- 💬 Commented on [anomalyco/opencode#56113](https://github.com/anomalyco/opencode/issues/56113): Subagent runs fail with 'model_coming_soon' on MiMo-V2.6-Flash while the main session on the same model works fine
 
 </details>
 <!--END:activity-->
