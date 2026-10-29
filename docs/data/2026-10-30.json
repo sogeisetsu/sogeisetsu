@@ -3,15 +3,108 @@
   "windowStart": "2026-10-30T00:00:00+08:00",
   "windowEnd": "2026-10-31T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-29T22:44:41.903Z",
+  "generatedAt": "2026-10-29T23:32:26.233Z",
   "empty": false,
   "totals": {
-    "commits": 4,
+    "commits": 18,
     "prs": 0,
     "issues": 1,
     "reviews": 0
   },
   "commits": [
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "count": 8,
+      "own": true,
+      "messages": [
+        {
+          "sha": "a2cb9103de54be74e1519ebe97e26ef0b0b630a5",
+          "message": "fix(calibrate): never restamp an old bias with today's date",
+          "ts": "2026-10-29T23:12:35Z"
+        },
+        {
+          "sha": "cf69ca8feca84edfc2b192954ce76d868e51abb1",
+          "message": "docs: add the format-side self-check list and the official request derivation",
+          "ts": "2026-10-29T23:08:16Z"
+        },
+        {
+          "sha": "dec3b2a82cef83c85a82d914dc4a56a1db2f0fa5",
+          "message": "docs(output): state which money source each basis may print",
+          "ts": "2026-10-29T23:04:44Z"
+        },
+        {
+          "sha": "81f7aa341df3e399d670774d2c59a01ddbe4514b",
+          "message": "docs(output): use placeholders instead of a past run's numbers",
+          "ts": "2026-10-29T23:02:49Z"
+        },
+        {
+          "sha": "3c0fa3e8908f35d910fb5e4dd82676299bd9c6d5",
+          "message": "feat: label an expired price seed and finish the 2.0.0 layout",
+          "ts": "2026-10-29T22:58:55Z"
+        },
+        {
+          "sha": "4899c2ac85aa4328b1069d22c392914a1ed643af",
+          "message": "chore: move test prompts into tests/ and document them",
+          "ts": "2026-10-29T22:39:48Z"
+        },
+        {
+          "sha": "19193977b33829cef63d9902fb7b6c45ec3c5930",
+          "message": "docs(output): say where the accounted per-session cost comes from",
+          "ts": "2026-10-29T22:26:49Z"
+        },
+        {
+          "sha": "64a142bbe7090582722f9e96c6df50ed7d00a1ef",
+          "message": "feat!: priced accounting, Console calibration and output v2",
+          "ts": "2026-10-29T22:25:47Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "count": 7,
+      "own": true,
+      "messages": [
+        {
+          "sha": "5f56a885f3f7d26ac63b511b219e55e4af5c51b7",
+          "message": "docs(acceptance): 记录 v1.1.0 发布结果",
+          "ts": "2026-10-29T23:07:26Z"
+        },
+        {
+          "sha": "e704326ef857994308d37929b20c7cc5d7e2cb8c",
+          "message": "docs(release): 补 v1.1.0 中文发布说明",
+          "ts": "2026-10-29T23:03:48Z"
+        },
+        {
+          "sha": "9acb88785310c2d56df11a3dc361c417b45bbb70",
+          "message": "docs: README/CHANGELOG/验收记录改为 1.1.0",
+          "ts": "2026-10-29T23:01:47Z"
+        },
+        {
+          "sha": "fc3c24d3273b1c8ebfcf19ec617687454f67d788",
+          "message": "docs(site): 中文页同步 JSON 输出契约",
+          "ts": "2026-10-29T23:01:36Z"
+        },
+        {
+          "sha": "925c7d0d89ef1617874c1f9684f42a656463f1e7",
+          "message": "docs(site): 英文页改为 JSON 输出契约",
+          "ts": "2026-10-29T23:01:24Z"
+        },
+        {
+          "sha": "f76ed7cc286203b45e9423b430ea608f8ce3b52c",
+          "message": "feat: 四个动作输出单个 JSON 对象并声明 output schema",
+          "ts": "2026-10-29T23:01:12Z"
+        },
+        {
+          "sha": "de2dc723d677718194b0dec27c6152272c4370c5",
+          "message": "docs(readme): 补 npm 最小安装与 npm 包文件树",
+          "ts": "2026-10-29T22:26:03Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
     {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 2,
@@ -28,7 +121,7 @@
           "ts": "2026-10-29T21:09:03Z"
         }
       ],
-      "automated": 7,
+      "automated": 10,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -46,23 +139,9 @@
       ],
       "automated": 0,
       "automatedBots": []
-    },
-    {
-      "repo": "sogeisetsu/opencode-skill-management",
-      "count": 1,
-      "own": true,
-      "messages": [
-        {
-          "sha": "de2dc723d677718194b0dec27c6152272c4370c5",
-          "message": "docs(readme): 补 npm 最小安装与 npm 包文件树",
-          "ts": "2026-10-29T22:26:03Z"
-        }
-      ],
-      "automated": 0,
-      "automatedBots": []
     }
   ],
-  "automatedCommits": 7,
+  "automatedCommits": 10,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -78,7 +157,24 @@
       "comments": 0
     }
   ],
-  "releases": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "tag": "v2.0.0",
+      "name": "2.0.0: priced accounting and Console calibration",
+      "url": "https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v2.0.0",
+      "publishedAt": "2026-10-29T23:28:56Z",
+      "notes": "## Minimal install\n\nThis release ships a package with exactly what the skill needs at runtime, plus the license:\n\n- `opencode-go-model-picker-2.0.0-min.zip` → `SKILL.md`, `references/`, `scripts/`, `LICENSE`\n\nUnzip it into `~/.config/opencode/skills/` (Linux/macOS) or `%USERPROFILE%\\.config\\opencode\\skills\\` (Windows) so the folder is named `opencode-go-model-picker`. No dependencies, no build step.\n\nChinese documentation: [README-ZH.md](https://github.com/sogeisetsu/opencode-go-model-picker/blob/main/README-ZH.md).\n\n---\n## [2.0.0] - 2026-10-30\n\n### Added\n\n- `references/quota-math.md` and `scripts/quota-math.mjs`: the one priced-accounting\n implementation. Formula v2 prices each assistant message on its own timestamp,\n picks the price by the request's prompt length when a model has context-length\n tiers, applies the peak-hour multiplier only to models that declare one, and\n bills cache writes on the models that charge for them. Reasoning tokens are\n billed at the output rate, checked message-by-message against the provider's own\n per-message cost — omitting them under-prices a message by 4–34%. Derived quantities\n (share of cap, the three independent pool windows, sessions per window, official\n and observed capacity), the pool reverse-solve order, the eight known gaps, and\n the degradation rules for every missing field.\n- `references/console-mcp.md` and `scripts/probe-console.…"
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "tag": "v1.1.0",
+      "name": "v1.1.0",
+      "url": "https://github.com/sogeisetsu/opencode-skill-management/releases/tag/v1.1.0",
+      "publishedAt": "2026-10-29T23:04:47Z",
+      "notes": "# v1.1.0\n\n`skill_management` gives every installed OpenCode skill a switch: list what is installed, find out\nwhy one will not load, hide it from the model, and put it back. Disabling writes **one** global\n`skill` permission rule — no skill file is ever moved, edited or deleted.\n\n## Breaking change in 1.1.0\n\nAll four actions now return **one JSON object** instead of Markdown. The tool also declares an\n`output` JSON Schema, so the host validates every result; this is a real structured tool result,\nnot Markdown wrapped in a JSON string.\n\n- Envelope: `schemaVersion` (currently `1`), `action`, `ok`, `warnings`.\n- Failures use `ok: false` plus `error: { code, message }`; success is no longer inferred from\n ✅ / ❌ in the text.\n- `list` returns `callerAgent`, `summary`, `skills[]`, `config`, `sidecar`, `consistency`.\n `description` is still the first line, no longer truncated to 60 characters.\n- `inspect` returns `skill`, `idDerivation`, `agents[]`, `caller`, `conclusion`. Missing and\n ambiguous targets use `skill_not_found` / `name_ambiguous`.\n- `disable` / `enable` return `changed`, `reason`, `before`, `diff`, `verification`, `backup`,\n `sidecar`; `enable` also returns `location`, `rule`, `candidates`, `relatedRules`.\n- `enable` now returns `ok: false` with `config_unparsable` when the target config cannot be\n parsed and no candidate rule exists, instead of claiming \"nothing to chang…"
+    }
+  ],
   "stars": [],
   "starInventory": [
     {
@@ -197,18 +293,40 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "4 own commits plus 7 automated commits across three repositories",
-      "summary": "**4 own commits** were recorded across three repositories, alongside 7 automated commits by `github-actions[bot]`. In `sogeisetsu/sogeisetsu`, the user tightened `AGENTS.md`, moved model-selection testing notes into `MODELS.md`, and added Xiaohongshu Dots as a fallback at the end of the daily-report chain. In `sogeisetsu/opencode-agent-sandbox`, the user documented V2 plugin and tool-registration testing and corrected two inaccuracies about schema and Registration. In `sogeisetsu/opencode-skill-management`, the user added minimal npm installation instructions and the npm package file tree to the README. The user opened or closed **1 issue**: `openchamber/openchamber` issue #5935, “[Bug] Settings > MCP omits the Console MCP server that OpenCode adds at runtime”, which remains open with no comments. No pull requests, reviews, releases, or discussions were recorded.",
-      "releaseNotes": []
+      "headline": "18 commits across 4 repositories, plus 10 automated commits",
+      "summary": "The day included **18 own commits** across four repositories, plus 10 automated commits by `github-actions[bot]`. In `sogeisetsu/opencode-go-model-picker`, eight commits added priced accounting, Console calibration, output v2, expired price-seed labeling, and documentation for request derivation, money sources, and per-session cost. In `sogeisetsu/opencode-skill-management`, seven commits changed all four actions to return one JSON object with an output schema and updated the README, changelog, site pages, and v1.1.0 acceptance records. In `sogeisetsu/sogeisetsu`, two commits tightened `AGENTS.md`, moved model-selection testing to `MODELS.md`, and added Xiaohongshu Dots as a daily-report fallback. In `sogeisetsu/opencode-agent-sandbox`, one commit corrected schema and Registration details in the V2 plugin and tool-registration findings. The user opened or closed 1 issue: `openchamber/openchamber` issue #5935, “[Bug] Settings > MCP omits the Console MCP server that OpenCode adds at runtime,” which remains open with no comments. No pull requests or reviews were recorded.",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "tag": "v2.0.0",
+          "summary": "The release adds priced accounting through `references/quota-math.md` and `scripts/quota-math.mjs`, with Formula v2 pricing each assistant message by its own timestamp and request prompt length. It also provides a minimal package containing `SKILL.md`, `references/`, `scripts/`, and `LICENSE`, installable under `~/.config/opencode/skills/` or `%USERPROFILE%\\.config\\opencode\\skills\\` without dependencies or a build step."
+        },
+        {
+          "repo": "sogeisetsu/opencode-skill-management",
+          "tag": "v1.1.0",
+          "summary": "All four actions now return one JSON object instead of Markdown and declare an `output` JSON Schema for host validation. The envelope includes `schemaVersion`, `action`, `ok`, and `warnings`, while failures use `ok: false` with an `error` object."
+        }
+      ]
     },
     "zh": {
-      "headline": "4 次本人提交，另有 7 次自动提交，分布于三个仓库",
-      "summary": "当天在三个仓库完成 **4 次本人提交**，另有 7 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/sogeisetsu` 中，收紧了 `AGENTS.md`，将模型选型实测内容移入 `MODELS.md`，并接入小红书 Dots 作为日报链尾兜底。在 `sogeisetsu/opencode-agent-sandbox` 中，记录了 V2 插件与工具注册实测结果，并纠正了 schema 与 Registration 两处误传。在 `sogeisetsu/opencode-skill-management` 中，为 README 补充了 npm 最小安装方式与 npm 包文件树。用户新开或关闭了 **1 个 issue**：`openchamber/openchamber` 的 #5935“[Bug] Settings > MCP omits the Console MCP server that OpenCode adds at runtime”，该 issue 仍为开放状态且无评论。当天没有拉取请求、评审、发布或讨论记录。",
-      "releaseNotes": []
+      "headline": "4 个仓库共 18 次本人提交，另有 10 次自动提交",
+      "summary": "当天在四个仓库完成 **18 次本人提交**，另有 10 次由 `github-actions[bot]` 自动提交。`sogeisetsu/opencode-go-model-picker` 的 8 次提交加入计费核算、Console 校准、output v2、过期价格种子标记，并补充请求推导、资金来源和单次会话成本的文档。`sogeisetsu/opencode-skill-management` 的 7 次提交将四个动作改为输出单个 JSON 对象并声明 output schema，同时更新 README、CHANGELOG、中英文站点页面及 v1.1.0 验收记录。`sogeisetsu/sogeisetsu` 的 2 次提交收紧 `AGENTS.md`，将选型实测移入 `MODELS.md`，并接入小红书 Dots 作为日报链尾兜底。`sogeisetsu/opencode-agent-sandbox` 的 1 次提交纠正 V2 插件与工具注册实测中关于 schema 和 Registration 的两处误传。用户新开或关闭了 1 个 issue：`openchamber/openchamber` 的 #5935 “[Bug] Settings > MCP omits the Console MCP server that OpenCode adds at runtime”，该 issue 仍为开放状态且无评论。当天没有 pull request 或 review 记录。",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "tag": "v2.0.0",
+          "summary": "该版本通过 `references/quota-math.md` 和 `scripts/quota-math.mjs` 加入计费核算，Formula v2 按每条助手消息自身的时间戳和请求提示长度定价。版本还提供包含 `SKILL.md`、`references/`、`scripts/` 和 `LICENSE` 的最小安装包，可解压到 `~/.config/opencode/skills/` 或 `%USERPROFILE%\\.config\\opencode\\skills\\`，无需依赖和构建步骤。"
+        },
+        {
+          "repo": "sogeisetsu/opencode-skill-management",
+          "tag": "v1.1.0",
+          "summary": "四个动作均改为返回单个 JSON 对象而非 Markdown，并声明 `output` JSON Schema 供宿主校验。结果信封包含 `schemaVersion`、`action`、`ok` 和 `warnings`，失败时使用 `ok: false` 及 `error` 对象。"
+        }
+      ]
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "9ec1d2087a0e85b64a0473f32b4ae22b13b4dc50a65514c4107644c05c64c034"
+  "dataHash": "de3a172d9e0939e98dcc7555094074d34179f92f7828729936850f1fa76566d3"
 }
