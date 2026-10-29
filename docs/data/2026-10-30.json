@@ -3,30 +3,56 @@
   "windowStart": "2026-10-30T00:00:00+08:00",
   "windowEnd": "2026-10-31T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-29T19:41:25.952Z",
-  "empty": true,
+  "generatedAt": "2026-10-29T20:51:08.547Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 1,
     "prs": 0,
-    "issues": 0,
+    "issues": 1,
     "reviews": 0
   },
   "commits": [
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "count": 1,
+      "own": true,
+      "messages": [
+        {
+          "sha": "55f320443d907c66173e2d39775001dc7633f9fc",
+          "message": "docs(knowledge): 收 V2 插件与工具注册实测，纠 schema 与 Registration 两处误传",
+          "ts": "2026-10-29T20:27:39Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
     {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 3,
+      "automated": 4,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 3,
+  "automatedCommits": 4,
   "pullRequests": [],
   "reviews": [],
-  "issues": [],
+  "issues": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 5935,
+      "title": "[Bug] Settings > MCP omits the Console MCP server that OpenCode adds at runtime",
+      "url": "https://github.com/openchamber/openchamber/issues/5935",
+      "action": "opened",
+      "ts": "2026-10-29T20:23:30.000Z",
+      "own": false,
+      "state": "open",
+      "comments": 0
+    }
+  ],
   "releases": [],
   "stars": [],
   "starInventory": [
@@ -144,9 +170,20 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "ai": {
+    "en": {
+      "headline": "1 own commit plus 4 automated commits and 1 issue opened",
+      "summary": "The day recorded **1 own commit** plus 4 automated commits by `github-actions[bot]`. In `sogeisetsu/opencode-agent-sandbox`, the own commit updated the knowledge base with V2 plugin and tool registration testing, correcting two inaccuracies about schema and Registration. In `sogeisetsu/sogeisetsu`, all 4 commits were automated by `github-actions[bot]`. The user opened issue #5935 in `openchamber/openchamber`, titled “[Bug] Settings > MCP omits the Console MCP server that OpenCode adds at runtime”; it remains open with 0 comments. No pull requests, reviews, releases, or discussions were recorded.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "1 次本人提交，另有 4 次自动提交，并新开 1 个 issue",
+      "summary": "当天记录了 **1 次本人提交**，另有 4 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/opencode-agent-sandbox` 中，本次提交将 V2 插件与工具注册实测结果收入知识库，并纠正了关于 schema 与 Registration 的两处错误信息。`sogeisetsu/sogeisetsu` 中的 4 次提交均由 `github-actions[bot]` 自动完成。用户新开了 `openchamber/openchamber` 的 issue #5935，标题为“[Bug] Settings > MCP omits the Console MCP server that OpenCode adds at runtime”；该 issue 仍处于开放状态，评论数为 0。当天没有记录到 pull request、review、release 或讨论。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "21a5efd9e8715acc7876878df04a8469517301bd40e36cc4ddff316d5ea69300"
+  "dataHash": "9a14fac95e38a17fb137deecdf83041b85ae6bb06c2414120073aea19e6e3fc1"
 }
