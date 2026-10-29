@@ -76,3 +76,22 @@ node scripts/daily/check.mjs         # 全量预检（含 test-ai / test-provide
 - 新增 / 删除 / 换序一条腿 → 同步改本文件第 2、3 节的表。
 - 改了 `scripts/daily/test-ai.mjs` 里的 `dailyFullOrder` 断言（它逐字比对 `lanes.daily.order`）。
 - `config/**` 在日报 workflow 的 push 白名单里：合并即触发一次真实运行，这是验收也是第一次真实证据。
+
+## 7. 选型记录（P0 实测，2026-10-23）
+
+只测了 `docs/data/2026-10-22.json` 一份 fixture、1–3 次采样，prompt 与生产完全相同（`buildPrompts` + `validateNarrative`）；**事实 / 中英对称 / 格式**三项是人工比稿结论，脚本能自动挡住的只有「3/3 结构合法 + 单次 ≤90s」。
+
+| 腿 | `reasoning_effort` | 3 次耗时 | 事实 | 中英对称 | 格式 | 判定 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `minimaxai/minimax-m3.1-flash` | `low` | 8.9 / 9.8 / 9.8s | 3/3 | 3/3 | 合规 | **入链 · 链首** |
+| 同上 | `none` | 10.9 / 13.8 / 15.1s | 3/3 | 2/3（两次 en 漏 `#5293`） | 合规 | 次优（所以配 `low`） |
+| `nvidia/nemotron-3-ultra-550b-a55b` | `none` | 27.5 / 32.5 / 27.7s | 3/3 | 3/3 | 合规 | **入链 · 第二** |
+| 同上 | `low` | 37.6 / 105.7s | 2/2 合法 | — | — | 别改（逼近 180s 超时） |
+| `nvidia/nemotron-3.5-lightning-30b-a3b` | `none` | 6.6 / 16.2 / 18.9s | **2/3**（把 `#5293` 的关闭写成本人） | 3/3 | **3/3 不合规**（无加粗、两次无反引号） | **淘汰** |
+| 同上 | `low` | 180s × 3 全部 aborted | — | — | — | 不可用 |
+
+参数面：三条腿对 `reasoning_effort` none/low、`response_format:json_object`、`max_tokens` 8192–49152 全部 200，没有一项需要退让；`usage.completion_tokens_details.reasoning_tokens` 在 `none` 下为 0（真关掉）。`lightning` 是三条里最快的，但**唯一能用的设置下事实会错**、开思考就挂满 180s —— 要复议就带上这两条判据重测。
+
+`dots3-note-prev`（2026-10-30 实测，同一份生产 prompt）：小 prompt（`--prompt=small`）27s 通过；完整日报 prompt 两次都撞 180s 超时，所以没进链首、只做链尾兜底。
+
+局限（别当成保证）：CI 在 ubuntu-latest、本地探测在本机，境内外可达性与延迟可能不同 —— 合并后第一次真实运行才是终局证据；更重的日子 prompt 更大（`SECTION_CAP=30` 封顶）；minimax 连续快调会 429（线上开始频繁 429 先看是不是同一天跑了两次 AI）；免费层随时可能下架（`longcat-2.5-preview-free` / `minimax-m3.1-flash-free` 已在 2026-10-23 走过这条路），所以删一条腿的成本必须仍然只是「改 JSON 里一行」。
