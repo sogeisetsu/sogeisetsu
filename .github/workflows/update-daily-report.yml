@@ -67,6 +67,8 @@ jobs:
           SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
           # 日报链首两条腿（config/providers.json 的 lanes.daily）；provider check 会挡漏配
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          # 链尾兜底（小红书 Dots）
+          DOTS_API_KEY: ${{ secrets.DOTS_API_KEY }}
 
       - name: AI 失败可见性（开/关 issue + 回写 + 重渲染）
         id: notify
@@ -114,6 +116,7 @@ jobs:
           SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
           # 诊断会探每个 enabled endpoint 的 /models，缺 key 会误报「未配置」
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          DOTS_API_KEY: ${{ secrets.DOTS_API_KEY }}
         run: node scripts/diagnose-providers.mjs
 
       - name: 诊断-叙述（LLM，追加结论；LLM 起不来就只留证据）

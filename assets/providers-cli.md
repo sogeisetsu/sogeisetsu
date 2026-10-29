@@ -72,7 +72,7 @@ node scripts/providers.mjs list                  # 配置里的全部 model（�
 node scripts/providers.mjs list --json           # 机器可读（已剔除 apiKey）
 ```
 
-实际输出（2026-10-23 的现状）：
+实际输出（2026-10-30 的现状）：
 
 ```
 lane daily（按链顺序）：
@@ -81,6 +81,7 @@ nvidia-minimax-flash   nvidia       minimaxai/minimax-m3.1-flash       ✓      
 nvidia-nemotron-ultra  nvidia       nvidia/nemotron-3-ultra-550b-a55b  ✓        ✗ (缺 NVIDIA_API_KEY)     daily
 opencode-go-deepseek   opencode-go  deepseek-v4.1-flash                ✓        ✗ (缺 OPENCODE_API_KEY)   daily,summary
 sensenova              sensenova    glm-5.2                            ✓        ✗ (缺 SENSENOVA_API_KEY)  daily,summary
+dots3-note-prev        dots         dots3-note-prev                    ✓        ✗ (缺 DOTS_API_KEY)       daily
 
 预算：480000ms（8 分钟）
 ```

@@ -26,7 +26,7 @@
 
 ## 本地运行
 
-环境变量：`GITHUB_TOKEN`（`gh auth token`；**可省** —— 无 token 只跑公开段，stars / discussions 等 GraphQL 段静默降级为空）、provider key（**不得提交明文、不得轮换用户的 key**）—— 需要哪些只看 `config/providers.json` 的 `keyEnv`：`NVIDIA_API_KEY`（本地 OpenChamber 项目变量叫 `Nvidia`，配置里以 `keyEnvAliases` 表达）/ `OPENCODE_API_KEY` / `SENSENOVA_API_KEY`、`GITHUB_REPOSITORY_OWNER`（默认 `sogeisetsu`，异地复跑用）。
+环境变量：`GITHUB_TOKEN`（`gh auth token`；**可省** —— 无 token 只跑公开段，stars / discussions 等 GraphQL 段静默降级为空）、provider key（**不得提交明文、不得轮换用户的 key**）—— 需要哪些只看 `config/providers.json` 的 `keyEnv`：`NVIDIA_API_KEY`（本地 OpenChamber 项目变量叫 `Nvidia`，配置里以 `keyEnvAliases` 表达）/ `OPENCODE_API_KEY` / `SENSENOVA_API_KEY` / `DOTS_API_KEY`、`GITHUB_REPOSITORY_OWNER`（默认 `sogeisetsu`，异地复跑用）。
 
 ```
 node scripts/daily/index.mjs                      # 昨天（定稿）+ 今天（滚动）；--date=YYYY-MM-DD 只跑一天
@@ -64,11 +64,13 @@ node scripts/daily/test-dataset.mjs    # 数据契约 DAY_FIELDS / HASH_EXCLUDED
 
 **唯一事实来源是 `config/providers.json`**（提交进仓；JSON 而非 JS：CLI 改写安全、diff 干净）。`scripts/daily/lib/providers.mjs` 解析它，AI 执行细节在 `scripts/daily/lib/ai/`（`structured.mjs` 的 `generateStructured` + `transport.mjs` 的 `attemptProvider`；`ai.mjs` 只是 re-export 的桶），页面 / 诊断 / 测试都不再各抄一份链。
 
+> **改 `config/providers.json` 必须同步改根目录 `MODELS.md`**。那份文件回答三个问题：这些模型在什么情况下生效、在哪些功能上生效、每个功能的链是什么（含不在 lane 里的诊断模型与灾备链）。链顺序 / 模型 / 参数 / 预算 / key 名任何一项变了都算，改完两边一起提交；下面的「链现状」只是给本文件读者的最短提示，完整口径以 `MODELS.md` 为准。
+
 - `endpoints`：每个端点一组 `baseUrl` / `keyEnv`，可选 `keyEnvAliases`（本地便利，如 OpenChamber 项目变量叫 `Nvidia`）/ `headers` / `modelsUrl` / `shape`（`chat`|`responses`）。`headers` 里的 `${session}` 在**一次调用**里展开成同一个 UUID（一次运行 = 一个会话，Go 的路由与提示缓存有依据）。
 - `models`：`slug`（**稳定身份** —— `attempts[].provider`、页面徽章、历史数据都用它）→ `endpoint` + `apiModel`（真实 API id）+ 可选 `enabled` / `note` / `params`。
 - `params` 只有三个字段：`reasoningEffort`（chat 的 `reasoning_effort`，默认 `"none"`）、`extraBody`（合并进 chat 请求体）、`responseFormat`（`false` = 从不发 `json_object`）。**刻意没有** per-model `maxTokens` / `maxTokensCap` / `temperature` / `timeoutMs`：P0 实测三条 NIM 腿对 `max_tokens=49152` 全部 200，慢腿由 lane 预算统一兜住 —— 少开口子 = 少一处能配错的地方。
 - `lanes`：`daily` / `summary` 各自 `order`（slug 数组）+ 可选 `budgetMs`。日报 `480000`（8 分钟），总结线不设预算。
-- 链现状（2026-10-23）：`daily` = `nvidia-minimax-flash`（`reasoningEffort:"low"`）→ `nvidia-nemotron-ultra` → `opencode-go-deepseek` → `sensenova`；`summary` = `opencode-go-deepseek` → `sensenova`（30 天总结要长输出 + 强校验，只有 deepseek 稳定过；免费额度的限流会拖垮唯一稳定的腿）。
+- 链现状（2026-10-30）：`daily` = `nvidia-minimax-flash`（`reasoningEffort:"low"`）→ `nvidia-nemotron-ultra` → `opencode-go-deepseek` → `sensenova` → `dots3-note-prev`（小红书 Dots，链尾兜底：生产 prompt 实测撞 180s 超时，未过 ≤90s 门槛）；`summary` = `opencode-go-deepseek` → `sensenova`（30 天总结要长输出 + 强校验，只有 deepseek 稳定过；免费额度的限流会拖垮唯一稳定的腿）。完整表见 `MODELS.md`。
 - 商汤腿必须带 `extraBody:{thinking:{type:"disabled"}}` 关思考 —— 不关则 reasoning 吃光预算、content 恒为空。`SENSENOVA_MODEL` 覆盖已删除：配置就是唯一入口，留着两处会漂。
 - 配置缺失 / JSON 损坏 / schema 不合法 → `providers.mjs` warn 并回落内置 `FALLBACK_CHAIN`（deepseek → sensenova），CI 不因一个坏 JSON 全挂；`node scripts/providers.mjs check`（`check.mjs` 会跑）让坏配置在提交前就红。
 - `MAX_TOKENS = 49152`（截断时翻倍到上限 65536）；`CHAT_TIMEOUT_MS = 180000`。lane 预算的收敛方式：每次发请求前剩余 ≤1s 就放弃，否则 `timeout = min(180s, 剩余)`；预算在腿之间耗尽 → 对**剩余每条腿各补一条合成 attempt**（`未尝试（超出 lane 预算 8 分钟）`）并照常走失败可见性链路，**绝不静默截断**。abort / 网络异常不重试，直接换下一条。
