@@ -18,6 +18,10 @@
     "sensenova": {
       "baseUrl": "https://token.sensenova.cn/v1",
       "keyEnv": "SENSENOVA_API_KEY"
+    },
+    "dots": {
+      "baseUrl": "https://note3-prev-api.askdiandian.com/v1",
+      "keyEnv": "DOTS_API_KEY"
     }
   },
   "models": {
@@ -50,6 +54,18 @@
         }
       },
       "note": "额度独立于 Go 账号；必须关思考，否则 reasoning 吃光预算、content 恒为空"
+    },
+    "dots3-note-prev": {
+      "endpoint": "dots",
+      "apiModel": "dots3-note-prev",
+      "params": {
+        "extraBody": {
+          "chat_template_kwargs": {
+            "enable_thinking": false
+          }
+        }
+      },
+      "note": "小红书 Dots Studio，限时免费；实测生产日报 prompt 会撞 180s 超时（未过 ≤90s 门槛），所以只做链尾兜底。认证走 Authorization: Bearer（文档写的 api-key 头同样可用）"
     }
   },
   "lanes": {
@@ -58,7 +74,8 @@
         "nvidia-minimax-flash",
         "nvidia-nemotron-ultra",
         "opencode-go-deepseek",
-        "sensenova"
+        "sensenova",
+        "dots3-note-prev"
       ],
       "budgetMs": 480000
     },

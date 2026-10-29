@@ -318,7 +318,7 @@ const cases = [
         ["summaryHasNoNvidia", !summary.some((p) => p.endpoint === "nvidia")],
         [
           "dailyFullOrder",
-          dailyOrder.join(",") === "nvidia-minimax-flash,nvidia-nemotron-ultra,opencode-go-deepseek,sensenova",
+          dailyOrder.join(",") === "nvidia-minimax-flash,nvidia-nemotron-ultra,opencode-go-deepseek,sensenova,dots3-note-prev",
         ],
         ["dailyFollowsLaneOrder", names.every((n, i) => dailyOrder.includes(n) && (i === 0 || dailyOrder.indexOf(n) > dailyOrder.indexOf(names[i - 1])))],
         ["dailyMinimaxLow", minimax?.params?.reasoningEffort === "low"],
