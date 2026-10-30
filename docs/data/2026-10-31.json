@@ -1,0 +1,163 @@
+{
+  "date": "2026-10-31",
+  "windowStart": "2026-10-31T00:00:00+08:00",
+  "windowEnd": "2026-11-01T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-30T16:52:02.266Z",
+  "empty": true,
+  "totals": {
+    "commits": 0,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [],
+  "automatedCommits": 0,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [],
+  "stars": [],
+  "starInventory": [
+    {
+      "repo": "sogeisetsu/WOW-Csharp",
+      "total": 108
+    },
+    {
+      "repo": "sogeisetsu/shumeipai",
+      "total": 24
+    },
+    {
+      "repo": "sogeisetsu/OGFont",
+      "total": 3
+    },
+    {
+      "repo": "sogeisetsu/lianxi",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/springstudyy",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/-java-",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/awesome-agent-skills",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/myBlog",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-creator",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ownsalesforcelearnbook",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ruan-js",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu.github.io",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sopen-translate",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/testhello",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/tuangou",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typora-support-apex",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typoraimage",
+      "total": 0
+    }
+  ],
+  "replies": [],
+  "stateChanges": [
+    {
+      "repo": "openchamber/openchamber",
+      "number": 5584,
+      "title": "[Bug] Quote card's arrow is a silent no-op when the quoted message is outside the loaded history",
+      "url": "https://github.com/openchamber/openchamber/issues/5584",
+      "action": "closed",
+      "actor": "btriapitsyn",
+      "ts": "2026-10-30T16:41:10.000Z",
+      "own": false
+    }
+  ],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "ai": {
+    "en": {
+      "headline": "No commits, PRs, issues, or reviews; one issue closed",
+      "summary": "No commits, pull requests, issues, or reviews were recorded for `sogeisetsu` on 2026-10-31. The only tracked state change was `btriapitsyn` closing issue #5584 in `openchamber/openchamber`, titled \"[Bug] Quote card's arrow is a silent no-op when the quoted message is outside the loaded history\". The closure occurred at 2026-10-30T16:41:10.000Z, within the reporting window. No releases, stars, replies, or discussions were reported.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "无提交、PR、issue 或评审；关闭了 1 个 issue",
+      "summary": "2026-10-31 未记录到 `sogeisetsu` 的提交、拉取请求、issue 或评审。唯一的状态变更是 `btriapitsyn` 关闭了 `openchamber/openchamber` 的 issue #5584，标题为 \"[Bug] Quote card's arrow is a silent no-op when the quoted message is outside the loaded history\"。该关闭操作发生于 2026-10-30T16:41:10.000Z，处于报告时间范围内。未报告发布、star、回复或讨论。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
+  "aiFailure": null,
+  "dataHash": "cfa8db96476c931e3acfc8fbfd6a341de723314d2c96f6c71501ecf2f056c1b1"
+}
