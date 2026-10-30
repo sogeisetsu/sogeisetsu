@@ -10,13 +10,13 @@ _Updated automatically: 2026-10-30_
 - 📝 Pushed 153 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 96 commits to `sogeisetsu/meld-deepresearch`
 - 📝 Pushed 57 commits to `sogeisetsu/sopen-translate`
-- 📝 Pushed 48 commits to `sogeisetsu/opencode-skill-management`
+- 📝 Pushed 55 commits to `sogeisetsu/opencode-skill-management`
 - 📝 Pushed 36 commits to `sogeisetsu/opencode-agent-sandbox`
-- 📝 Pushed 11 commits to `sogeisetsu/opencode-go-model-picker`
+- 📝 Pushed 21 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 2 commits to `sogeisetsu/myBlog`
 - 🐛 Opened issue [\[test\] opencode /oc smoke（临时，验完即关）](https://github.com/sogeisetsu/sogeisetsu/issues/9) in `sogeisetsu/sogeisetsu`
-- 📦 Released [v1.0.0](https://github.com/sogeisetsu/opencode-skill-management/releases/tag/v1.0.0) in `sogeisetsu/opencode-skill-management`
-- 💬 Commented on [sogeisetsu/sogeisetsu#8](https://github.com/sogeisetsu/sogeisetsu/issues/8): \[ai-failure\] AI 叙述生成失败
+- 📦 Released [v2.0.0](https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v2.0.0) in `sogeisetsu/opencode-go-model-picker`
+- 📦 Released [v1.1.0](https://github.com/sogeisetsu/opencode-skill-management/releases/tag/v1.1.0) in `sogeisetsu/opencode-skill-management`
 
 </details>
 
