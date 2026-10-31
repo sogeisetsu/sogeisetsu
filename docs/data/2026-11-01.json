@@ -3,10 +3,10 @@
   "windowStart": "2026-11-01T00:00:00+08:00",
   "windowEnd": "2026-11-02T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-31T20:51:08.503Z",
+  "generatedAt": "2026-10-31T21:08:49.111Z",
   "empty": false,
   "totals": {
-    "commits": 24,
+    "commits": 27,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -160,17 +160,42 @@
       "automatedBots": []
     },
     {
-      "repo": "sogeisetsu/sogeisetsu",
-      "count": 0,
+      "repo": "sogeisetsu/sopen-translate",
+      "count": 2,
       "own": true,
-      "messages": [],
-      "automated": 4,
+      "messages": [
+        {
+          "sha": "c3e45517dd2325316de98dbd047d902cf99d658b",
+          "message": "docs: correct the G2 status and document the Google 2 key path",
+          "ts": "2026-10-31T20:53:04Z"
+        },
+        {
+          "sha": "a940ff4c67dd821ba1c9450f489c945e55736e3e",
+          "message": "feat(google): explain how to get a Google 2 key in the settings card",
+          "ts": "2026-10-31T20:52:59Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 1,
+      "own": true,
+      "messages": [
+        {
+          "sha": "15deb4e7df02f09ee36c35d7cc45f89df83be88a",
+          "message": "ci(daily): 日报 workflow 补“校验生成物（门禁）”",
+          "ts": "2026-10-31T21:07:41Z"
+        }
+      ],
+      "automated": 7,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 4,
+  "automatedCommits": 7,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -310,8 +335,8 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "24 own commits plus 4 automated across four repositories",
-      "summary": "The day included **24 own commits** plus 4 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-skill-management`, 16 own commits prepared `v1.2.0` and `v1.2.1`, including serialized write handling to avoid concurrent overwrites, targeted rejection of unparsable target configs, and output-schema verification for each action. Documentation work added Chinese release notes, moved installation guidance to the npm channel, added design-decisions and development pages, and trimmed the README. In `sogeisetsu/opencode-go-model-picker`, 6 own commits delivered the `v3.0.0` single-entry-point design with four verbs and one reference, corrected release measurements, and removed two test artifacts. In `sogeisetsu/opencode-agent-sandbox`, 2 own commits documented `knowledge-ingest` verification steps and the roles and source checks of three review commands. No pull requests, issues, reviews, or discussions were recorded.",
+      "headline": "27 own commits plus 7 automated commits across five repositories",
+      "summary": "**27 own commits** were made across five repositories, plus 7 automated commits by `github-actions[bot]`. In `sogeisetsu/opencode-skill-management`, work covered releases `v1.2.0` and `1.2.1`, serialized write enable/disable operations to avoid concurrent overwrites, and made `config_unparsable` reject only the target configuration file. Documentation changes added design-decisions and development pages, expanded Effects to distinguish deny versus ask, moved installation guidance to npm as the recommended channel, and added Chinese release notes for `v1.2.0`. Verification was updated to validate each action output against `OUTPUT_SCHEMA`. In `sogeisetsu/opencode-go-model-picker`, the project moved to a single entry point with four verbs and one reference, removed two test artifacts, and corrected release measurements and size figures. `sogeisetsu/opencode-agent-sandbox` documentation added minimal verification steps and clarified the roles and source checks of three review commands. `sogeisetsu/sopen-translate` corrected the G2 status, documented the Google 2 key path, and added settings guidance for obtaining that key. In `sogeisetsu/sogeisetsu`, the daily report workflow gained a gate that validates generated artifacts.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
@@ -321,23 +346,23 @@
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.2.0",
-          "summary": "This release keeps the four actions, JSON envelope, permission-rule shape, and single-file layout compatible with `v1.1.0`. It fixes `list` so hidden internal agents no longer make every skill appear divergent, and disabling a skill writes one global `skill` permission rule without moving, editing, or deleting skill files."
+          "summary": "This release keeps the four actions, JSON envelope, permission rule shape, marker, and single-file layout unchanged from `v1.1.0`. It fixes `list` so `summary.diverged` counts visible agents rather than hidden internal agents, removing repeated false divergence warnings."
         }
       ]
     },
     "zh": {
-      "headline": "24 次本人提交，另有 4 次自动提交，涉及四个仓库",
-      "summary": "当天共有 **24 次本人提交**，另有 4 次由 `github-actions[bot]` 自动提交到 `sogeisetsu/sogeisetsu`。在 `sogeisetsu/opencode-skill-management` 中，16 次本人提交完成了 `v1.2.0` 和 `v1.2.1` 的准备，包括串行化写入以避免并发覆盖、仅对目标配置拒绝不可解析内容，以及按输出模式校验每个动作。文档工作补充了中文发布说明，将安装指南调整为优先使用 npm，新增 design-decisions 与 development 页面，并精简 README。`sogeisetsu/opencode-go-model-picker` 的 6 次本人提交交付了 `v3.0.0` 的单一入口设计，包含四个动词和一份参考资料，同时修正发布测量数据并移除两个测试产物。`sogeisetsu/opencode-agent-sandbox` 的 2 次本人提交记录了 `knowledge-ingest` 的最小验证步骤，以及三种审查命令的分工与来源核对。当天没有记录拉取请求、issue、评审或讨论。",
+      "headline": "27 次本人提交，另有 7 次自动提交，覆盖五个仓库",
+      "summary": "当天在五个仓库完成 **27 次本人提交**，另有 7 次由 `github-actions[bot]` 自动提交。`sogeisetsu/opencode-skill-management` 完成 `v1.2.0` 与 `1.2.1` 发布相关工作，将写入启用与禁用操作串行化以避免并发覆盖，并让 `config_unparsable` 只拒绝目标配置文件。文档方面新增 design-decisions 与 development 页面，将 Effects 扩展为 deny 与 ask 之分，把安装页的 npm 提升为推荐通道，并补充 `v1.2.0` 中文发布说明；校验流程也改为按 `OUTPUT_SCHEMA` 检查每个动作的输出。`sogeisetsu/opencode-go-model-picker` 改为单一入口、四个动词和一份参考文档，删除两个测试产物，并修正发布测量值与体积数字。`sogeisetsu/opencode-agent-sandbox` 的文档补充了最小验证步骤，说明三种审查命令的分工与来源核对。`sogeisetsu/sopen-translate` 修正 G2 状态，记录 Google 2 密钥路径，并在设置卡片中说明获取该密钥的方法。`sogeisetsu/sogeisetsu` 的日报 workflow 增加了校验生成物的门禁。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.0",
-          "summary": "该版本将技能整合为单一入口，提供四个动词和一份参考资料。最小包包含 `SKILL.md`、`references/`、`scripts/` 和 `LICENSE`，可通过 `node scripts/go.mjs --help` 验证。"
+          "summary": "该版本将技能整合为单一入口、四个动词和一份参考文档。最小包包含 `SKILL.md`、`references/`、`scripts/` 与 `LICENSE`，可通过 `node scripts/go.mjs --help` 验证。"
         },
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.2.0",
-          "summary": "该版本保持四个动作、JSON 信封、权限规则格式和单文件布局与 `v1.1.0` 兼容。它修复了 `list` 将隐藏内部代理误判为所有技能均存在差异的问题；禁用技能时只写入一条全局 `skill` 权限规则，不移动、编辑或删除技能文件。"
+          "summary": "该版本保持四个动作、JSON 信封、权限规则格式、标记和单文件布局与 `v1.1.0` 一致。它修正了 `list` 的 `summary.diverged` 统计，使其只计算可见代理而非隐藏内部代理，消除反复出现的错误分歧警告。"
         }
       ]
     }
@@ -345,5 +370,5 @@
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "c4d57157b93e0b8418945313f725d3a43fae5a4d9af3539f64e133b6b924bfae"
+  "dataHash": "7b777129fb7aff3c53f449a507efc98f0555659f667895dee32ba130368fe4c9"
 }
