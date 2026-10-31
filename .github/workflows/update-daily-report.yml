@@ -78,6 +78,15 @@ jobs:
           # 逃生口：仅在 workflow_dispatch 勾了 diagnose 时非空 → 追加评论的路径也强制再诊断一次
           DIAGNOSE: ${{ inputs.diagnose && '1' || '' }}
 
+      # 生成物门禁：check.yml 由 push 触发，而这里的 docs/ 提交用的是 GITHUB_TOKEN，
+      # GitHub 不会因此触发 workflow —— 2026-10-24 的日报 headline 把自动提交写成
+      # 「其中 13 次由 … 自动提交」（实为 24 + 13），正是从这条缺口直接发布的：
+      # verify 当时就查得出来，只是日报线从来没人跑。与 update-summary.yml 的同名步骤对齐。
+      # 注意它会检查整棵 docs/（含总结线产物）：总结窗口落后 ≥2 天时这里也会红 ——
+      # 那是真实的不一致，宁可这次不发布，也不要发一份自相矛盾的站点。
+      - name: 校验生成物（门禁）
+        run: node scripts/daily/verify.mjs --quiet
+
       - name: 提交并推送更新
         run: |
           git config user.name "github-actions[bot]"
