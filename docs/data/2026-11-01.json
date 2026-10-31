@@ -3,16 +3,65 @@
   "windowStart": "2026-11-01T00:00:00+08:00",
   "windowEnd": "2026-11-02T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-31T16:51:29.015Z",
-  "empty": true,
+  "generatedAt": "2026-10-31T18:37:05.227Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 4,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
-  "commits": [],
-  "automatedCommits": 0,
+  "commits": [
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "4f4e3f9291e2e23cf2ae016a263b73471cfea04e",
+          "message": "docs(command): knowledge-ingest 流程补最小验证步骤",
+          "ts": "2026-10-31T18:23:35Z"
+        },
+        {
+          "sha": "6562a375febf8517b516717b28b15059cd27802c",
+          "message": "docs(knowledge): 收三种审查命令的分工与来源核对，入库流程加最小验证",
+          "ts": "2026-10-31T18:22:32Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "9c93669b5bcd4828469fdbab9141a5b27c6768b4",
+          "message": "docs: 双来源会加载失败；安装页与 README 分开写两条通道的升级路径",
+          "ts": "2026-10-31T18:35:40Z"
+        },
+        {
+          "sha": "d864c4c2b136cff53efed6795d86d1dec89f4860",
+          "message": "feat(install): 安装前检测双来源，新增 --check/--uninstall/--npm/--force/--json",
+          "ts": "2026-10-31T18:35:24Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 0,
+      "own": true,
+      "messages": [],
+      "automated": 2,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    }
+  ],
+  "automatedCommits": 2,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -133,9 +182,20 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "ai": {
+    "en": {
+      "headline": "4 own commits plus 2 automated commits across three repositories",
+      "summary": "The day included **4 own commits** plus 2 automated commits by `github-actions[bot]`, with no pull requests, issues, or reviews. In `sogeisetsu/opencode-agent-sandbox`, two documentation commits added minimal verification steps to the `knowledge-ingest` workflow and documented the division of responsibility and source checks for three review commands. In `sogeisetsu/opencode-skill-management`, one documentation commit separated the upgrade paths for two installation channels in the installation page and `README`, while one feature commit added pre-install detection of dual sources and the `--check`, `--uninstall`, `--npm`, `--force`, and `--json` options. The two automated commits were made by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. No releases were published.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "4 次本人提交，另有 2 次自动提交，涉及三个仓库",
+      "summary": "当天共有 **4 次本人提交**，另有 2 次由 `github-actions[bot]` 自动提交，未产生拉取请求、issue 或评审。在 `sogeisetsu/opencode-agent-sandbox` 中，两次文档提交为 `knowledge-ingest` 流程补充了最小验证步骤，并记录了三种审查命令的分工与来源核对方式。在 `sogeisetsu/opencode-skill-management` 中，一次文档提交将两条安装通道的升级路径分别写入安装页和 `README`，另一次功能提交增加了安装前的双来源检测，以及 `--check`、`--uninstall`、`--npm`、`--force`、`--json` 选项。两次自动提交由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 中完成。当天没有发布版本。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "752f6acbf59057483d28a88f0fd9a46eca7021012b6f0621809f05b0ddb93f9e"
+  "dataHash": "535f03496fa0aae452d6d6d6113d87aea5202a583de58a7b56e210d390769280"
 }
