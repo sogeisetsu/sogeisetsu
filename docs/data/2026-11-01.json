@@ -3,15 +3,143 @@
   "windowStart": "2026-11-01T00:00:00+08:00",
   "windowEnd": "2026-11-02T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-31T18:37:05.227Z",
+  "generatedAt": "2026-10-31T20:51:08.503Z",
   "empty": false,
   "totals": {
-    "commits": 4,
+    "commits": 24,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "count": 16,
+      "own": true,
+      "messages": [
+        {
+          "sha": "a4173b1bfef27b7514945759292c67eb8ea03fe8",
+          "message": "chore(release): 1.2.1",
+          "ts": "2026-10-31T20:00:51Z"
+        },
+        {
+          "sha": "6ebcfc7407474f6d978aaabc30a3d05d3e60bd6a",
+          "message": "fix(write): disable/enable 串行化，避免并发写互相覆盖",
+          "ts": "2026-10-31T19:56:38Z"
+        },
+        {
+          "sha": "92c2aecfec5ca7eb5c3737641e2afa83db6c9998",
+          "message": "docs(site): 安装页把 npm 提到通道一（推荐），git spec 降为通道二",
+          "ts": "2026-10-31T19:49:15Z"
+        },
+        {
+          "sha": "ccf4eda14bb9947ad6bd8c56da3257468371e028",
+          "message": "docs(releases): 加 v1.2.0 的中文发布说明",
+          "ts": "2026-10-31T19:36:52Z"
+        },
+        {
+          "sha": "98c9983cd757f1cb685bc5a2926ad003c4f59fd3",
+          "message": "docs(readme): 去掉开头的兼容承诺块（按用户要求）",
+          "ts": "2026-10-31T19:36:07Z"
+        },
+        {
+          "sha": "a5ab00e245d1dfbcdb67e942b1e6090dbafe9f68",
+          "message": "chore(release): 1.2.0",
+          "ts": "2026-10-31T19:33:54Z"
+        },
+        {
+          "sha": "7f5f256be8e9306263bfb7ecf91400992d6e8bf9",
+          "message": "docs(site): 新增 design-decisions 与 development 两页，Effects 扩成 deny vs ask",
+          "ts": "2026-10-31T19:19:55Z"
+        },
+        {
+          "sha": "2a7ffa1b06e7f9331ad6176f1755929ab98d773d",
+          "message": "docs(readme): 精简到 56 行，细节落到文档站；补 1.1.0 的 SemVer 偏差说明",
+          "ts": "2026-10-31T19:19:42Z"
+        },
+        {
+          "sha": "d6faa5d845a28bfd6c280a1146294fc2d73fdfd8",
+          "message": "test(verify): 按 OUTPUT_SCHEMA 校验每个动作的 output",
+          "ts": "2026-10-31T19:13:28Z"
+        },
+        {
+          "sha": "09116a27ff009d2056f4c03c90738d8771885175",
+          "message": "fix(enable): config_unparsable 只对目标配置文件硬拒绝",
+          "ts": "2026-10-31T19:11:44Z"
+        },
+        {
+          "sha": "50b12fa87ce77cc8a0f489f572a205ca1f29146a",
+          "message": "fix(disable,enable): sidecar 落盘失败降级为 ok:true + warning",
+          "ts": "2026-10-31T19:10:52Z"
+        },
+        {
+          "sha": "9cc794dcaf5d7a0f79b5e8a8c7abb6e40d3615a1",
+          "message": "fix(inspect): frontmatter 布尔值不再被 Boolean() 强转",
+          "ts": "2026-10-31T19:09:25Z"
+        },
+        {
+          "sha": "cd82eef1cb9b0e0e34d72b1c14da7e7444cf7f91",
+          "message": "fix(list): diverged 只统计可见 agent",
+          "ts": "2026-10-31T19:07:32Z"
+        },
+        {
+          "sha": "ea9fc6f62e439615f341b1a56865b0b102ad6537",
+          "message": "忽略项目级别命令的提交",
+          "ts": "2026-10-31T18:59:03Z"
+        },
+        {
+          "sha": "9c93669b5bcd4828469fdbab9141a5b27c6768b4",
+          "message": "docs: 双来源会加载失败；安装页与 README 分开写两条通道的升级路径",
+          "ts": "2026-10-31T18:35:40Z"
+        },
+        {
+          "sha": "d864c4c2b136cff53efed6795d86d1dec89f4860",
+          "message": "feat(install): 安装前检测双来源，新增 --check/--uninstall/--npm/--force/--json",
+          "ts": "2026-10-31T18:35:24Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "count": 6,
+      "own": true,
+      "messages": [
+        {
+          "sha": "d68a15a9ce82dea19b68ba05fb6adef7d4c7eb65",
+          "message": "docs: bring the Pages landing page in line with the README",
+          "ts": "2026-10-31T20:25:31Z"
+        },
+        {
+          "sha": "23f8015714a86ffab3c484847f3f2a52c694f783",
+          "message": "docs: pin the measured minimal-zip size for the 3.0.0 notes",
+          "ts": "2026-10-31T20:04:19Z"
+        },
+        {
+          "sha": "9fc4ba664eecb03d021c093d6c2d3e523a5a3323",
+          "message": "chore: drop two test artifacts (empty golden stderr, unused fixture)",
+          "ts": "2026-10-31T20:03:06Z"
+        },
+        {
+          "sha": "a730c1c2cd6530c16eeaa347092567a58964ad49",
+          "message": "docs: correct the release-note measurements",
+          "ts": "2026-10-31T20:00:10Z"
+        },
+        {
+          "sha": "2bbeceb14e6df7bbce94cc599132b2c2db7a2943",
+          "message": "docs: state the 3.0.0 size reduction in numbers",
+          "ts": "2026-10-31T19:59:18Z"
+        },
+        {
+          "sha": "272c39df3c2f1658d3fc12505db2ca1a7e361d7c",
+          "message": "feat!: single entry point with four verbs and one reference",
+          "ts": "2026-10-31T19:54:38Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
       "count": 2,
@@ -32,40 +160,38 @@
       "automatedBots": []
     },
     {
-      "repo": "sogeisetsu/opencode-skill-management",
-      "count": 2,
-      "own": true,
-      "messages": [
-        {
-          "sha": "9c93669b5bcd4828469fdbab9141a5b27c6768b4",
-          "message": "docs: 双来源会加载失败；安装页与 README 分开写两条通道的升级路径",
-          "ts": "2026-10-31T18:35:40Z"
-        },
-        {
-          "sha": "d864c4c2b136cff53efed6795d86d1dec89f4860",
-          "message": "feat(install): 安装前检测双来源，新增 --check/--uninstall/--npm/--force/--json",
-          "ts": "2026-10-31T18:35:24Z"
-        }
-      ],
-      "automated": 0,
-      "automatedBots": []
-    },
-    {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 2,
+      "automated": 4,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 2,
+  "automatedCommits": 4,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
-  "releases": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "tag": "v3.0.0",
+      "name": "3.0.0: one entry point, one reference",
+      "url": "https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v3.0.0",
+      "publishedAt": "2026-10-31T20:05:13Z",
+      "notes": "## Install\n\nMinimal package: `opencode-go-model-picker-3.0.0-min.zip` contains only what the skill runs — `SKILL.md`, `references/` (one doc plus two dated seeds), `scripts/` (one entry point + modules) and `LICENSE`. Unzip it into `~/.config/opencode/skills/` so the folder is named `opencode-go-model-picker`. Verify with `node scripts/go.mjs --help` (four verbs: `run` / `report` / `check` / `apply`).\n\nFull notes: [CHANGELOG.md](https://github.com/sogeisetsu/opencode-go-model-picker/blob/main/CHANGELOG.md) · 中文：[CHANGELOG-ZH.md](https://github.com/sogeisetsu/opencode-go-model-picker/blob/main/zh/CHANGELOG-ZH.md)\n\n## [3.0.0] - 2026-11-01\n\n### The size of the simplification\n\n3.0.0 is not a feature release: it is the same job described with **an order of\nmagnitude less text**. Measured against the 2.0.0 tag:\n\n| What the model must read | 2.0.0 | 3.0.0 | Change |\n|---|---|---|---|\n| Markdown files | 7 (`SKILL.md` + 6 references) | 2 (`SKILL.md` + `plan-facts.md`) | −5 files |\n| Characters | 104,181 | 8,291 | **12.6× smaller** (−92%) |\n| Lines | 1,776 | 168 | **10.6× fewer** (−91%) |\n| Estimated tokens | ≈27,400 | ≈2,200 | **≈25,200 saved per full read** |\n| `SKILL.md` alone | 18,804 chars ≈4,900 tok | 4,221 chars ≈1,100 tok | −78% |\n| Runnable entry points | 9 runtime scripts (11 with maintainer tools) | 1 (`go.mjs`) | −8 runtime |\n| Minimal install zip | 128,802 B | 89,163 B | −3…"
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "tag": "v1.2.0",
+      "name": "v1.2.0",
+      "url": "https://github.com/sogeisetsu/opencode-skill-management/releases/tag/v1.2.0",
+      "publishedAt": "2026-10-31T19:38:38Z",
+      "notes": "# v1.2.0\n\n`skill_management` gives every installed OpenCode skill a switch: list what is installed, find out\nwhy one will not load, hide it from the model, and put it back. Disabling writes **one** global\n`skill` permission rule — no skill file is ever moved, edited or deleted.\n\n**No breaking changes in 1.2.0.** The four actions, their inputs, the JSON envelope, the written\nrule shape, the same-line marker and the single-file layout are unchanged since 1.1.0.\n\n## Fixed since v1.1.0\n\n- **`list` no longer reports \"N skills differ across other agents\" on every call.**\n `summary.diverged` counted hidden internal agents (`title`, `summary`, …), which carry\n `{*,*,deny}`; on a real machine that made every skill look divergent (33/33) and added a noise\n warning to each `list`. Only **visible** agents are compared now; `inspect.agents[]` still lists\n every agent, so the detail is not lost.\n- **Frontmatter booleans no longer contradict each other.** `disable-model-invocation: \"false\"` is a\n string, and `Boolean(\"false\") === true`, so `inspect` reported it as `true` while `list` reported\n `autoinvoke: false` for the same file. `true/yes/on/1` and `false/no/off/0` (quoted or not) are\n normalized now, and both fields go through the same rule.\n- **A failed sidecar write no longer turns a successful config change into an error.** Once the\n config was written and verified, a sidecar write fa…"
+    }
+  ],
   "stars": [],
   "starInventory": [
     {
@@ -184,18 +310,40 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "4 own commits plus 2 automated commits across three repositories",
-      "summary": "The day included **4 own commits** plus 2 automated commits by `github-actions[bot]`, with no pull requests, issues, or reviews. In `sogeisetsu/opencode-agent-sandbox`, two documentation commits added minimal verification steps to the `knowledge-ingest` workflow and documented the division of responsibility and source checks for three review commands. In `sogeisetsu/opencode-skill-management`, one documentation commit separated the upgrade paths for two installation channels in the installation page and `README`, while one feature commit added pre-install detection of dual sources and the `--check`, `--uninstall`, `--npm`, `--force`, and `--json` options. The two automated commits were made by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. No releases were published.",
-      "releaseNotes": []
+      "headline": "24 own commits plus 4 automated across four repositories",
+      "summary": "The day included **24 own commits** plus 4 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-skill-management`, 16 own commits prepared `v1.2.0` and `v1.2.1`, including serialized write handling to avoid concurrent overwrites, targeted rejection of unparsable target configs, and output-schema verification for each action. Documentation work added Chinese release notes, moved installation guidance to the npm channel, added design-decisions and development pages, and trimmed the README. In `sogeisetsu/opencode-go-model-picker`, 6 own commits delivered the `v3.0.0` single-entry-point design with four verbs and one reference, corrected release measurements, and removed two test artifacts. In `sogeisetsu/opencode-agent-sandbox`, 2 own commits documented `knowledge-ingest` verification steps and the roles and source checks of three review commands. No pull requests, issues, reviews, or discussions were recorded.",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "tag": "v3.0.0",
+          "summary": "The release consolidates the skill into one entry point with four verbs and one reference. Its minimal package contains `SKILL.md`, `references/`, `scripts/`, and `LICENSE`, and can be verified with `node scripts/go.mjs --help`."
+        },
+        {
+          "repo": "sogeisetsu/opencode-skill-management",
+          "tag": "v1.2.0",
+          "summary": "This release keeps the four actions, JSON envelope, permission-rule shape, and single-file layout compatible with `v1.1.0`. It fixes `list` so hidden internal agents no longer make every skill appear divergent, and disabling a skill writes one global `skill` permission rule without moving, editing, or deleting skill files."
+        }
+      ]
     },
     "zh": {
-      "headline": "4 次本人提交，另有 2 次自动提交，涉及三个仓库",
-      "summary": "当天共有 **4 次本人提交**，另有 2 次由 `github-actions[bot]` 自动提交，未产生拉取请求、issue 或评审。在 `sogeisetsu/opencode-agent-sandbox` 中，两次文档提交为 `knowledge-ingest` 流程补充了最小验证步骤，并记录了三种审查命令的分工与来源核对方式。在 `sogeisetsu/opencode-skill-management` 中，一次文档提交将两条安装通道的升级路径分别写入安装页和 `README`，另一次功能提交增加了安装前的双来源检测，以及 `--check`、`--uninstall`、`--npm`、`--force`、`--json` 选项。两次自动提交由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 中完成。当天没有发布版本。",
-      "releaseNotes": []
+      "headline": "24 次本人提交，另有 4 次自动提交，涉及四个仓库",
+      "summary": "当天共有 **24 次本人提交**，另有 4 次由 `github-actions[bot]` 自动提交到 `sogeisetsu/sogeisetsu`。在 `sogeisetsu/opencode-skill-management` 中，16 次本人提交完成了 `v1.2.0` 和 `v1.2.1` 的准备，包括串行化写入以避免并发覆盖、仅对目标配置拒绝不可解析内容，以及按输出模式校验每个动作。文档工作补充了中文发布说明，将安装指南调整为优先使用 npm，新增 design-decisions 与 development 页面，并精简 README。`sogeisetsu/opencode-go-model-picker` 的 6 次本人提交交付了 `v3.0.0` 的单一入口设计，包含四个动词和一份参考资料，同时修正发布测量数据并移除两个测试产物。`sogeisetsu/opencode-agent-sandbox` 的 2 次本人提交记录了 `knowledge-ingest` 的最小验证步骤，以及三种审查命令的分工与来源核对。当天没有记录拉取请求、issue、评审或讨论。",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "tag": "v3.0.0",
+          "summary": "该版本将技能整合为单一入口，提供四个动词和一份参考资料。最小包包含 `SKILL.md`、`references/`、`scripts/` 和 `LICENSE`，可通过 `node scripts/go.mjs --help` 验证。"
+        },
+        {
+          "repo": "sogeisetsu/opencode-skill-management",
+          "tag": "v1.2.0",
+          "summary": "该版本保持四个动作、JSON 信封、权限规则格式和单文件布局与 `v1.1.0` 兼容。它修复了 `list` 将隐藏内部代理误判为所有技能均存在差异的问题；禁用技能时只写入一条全局 `skill` 权限规则，不移动、编辑或删除技能文件。"
+        }
+      ]
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "535f03496fa0aae452d6d6d6113d87aea5202a583de58a7b56e210d390769280"
+  "dataHash": "c4d57157b93e0b8418945313f725d3a43fae5a4d9af3539f64e133b6b924bfae"
 }
