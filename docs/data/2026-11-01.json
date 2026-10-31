@@ -1,0 +1,141 @@
+{
+  "date": "2026-11-01",
+  "windowStart": "2026-11-01T00:00:00+08:00",
+  "windowEnd": "2026-11-02T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-10-31T16:51:29.015Z",
+  "empty": true,
+  "totals": {
+    "commits": 0,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [],
+  "automatedCommits": 0,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [],
+  "stars": [],
+  "starInventory": [
+    {
+      "repo": "sogeisetsu/WOW-Csharp",
+      "total": 108
+    },
+    {
+      "repo": "sogeisetsu/shumeipai",
+      "total": 24
+    },
+    {
+      "repo": "sogeisetsu/OGFont",
+      "total": 3
+    },
+    {
+      "repo": "sogeisetsu/lianxi",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/springstudyy",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/-java-",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/awesome-agent-skills",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/myBlog",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-creator",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ownsalesforcelearnbook",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ruan-js",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu.github.io",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sopen-translate",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/testhello",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/tuangou",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typora-support-apex",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typoraimage",
+      "total": 0
+    }
+  ],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "ai": null,
+  "aiProvider": null,
+  "aiModel": null,
+  "aiFailure": null,
+  "dataHash": "752f6acbf59057483d28a88f0fd9a46eca7021012b6f0621809f05b0ddb93f9e"
+}
