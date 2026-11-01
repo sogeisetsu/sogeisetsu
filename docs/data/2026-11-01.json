@@ -3,7 +3,7 @@
   "windowStart": "2026-11-01T00:00:00+08:00",
   "windowEnd": "2026-11-02T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-10-31T23:26:00.304Z",
+  "generatedAt": "2026-11-01T00:51:10.048Z",
   "empty": false,
   "totals": {
     "commits": 27,
@@ -189,13 +189,13 @@
           "ts": "2026-10-31T21:07:41Z"
         }
       ],
-      "automated": 10,
+      "automated": 11,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 10,
+  "automatedCommits": 11,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -335,34 +335,34 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "27 own commits plus 10 automated across five repositories",
-      "summary": "**27 own commits** were made across five repositories, plus 10 automated commits by `github-actions[bot]`. In `sogeisetsu/opencode-skill-management`, work covered releases `v1.2.0` and `1.2.1`, serialized enable and write operations to avoid concurrent overwrites, and tightened `config_unparsable` handling to reject only the target configuration file. Documentation there added Chinese release notes, promoted npm to the recommended installation channel, added design-decisions and development pages, and expanded Effects to distinguish deny versus ask. In `sogeisetsu/opencode-go-model-picker`, the entry point was consolidated into four verbs with one reference, test artifacts were removed, and release measurements were corrected. `sogeisetsu/opencode-agent-sandbox` gained minimum verification steps for `knowledge-ingest` and clarified the roles of three review commands. `sogeisetsu/sopen-translate` corrected the G2 status, documented the Google 2 key path, and added setup guidance in the settings card. `sogeisetsu/sogeisetsu` updated the daily-report workflow to validate generated artifacts as a gate. No pull requests, issues, reviews, or discussions were recorded.",
+      "headline": "27 own commits plus 11 automated commits across five repositories",
+      "summary": "**27 own commits** were recorded across five repositories, plus 11 automated commits by `github-actions[bot]`. In `sogeisetsu/opencode-skill-management`, work covered release `v1.2.0`, a `v1.2.1` release commit, serialized enable/disable writes to prevent concurrent overwrites, and stricter rejection of unparsable target configuration files. Documentation changes promoted npm to the recommended installation channel, added Chinese release notes, added design-decisions and development pages, and expanded Effects into deny versus ask. In `sogeisetsu/opencode-go-model-picker`, the `v3.0.0` release introduced a single entry point with four verbs and one reference, while documentation and cleanup commits corrected measurements and removed two test artifacts. In `sogeisetsu/opencode-agent-sandbox`, the `knowledge-ingest` flow gained minimal verification steps and documented the roles and source checks of three review commands. In `sogeisetsu/sopen-translate`, the Google 2 key path was corrected and explained in the settings card. In `sogeisetsu/sogeisetsu`, the daily report workflow gained a generated-artifact validation gate.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.0",
-          "summary": "The release consolidates the skill into one entry point with four verbs and one reference. Its minimal package contains `SKILL.md`, `references/`, `scripts/`, and `LICENSE`, and can be verified with `node scripts/go.mjs --help`."
+          "summary": "The release simplified the skill to one entry point and one reference, with a minimal package containing `SKILL.md`, `references/`, `scripts/`, and `LICENSE`. Verification uses `node scripts/go.mjs --help`, exposing four verbs: `run`, `report`, `check`, and `apply`."
         },
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.2.0",
-          "summary": "This release keeps the four actions, JSON envelope, written rule shape, marker, and single-file layout unchanged from `v1.1.0`. It fixes `list` so hidden internal agents no longer make every visible skill appear divergent."
+          "summary": "This release kept the four actions, JSON envelope, permission-rule shape, marker, and single-file layout unchanged from `v1.1.0`. It fixed `list` so hidden internal agents no longer make every visible skill appear divergent."
         }
       ]
     },
     "zh": {
-      "headline": "27 次本人提交，另有 10 次自动提交，覆盖五个仓库",
-      "summary": "当天在五个仓库完成 **27 次本人提交**，另有 10 次由 `github-actions[bot]` 自动提交。`sogeisetsu/opencode-skill-management` 完成 `v1.2.0` 与 `1.2.1` 发布相关工作，为启用和写入操作增加串行化以避免并发覆盖，并将 `config_unparsable` 的硬拒绝范围限定到目标配置文件。文档方面补充了中文发布说明，将 npm 提升为推荐安装通道，新增 design-decisions 与 development 页面，并把 Effects 扩展为区分 deny 与 ask。`sogeisetsu/opencode-go-model-picker` 将入口整合为四个动词和一份参考文档，清理测试产物并修正发布测量数据。`sogeisetsu/opencode-agent-sandbox` 为 `knowledge-ingest` 补充最小验证步骤，并说明三种审查命令的分工。`sogeisetsu/sopen-translate` 修正 G2 状态，记录 Google 2 密钥路径，并在设置卡片中加入获取说明。`sogeisetsu/sogeisetsu` 为日报 workflow 增加生成物校验门禁。当天没有拉取请求、issue、评审或讨论记录。",
+      "headline": "27 次本人提交，另有 11 次自动提交，覆盖五个仓库",
+      "summary": "当天在五个仓库完成 **27 次本人提交**，另有 11 次由 `github-actions[bot]` 自动提交。`sogeisetsu/opencode-skill-management` 涉及 `v1.2.0` 发布、`v1.2.1` 发布提交、串行化启用与停用写入以避免并发覆盖，以及仅对目标配置文件硬拒绝无法解析的配置。文档调整将 npm 提升为推荐安装通道，补充中文发布说明，新增 design-decisions 与 development 页面，并将 Effects 扩展为 deny 与 ask 两种模式。`sogeisetsu/opencode-go-model-picker` 的 `v3.0.0` 发布改为单一入口、一个参考文档和四个动词，同时修正文档中的测量数据并清理两个测试产物。`sogeisetsu/opencode-agent-sandbox` 为 `knowledge-ingest` 流程补充最小验证步骤，并记录三种审查命令的分工与来源核对。`sogeisetsu/sopen-translate` 更正 Google 2 密钥路径，并在设置卡片中说明获取方式。`sogeisetsu/sogeisetsu` 的日报 workflow 增加生成物校验门禁。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.0",
-          "summary": "该版本将技能整合为一个入口、四个动词和一份参考文档。最小包包含 `SKILL.md`、`references/`、`scripts/` 与 `LICENSE`，可通过 `node scripts/go.mjs --help` 验证。"
+          "summary": "该版本将技能精简为一个入口和一个参考文档，最小包包含 `SKILL.md`、`references/`、`scripts/` 与 `LICENSE`。可通过 `node scripts/go.mjs --help` 验证，提供 `run`、`report`、`check`、`apply` 四个动词。"
         },
         {
           "repo": "sogeisetsu/opencode-skill-management",
           "tag": "v1.2.0",
-          "summary": "该版本相对 `v1.1.0` 保持四个动作、JSON 信封、写入规则格式、标记和单文件布局不变。它修复了 `list` 将隐藏内部代理误计为技能差异的问题。"
+          "summary": "该版本保持四个动作、JSON 信封、权限规则格式、标记和单文件布局与 `v1.1.0` 一致。它修复了 `list` 将隐藏内部代理计入差异统计的问题，避免所有可见技能都被误报为存在差异。"
         }
       ]
     }
@@ -370,5 +370,5 @@
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "9fb74f36f521c2fb568d5777bb3477e78905909f2cbd4530d9cea1e89c6660ae"
+  "dataHash": "064cc2c1e2b377804c3cd55b757a41e52850aa488fa4ea8a9d0eac1b4cbf94b6"
 }
