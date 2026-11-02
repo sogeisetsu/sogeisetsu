@@ -3,15 +3,193 @@
   "windowStart": "2026-11-03T00:00:00+08:00",
   "windowEnd": "2026-11-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-02T19:39:20.674Z",
+  "generatedAt": "2026-11-02T20:51:30.267Z",
   "empty": false,
   "totals": {
-    "commits": 22,
+    "commits": 48,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
+    {
+      "repo": "sogeisetsu/pixel-logo-toolkit",
+      "count": 17,
+      "own": true,
+      "messages": [
+        {
+          "sha": "0f0db7cebb1b7b9ffc05a51287d858f0be487ba7",
+          "message": "feat: 多语言字形变体，按需下载",
+          "ts": "2026-11-02T20:51:12Z"
+        },
+        {
+          "sha": "5121a28c18718511ba925cd64941342346854c7e",
+          "message": "feat: 背景纹理（grid / dots / scanlines）",
+          "ts": "2026-11-02T20:48:41Z"
+        },
+        {
+          "sha": "c3b89a1838aef389b6acded68c7d3a7302909820",
+          "message": "feat: 提供 Python API",
+          "ts": "2026-11-02T20:47:45Z"
+        },
+        {
+          "sha": "b6172ffb292deb6e31631595b0fbb97838c71cba",
+          "message": "feat: 完善命令行帮助",
+          "ts": "2026-11-02T20:46:23Z"
+        },
+        {
+          "sha": "403cc235f0d7a30aff0e0df68a9c529b90647d90",
+          "message": "feat: 风格预设扩充到 10 套",
+          "ts": "2026-11-02T20:45:31Z"
+        },
+        {
+          "sha": "c96b52e027f06589df6669431abda50874e8f0da",
+          "message": "feat: 模式改为语义化命名并新增 slide / square 画布",
+          "ts": "2026-11-02T20:43:45Z"
+        },
+        {
+          "sha": "f699fbf29090f7d3a7c47bfa224c52d60af2838e",
+          "message": "feat: 补齐字距、行高与大写三个排版参数",
+          "ts": "2026-11-02T20:30:30Z"
+        },
+        {
+          "sha": "d74ba794612c24b5d5e9fadf1865f6422893fa5b",
+          "message": "docs: 重写 README 并补充示例图",
+          "ts": "2026-11-02T20:27:58Z"
+        },
+        {
+          "sha": "a812205144e0ddb400b91fbc26f4131ba8e91061",
+          "message": "ci: 添加测试与出图工作流",
+          "ts": "2026-11-02T20:26:24Z"
+        },
+        {
+          "sha": "debeae22062f5381bc1d935c8326cf35371aa72f",
+          "message": "feat: 可选 PNG / SVG 输出格式，支持批量与 JSON 结果",
+          "ts": "2026-11-02T20:25:43Z"
+        },
+        {
+          "sha": "7511f5104a99934ac02a323059125011b324e417",
+          "message": "feat: JSONC 配置与四层参数合并",
+          "ts": "2026-11-02T20:23:34Z"
+        },
+        {
+          "sha": "a5789b5c7aa76cc6ae656a3192339753f8ae2e6b",
+          "message": "feat: 三种画布模式与排版引擎",
+          "ts": "2026-11-02T20:21:11Z"
+        },
+        {
+          "sha": "5eb94b66caca3ab89e3c2b8a13a59142f39eee72",
+          "message": "feat: 渲染核心（图元模型 + SVG/PNG 双后端）",
+          "ts": "2026-11-02T20:15:52Z"
+        },
+        {
+          "sha": "0434460d5d4574b641403ebf4f5ec8c2e7c2e618",
+          "message": "feat: 引入中文像素字体与完整许可证",
+          "ts": "2026-11-02T20:14:26Z"
+        },
+        {
+          "sha": "5685a804b48793f2a849e3cf6e6eee00977884be",
+          "message": "chore: 重构为标准 Python CLI 仓库结构",
+          "ts": "2026-11-02T20:12:48Z"
+        },
+        {
+          "sha": "409012c7966813c563355674ad1b6a0fe579e80e",
+          "message": "docs: 添加 pixellogo CLI 设计与实施计划",
+          "ts": "2026-11-02T20:07:07Z"
+        },
+        {
+          "sha": "b566fc6c61183da57b369f397189b0d190433695",
+          "message": "chore: 初始化像素风格工具包仓库",
+          "ts": "2026-11-02T20:01:17Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "count": 15,
+      "own": true,
+      "messages": [
+        {
+          "sha": "406598fd8b153b5802966d15748d41adcd272670",
+          "message": "docs(skill): 补英文 README、中文 README-ZH 与 MIT LICENSE",
+          "ts": "2026-11-02T20:46:52Z"
+        },
+        {
+          "sha": "e8262274dbc3f1362958c34d065806f021de9a6d",
+          "message": "fix(skill): 手机端 splash 页恢复主题/语言控件",
+          "ts": "2026-11-02T20:38:38Z"
+        },
+        {
+          "sha": "cc3ce9c8b2312467f417cc199849782f592a56f5",
+          "message": "docs(skill): 记录外链检查的实测结果与误报边界",
+          "ts": "2026-11-02T20:09:59Z"
+        },
+        {
+          "sha": "713417f9b71039cc6437b2f2b15d93aafac049c3",
+          "message": "fix(skill): 外链检查按失败原因分级，代理/离线不再误报成坏链",
+          "ts": "2026-11-02T20:09:58Z"
+        },
+        {
+          "sha": "75498121bd25bb6955a5791f30ad979dd67eaffe",
+          "message": "docs(plan): starlight-docs 勾选 Steps 并记录实施判断",
+          "ts": "2026-11-02T19:58:47Z"
+        },
+        {
+          "sha": "8956734461673cbb6fb755fed924683c7dcd1337",
+          "message": "docs(skill): starlight-docs 入口与 references",
+          "ts": "2026-11-02T19:58:47Z"
+        },
+        {
+          "sha": "4ea193b8429f3d2118aabd82169a0b7c5d4548c4",
+          "message": "feat(skill): starlight-docs 模板资源",
+          "ts": "2026-11-02T19:58:46Z"
+        },
+        {
+          "sha": "e6e3ad34ec8dbb32d1fc6f1e1b5e9ed8da54a033",
+          "message": "feat(skill): starlight-docs 脚本骨架（detect/scaffold/check/audit/emit-check）",
+          "ts": "2026-11-02T19:58:35Z"
+        },
+        {
+          "sha": "a5c4d08815a732e5baf5f1fdd20a3001f255fc95",
+          "message": "chore: 允许 .opencode 入库并提交 docs-sync skill",
+          "ts": "2026-11-02T19:31:45Z"
+        },
+        {
+          "sha": "5ffcbf5bff722c28fbfc732dd7d8ed8db2b5cec8",
+          "message": "docs(plan): 对齐 v1 范围并加执行步骤清单",
+          "ts": "2026-11-02T19:29:05Z"
+        },
+        {
+          "sha": "84adadd768a52b28a54c375f230dcc0b0a0268aa",
+          "message": "docs(plan): starlight-docs 通用 skill 设计计划",
+          "ts": "2026-11-02T19:05:59Z"
+        },
+        {
+          "sha": "dcdb88ff1ca6541bc4fc61f1768371b0585fbfed",
+          "message": "fix(install): 用法文本补上 --help / -h（自己没列自己）",
+          "ts": "2026-11-02T17:09:14Z"
+        },
+        {
+          "sha": "2987f3bff917c8a8652b0c0ac537ca05881bfe9a",
+          "message": "docs(agents): 断言数 279 -> 333（verify.mjs 实跑 333 项全绿）",
+          "ts": "2026-11-02T17:08:37Z"
+        },
+        {
+          "sha": "067fe1f539b76180e8d98ca619a080afe390ac72",
+          "message": "docs(site): 安装页 flags 表补 --help 与未知参数退出码 3（英中）",
+          "ts": "2026-11-02T17:03:44Z"
+        },
+        {
+          "sha": "ee7cc9eb3c6e3179bdd961ed719a162eca9606f7",
+          "message": "docs(site): <config> 解析顺序补上 OPENCODE_CONFIG_DIR（英中）",
+          "ts": "2026-11-02T17:03:36Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
       "count": 10,
@@ -111,56 +289,17 @@
       "automatedBots": []
     },
     {
-      "repo": "sogeisetsu/opencode-skill-management",
-      "count": 6,
-      "own": true,
-      "messages": [
-        {
-          "sha": "5ffcbf5bff722c28fbfc732dd7d8ed8db2b5cec8",
-          "message": "docs(plan): 对齐 v1 范围并加执行步骤清单",
-          "ts": "2026-11-02T19:29:05Z"
-        },
-        {
-          "sha": "84adadd768a52b28a54c375f230dcc0b0a0268aa",
-          "message": "docs(plan): starlight-docs 通用 skill 设计计划",
-          "ts": "2026-11-02T19:05:59Z"
-        },
-        {
-          "sha": "dcdb88ff1ca6541bc4fc61f1768371b0585fbfed",
-          "message": "fix(install): 用法文本补上 --help / -h（自己没列自己）",
-          "ts": "2026-11-02T17:09:14Z"
-        },
-        {
-          "sha": "2987f3bff917c8a8652b0c0ac537ca05881bfe9a",
-          "message": "docs(agents): 断言数 279 -> 333（verify.mjs 实跑 333 项全绿）",
-          "ts": "2026-11-02T17:08:37Z"
-        },
-        {
-          "sha": "067fe1f539b76180e8d98ca619a080afe390ac72",
-          "message": "docs(site): 安装页 flags 表补 --help 与未知参数退出码 3（英中）",
-          "ts": "2026-11-02T17:03:44Z"
-        },
-        {
-          "sha": "ee7cc9eb3c6e3179bdd961ed719a162eca9606f7",
-          "message": "docs(site): <config> 解析顺序补上 OPENCODE_CONFIG_DIR（英中）",
-          "ts": "2026-11-02T17:03:36Z"
-        }
-      ],
-      "automated": 0,
-      "automatedBots": []
-    },
-    {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 4,
+      "automated": 6,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 4,
+  "automatedCommits": 6,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -237,6 +376,10 @@
       "total": 0
     },
     {
+      "repo": "sogeisetsu/pixel-logo-toolkit",
+      "total": 0
+    },
+    {
       "repo": "sogeisetsu/ruan-js",
       "total": 0
     },
@@ -292,24 +435,24 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "22 own commits plus 4 automated across four repositories",
-      "summary": "The day recorded **22 own commits** across three repositories, plus 4 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-agent-sandbox`, 10 commits updated knowledge documentation: the bundled skill count was measured at 11, the routing block was rewritten to match 3.0.6 with `librarian` merged into `explorer`, Mermaid escaping was corrected by diagram type, and six articles gained relationship diagrams. The same repository added notes on V2 skill discovery and master-agent orchestration, WorkBuddy session directory encoding, host/CLI boundaries, model integration, and session data, while documenting a user-measured 40%→0.x% result and an unverified Chinese rewrite checklist with side effects. In `sogeisetsu/opencode-go-model-picker`, 6 commits enforced the candidate menu, per-source chains, and a fail-closed comparing check gate, and clarified that caveat wording may be reworded while flagless checks are structural. In `sogeisetsu/opencode-skill-management`, 6 commits aligned the v1 plan, added a `starlight-docs` skill design plan, added `--help` and `-h` to install usage, raised the assertion count from 279 to 333 after `scripts/daily/verify.mjs` passed all 333 checks, and documented unknown-argument exit code 3 and `OPENCODE_CONFIG_DIR` parsing order in English and Chinese.",
+      "headline": "48 commits across four repositories, plus 6 automated commits",
+      "summary": "**48 commits** were recorded across four repositories, with 6 additional automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/pixel-logo-toolkit`, 17 own commits added multilingual glyph variants, background textures, a Python API, expanded presets, semantic modes, typography controls, PNG/SVG output, batch and JSON results, rewritten documentation, and CI workflows. In `sogeisetsu/opencode-skill-management`, 15 own commits added the `starlight-docs` skill scaffold and templates, documented external-link check results, fixed mobile theme and language controls, and graded link failures to avoid proxy or offline false positives. In `sogeisetsu/opencode-agent-sandbox`, 10 own commits updated agent roles and routing for version 3.0.6, added Mermaid and Excalidraw diagrams, documented V2 skill discovery and orchestration, and recorded user-measured AI-detection results changing from 40% to 0.x%. In `sogeisetsu/opencode-go-model-picker`, 6 own commits enforced candidate menus, per-source chains, and a fail-closed comparing gate, then released `v3.0.1`. No pull requests, issues, reviews, or discussions were recorded.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "The release prevents invented Go model IDs, makes chain length follow the source, allows Markdown agents to be written, asks the mode question once, and makes `check` re-derive numbers instead of trusting the file. It also enforces the candidate menu, per-source chains, and a comparing check gate."
+          "summary": "The release prevents invented Go model IDs, derives chain length from each source, allows Markdown agents to be written, asks the mode question once, and makes `check` re-derive values instead of trusting the file."
         }
       ]
     },
     "zh": {
-      "headline": "22 次本人提交，另有 4 次自动提交，涉及四个仓库",
-      "summary": "当天在三个仓库完成 **22 次本人提交**，另有 4 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。`sogeisetsu/opencode-agent-sandbox` 的 10 次提交更新知识文档：随包 skill 数量实测为 11 个，routing block 按 3.0.6 原文重写并将 `librarian` 并入 `explorer`，Mermaid 转义按图类型修正，6 篇文章补上关系图。该仓库还收录了 V2 技能发现与主从代理编排、WorkBuddy 会话目录编码、宿主与 CLI 边界、模型接入及会话数据实测，并记录用户实测的 40%→0.x% 结果，以及标注未验证与副作用的中文改写降 AI 检测清单。`sogeisetsu/opencode-go-model-picker` 的 6 次提交落实候选菜单、按来源链和失败即拦截的比较检查门禁，并说明 caveat 段落可改写、无 flag 检查属于结构性检查。`sogeisetsu/opencode-skill-management` 的 6 次提交对齐 v1 计划、新增 `starlight-docs` 通用 skill 设计计划、在安装用法中补充 `--help` 与 `-h`，并在 `scripts/daily/verify.mjs` 实跑 333 项全绿后将断言数从 279 提升到 333，同时以中英双语补充未知参数退出码 3 和 `OPENCODE_CONFIG_DIR` 解析顺序。当天没有 pull request、issue 或 review，也没有发起或参与讨论。",
+      "headline": "四个仓库共 48 次提交，另有 6 次自动提交",
+      "summary": "当天在四个仓库记录了 **48 次提交**，另有 6 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。`sogeisetsu/pixel-logo-toolkit` 的 17 次本人提交加入多语言字形变体、背景纹理、Python API、扩充的风格预设、语义化模式、排版参数、PNG/SVG 输出、批量与 JSON 结果，并重写文档和添加 CI 工作流。`sogeisetsu/opencode-skill-management` 的 15 次本人提交新增 `starlight-docs` 脚本骨架与模板资源，记录外链检查实测结果，修复手机端主题与语言控件，并按失败原因分级以避免代理或离线误报。`sogeisetsu/opencode-agent-sandbox` 的 10 次本人提交按 3.0.6 更新角色名册与路由，补充 Mermaid 和 Excalidraw 图，记录 V2 技能发现与主从代理编排，并收录用户实测的降 AI 检测结果从 40% 变为 0.x%。`sogeisetsu/opencode-go-model-picker` 的 6 次本人提交落实候选菜单、按来源链和失败即拦截的比较检查，并发布 `v3.0.1`。当天没有 pull request、issue、review 或讨论记录。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "该版本禁止自行编造 Go 模型 ID，使链长度跟随来源，允许写入 Markdown agent，只询问一次模式问题，并让 `check` 重新推导数值而不直接信任文件。同时落实候选菜单、按来源链和比较检查门禁。"
+          "summary": "该版本禁止虚构 Go 模型 ID，按来源确定链长度，允许编写 Markdown agent，只询问一次模式问题，并让 `check` 重新推导数值而不再直接信任文件。"
         }
       ]
     }
@@ -317,5 +460,5 @@
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "d8508d011c9ac7167ea81c36a7947678e5a7dfbd1a966784be44610671f52a93"
+  "dataHash": "4e70f66a1b23633c1e11149543b31f80beb6378e0f7e7f7916bf19a90e22373e"
 }
