@@ -3,10 +3,10 @@
   "windowStart": "2026-11-03T00:00:00+08:00",
   "windowEnd": "2026-11-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-02T20:51:30.267Z",
+  "generatedAt": "2026-11-02T22:51:17.387Z",
   "empty": false,
   "totals": {
-    "commits": 48,
+    "commits": 59,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,54 @@
   "commits": [
     {
       "repo": "sogeisetsu/pixel-logo-toolkit",
-      "count": 17,
+      "count": 26,
       "own": true,
       "messages": [
+        {
+          "sha": "0935f2e6a80a9208e962307c82f3c95cbe0529d0",
+          "message": "fix: 缺 Pillow 时纯查询命令仍可用",
+          "ts": "2026-11-02T22:00:03Z"
+        },
+        {
+          "sha": "4cbc17e5e1a5c053ebda21c5f816ee9563c973bd",
+          "message": "feat: 命令行中英双语，README 拆为英文默认 + 中文版",
+          "ts": "2026-11-02T21:51:45Z"
+        },
+        {
+          "sha": "1dbbc56a4756bfd1174dc4ffecccb1d0344cdd9a",
+          "message": "docs: 新增命令示例画廊（40 张）",
+          "ts": "2026-11-02T21:24:36Z"
+        },
+        {
+          "sha": "c16bacedbd1c9af1dd1491d6e5a513195ffa7914",
+          "message": "fix: 韩语改用 Galmuri 字体，Ark Pixel 的 ko 版并不含谚文",
+          "ts": "2026-11-02T21:23:10Z"
+        },
+        {
+          "sha": "f8b023795a54c9224bce10a6389500e22dc15253",
+          "message": "fix: 显式请求右侧装饰时为其让出宽度",
+          "ts": "2026-11-02T21:18:14Z"
+        },
+        {
+          "sha": "7fd3327d429aaa9b79fc57ad8a082420308b6c99",
+          "message": "docs: 背景纹理与日文字形补充示例图",
+          "ts": "2026-11-02T21:05:18Z"
+        },
+        {
+          "sha": "cfd59cd2193c420b53f23c30b03b5926c48cbeb4",
+          "message": "docs: 修正 README 中的路径反斜杠转义",
+          "ts": "2026-11-02T21:00:01Z"
+        },
+        {
+          "sha": "37c5cddad79657c348acb93820db1ab989716be9",
+          "message": "docs: 补充安装提醒与 command not found 排查",
+          "ts": "2026-11-02T20:59:46Z"
+        },
+        {
+          "sha": "aa8c77a35fbfdbef83042658964603abb3d106ff",
+          "message": "docs: 重写 README 用法章节并刷新示例图",
+          "ts": "2026-11-02T20:53:16Z"
+        },
         {
           "sha": "0f0db7cebb1b7b9ffc05a51287d858f0be487ba7",
           "message": "feat: 多语言字形变体，按需下载",
@@ -108,9 +153,14 @@
     },
     {
       "repo": "sogeisetsu/opencode-skill-management",
-      "count": 15,
+      "count": 16,
       "own": true,
       "messages": [
+        {
+          "sha": "9cda6b5d785d11171759a412eec44d1f7e2d3732",
+          "message": "docs(skill): README 目录结构改成完整文件树",
+          "ts": "2026-11-02T20:51:04Z"
+        },
         {
           "sha": "406598fd8b153b5802966d15748d41adcd272670",
           "message": "docs(skill): 补英文 README、中文 README-ZH 与 MIT LICENSE",
@@ -290,20 +340,34 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 0,
+      "count": 1,
       "own": true,
-      "messages": [],
-      "automated": 6,
+      "messages": [
+        {
+          "sha": "4f39247b97c73790cd9c086bd47514a814bba11b",
+          "message": "fix(summary): issue 数字按动作数叙述，禁止写成新建数",
+          "ts": "2026-11-02T22:23:30Z"
+        }
+      ],
+      "automated": 9,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 6,
+  "automatedCommits": 9,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
   "releases": [
+    {
+      "repo": "sogeisetsu/pixel-logo-toolkit",
+      "tag": "v0.2.0",
+      "name": "v0.2.0 — First release: bilingual CLI, English-first docs",
+      "url": "https://github.com/sogeisetsu/pixel-logo-toolkit/releases/tag/v0.2.0",
+      "publishedAt": "2026-11-02T22:03:08Z",
+      "notes": "**pixellogo 0.2.0** is the first tagged release: a command line tool that turns a title, a few subtitle lines and a footnote into real 8-bit / retro-terminal pixel art — PNG and SVG from the same geometry, five canvases, ten palettes, and mixed Latin / Chinese / Japanese / Korean text without missing glyphs.\n\n## Highlights\n\n- **Real pixels, not a filter.** Text is rasterized into a binary mask and merged per row into integer-coordinate rectangles. Every edge stays a whole block at any zoom: no anti-aliasing, no gradients, no feathering.\n- **One geometry, two formats.** PNG and SVG are produced from the same `Scene`, so they match pixel for pixel. The SVG is self-contained and needs no font files.\n- **Five canvases.** `poster` 1080×1440, `card` 1440×1080, `banner` 1280×640, `slide` 1920×1080, `square` 1080×1080, each with its own layout strategy.\n- **Ten palettes.** From retro terminal to paper journal; every preset passes a WCAG contrast check (`--list presets` prints the ratio).\n- **CJK-ready.** A Chinese pixel font ships in the box, so mixed Latin/Chinese lines keep one stroke weight; Traditional Chinese, Japanese and Korean download on demand.\n- **Bilingual CLI.** Help page, option tables, font status, warnings and errors in English or Simplified Chinese — automatic from the terminal locale, or forced with `--ui-lang`.\n- **No browser dependency.** Pure Python and Pillow ras…"
+    },
     {
       "repo": "sogeisetsu/opencode-go-model-picker",
       "tag": "v3.0.1",
@@ -435,24 +499,34 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "48 commits across four repositories, plus 6 automated commits",
-      "summary": "**48 commits** were recorded across four repositories, with 6 additional automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/pixel-logo-toolkit`, 17 own commits added multilingual glyph variants, background textures, a Python API, expanded presets, semantic modes, typography controls, PNG/SVG output, batch and JSON results, rewritten documentation, and CI workflows. In `sogeisetsu/opencode-skill-management`, 15 own commits added the `starlight-docs` skill scaffold and templates, documented external-link check results, fixed mobile theme and language controls, and graded link failures to avoid proxy or offline false positives. In `sogeisetsu/opencode-agent-sandbox`, 10 own commits updated agent roles and routing for version 3.0.6, added Mermaid and Excalidraw diagrams, documented V2 skill discovery and orchestration, and recorded user-measured AI-detection results changing from 40% to 0.x%. In `sogeisetsu/opencode-go-model-picker`, 6 own commits enforced candidate menus, per-source chains, and a fail-closed comparing gate, then released `v3.0.1`. No pull requests, issues, reviews, or discussions were recorded.",
+      "headline": "59 commits across 5 repos, plus 9 automated commits",
+      "summary": "The day recorded **59 commits** across five repositories, with 9 additional automated commits by `github-actions[bot]`. In `sogeisetsu/pixel-logo-toolkit`, 26 own commits added bilingual CLI output, on-demand multilingual glyph variants, a 40-image example gallery, and fixes for missing Pillow, Korean fonts, and right-side decoration spacing. In `sogeisetsu/opencode-skill-management`, 16 own commits added the `starlight-docs` skill scaffold and templates, restored mobile theme and language controls, and refined external-link checks to avoid proxy and offline false positives. In `sogeisetsu/opencode-agent-sandbox`, 10 own commits updated role routing for version 3.0.6, added relationship diagrams, and documented V2 skill discovery, WorkBuddy boundaries, and a Chinese rewrite of the AI-detection checklist. In `sogeisetsu/opencode-go-model-picker`, 6 own commits enforced the candidate menu, per-source chains, and a fail-closed comparing check gate. The remaining own commit in `sogeisetsu/sogeisetsu` corrected issue-count wording to describe actions rather than creation totals. Two releases were published: `v0.2.0` for `sogeisetsu/pixel-logo-toolkit` and `v3.0.1` for `sogeisetsu/opencode-go-model-picker`.",
       "releaseNotes": [
+        {
+          "repo": "sogeisetsu/pixel-logo-toolkit",
+          "tag": "v0.2.0",
+          "summary": "The first tagged release introduced a bilingual CLI that renders titles, subtitles, and footnotes as pixel art in PNG and SVG from the same geometry. It offers five canvases, ten palettes, and mixed Latin, Chinese, Japanese, and Korean text without missing glyphs."
+        },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "The release prevents invented Go model IDs, derives chain length from each source, allows Markdown agents to be written, asks the mode question once, and makes `check` re-derive values instead of trusting the file."
+          "summary": "This release aligned enforcement with the README by restricting Go model IDs to the candidate menu, applying per-source chain lengths, and making the `check` gate re-derive results and fail closed. It also supports writing Markdown agents and asks the mode question once."
         }
       ]
     },
     "zh": {
-      "headline": "四个仓库共 48 次提交，另有 6 次自动提交",
-      "summary": "当天在四个仓库记录了 **48 次提交**，另有 6 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。`sogeisetsu/pixel-logo-toolkit` 的 17 次本人提交加入多语言字形变体、背景纹理、Python API、扩充的风格预设、语义化模式、排版参数、PNG/SVG 输出、批量与 JSON 结果，并重写文档和添加 CI 工作流。`sogeisetsu/opencode-skill-management` 的 15 次本人提交新增 `starlight-docs` 脚本骨架与模板资源，记录外链检查实测结果，修复手机端主题与语言控件，并按失败原因分级以避免代理或离线误报。`sogeisetsu/opencode-agent-sandbox` 的 10 次本人提交按 3.0.6 更新角色名册与路由，补充 Mermaid 和 Excalidraw 图，记录 V2 技能发现与主从代理编排，并收录用户实测的降 AI 检测结果从 40% 变为 0.x%。`sogeisetsu/opencode-go-model-picker` 的 6 次本人提交落实候选菜单、按来源链和失败即拦截的比较检查，并发布 `v3.0.1`。当天没有 pull request、issue、review 或讨论记录。",
+      "headline": "5 个仓库共 59 次提交，另有 9 次自动提交",
+      "summary": "当天在五个仓库共完成 **59 次提交**，另有 9 次由 `github-actions[bot]` 自动提交。`sogeisetsu/pixel-logo-toolkit` 的 26 次本人提交加入中英双语命令行输出、按需下载的多语言字形变体和 40 张示例画廊，并修复缺少 Pillow、韩文字体及右侧装饰占位问题。`sogeisetsu/opencode-skill-management` 的 16 次本人提交新增 `starlight-docs` 技能脚本骨架与模板资源，恢复手机端主题和语言控件，并改进外链检查以避免代理与离线场景误报。`sogeisetsu/opencode-agent-sandbox` 的 10 次本人提交按 3.0.6 原文重写角色路由，补充关系图，并记录 V2 技能发现、WorkBuddy 宿主与 CLI 边界及中文改写降 AI 检测清单。`sogeisetsu/opencode-go-model-picker` 的 6 次本人提交落实候选菜单、按来源链长和失败即拦截的比较检查门禁。`sogeisetsu/sogeisetsu` 的 1 次本人提交修正 issue 数字表述，改为按动作数叙述而非写成新建数。当天发布两个版本：`sogeisetsu/pixel-logo-toolkit` 的 `v0.2.0` 和 `sogeisetsu/opencode-go-model-picker` 的 `v3.0.1`。",
       "releaseNotes": [
+        {
+          "repo": "sogeisetsu/pixel-logo-toolkit",
+          "tag": "v0.2.0",
+          "summary": "首个标记版本提供双语命令行工具，可将标题、副标题和脚注渲染为像素艺术，PNG 与 SVG 使用同一几何结构生成。该版本提供五种画布、十套配色，并支持拉丁文、中文、日文和韩文混排且不缺失字形。"
+        },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "该版本禁止虚构 Go 模型 ID，按来源确定链长度，允许编写 Markdown agent，只询问一次模式问题，并让 `check` 重新推导数值而不再直接信任文件。"
+          "summary": "该版本使实现与 README 保持一致，将 Go 模型 ID 限制在候选菜单内，按来源应用链长，并让 `check` 重新推导结果且失败即拦截。它同时支持编写 Markdown 代理，并只询问一次模式问题。"
         }
       ]
     }
@@ -460,5 +534,5 @@
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "4e70f66a1b23633c1e11149543b31f80beb6378e0f7e7f7916bf19a90e22373e"
+  "dataHash": "9343e85deb65903557541ad6fd270e937632330296ce9c5025dac5e010cb2939"
 }
