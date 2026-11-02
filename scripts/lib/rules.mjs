@@ -45,6 +45,32 @@ export const AUTOMATED_OVERLAP_RE = new RegExp(
 );
 
 /**
+ * 「issue 动作数被写成新建数」的检测 —— 30 天总结的校验器用这一份。
+ *
+ * 口径：`totals.issues` / `repos[].issues` 是**动作条数**（opened / closed / commented
+ * 都算，同一个 issue 被评论两次就计两次），不是「我开了几个 issue」。
+ * 线上实证（2026-11-02 的首页卡片）：窗口内 50 条动作（21 开 / 3 关 / 26 评论、去重 30 个 issue）
+ * 被 AI 写成「提出 50 个 issue」—— 数字对、动词错，读者会当成新建了 50 个 issue。
+ *
+ * 只拦「提出/提交/新建/新开/创建/开了 + 数字 + issue」「opened/created/filed N issues」这一族
+ * **带数字的聚合**说法（日报提示词里本来就允许「opened 3 issues, one of which…」这种按明细的
+ * 说法，所以正则刻意只认数字：
+ *   · 数字与 issue 之间只允许 个/条 两个量词 —— 「提出 21 次 issue 互动」这类合规写法不命中；
+ *   · 英文要求数字紧跟 issues 或 issues 紧跟动词，`closed 3 issues`（关闭是另一个动作）不命中。
+ * 合规写法：「50 次 issue 互动」「50 issue actions (opened, closed or commented)」。
+ * 「提交」也收进来：线上正文里就有「向 openchamber 提交 26 个 issue」，26 同样是动作数。
+ */
+export const ISSUE_CREATION_CLAIM_RE = new RegExp(
+  [
+    String.raw`(?:提出|提交|新建|新开|创建|开了)\s*(?:了\s*)?\d+\s*(?:个|条)?\s*(?:新\s*)?issues?`,
+    String.raw`\d+\s*(?:个|条)\s*(?:新\s*)?issues?\s*(?:已|被)?\s*(?:提交|提出|新建|创建)`,
+    String.raw`\b(?:opened|created|filed|raised|submitted)\s+\d+\s+(?:new\s+)?issues?\b`,
+    String.raw`\b\d+\s+(?:new\s+)?issues?\s+(?:(?:were|was)\s+)?(?:opened|created|filed|raised|submitted)\b`,
+  ].join("|"),
+  "i"
+);
+
+/**
  * 旧的日报叙述能否安全沿用（`index.mjs` 的「AI 失败 + 数据未变」分支用）。
  *
  * 目的：让措辞规则对**已发布**的叙述也生效 —— 旧规则下写出的「其中…自动提交」

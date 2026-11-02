@@ -591,6 +591,53 @@ await reject("validate: 拒绝-overview includes automated commits（英文）",
 await reject("validate: 拒绝-byRepo 自动提交写成其中", "包含关系", (raw) => {
   raw.zh.byRepo[0].text = "本人提交 99 次，其中 331 次为自动提交。";
 });
+
+// issue 是「动作数」不是「新建数」（线上实证 2026-11-02 首页卡片：「提出 50 个 issue」，
+// 那 50 条里只有 21 条是新开，另有 3 条关闭、26 条评论）
+await reject("validate: 拒绝-headline 把 issue 动作数写成新建数（中文）", "issue 动作", (raw) => {
+  raw.zh.headline = "10 个仓库 393 次提交，提出 50 个 issue";
+});
+await reject("validate: 拒绝-overview 改成 opened N issues（英文）", "issue 动作", (raw) => {
+  raw.en.overview = EN_OVERVIEW.replace(
+    "The overall pace was even.",
+    "The overall pace was even. 50 issues were opened in total."
+  );
+});
+await reject("validate: 拒绝-teaser 新建 N 个 issue", "issue 动作", (raw) => {
+  raw.zh.teaser = "两个仓库稳步推进，新建 50 个 issue。";
+});
+await reject("validate: 拒绝-byRepo 新建 N 个 issue", "issue 动作", (raw) => {
+  raw.zh.byRepo[0].text = "主仓库：提交稳定，新建 26 个 issue。";
+});
+await reject("validate: 拒绝-byRepo 提交 N 个 issue（线上原句）", "issue 动作", (raw) => {
+  raw.zh.byRepo[0].text = "主仓库：提交稳定，向 `openchamber/openchamber` 提交 26 个 issue。";
+});
+await reject("validate: 拒绝-highlights 提出 N 个 issue", "issue 动作", (raw) => {
+  raw.zh.highlights[1].text = "提出 7 个 issue 并跟进。";
+});
+await check("validate: 接受「N 次 issue 互动」与按明细写的 opened issue #42（不误伤）", () => {
+  const raw = baseRaw();
+  raw.zh.overview = ZH_OVERVIEW.replace(
+    "整体节奏没有异常。",
+    "整体节奏没有异常。窗口内共有 50 次 issue 互动，其中新开、关闭与评论都有。"
+  );
+  raw.en.overview = EN_OVERVIEW.replace(
+    "The overall pace was even.",
+    "The overall pace was even. The window had 50 issue actions, and opened issue #42 to track one of them."
+  );
+  const res = validateSummary(raw, ctx);
+  return [
+    ["ok", res.ok === true],
+    ["keptZh", Boolean(res.ok && res.value.zh.overview.includes("50 次 issue 互动"))],
+    ["keptEn", Boolean(res.ok && res.value.en.overview.includes("opened issue #42"))],
+  ];
+});
+await check("validate: 「50 个 issue 已关闭」这类描述不误伤（关闭是另一个动作）", () => {
+  const raw = baseRaw();
+  raw.zh.byRepo[1].text = "上游工作：修复与讨论，期间有 3 个 issue 已关闭。";
+  const res = validateSummary(raw, ctx);
+  return [["ok", res.ok === true]];
+});
 await check("validate: overview 接受「另有…自动提交」相加表述", () => {
   const raw = baseRaw();
   raw.en.overview = EN_OVERVIEW.replace(
@@ -744,11 +791,13 @@ await check("prompt: summaryFeedback 按原因给章节式纠正提示（3-6 段
   const seg = summaryFeedback("en.overview 段数不足（当前 1 段）", 0);
   const sent = summaryFeedback("en.overview 句数不足（4 < 6）", 0);
   const md = summaryFeedback("en.overview 含未允许的 markdown（列表）", 0);
+  const iss = summaryFeedback("zh.headline 把 issue 动作数写成新建数（「提出 50 个 issue」）", 0);
   return [
     ["segParas3to6", /3-6 paragraphs/.test(seg)],
     ["segChars4200", seg.includes("4200")],
     ["sentChars4200", sent.includes("10-16 sentences") && sent.includes("4200")],
     ["mdOnlySubset", md.includes("### ") && md.includes("markdown")],
+    ["issueActions", /issue actions/.test(iss) && iss.includes("互动") && iss.startsWith("REJECTED:")],
   ];
 });
 

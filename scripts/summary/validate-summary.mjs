@@ -26,6 +26,11 @@
  *     「其中/包含 … 自动提交」「includes … automated commits」这类包含式说法就拒收，
  *     让 summaryFeedback 提示改成「本人 N 次，另有 M 次」。正则见
  *     scripts/lib/rules.mjs 的 AUTOMATED_OVERLAP_RE（verify 共用同一份）。
+ *   · issue 是**动作数**不是新建数：`totals.issues` 与 `repos[].issues` 都按 opened / closed /
+ *     commented 逐条计（同一个 issue 被评论两次算两次）。headline / teaser / overview /
+ *     highlights / byRepo 里出现「提出 50 个 issue」「opened 50 issues」这类带数字的聚合说法
+ *     就拒收（线上实证 2026-11-02 首页卡片：50 条动作被写成「提出 50 个 issue」）。
+ *     正则见 scripts/lib/rules.mjs 的 ISSUE_CREATION_CLAIM_RE；合规写法是「50 次 issue 互动」。
  *   · reason 用中文、简短可执行 —— 它会打进日志并被 summaryFeedback 消费。
  *
  * 导出：
@@ -36,7 +41,7 @@
  * 用法：validate: (parsed) => validateSummary(parsed, ctx)   // generateStructured 的同步校验器
  */
 
-import { AUTOMATED_OVERLAP_RE, HEADLINE_MAX_CHARS } from "../lib/rules.mjs";
+import { AUTOMATED_OVERLAP_RE, HEADLINE_MAX_CHARS, ISSUE_CREATION_CLAIM_RE } from "../lib/rules.mjs";
 import { countSentences, fitHeadline, fitText } from "../daily/lib/ai/prose.mjs";
 
 // ---------------------------------------------------------------- 常量
@@ -162,6 +167,22 @@ function findCommentCount(text) {
   return m ? m[0] : null;
 }
 
+/**
+ * 在文本里找第一处「把 issue 动作数写成新建数」的说法（「提出 50 个 issue」/「opened 50 issues」）。
+ * 口径见 scripts/lib/rules.mjs 的 ISSUE_CREATION_CLAIM_RE —— 只认带数字的聚合说法，
+ * 按明细写「opened issue #42」不受影响。
+ */
+function findIssueCreationClaim(text) {
+  const m = String(text).match(ISSUE_CREATION_CLAIM_RE);
+  return m ? m[0] : null;
+}
+
+/** 拒收原因为 issue 动作口径被写成新建数：reason 必含 "issue 动作"（summaryFeedback 按这个子串提示）。 */
+function issueCreationReason(at, claim) {
+  return `${at} 把 issue 动作数写成新建数（「${claim}」），应写成「N 次 issue 互动」`;
+}
+
+
 // ---------------------------------------------------------------- 校验
 
 /**
@@ -195,6 +216,10 @@ export function validateSummary(raw, ctx) {
         reason: `${lang}.headline 含${HEADLINE_BAD_CHARS[badChar]}，必须纯文本`,
       };
     }
+    // headline 必须单独查（与 AUTOMATED_OVERLAP_RE 同因）：线上实证就是这么错的
+    const claimHeadline = findIssueCreationClaim(headlineRaw);
+    if (claimHeadline) return { ok: false, reason: issueCreationReason(`${lang}.headline`, claimHeadline) };
+
     const headline = fitHeadline(headlineRaw, HEADLINE_MAX_CHARS);
 
     // --- teaser：首页卡片短文案，必填（缺了就拒收让上层纠正）；超长按句界截断（1–2 句上限）
@@ -202,6 +227,9 @@ export function validateSummary(raw, ctx) {
     if (!teaserRaw) return { ok: false, reason: `${lang}.teaser 为空` };
     const teaser = fitText(teaserRaw, TEASER_MAX_CHARS, 1, 2);
     if (!teaser) return { ok: false, reason: `${lang}.teaser 为空` };
+    const claimTeaser = findIssueCreationClaim(teaserRaw);
+    if (claimTeaser) return { ok: false, reason: issueCreationReason(`${lang}.teaser`, claimTeaser) };
+
 
     // --- overview：非空 → 规范化（### 标题后补空行）→ 句数 → 正文块数
     //     （### 小标题不计）→ markdown 拒收 → 评论数禁令（看原文，不看截断后）
@@ -240,6 +268,8 @@ export function validateSummary(raw, ctx) {
         reason: `${lang}.overview 把自动提交写成包含关系（「${overlapOverview[0]}」），应写成「本人 N 次，另有 M 次」`,
       };
     }
+    const claimOverview = findIssueCreationClaim(overviewRaw);
+    if (claimOverview) return { ok: false, reason: issueCreationReason(`${lang}.overview`, claimOverview) };
     const overview =
       overviewRaw.length > OVERVIEW_MAX_CHARS
         ? fitOverviewByBlock(overviewRaw, OVERVIEW_MAX_CHARS)
@@ -274,6 +304,10 @@ export function validateSummary(raw, ctx) {
       const badText = findCommentCount(textRaw);
       if (badText) {
         return { ok: false, reason: `不许提评论数: ${at}.text 出现 "${badText}"` };
+      }
+      const claimHighlight = findIssueCreationClaim(textRaw);
+      if (claimHighlight) {
+        return { ok: false, reason: issueCreationReason(`${at}.text`, claimHighlight) };
       }
       const text = textRaw.slice(0, HIGHLIGHT_TEXT_MAX);
 
@@ -340,6 +374,10 @@ export function validateSummary(raw, ctx) {
       const badText = findCommentCount(textRaw);
       if (badText) {
         return { ok: false, reason: `不许提评论数: ${at}.text 出现 "${badText}"` };
+      }
+      const claimByRepo = findIssueCreationClaim(textRaw);
+      if (claimByRepo) {
+        return { ok: false, reason: issueCreationReason(`${at}.text`, claimByRepo) };
       }
       const overlapText = AUTOMATED_OVERLAP_RE.exec(textRaw);
       if (overlapText) {
