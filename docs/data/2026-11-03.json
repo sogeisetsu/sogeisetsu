@@ -3,10 +3,10 @@
   "windowStart": "2026-11-03T00:00:00+08:00",
   "windowEnd": "2026-11-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-02T18:28:14.370Z",
+  "generatedAt": "2026-11-02T19:39:20.674Z",
   "empty": false,
   "totals": {
-    "commits": 9,
+    "commits": 22,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,34 @@
   "commits": [
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
-      "count": 5,
+      "count": 10,
       "own": true,
       "messages": [
+        {
+          "sha": "ecc036305f8c190917fc32ab532b3212e49d1687",
+          "message": "knowledge: 角色名册里的随包 skill 数量改成实测的 11 个",
+          "ts": "2026-11-02T18:44:14Z"
+        },
+        {
+          "sha": "c8ff9b1cec2751a0088428a47e78944a509418af",
+          "message": "knowledge: routing block 按 3.0.6 原文重写，librarian 那条并进 explorer",
+          "ts": "2026-11-02T18:40:03Z"
+        },
+        {
+          "sha": "7ec49cec78cb68882eda14ec785d9c7b348bfc25",
+          "message": "knowledge: 角色表去掉已并入 explorer 的 librarian，收窄 stateDiagram 尖括号结论",
+          "ts": "2026-11-02T18:35:31Z"
+        },
+        {
+          "sha": "9851fa6f9e5c4b24a21f36dc2915a28db8b9cff9",
+          "message": "knowledge: Mermaid 转义按图类型写准，fixer 回落对象改成 explorer",
+          "ts": "2026-11-02T18:27:53Z"
+        },
+        {
+          "sha": "6253c28d6262b8852adf2e39dec22aa5494e93c9",
+          "message": "knowledge: 图按性质分 Mermaid / excalidraw，6 篇补上关系图",
+          "ts": "2026-11-02T18:08:29Z"
+        },
         {
           "sha": "b64db7220082a1029588a72b0937c23203b0ae07",
           "message": "docs(knowledge): 收录 V2 技能发现与主从代理编排",
@@ -47,10 +72,59 @@
       "automatedBots": []
     },
     {
-      "repo": "sogeisetsu/opencode-skill-management",
-      "count": 4,
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "count": 6,
       "own": true,
       "messages": [
+        {
+          "sha": "6aab45dbac01a4b206c6ce600380ae3656759a41",
+          "message": "docs: say caveat wording goes *under* the rendered bullets",
+          "ts": "2026-11-02T19:33:31Z"
+        },
+        {
+          "sha": "0883abf2f7c52cc888c1bfbbc4ae4ecb973520d0",
+          "message": "fix: stop exempting the caveat bullets from the verbatim comparison",
+          "ts": "2026-11-02T19:30:11Z"
+        },
+        {
+          "sha": "ca94427a3fed71a90835e49a6893b837e8207637",
+          "message": "fix: let the caveat section be reworded, and mark a flagless check as structural",
+          "ts": "2026-11-02T19:24:16Z"
+        },
+        {
+          "sha": "c7e5874ceba73f1a18bf4a06bf44d1799b6a69e5",
+          "message": "fix: make the check gate fail closed and fire the caveat rule",
+          "ts": "2026-11-02T19:11:58Z"
+        },
+        {
+          "sha": "4f47bdc9fb880d7cf6a1153603ca495d5a3847f9",
+          "message": "docs: document the candidate menu, per-source chains and the comparing gate",
+          "ts": "2026-11-02T18:40:08Z"
+        },
+        {
+          "sha": "cd5086d601cf509517af748ac5479392e778bf69",
+          "message": "fix: enforce the candidate menu, per-source chains and a comparing check gate",
+          "ts": "2026-11-02T18:39:52Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "count": 6,
+      "own": true,
+      "messages": [
+        {
+          "sha": "5ffcbf5bff722c28fbfc732dd7d8ed8db2b5cec8",
+          "message": "docs(plan): 对齐 v1 范围并加执行步骤清单",
+          "ts": "2026-11-02T19:29:05Z"
+        },
+        {
+          "sha": "84adadd768a52b28a54c375f230dcc0b0a0268aa",
+          "message": "docs(plan): starlight-docs 通用 skill 设计计划",
+          "ts": "2026-11-02T19:05:59Z"
+        },
         {
           "sha": "dcdb88ff1ca6541bc4fc61f1768371b0585fbfed",
           "message": "fix(install): 用法文本补上 --help / -h（自己没列自己）",
@@ -80,17 +154,26 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 2,
+      "automated": 4,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 2,
+  "automatedCommits": 4,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
-  "releases": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "tag": "v3.0.1",
+      "name": "3.0.1 — enforced candidate menu, per-source chains, comparing gate",
+      "url": "https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v3.0.1",
+      "publishedAt": "2026-11-02T19:35:59Z",
+      "notes": "## What changed\n\n3.0.1 closes the gap between what the README promised and what the code enforced. The short version: a Go model id can no longer be invented, chain length follows the source, Markdown agents can actually be written, the mode question is asked once, and `check` re-derives the numbers instead of trusting the file.\n\nSee [CHANGELOG.md](https://github.com/sogeisetsu/opencode-go-model-picker/blob/main/CHANGELOG.md#301---2026-11-03) for the full list. The Chinese changelog is at [zh/CHANGELOG-ZH.md](https://github.com/sogeisetsu/opencode-go-model-picker/blob/main/zh/CHANGELOG-ZH.md).\n\n## Install this release\n\nDownload **`opencode-go-model-picker-3.0.1-min.zip`** below. It is the minimal package, not the GitHub \"source code\" archive:\n\n- top-level directory is `opencode-go-model-picker/`\n- it contains only `SKILL.md`, `references/`, `scripts/` and `LICENSE` — no tests, no docs site, no `assets/`, no `.git`, no `node_modules`\n- 18 files\n\nExtract it into your OpenCode skills directory so the folder name matches the skill name:\n\n```bash\nunzip opencode-go-model-picker-3.0.1-min.zip -d ~/.config/opencode/skills/\n```\n\n```powershell\nExpand-Archive opencode-go-model-picker-3.0.1-min.zip -DestinationPath \"$env:USERPROFILE\\.config\\opencode\\skills\"\n```\n\nThen ask OpenCode to check your agent models. The skill is read-only until you confirm a diff.\n\nRequirements: Node.js 22+ (Node…"
+    }
+  ],
   "stars": [],
   "starInventory": [
     {
@@ -209,18 +292,30 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "9 own commits across two repositories",
-      "summary": "**9 own commits** were made across `sogeisetsu/opencode-agent-sandbox` and `sogeisetsu/opencode-skill-management`, with 2 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-agent-sandbox`, 5 commits documented V2 skill discovery and master-agent orchestration, user-tested results for an AI-detection reduction checklist, a Chinese rewrite of that checklist with unverified items and side effects noted, corrected WorkBuddy session-directory encoding rules, and measured WorkBuddy host/CLI boundaries, model access, and session data. In `sogeisetsu/opencode-skill-management`, 4 commits added `--help` and `-h` to usage text, updated the assertion count from 279 to 333 after `scripts/daily/verify.mjs` passed all 333 checks, documented the `--help` flag and unknown-parameter exit code 3 on the English and Chinese install pages, and added `OPENCODE_CONFIG_DIR` to the English and Chinese `<config>` resolution order. No pull requests, issues, reviews, releases, or discussions were recorded.",
-      "releaseNotes": []
+      "headline": "22 own commits plus 4 automated across four repositories",
+      "summary": "The day recorded **22 own commits** across three repositories, plus 4 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-agent-sandbox`, 10 commits updated knowledge documentation: the bundled skill count was measured at 11, the routing block was rewritten to match 3.0.6 with `librarian` merged into `explorer`, Mermaid escaping was corrected by diagram type, and six articles gained relationship diagrams. The same repository added notes on V2 skill discovery and master-agent orchestration, WorkBuddy session directory encoding, host/CLI boundaries, model integration, and session data, while documenting a user-measured 40%→0.x% result and an unverified Chinese rewrite checklist with side effects. In `sogeisetsu/opencode-go-model-picker`, 6 commits enforced the candidate menu, per-source chains, and a fail-closed comparing check gate, and clarified that caveat wording may be reworded while flagless checks are structural. In `sogeisetsu/opencode-skill-management`, 6 commits aligned the v1 plan, added a `starlight-docs` skill design plan, added `--help` and `-h` to install usage, raised the assertion count from 279 to 333 after `scripts/daily/verify.mjs` passed all 333 checks, and documented unknown-argument exit code 3 and `OPENCODE_CONFIG_DIR` parsing order in English and Chinese.",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "tag": "v3.0.1",
+          "summary": "The release prevents invented Go model IDs, makes chain length follow the source, allows Markdown agents to be written, asks the mode question once, and makes `check` re-derive numbers instead of trusting the file. It also enforces the candidate menu, per-source chains, and a comparing check gate."
+        }
+      ]
     },
     "zh": {
-      "headline": "两个仓库共 9 次本人提交",
-      "summary": "**9 次本人提交**分布于 `sogeisetsu/opencode-agent-sandbox` 和 `sogeisetsu/opencode-skill-management`，另有 2 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。在 `sogeisetsu/opencode-agent-sandbox` 的 5 次提交中，记录了 V2 技能发现与主从代理编排、降 AI 检测清单的用户实测结果、该清单的中文改写及未验证项与副作用标注、WorkBuddy 会话目录编码规则修正，以及 WorkBuddy 宿主/CLI 边界、模型接入与会话数据实测。在 `sogeisetsu/opencode-skill-management` 的 4 次提交中，用法文本补充了 `--help` 与 `-h`，断言数由 279 更新为 333（`scripts/daily/verify.mjs` 实跑 333 项全绿），英中安装页补充了 `--help` 与未知参数退出码 3，并在英中 `<config>` 解析顺序中加入 `OPENCODE_CONFIG_DIR`。当日没有 pull request、issue、review、发布或讨论记录。",
-      "releaseNotes": []
+      "headline": "22 次本人提交，另有 4 次自动提交，涉及四个仓库",
+      "summary": "当天在三个仓库完成 **22 次本人提交**，另有 4 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。`sogeisetsu/opencode-agent-sandbox` 的 10 次提交更新知识文档：随包 skill 数量实测为 11 个，routing block 按 3.0.6 原文重写并将 `librarian` 并入 `explorer`，Mermaid 转义按图类型修正，6 篇文章补上关系图。该仓库还收录了 V2 技能发现与主从代理编排、WorkBuddy 会话目录编码、宿主与 CLI 边界、模型接入及会话数据实测，并记录用户实测的 40%→0.x% 结果，以及标注未验证与副作用的中文改写降 AI 检测清单。`sogeisetsu/opencode-go-model-picker` 的 6 次提交落实候选菜单、按来源链和失败即拦截的比较检查门禁，并说明 caveat 段落可改写、无 flag 检查属于结构性检查。`sogeisetsu/opencode-skill-management` 的 6 次提交对齐 v1 计划、新增 `starlight-docs` 通用 skill 设计计划、在安装用法中补充 `--help` 与 `-h`，并在 `scripts/daily/verify.mjs` 实跑 333 项全绿后将断言数从 279 提升到 333，同时以中英双语补充未知参数退出码 3 和 `OPENCODE_CONFIG_DIR` 解析顺序。当天没有 pull request、issue 或 review，也没有发起或参与讨论。",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/opencode-go-model-picker",
+          "tag": "v3.0.1",
+          "summary": "该版本禁止自行编造 Go 模型 ID，使链长度跟随来源，允许写入 Markdown agent，只询问一次模式问题，并让 `check` 重新推导数值而不直接信任文件。同时落实候选菜单、按来源链和比较检查门禁。"
+        }
+      ]
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "774b96b9a31a1e977a4ac6ece7df4af549fda60c7e96d5b2cd0463c569b1cdf4"
+  "dataHash": "d8508d011c9ac7167ea81c36a7947678e5a7dfbd1a966784be44610671f52a93"
 }
