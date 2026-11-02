@@ -3,16 +3,90 @@
   "windowStart": "2026-11-03T00:00:00+08:00",
   "windowEnd": "2026-11-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-02T16:51:28.612Z",
-  "empty": true,
+  "generatedAt": "2026-11-02T18:28:14.370Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 9,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
-  "commits": [],
-  "automatedCommits": 0,
+  "commits": [
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "count": 5,
+      "own": true,
+      "messages": [
+        {
+          "sha": "b64db7220082a1029588a72b0937c23203b0ae07",
+          "message": "docs(knowledge): 收录 V2 技能发现与主从代理编排",
+          "ts": "2026-11-02T17:53:12Z"
+        },
+        {
+          "sha": "7586c7aa949021d2e85966c80e0ae0bf76cd21c6",
+          "message": "docs(knowledge): 记录降AI检测清单的用户实测结果 40%→0.x%",
+          "ts": "2026-11-02T17:28:56Z"
+        },
+        {
+          "sha": "ba96250b72554fc1a8db446449202362c03871af",
+          "message": "docs(knowledge): 收中文改写降AI检测清单，标注未验证与副作用",
+          "ts": "2026-11-02T17:26:47Z"
+        },
+        {
+          "sha": "51d1db15373d0babf6f92327e3c76158f4216e65",
+          "message": "docs(knowledge): 修正 WorkBuddy 会话目录编码规则",
+          "ts": "2026-11-02T17:16:52Z"
+        },
+        {
+          "sha": "54e9bfb303e707617b1621cd02ce1e425fa83848",
+          "message": "docs(knowledge): 收 WorkBuddy 宿主/CLI 边界、模型接入与会话数据实测",
+          "ts": "2026-11-02T17:05:51Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "count": 4,
+      "own": true,
+      "messages": [
+        {
+          "sha": "dcdb88ff1ca6541bc4fc61f1768371b0585fbfed",
+          "message": "fix(install): 用法文本补上 --help / -h（自己没列自己）",
+          "ts": "2026-11-02T17:09:14Z"
+        },
+        {
+          "sha": "2987f3bff917c8a8652b0c0ac537ca05881bfe9a",
+          "message": "docs(agents): 断言数 279 -> 333（verify.mjs 实跑 333 项全绿）",
+          "ts": "2026-11-02T17:08:37Z"
+        },
+        {
+          "sha": "067fe1f539b76180e8d98ca619a080afe390ac72",
+          "message": "docs(site): 安装页 flags 表补 --help 与未知参数退出码 3（英中）",
+          "ts": "2026-11-02T17:03:44Z"
+        },
+        {
+          "sha": "ee7cc9eb3c6e3179bdd961ed719a162eca9606f7",
+          "message": "docs(site): <config> 解析顺序补上 OPENCODE_CONFIG_DIR（英中）",
+          "ts": "2026-11-02T17:03:36Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 0,
+      "own": true,
+      "messages": [],
+      "automated": 2,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    }
+  ],
+  "automatedCommits": 2,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -133,9 +207,20 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "ai": {
+    "en": {
+      "headline": "9 own commits across two repositories",
+      "summary": "**9 own commits** were made across `sogeisetsu/opencode-agent-sandbox` and `sogeisetsu/opencode-skill-management`, with 2 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-agent-sandbox`, 5 commits documented V2 skill discovery and master-agent orchestration, user-tested results for an AI-detection reduction checklist, a Chinese rewrite of that checklist with unverified items and side effects noted, corrected WorkBuddy session-directory encoding rules, and measured WorkBuddy host/CLI boundaries, model access, and session data. In `sogeisetsu/opencode-skill-management`, 4 commits added `--help` and `-h` to usage text, updated the assertion count from 279 to 333 after `scripts/daily/verify.mjs` passed all 333 checks, documented the `--help` flag and unknown-parameter exit code 3 on the English and Chinese install pages, and added `OPENCODE_CONFIG_DIR` to the English and Chinese `<config>` resolution order. No pull requests, issues, reviews, releases, or discussions were recorded.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "两个仓库共 9 次本人提交",
+      "summary": "**9 次本人提交**分布于 `sogeisetsu/opencode-agent-sandbox` 和 `sogeisetsu/opencode-skill-management`，另有 2 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。在 `sogeisetsu/opencode-agent-sandbox` 的 5 次提交中，记录了 V2 技能发现与主从代理编排、降 AI 检测清单的用户实测结果、该清单的中文改写及未验证项与副作用标注、WorkBuddy 会话目录编码规则修正，以及 WorkBuddy 宿主/CLI 边界、模型接入与会话数据实测。在 `sogeisetsu/opencode-skill-management` 的 4 次提交中，用法文本补充了 `--help` 与 `-h`，断言数由 279 更新为 333（`scripts/daily/verify.mjs` 实跑 333 项全绿），英中安装页补充了 `--help` 与未知参数退出码 3，并在英中 `<config>` 解析顺序中加入 `OPENCODE_CONFIG_DIR`。当日没有 pull request、issue、review、发布或讨论记录。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "442b926820883f747f48df2691862a151eaae197d32f8b80282eb140a9b32930"
+  "dataHash": "774b96b9a31a1e977a4ac6ece7df4af549fda60c7e96d5b2cd0463c569b1cdf4"
 }
