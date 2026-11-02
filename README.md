@@ -8,11 +8,11 @@ _Updated automatically: 2026-11-03_
 <details><summary>🔨 Owned repos</summary>
 
 - 📝 Pushed 126 commits to `sogeisetsu/sogeisetsu`
-- 📝 Pushed 73 commits to `sogeisetsu/opencode-skill-management`
+- 📝 Pushed 79 commits to `sogeisetsu/opencode-skill-management`
 - 📝 Pushed 60 commits to `sogeisetsu/sopen-translate`
+- 📝 Pushed 49 commits to `sogeisetsu/opencode-agent-sandbox`
 - 📝 Pushed 47 commits to `sogeisetsu/meld-deepresearch`
-- 📝 Pushed 39 commits to `sogeisetsu/opencode-agent-sandbox`
-- 📝 Pushed 26 commits to `sogeisetsu/opencode-go-model-picker`
+- 📝 Pushed 29 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 2 commits to `sogeisetsu/myBlog`
 - 🐛 Opened issue [\[test\] opencode /oc smoke（临时，验完即关）](https://github.com/sogeisetsu/sogeisetsu/issues/9) in `sogeisetsu/sogeisetsu`
 - 📦 Released [v3.0.0](https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v3.0.0) in `sogeisetsu/opencode-go-model-picker`
