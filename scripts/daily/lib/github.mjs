@@ -67,7 +67,10 @@ const RELEASES_PER_PAGE = 30; // 每仓库 Release 只取一页
 const RELEASE_SCAN_MAX = 100; // 扫描 Release 的仓库数硬上限（防失控）
 const SEARCH_PER_PAGE = 50; // Search 每个查询取一页
 const TARGET_MAX = 25; // “我发起的条目”检索上限（回复 / 状态变更两段共用）
-const NOTES_MAX = 1400; // release notes 规范化后截断长度（保留换行以渲染 Markdown 结构）
+// release notes 规范化后的保留长度（保留换行以渲染 Markdown 结构）。
+// 1400 实测只够真实 release body 的 12%–40%（v0.2.0 6808 / v1.2.0 6726 字符），
+// AI 因此只能看到「What's Changed」的前两条，摘要全是空话 —— 放宽到 6000 覆盖常见长度。
+const NOTES_MAX = 6000;
 const EXCERPT_MAX = 200; // 回复摘录折叠空白后截断长度
 const COMMIT_SCAN_REPOS_MAX = 30; // 提交历史扫描的仓库数上限（PushEvent 仓库优先）
 const COMMIT_PAGES_MAX = 2; // 每仓 /commits 分页上限（per_page=100）
@@ -124,7 +127,13 @@ export function normalizeNotes(text, max) {
     .map((line) => line.replace(/[ \t]+/g, " ").replace(/[ \t]+$/, ""))
     .join("\n");
   s = s.replace(/\n{3,}/g, "\n\n").trim();
-  return s.length > max ? `${s.slice(0, max - 1).trimEnd()}…` : s;
+  if (s.length <= max) return s;
+  // 截断尽量落在行边界：在半个字符 / 半张表格里切开会让页面与 prompt 都读不通。
+  // 只在「行边界足够靠后」时采用，否则退回硬切，避免把正文砍得太短。
+  const hard = s.slice(0, max - 1);
+  const nl = hard.lastIndexOf("\n");
+  const body = (nl >= Math.floor((max - 1) * 0.6) ? hard.slice(0, nl) : hard).trimEnd();
+  return `${body}…`;
 }
 
 function warn(section, message) {
@@ -1705,7 +1714,7 @@ async function fetchDiscussions(token, username, win) {
  *     issues:[{repo,number,title,url,action,ts,own,state?,comments?}],   // state: open|closed|merged，窗口末时刻；
  *                                                              // 由他人的状态变更或自身动作推导，可缺省；
  *                                                              // comments 同 pullRequests（可缺省）
- *     releases:[{repo,tag,name,url,publishedAt,notes}],   // notes: 规范化 Markdown（保留换行，≤1400 字符）
+ *     releases:[{repo,tag,name,url,publishedAt,notes}],   // notes: 规范化 Markdown（保留换行，≤6000 字符）
  *     stars:[{repo,delta,total}],            // 展示用：仅 delta 为数字且非 0 的仓库
  *     starInventory:[{repo,total}],          // 全量自有仓库星标清单（供次日 delta 基准，不过滤）
  *     replies:[{repo,number,title,url,author,excerpt,kind,ts,own}],   // 仅公开仓库；kind 含

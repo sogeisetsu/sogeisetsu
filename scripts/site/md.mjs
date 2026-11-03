@@ -195,10 +195,11 @@ function tableToHtml(aligns, header, rows) {
  * ATX headings (`#`..`######`), unordered lists (`-`/`*`/`+`), ordered lists,
  * fenced code blocks, GFM pipe tables, and paragraphs. Every line is escaped
  * first (via mdInlineToHtml), so raw HTML never survives; only a whitelist of
- * block markers is expanded. Output is clamped so a long release body stays
- * compact.
+ * block markers is expanded. Output is clamped to `maxChars` (default matches the
+ * 6000-char release-notes cap collected in github.mjs, so the page never shows
+ * less than the AI gets).
  */
-export function mdBlockToHtml(text, maxChars = 1400) {
+export function mdBlockToHtml(text, maxChars = 6000) {
   const raw = String(text == null ? '' : text).replace(/\r\n?/g, '\n').trim();
   if (!raw) return '';
   const src = raw.length > maxChars ? `${raw.slice(0, maxChars).trimEnd()} …` : raw;

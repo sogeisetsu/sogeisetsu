@@ -401,6 +401,26 @@ function discussionsSection(items) {
   return section('discussion', 'Discussions', '讨论', pill(items.length, items.length), `<ul class="list">${rows}</ul>`);
 }
 
+/**
+ * 收起状态的两行摘录：release body 是不可信 Markdown，这里只取人读的纯文本 ——
+ * 剥掉 HTML 注释、图片/徽章、链接地址、fence 行、标题井号、列表符号与表格竖线，
+ * 再折叠空白并截断。展开后才是 mdBlockToHtml 渲染的完整正文。
+ */
+function notesPreview(text, max = 180) {
+  let s = String(text || '');
+  s = s.replace(/<!--[\s\S]*?-->/g, ' ');
+  s = s.replace(/!\[[^\]]*\]\([^)]*\)/g, ' '); // 图片 / 徽章
+  s = s.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1'); // 链接只留文字
+  s = s.replace(/^\s*```.*$/gm, ' '); // fence 行
+  s = s.replace(/^\s*#{1,6}\s*/gm, ''); // 标题井号
+  s = s.replace(/^\s*[-*+]\s+/gm, ''); // 列表符号
+  s = s.replace(/^\s*\|?\s*:?-{3,}.*$/gm, ' '); // 表格分隔行
+  s = s.replace(/^\s*>\s?/gm, ''); // 引用符号
+  s = s.replace(/[*_~`|]+/g, ' '); // 行内强调 / 行内代码 / 表格竖线
+  s = s.replace(/\s+/g, ' ').trim();
+  return s.length > max ? `${s.slice(0, max - 1).trimEnd()}…` : s;
+}
+
 function releasesSection(items, ai) {
   const keyOf = (repo, tag) => `${String(repo || '')}\u0000${String(tag || '')}`;
   const enNotes = new Map();
@@ -421,8 +441,18 @@ function releasesSection(items, ai) {
         (en && String(en).trim()) || (zh && String(zh).trim())
           ? `<p class="ai-note"><span class="ai-tag">AI</span> ${i18nInline(en, zh)}</p>`
           : '';
-      const notes = String(it.notes || '').trim()
-        ? `<div class="release-notes">${mdBlockToHtml(it.notes)}</div>`
+      // 完整 notes 默认收起（<details> 原生展开，不依赖脚本）：summary 里给两行摘录 +
+      // 「展开全文」。以前是 12 行 line-clamp，长 notes 永远看不见后文，也看不出被截了。
+      const full = String(it.notes || '').trim();
+      const notes = full
+        ? `<details class="release-notes-more">` +
+          `<summary>` +
+          `<span class="notes-preview">${esc(notesPreview(full))}</span>` +
+          `<span class="notes-toggle notes-open">${i18n('Show full notes', '展开全文')}</span>` +
+          `<span class="notes-toggle notes-close">${i18n('Collapse', '收起')}</span>` +
+          `</summary>` +
+          `<div class="release-notes">${mdBlockToHtml(full)}</div>` +
+          `</details>`
         : '';
       const title = String(it.name || '').trim() ? it.name : it.tag || UNTITLED();
       return (

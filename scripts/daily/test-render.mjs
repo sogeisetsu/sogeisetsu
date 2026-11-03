@@ -255,6 +255,18 @@ check("normalizeNotes: truncates to max, strips zero-width", () => {
   ];
 });
 
+check("normalizeNotes: 长正文按行边界截断，末尾留 …（不切半行）", () => {
+  const src = Array.from({ length: 300 }, (_, i) => `- line number ${i}`).join("\n");
+  const out = normalizeNotes(src, 1000);
+  const lastLine = out.replace(/…$/, "").trimEnd().split("\n").at(-1);
+  return [
+    ["bounded", out.length <= 1000],
+    ["ellipsis", out.endsWith("…")],
+    ["wholeLine", /^- line number \d+$/.test(lastLine)],
+    ["keepsTail", !out.includes("line number 299")],
+  ];
+});
+
 // ---------------------------------------------------------------- splitParagraphs
 
 check("splitParagraphs en: keeps v1.3.0 / e.g. intact, keeps terminators", () => {
@@ -272,6 +284,51 @@ check("splitParagraphs zh: splits after 。！？", () => {
 });
 
 // ---------------------------------------------------------------- renderReportPage
+
+check("renderReportPage: release notes 收进 <details>，摘录两行 + 展开全文", () => {
+  const longNotes =
+    Array.from({ length: 80 }, (_, i) => `- change number ${i}`).join("\n") +
+    "\n\n<script>alert(1)</script>";
+  const data = {
+    date: "2026-11-03",
+    username: "sogeisetsu",
+    generatedAt: "2026-11-03T09:00:00.000Z",
+    empty: false,
+    totals: { commits: 1, prs: 0, issues: 0, reviews: 0 },
+    commits: [{ repo: "sogeisetsu/sogeisetsu", count: 1, own: true, messages: [], automated: 0 }],
+    pullRequests: [],
+    reviews: [],
+    issues: [],
+    stateChanges: [],
+    discussions: [],
+    stars: [],
+    replies: [],
+    releases: [
+      {
+        repo: "sogeisetsu/sogeisetsu",
+        tag: "v1.2.3",
+        name: "v1.2.3",
+        url: "https://github.com/sogeisetsu/sogeisetsu/releases/tag/v1.2.3",
+        publishedAt: "2026-11-03T08:00:00.000Z",
+        notes: longNotes,
+      },
+    ],
+  };
+  const html = renderReportPage({ data, ai: null });
+  const details = /<details class="release-notes-more">([\s\S]*?)<\/details>/.exec(html);
+  const body = details ? details[1] : "";
+  const preview = /<span class="notes-preview">([\s\S]*?)<\/span>/.exec(body);
+  return [
+    ["detailsRendered", details !== null],
+    ["closedByDefault", details !== null && details[0].startsWith('<details class="release-notes-more">')],
+    ["hasMoreLabel", body.includes("Show full notes") && body.includes("展开全文")],
+    ["previewIsPlainText", preview !== null && !/[*_~`|#]/.test(preview[1])],
+    ["previewBounded", preview !== null && preview[1].length <= 200],
+    // 完整正文：后段的第 79 条也在（旧 1400 上限会切掉），且原始 HTML 被转义
+    ["fullBodyPresent", body.includes("change number 79")],
+    ["rawHtmlEscaped", body.includes("&lt;script&gt;") && !body.includes("<script>")],
+  ];
+});
 
 check("renderReportPage: commits 角标取 totals=0，不用条目行数兜底", () => {
   // fixture = 「纯机器人提交 + 一条 discussion」的一天：totals 全 0、empty=true。

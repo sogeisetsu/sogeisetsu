@@ -31,12 +31,16 @@ import { countSentences, fitHeadline, fitSentences, fitText, unescapeProse } fro
 const SECTION_CAP = 30; // 每个板块最多喂 30 条
 const DAILY_COMMIT_MSG_CAP = 10; // 每个仓库最多喂 10 条 commit message（日报口径；与总结的同名上限只是巧合同值）
 const COMMIT_MSG_LEN = 200; // 每条 commit message 截断到 200 字符
-const RELEASE_NOTES_CAP = 800; // 每条 release notes 最多 800 字符
+// release notes：800 字符实测只够真实 body 的 12%–40%，模型看到的永远是开头两句，
+// 于是「AI 摘要很模糊」—— 单条上限跟采集侧对齐到 4000，另加一条总量预算防多 release 日爆 prompt。
+const RELEASE_NOTES_CAP = 4000; // 每条 release notes 最多 4000 字符
+const RELEASE_NOTES_TOTAL = 12000; // 一次 prompt 里所有 release notes 的总预算
+const RELEASE_NOTES_MIN = 1200; // 均分后的单条下限（低于此值等于没读）
 
 const SUMMARY_MIN_SENTENCES = 2; // 提示词目标 4-8 句；校验放宽容差，避免把「9 句」这种好结果误拒
 const SUMMARY_MAX_SENTENCES = 12;
 const SUMMARY_MAX_CHARS = 1400; // summary 目标 ~900 字符；模型偶写到 ~1800，超出部分按句界截断而非拒绝
-const RELEASE_NOTE_MAX_SENTENCES = 3;
+const RELEASE_NOTE_MAX_SENTENCES = 4; // 输入给足了就要能写出具体改动，3 句只够复述标题
 
 // ---------------------------------------------------------------- prompt 构建
 
@@ -47,7 +51,8 @@ const SYSTEM_PROMPT = [
   "Rules:",
   "- headline: one line, at most 80 characters (count them; NEVER exceed 80). If the headline mentions automated commits at all, it MUST use the SAME additive wording as the summary — \"24 own commits plus 13 automated\" / \"24 次本人提交，另有 13 次自动提交\" — never an inclusive one (\"24 commits, of which 13 automated\" / \"24 次提交，其中 13 次自动提交\" / \"24 commits … with 13 automated\"). Keep it short by dropping detail, NOT by merging the two counts.",
   "- summary: 4-8 sentences and UNDER 1200 characters (hard limit — count characters; stay well below). Name concrete specifics from the input — repository names, issue/PR numbers and titles, who replied, what a release changed — and describe what actually happened that day, in order. No filler, no repeating the headline, no generic 'a busy day'.",
-  "- releaseNotes: one entry ONLY for each release in the input, matching repo+tag exactly; each summary at most 3 sentences; use [] when there are no releases.",
+  "- releaseNotes: one entry ONLY for each release in the input, matching repo+tag exactly; use [] when there are no releases. Each summary is 2-4 sentences and MUST name the concrete changes the notes actually describe — the features, fixes, behaviour changes, breaking changes, new files/flags — not 'various improvements' / '若干改进' / a restated version number.",
+  "- releaseNotes: when a release's `notes` ends with `…`, the body was cut for length. Describe ONLY the changes visible in the notes; never guess, never write 'and more' / '等其他改进' to cover the part you cannot see.",
   "- Commits: for the user's OWN commits (commits[].messages), summarize what they actually changed by synthesizing their commit messages — group and shorten them; do NOT list the messages verbatim.",
   "- Commits: `count` is the user's OWN commit count; `automated` is a SEPARATE, ADDITIONAL count of bot/automated commits — never a subset of `count`. Phrase them as additive, e.g. \"8 own commits plus 1 automated commit by github-actions[bot]\" / \"8 次本人提交，另有 1 次由 github-actions[bot] 自动提交\" — never \"8 commits, of which 1 was automated\" / \"8 次提交，其中 1 次为自动提交\" (never \"其中\"/\"of which\" overlap).",
   "- If automatedCommits is non-zero (or a commit entry has automated > 0), mention only the automated commit count and who created them (the automatedBots logins), e.g. \"2 automated commits by github-actions[bot]\"; never describe the automated commits' contents.",
@@ -64,6 +69,28 @@ const SYSTEM_PROMPT = [
 ].join("\n");
 
 const cap = (list) => (Array.isArray(list) ? list.slice(0, SECTION_CAP) : []);
+
+/**
+ * 按行边界裁剪 release notes，并补一行 `…` 让模型知道后面还有内容。
+ * 与采集侧的 normalizeNotes 同口径（那里也按行边界切），但这里是**喂 AI** 的独立预算。
+ */
+function clipNotes(text, max) {
+  const s = String(text ?? "").trim();
+  if (s.length <= max) return s;
+  const hard = s.slice(0, max);
+  const nl = hard.lastIndexOf("\n");
+  const body = (nl >= Math.floor(max * 0.6) ? hard.slice(0, nl) : hard).trimEnd();
+  return `${body}\n…`;
+}
+
+/**
+ * 每条 release 的 notes 预算：按条数摊总量（release 多的日子不爆 prompt，
+ * release 少的正常日子尽量给足），再夹到 [RELEASE_NOTES_MIN, RELEASE_NOTES_CAP]。
+ */
+function releaseNotesPerItem(releases) {
+  const n = Math.max(1, cap(releases).length);
+  return Math.min(RELEASE_NOTES_CAP, Math.max(RELEASE_NOTES_MIN, Math.floor(RELEASE_NOTES_TOTAL / n)));
+}
 
 /** 把 data 压成紧凑 user prompt：只含聚合条目 + 总数 + 日期。 */
 function buildPrompts(data) {
@@ -97,7 +124,7 @@ function buildPrompts(data) {
       name: r?.name,
       url: r?.url,
       publishedAt: r?.publishedAt,
-      notes: String(r?.notes || "").slice(0, RELEASE_NOTES_CAP),
+      notes: clipNotes(r?.notes, releaseNotesPerItem(data.releases)),
     })),
     stars: cap(data.stars),
     replies: cap(data.replies),

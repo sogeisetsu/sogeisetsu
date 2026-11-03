@@ -217,6 +217,45 @@ const cases = [
     expect: { ok: true, calls: 1, systemPrompt: "Discussions:", userPrompt: '"action":"started"' },
   },
   {
+    // 回归护栏：release notes 以前被切到 800 字符，模型只看到 body 开头两句，
+    // 摘要因此全是「若干改进」。真实 body 常有 2000–6800 字符，尾部必须进 prompt。
+    name: "release-notes-tail-reaches-prompt",
+    data: {
+      ...data,
+      releases: [
+        {
+          repo: "a/b",
+          tag: "v9.9.9",
+          name: "v9.9.9",
+          url: "https://github.com/a/b/releases/tag/v9.9.9",
+          publishedAt: "2026-10-03T01:00:00.000Z",
+          notes: `${Array.from({ length: 120 }, (_, i) => `- change number ${i}`).join("\n")}\n- TAILTOKEN-ALPHA`,
+        },
+      ],
+    },
+    script: [chatResp(JSON.stringify(validNarrative()))],
+    expect: { ok: true, calls: 1, userPrompt: "TAILTOKEN-ALPHA" },
+  },
+  {
+    // 超过单条上限（4000）时必须按行边界截断并补 `…`，让模型知道后面还有、不得臆测
+    name: "release-notes-over-cap-truncated-with-marker",
+    data: {
+      ...data,
+      releases: [
+        {
+          repo: "a/b",
+          tag: "v9.9.10",
+          name: "v9.9.10",
+          url: "https://github.com/a/b/releases/tag/v9.9.10",
+          publishedAt: "2026-10-03T01:00:00.000Z",
+          notes: `${Array.from({ length: 400 }, (_, i) => `- change number ${i}`).join("\n")}\n- TAILTOKEN-OMEGA`,
+        },
+      ],
+    },
+    script: [chatResp(JSON.stringify(validNarrative()))],
+    expect: { ok: true, calls: 1, userPrompt: "…", userPromptNot: "TAILTOKEN-OMEGA" },
+  },
+  {
     // 回归护栏：totals 全 0（empty:true）的 discussion-only 日不得被 generateNarrative 内部挡掉。
     // 可见性判断是调用方（index.mjs）的职责；这里必须真的打到 provider（calls=1 且拿到叙述）。
     name: "empty-true-but-discussions-still-calls-provider",
@@ -415,6 +454,10 @@ for (const c of cases) {
   if (c.expect.userPrompt) {
     const u = requests.at(-1)?.body?.messages?.[1]?.content || "";
     checks.push(["userPrompt", u.includes(c.expect.userPrompt)]);
+  }
+  if (c.expect.userPromptNot) {
+    const u = requests.at(-1)?.body?.messages?.[1]?.content || "";
+    checks.push(["userPromptNot", !u.includes(c.expect.userPromptNot)]);
   }
   if (c.expect.systemPrompt) {
     const s = requests.at(-1)?.body?.messages?.[0]?.content || "";

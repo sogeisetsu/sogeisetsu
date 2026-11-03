@@ -32,7 +32,24 @@ import { BACKFILL_DIR, DATA_DIR, cstDayMinus, dateRange, readJsonIfExists } from
 
 const SUMMARY_COMMIT_MSG_CAP = 10; // 每仓库最多喂 10 条 commit message（总结口径；与日报同名上限只是巧合同值，不是同一口径）
 const COMMIT_MSG_LEN = 160; // 每条 commit message 截断到 160 字符
-const RELEASE_NOTES_LEN = 800; // 每条 release notes 最多 800 字符
+// release notes：800 字符只够真实 body 的开头（实测真实 release 2000–6800 字符），
+// 30 天总结的 byRepo 因此只能写「发布了 vX」而说不出改了什么。与日报同口径放宽。
+const RELEASE_NOTES_LEN = 4000; // 每条 release notes 上限
+const RELEASE_NOTES_TOTAL = 12000; // 窗口内所有 release notes 的总预算（按条均分）
+const RELEASE_NOTES_MIN = 1200; // 均分后的单条下限
+
+/**
+ * 按行边界裁剪 release notes，并补一行 `…` —— 让模型知道后面还有内容、不要臆测。
+ * 与 `scripts/daily/lib/ai/narrative.mjs` 的 clipNotes 同口径（两条产物线各自的副本）。
+ */
+function clipNotes(text, max) {
+  const s = String(text ?? "").trim();
+  if (s.length <= max) return s;
+  const hard = s.slice(0, max);
+  const nl = hard.lastIndexOf("\n");
+  const body = (nl >= Math.floor(max * 0.6) ? hard.slice(0, nl) : hard).trimEnd();
+  return `${body}\n…`;
+}
 
 /** 参与聚合的数组段；单日数据缺失这些段时按空数组处理（老数据 / 回填数据结构不全）。 */
 const ARRAY_SECTIONS = [
@@ -240,13 +257,20 @@ export function collectSummaryData({ username, start, end, dataDir, backfillDir 
         repo: rel?.repo,
         tag: rel?.tag,
         name: rel?.name,
-        notes: String(rel?.notes || "").slice(0, RELEASE_NOTES_LEN),
+        notes: String(rel?.notes || ""),
         publishedAt: rel?.publishedAt,
       });
       bump(repoReleases, rel);
     }
   }
   missing.days = missing.dates.length;
+
+  // release notes 预算按窗口内条数摊：条数多就少给，条数少就尽量给足（见 RELEASE_NOTES_* 注释）
+  const perNote = Math.min(
+    RELEASE_NOTES_LEN,
+    Math.max(RELEASE_NOTES_MIN, Math.floor(RELEASE_NOTES_TOTAL / Math.max(1, releaseItems.length)))
+  );
+  for (const item of releaseItems) item.notes = clipNotes(item.notes, perNote);
 
   // commits 聚合：按 count 降序，同数按仓库名升序（保证稳定复现）
   const commits = [...commitByRepo.values()]

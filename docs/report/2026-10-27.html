@@ -247,10 +247,25 @@ html[data-lang="zh"] .chip{font-size:.76rem;letter-spacing:0}
   background:var(--tertiary-container);color:var(--on-tertiary-container);
   padding:.22em .6em;border-radius:9px;
 }
+/* Release notes: 默认收起（原生 <details>，无脚本），summary 里是两行纯文本摘录 +
+   展开开关；展开后是完整 body。以前用 12 行 line-clamp，长 notes 的后文永远看不到。 */
+.release-notes-more{margin:12px 0 0}
+.release-notes-more>summary{
+  cursor:pointer;list-style:none;
+  font-size:.9rem;color:var(--on-surface-variant);overflow-wrap:anywhere;
+}
+.release-notes-more>summary::-webkit-details-marker{display:none}
+.release-notes-more>summary::marker{content:""}
+.notes-preview{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.notes-toggle{display:block;margin-top:6px;font-size:.82rem;font-weight:650;color:var(--primary)}
+.notes-toggle:hover{text-decoration:underline;text-underline-offset:2px}
+.notes-close{display:none}
+.release-notes-more[open]>summary .notes-open{display:none}
+.release-notes-more[open]>summary .notes-close{display:block}
+.release-notes-more[open]>summary .notes-preview{display:none}
 .release-notes{
-  margin:12px 0 0;font-size:.9rem;color:var(--on-surface-variant);
+  margin:8px 0 0;font-size:.9rem;color:var(--on-surface-variant);
   overflow-wrap:anywhere;
-  display:-webkit-box;-webkit-line-clamp:12;-webkit-box-orient:vertical;overflow:hidden;
 }
 .release-notes>*{margin:.5em 0}
 .release-notes h3,.release-notes h4,.release-notes h5,.release-notes h6{
@@ -268,8 +283,9 @@ html[data-lang="zh"] .chip{font-size:.76rem;letter-spacing:0}
   font-family:var(--mono);font-size:.84em;background:rgba(0,0,0,.05);
   padding:.12em .38em;border-radius:6px;
 }
-/* GFM table from a release body: .release-notes clamps its lines, so this
-   must fit the card width and wrap cells instead of scrolling sideways. */
+/* GFM table from a release body: the notes box is now a full-height <details>
+   body, so this must still fit the card width and wrap cells instead of
+   scrolling sideways. */
 .release-notes table{
   margin:.5em 0;width:100%;border-collapse:collapse;
   font-size:.84rem;line-height:1.45;

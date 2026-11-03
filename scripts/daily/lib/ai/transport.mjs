@@ -72,7 +72,7 @@ function buildRetryFeedback(reason, n) {
     return 'REJECTED: automated commits are SEPARATE and ADDITIONAL — never a subset of the user\'s own commits. Rewrite additive: "8 own commits plus 1 automated commit" / "8 次本人提交，另有 1 次自动提交"; never "其中" / "of which" / "includes" / "包含".';
   }
   if (/releaseNotes/.test(r)) {
-    return "REJECTED: check releaseNotes — one entry per input release, repo+tag exactly matching, each summary at most 3 sentences.";
+    return "REJECTED: check releaseNotes — one entry per input release, repo+tag exactly matching, each summary 2-4 sentences naming the concrete changes in the notes (no 'various improvements').";
   }
   return JSON_REMINDERS[Math.min(n, JSON_REMINDERS.length - 1)];
 }
