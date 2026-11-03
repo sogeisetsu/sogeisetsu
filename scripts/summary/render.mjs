@@ -504,8 +504,8 @@ export function summaryCard({ summary } = {}) {
 
   // 确定数字一行（简洁，不整块 statsStrip）
   const nums = `<div class="row-meta mono">${i18n(
-    `${c} commits · ${p} pull requests · ${i} issues · ${r} reviews`,
-    `${c} 次提交 · ${p} 个 PR · ${i} 个 Issue · ${r} 次评审`
+    `${c} commits · ${p} PR actions · ${i} issue actions · ${r} reviews`,
+    `${c} 次提交 · ${p} 次 PR 互动 · ${i} 次 Issue 互动 · ${r} 次评审`
   )}</div>`;
   // 机器人提交：相加表述，不是「其中」
   const bot =

@@ -325,6 +325,38 @@ check("renderReportPage: commits 角标取 totals=0，不用条目行数兜底",
   ];
 });
 
+check("statsStrip: PR / Issue 数字条标签按动作数表述（不回退成 Issues / 个 Issue）", () => {
+  // prs / issues 是动作条数（PR：新开/关闭/合并；Issue：新开/关闭/评论），标签必须说「actions / 互动」。
+  // 线上实证 2026-11-02：标签写「Issue 50」再配上正文「提出 50 个 issue」，读者会当成新建了 50 个。
+  const html = renderReportPage({
+    data: {
+      date: "2026-10-07",
+      username: "sogeisetsu",
+      generatedAt: "2026-10-07T09:54:00.000Z",
+      empty: false,
+      totals: { commits: 3, prs: 1, issues: 47, reviews: 0 },
+      commits: [{ repo: "sogeisetsu/sogeisetsu", count: 3, own: true, messages: [], automated: 0 }],
+      pullRequests: [],
+      reviews: [],
+      issues: [],
+      stateChanges: [],
+      discussions: [],
+      releases: [],
+      stars: [],
+      replies: [],
+    },
+    ai: null,
+  });
+  return [
+    ["enPr", html.includes('data-lang="en">PR actions</span>')],
+    ["enIssue", html.includes('data-lang="en">Issue actions</span>')],
+    ["zhPr", html.includes('data-lang="zh">PR 互动</span>')],
+    ["zhIssue", html.includes('data-lang="zh">Issue 互动</span>')],
+    ["noBareIssue", !html.includes('>Issues<') && !html.includes('>Issue</span>')],
+    ["noBarePr", !html.includes('>Pull requests</span>')],
+  ];
+});
+
 // ---------------------------------------------------------------- discussions
 
 check("renderReportPage: discussions 分区 + 动作徽章 + 评论数双语 + 回复 kind 标签", () => {

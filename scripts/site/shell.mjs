@@ -211,10 +211,13 @@ export function pill(total, fallback) {
 }
 
 export function statsStrip(totals) {
+  // prs / issues 是**动作条数**（PR：新开 / 关闭 / 合并；Issue：新开 / 关闭 / 评论，同一个 item
+  // 被评论两次计两次），不是「几个 PR / 几个 Issue」——线上实证 2026-11-02：50 条 issue 动作
+  // 被总结正文写成「提出 50 个 issue」。标签只说动作，别退回「Issues / 个 Issue」。
   const defs = [
     { key: 'commits', en: 'Commits', zh: '提交' },
-    { key: 'prs', en: 'Pull requests', zh: 'PR' },
-    { key: 'issues', en: 'Issues', zh: 'Issue' },
+    { key: 'prs', en: 'PR actions', zh: 'PR 互动' },
+    { key: 'issues', en: 'Issue actions', zh: 'Issue 互动' },
     { key: 'reviews', en: 'Reviews', zh: '评审' },
   ];
   const chips = defs
