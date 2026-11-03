@@ -3,10 +3,10 @@
   "windowStart": "2026-11-03T00:00:00+08:00",
   "windowEnd": "2026-11-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-03T11:29:54.554Z",
+  "generatedAt": "2026-11-03T11:52:03.165Z",
   "empty": false,
   "totals": {
-    "commits": 64,
+    "commits": 73,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -152,6 +152,100 @@
       "automatedBots": []
     },
     {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "count": 17,
+      "own": true,
+      "messages": [
+        {
+          "sha": "fa19770ce753f8e8f851055e7a89e8717cbfc432",
+          "message": "skills: plain-language 按 oracle 评审收紧五处",
+          "ts": "2026-11-03T11:45:39Z"
+        },
+        {
+          "sha": "622cf2d74821cf4bea626ca9a052014d35d9ed67",
+          "message": "skills: plain-language 删掉执行章节，工具约束并入开头",
+          "ts": "2026-11-03T11:41:23Z"
+        },
+        {
+          "sha": "d743e1ac34f30ede8bda26a4b4f576c90aacc98d",
+          "message": "skills: plain-language 精简到 46 行，红线压到 6 条",
+          "ts": "2026-11-03T11:40:37Z"
+        },
+        {
+          "sha": "55418d6080e66e41eb2a56bdfc3c845a01253aa2",
+          "message": "skills: plain-language 工具约束收成一句话",
+          "ts": "2026-11-03T11:38:59Z"
+        },
+        {
+          "sha": "42007f0524de819c8fff3379cec1b88dac2d828b",
+          "message": "skills: plain-language 作者改为本人，图表规则去项目化，补工具边界",
+          "ts": "2026-11-03T11:31:57Z"
+        },
+        {
+          "sha": "c6c61b99538b36160142e151b669f627ccce5e7a",
+          "message": "docs: AGENTS.md 补开发流程（分支、分章提交、合并后推送）",
+          "ts": "2026-11-03T11:25:34Z"
+        },
+        {
+          "sha": "bc1bdb99376730cef6b1a6c18d3a782c07f95683",
+          "message": "skills: 安装 plain-language，改造成 OpenCode 格式",
+          "ts": "2026-11-03T11:25:23Z"
+        },
+        {
+          "sha": "ecc036305f8c190917fc32ab532b3212e49d1687",
+          "message": "knowledge: 角色名册里的随包 skill 数量改成实测的 11 个",
+          "ts": "2026-11-02T18:44:14Z"
+        },
+        {
+          "sha": "c8ff9b1cec2751a0088428a47e78944a509418af",
+          "message": "knowledge: routing block 按 3.0.6 原文重写，librarian 那条并进 explorer",
+          "ts": "2026-11-02T18:40:03Z"
+        },
+        {
+          "sha": "7ec49cec78cb68882eda14ec785d9c7b348bfc25",
+          "message": "knowledge: 角色表去掉已并入 explorer 的 librarian，收窄 stateDiagram 尖括号结论",
+          "ts": "2026-11-02T18:35:31Z"
+        },
+        {
+          "sha": "9851fa6f9e5c4b24a21f36dc2915a28db8b9cff9",
+          "message": "knowledge: Mermaid 转义按图类型写准，fixer 回落对象改成 explorer",
+          "ts": "2026-11-02T18:27:53Z"
+        },
+        {
+          "sha": "6253c28d6262b8852adf2e39dec22aa5494e93c9",
+          "message": "knowledge: 图按性质分 Mermaid / excalidraw，6 篇补上关系图",
+          "ts": "2026-11-02T18:08:29Z"
+        },
+        {
+          "sha": "b64db7220082a1029588a72b0937c23203b0ae07",
+          "message": "docs(knowledge): 收录 V2 技能发现与主从代理编排",
+          "ts": "2026-11-02T17:53:12Z"
+        },
+        {
+          "sha": "7586c7aa949021d2e85966c80e0ae0bf76cd21c6",
+          "message": "docs(knowledge): 记录降AI检测清单的用户实测结果 40%→0.x%",
+          "ts": "2026-11-02T17:28:56Z"
+        },
+        {
+          "sha": "ba96250b72554fc1a8db446449202362c03871af",
+          "message": "docs(knowledge): 收中文改写降AI检测清单，标注未验证与副作用",
+          "ts": "2026-11-02T17:26:47Z"
+        },
+        {
+          "sha": "51d1db15373d0babf6f92327e3c76158f4216e65",
+          "message": "docs(knowledge): 修正 WorkBuddy 会话目录编码规则",
+          "ts": "2026-11-02T17:16:52Z"
+        },
+        {
+          "sha": "54e9bfb303e707617b1621cd02ce1e425fa83848",
+          "message": "docs(knowledge): 收 WorkBuddy 宿主/CLI 边界、模型接入与会话数据实测",
+          "ts": "2026-11-02T17:05:51Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
       "repo": "sogeisetsu/opencode-skill-management",
       "count": 16,
       "own": true,
@@ -241,73 +335,55 @@
       "automatedBots": []
     },
     {
-      "repo": "sogeisetsu/opencode-agent-sandbox",
-      "count": 12,
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 8,
       "own": true,
       "messages": [
         {
-          "sha": "c6c61b99538b36160142e151b669f627ccce5e7a",
-          "message": "docs: AGENTS.md 补开发流程（分支、分章提交、合并后推送）",
-          "ts": "2026-11-03T11:25:34Z"
+          "sha": "04c06c2a44c58d7c0ec1fee14b67831bddb76e26",
+          "message": "docs: 按新区块标题 / md Totals 重渲染",
+          "ts": "2026-11-03T11:50:40Z"
         },
         {
-          "sha": "bc1bdb99376730cef6b1a6c18d3a782c07f95683",
-          "message": "skills: 安装 plain-language，改造成 OpenCode 格式",
-          "ts": "2026-11-03T11:25:23Z"
+          "sha": "ad0dcfde7ff00b334c7a8827141de5322a3d43bc",
+          "message": "docs(agents): 发布流程第 3 步不再复述 -F 规则",
+          "ts": "2026-11-03T11:49:33Z"
         },
         {
-          "sha": "ecc036305f8c190917fc32ab532b3212e49d1687",
-          "message": "knowledge: 角色名册里的随包 skill 数量改成实测的 11 个",
-          "ts": "2026-11-02T18:44:14Z"
+          "sha": "a3f023b47c603b01c932b9e39688551a64bc81b0",
+          "message": "fix(daily): 日报页区块标题与 md Totals 也按动作数表述",
+          "ts": "2026-11-03T11:48:36Z"
         },
         {
-          "sha": "c8ff9b1cec2751a0088428a47e78944a509418af",
-          "message": "knowledge: routing block 按 3.0.6 原文重写，librarian 那条并进 explorer",
-          "ts": "2026-11-02T18:40:03Z"
+          "sha": "0305e1ee113de667aeaa18e21dab6fa3564e6346",
+          "message": "fix(summary): 裸计数「50 issues / 50 个 issue」也拒收",
+          "ts": "2026-11-03T11:48:01Z"
         },
         {
-          "sha": "7ec49cec78cb68882eda14ec785d9c7b348bfc25",
-          "message": "knowledge: 角色表去掉已并入 explorer 的 librarian，收窄 stateDiagram 尖括号结论",
-          "ts": "2026-11-02T18:35:31Z"
+          "sha": "f7d35392c9a355f60a159f2b09cb917344763b7e",
+          "message": "docs: 按新标签重渲染 daily / summary / index",
+          "ts": "2026-11-03T11:27:36Z"
         },
         {
-          "sha": "9851fa6f9e5c4b24a21f36dc2915a28db8b9cff9",
-          "message": "knowledge: Mermaid 转义按图类型写准，fixer 回落对象改成 explorer",
-          "ts": "2026-11-02T18:27:53Z"
+          "sha": "56cba1a791ab97a4737a537f8887cd32f308be8d",
+          "message": "fix(site): 数字条 PR / Issue 标签改成动作数口径",
+          "ts": "2026-11-03T11:26:23Z"
         },
         {
-          "sha": "6253c28d6262b8852adf2e39dec22aa5494e93c9",
-          "message": "knowledge: 图按性质分 Mermaid / excalidraw，6 篇补上关系图",
-          "ts": "2026-11-02T18:08:29Z"
+          "sha": "f4490a6060a6e620f32f07cdea034f7a8d4810fb",
+          "message": "docs(agents): 补齐「分支开发 + 按段落提交」的硬要求",
+          "ts": "2026-11-03T11:26:23Z"
         },
         {
-          "sha": "b64db7220082a1029588a72b0937c23203b0ae07",
-          "message": "docs(knowledge): 收录 V2 技能发现与主从代理编排",
-          "ts": "2026-11-02T17:53:12Z"
-        },
-        {
-          "sha": "7586c7aa949021d2e85966c80e0ae0bf76cd21c6",
-          "message": "docs(knowledge): 记录降AI检测清单的用户实测结果 40%→0.x%",
-          "ts": "2026-11-02T17:28:56Z"
-        },
-        {
-          "sha": "ba96250b72554fc1a8db446449202362c03871af",
-          "message": "docs(knowledge): 收中文改写降AI检测清单，标注未验证与副作用",
-          "ts": "2026-11-02T17:26:47Z"
-        },
-        {
-          "sha": "51d1db15373d0babf6f92327e3c76158f4216e65",
-          "message": "docs(knowledge): 修正 WorkBuddy 会话目录编码规则",
-          "ts": "2026-11-02T17:16:52Z"
-        },
-        {
-          "sha": "54e9bfb303e707617b1621cd02ce1e425fa83848",
-          "message": "docs(knowledge): 收 WorkBuddy 宿主/CLI 边界、模型接入与会话数据实测",
-          "ts": "2026-11-02T17:05:51Z"
+          "sha": "4f39247b97c73790cd9c086bd47514a814bba11b",
+          "message": "fix(summary): issue 数字按动作数叙述，禁止写成新建数",
+          "ts": "2026-11-02T22:23:30Z"
         }
       ],
-      "automated": 0,
-      "automatedBots": []
+      "automated": 20,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
     },
     {
       "repo": "sogeisetsu/opencode-go-model-picker",
@@ -347,40 +423,9 @@
       ],
       "automated": 0,
       "automatedBots": []
-    },
-    {
-      "repo": "sogeisetsu/sogeisetsu",
-      "count": 4,
-      "own": true,
-      "messages": [
-        {
-          "sha": "f7d35392c9a355f60a159f2b09cb917344763b7e",
-          "message": "docs: 按新标签重渲染 daily / summary / index",
-          "ts": "2026-11-03T11:27:36Z"
-        },
-        {
-          "sha": "56cba1a791ab97a4737a537f8887cd32f308be8d",
-          "message": "fix(site): 数字条 PR / Issue 标签改成动作数口径",
-          "ts": "2026-11-03T11:26:23Z"
-        },
-        {
-          "sha": "f4490a6060a6e620f32f07cdea034f7a8d4810fb",
-          "message": "docs(agents): 补齐「分支开发 + 按段落提交」的硬要求",
-          "ts": "2026-11-03T11:26:23Z"
-        },
-        {
-          "sha": "4f39247b97c73790cd9c086bd47514a814bba11b",
-          "message": "fix(summary): issue 数字按动作数叙述，禁止写成新建数",
-          "ts": "2026-11-02T22:23:30Z"
-        }
-      ],
-      "automated": 19,
-      "automatedBots": [
-        "github-actions[bot]"
-      ]
     }
   ],
-  "automatedCommits": 19,
+  "automatedCommits": 20,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -524,34 +569,34 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "64 own commits plus 19 automated commits across five repositories",
-      "summary": "The day recorded **64 own commits** plus 19 automated commits by `github-actions[bot]`, with no pull requests, issues, or reviews. In `sogeisetsu/pixel-logo-toolkit`, work covered bilingual CLI output, on-demand multilingual glyph variants, a Pillow-free query path, right-side decoration spacing, Korean font handling, and expanded README examples. In `sogeisetsu/opencode-skill-management`, the author added a `starlight-docs` skill scaffold with detect, scaffold, check, audit, and emit-check scripts, restored mobile theme and language controls, and refined external-link failure classification. In `sogeisetsu/opencode-agent-sandbox`, documentation covered V2 skill discovery, master-agent orchestration, Mermaid and Excalidraw diagrams, and a Chinese rewrite of an AI-detection checklist with unverified items and side effects marked. In `sogeisetsu/opencode-go-model-picker`, the candidate menu, per-source chains, and comparing check gate were enforced, with caveat wording allowed to be reworded while the gate fails closed. In `sogeisetsu/sogeisetsu`, daily, summary, and index pages were re-rendered, and PR and issue labels were changed to report action counts rather than creation counts.",
+      "headline": "73 own commits plus 20 automated commits across five repositories",
+      "summary": "**73 own commits** landed across five repositories, plus 20 automated commits by `github-actions[bot]`. In `sogeisetsu/pixel-logo-toolkit`, work added a bilingual CLI, on-demand multilingual glyph variants, Korean support via the Galmuri font, and a 40-image example gallery, while keeping query commands usable without Pillow. In `sogeisetsu/opencode-agent-sandbox`, the `plain-language` skill was tightened to 46 lines with six red lines, the author was changed to the user, and `AGENTS.md` gained a branch-and-chapter commit workflow. In `sogeisetsu/opencode-skill-management`, the `starlight-docs` skill gained template resources and a detect/scaffold/check/audit/emit-check script skeleton, mobile splash controls were restored, and external-link checks were regraded to avoid proxy or offline false positives. In `sogeisetsu/sogeisetsu`, daily and summary pages were re-rendered to report issue and PR counts by action, and bare issue counts were rejected. In `sogeisetsu/opencode-go-model-picker`, candidate menus, per-source chains, and a fail-closed comparing gate were enforced. No pull requests, issues, reviews, or discussions were recorded.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/pixel-logo-toolkit",
           "tag": "v0.2.0",
-          "summary": "The first tagged release introduced a bilingual CLI that renders titles, subtitles, and footnotes as 8-bit pixel art in PNG and SVG. It provides five canvases, ten palettes, and mixed Latin, Chinese, Japanese, and Korean text without missing glyphs."
+          "summary": "The first tagged release provides a bilingual command line tool that renders titles, subtitles, and footnotes as 8-bit pixel art in PNG and SVG from the same geometry. It offers five canvases, ten palettes, and mixed Latin, Chinese, Japanese, and Korean text without missing glyphs."
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "This release enforced the candidate menu, per-source chains, and a comparing check gate, preventing invented Go model IDs and allowing Markdown agents to be written. The `check` command now re-derives values instead of trusting the file."
+          "summary": "This release enforces a candidate menu, per-source chains, and a comparing check gate so Go model IDs cannot be invented and chain length follows the source. The `check` command re-derives numbers instead of trusting the file, and the mode question is asked once."
         }
       ]
     },
     "zh": {
-      "headline": "64 次本人提交，另有 19 次自动提交，覆盖五个仓库",
-      "summary": "当天共记录 **64 次本人提交**，另有 19 次由 `github-actions[bot]` 自动提交，且没有拉取请求、issue 或评审。`sogeisetsu/pixel-logo-toolkit` 的工作涵盖中英双语命令行输出、按需下载的多语言字形变体、无 Pillow 时仍可用的纯查询路径、右侧装饰宽度调整、韩语字体处理，以及扩充 README 示例。`sogeisetsu/opencode-skill-management` 新增了带 detect、scaffold、check、audit 和 emit-check 脚本的 `starlight-docs` 技能骨架，恢复手机端主题与语言控件，并细化外链检查的失败分级。`sogeisetsu/opencode-agent-sandbox` 的文档补充了 V2 技能发现、主从代理编排、Mermaid 与 Excalidraw 关系图，以及降 AI 检测清单的中文改写，并标注未验证项与副作用。`sogeisetsu/opencode-go-model-picker` 落实了候选菜单、按来源链和比较检查门控，允许改写 caveat 措辞，同时让检查在异常时失败关闭。`sogeisetsu/sogeisetsu` 重新渲染了 daily、summary 和 index 页面，并把 PR 与 issue 标签改为按动作数统计，而非按新建数统计。",
+      "headline": "73 次本人提交，另有 20 次自动提交，覆盖五个仓库",
+      "summary": "当天在五个仓库完成 **73 次本人提交**，另有 20 次由 `github-actions[bot]` 自动提交。`sogeisetsu/pixel-logo-toolkit` 增加中英双语命令行、按需下载的多语言字形变体、改用 Galmuri 字体支持韩语，并补充 40 张示例画廊，同时保证缺少 Pillow 时纯查询命令仍可使用。`sogeisetsu/opencode-agent-sandbox` 将 `plain-language` 技能精简到 46 行、保留 6 条红线，作者改为本人，并在 `AGENTS.md` 补充分支开发与分章提交流程。`sogeisetsu/opencode-skill-management` 为 `starlight-docs` 技能加入模板资源和 detect/scaffold/check/audit/emit-check 脚本骨架，恢复手机端 splash 页主题与语言控件，并按失败原因分级外链检查以避免代理或离线误报。`sogeisetsu/sogeisetsu` 重新渲染日报与汇总页，使 issue 和 PR 数字按动作数表述，并拒收裸 issue 计数。`sogeisetsu/opencode-go-model-picker` 落实候选菜单、按来源链和失败即拦截的比较检查门禁。当天没有 pull request、issue、评审或讨论记录。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/pixel-logo-toolkit",
           "tag": "v0.2.0",
-          "summary": "首个带标签版本推出双语命令行工具，可将标题、副标题和脚注渲染为 8-bit 像素艺术，并同时输出 PNG 与 SVG。它提供五种画布、十套调色板，以及不缺失字形的拉丁文、中文、日文和韩文混排支持。"
+          "summary": "首个标签版本提供中英双语命令行工具，可用同一套几何结构将标题、副标题和脚注渲染为 8-bit 像素风格的 PNG 与 SVG。它包含五种画布、十套配色，并支持拉丁文、中文、日文和韩文混排且不缺失字形。"
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "该版本落实候选菜单、按来源链和比较检查门控，阻止虚构 Go 模型 ID，并允许编写 Markdown 代理。`check` 命令现在会重新推导数值，不再直接信任文件内容。"
+          "summary": "该版本落实候选菜单、按来源链和比较检查门禁，禁止自行编造 Go 模型 ID，链长度随来源而定。`check` 命令会重新推导数字而不直接信任文件，模式问题只询问一次。"
         }
       ]
     }
@@ -559,5 +604,5 @@
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "c4e5948e6e61c04edf3f055872832ea7c385dc1ac386e116df0ca2e3b079fe5d"
+  "dataHash": "0f33a0adfe1eee7a7d98a29bf3da1694d964a364fbd0d04df32ef6408b9b5c15"
 }
