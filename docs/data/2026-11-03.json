@@ -3,10 +3,10 @@
   "windowStart": "2026-11-03T00:00:00+08:00",
   "windowEnd": "2026-11-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-03T11:59:29.110Z",
+  "generatedAt": "2026-11-03T12:23:08.755Z",
   "empty": false,
   "totals": {
-    "commits": 73,
+    "commits": 74,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -336,9 +336,14 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 8,
+      "count": 9,
       "own": true,
       "messages": [
+        {
+          "sha": "6119662eec8f161169d69ca0d2c4d697183e4b3a",
+          "message": "feat(release): release notes 全量喂入 AI + 页面默认收起可展开",
+          "ts": "2026-11-03T12:22:26Z"
+        },
         {
           "sha": "04c06c2a44c58d7c0ec1fee14b67831bddb76e26",
           "message": "docs: 按新区块标题 / md Totals 重渲染",
@@ -380,7 +385,7 @@
           "ts": "2026-11-02T22:23:30Z"
         }
       ],
-      "automated": 23,
+      "automated": 25,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -425,7 +430,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 23,
+  "automatedCommits": 25,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -436,7 +441,7 @@
       "name": "v0.2.0 — First release: bilingual CLI, English-first docs",
       "url": "https://github.com/sogeisetsu/pixel-logo-toolkit/releases/tag/v0.2.0",
       "publishedAt": "2026-11-02T22:03:08Z",
-      "notes": "**pixellogo 0.2.0** is the first tagged release: a command line tool that turns a title, a few subtitle lines and a footnote into real 8-bit / retro-terminal pixel art — PNG and SVG from the same geometry, five canvases, ten palettes, and mixed Latin / Chinese / Japanese / Korean text without missing glyphs.\n\n## Highlights\n\n- **Real pixels, not a filter.** Text is rasterized into a binary mask and merged per row into integer-coordinate rectangles. Every edge stays a whole block at any zoom: no anti-aliasing, no gradients, no feathering.\n- **One geometry, two formats.** PNG and SVG are produced from the same `Scene`, so they match pixel for pixel. The SVG is self-contained and needs no font files.\n- **Five canvases.** `poster` 1080×1440, `card` 1440×1080, `banner` 1280×640, `slide` 1920×1080, `square` 1080×1080, each with its own layout strategy.\n- **Ten palettes.** From retro terminal to paper journal; every preset passes a WCAG contrast check (`--list presets` prints the ratio).\n- **CJK-ready.** A Chinese pixel font ships in the box, so mixed Latin/Chinese lines keep one stroke weight; Traditional Chinese, Japanese and Korean download on demand.\n- **Bilingual CLI.** Help page, option tables, font status, warnings and errors in English or Simplified Chinese — automatic from the terminal locale, or forced with `--ui-lang`.\n- **No browser dependency.** Pure Python and Pillow ras…"
+      "notes": "**pixellogo 0.2.0** is the first tagged release: a command line tool that turns a title, a few subtitle lines and a footnote into real 8-bit / retro-terminal pixel art — PNG and SVG from the same geometry, five canvases, ten palettes, and mixed Latin / Chinese / Japanese / Korean text without missing glyphs.\n\n## Highlights\n\n- **Real pixels, not a filter.** Text is rasterized into a binary mask and merged per row into integer-coordinate rectangles. Every edge stays a whole block at any zoom: no anti-aliasing, no gradients, no feathering.\n- **One geometry, two formats.** PNG and SVG are produced from the same `Scene`, so they match pixel for pixel. The SVG is self-contained and needs no font files.\n- **Five canvases.** `poster` 1080×1440, `card` 1440×1080, `banner` 1280×640, `slide` 1920×1080, `square` 1080×1080, each with its own layout strategy.\n- **Ten palettes.** From retro terminal to paper journal; every preset passes a WCAG contrast check (`--list presets` prints the ratio).\n- **CJK-ready.** A Chinese pixel font ships in the box, so mixed Latin/Chinese lines keep one stroke weight; Traditional Chinese, Japanese and Korean download on demand.\n- **Bilingual CLI.** Help page, option tables, font status, warnings and errors in English or Simplified Chinese — automatic from the terminal locale, or forced with `--ui-lang`.\n- **No browser dependency.** Pure Python and Pillow rasterization; runs on servers and in CI.\n- **Reusable configuration.** JSONC files with comments and trailing commas, dot-path overrides, batch mode, and a `--dry-run` snapshot of the merged result.\n\n## New in 0.2.0\n\n### Bilingual command line\n\nAll terminal output now exists in English and Simplified Chinese: the help page, `--list modes|presets|fonts`, `fonts` status, warnings, and every error message (including argparse's own argument errors).\n\n- Automatic: `LC_ALL` → `LC_MESSAGES` → `LANG` → `LANGUAGE` → Windows UI language → English. `C` / `POSIX` count as English.\n- Explicit: `--ui-lang auto|en|zh` for a single run, or `PIXELLOGO_UI_LANG` as a persistent default. Precedence is flag > environment > locale.\n- `--ui-lang` (CLI wording) is independent of `--lang` (glyph variant used for the image): `--ui-lang en --lang ja` gives an English interface with Japanese glyphs.\n\n### English-first documentation\n\n- `README.md` is now English and is the default entry point.\n- `README.zh-CN.md` holds the Chinese version; the two are cross-linked.\n- `pyproject.toml` metadata and the GitHub repository description are in English.\n\n### Packaging and robustness\n\n- Built distribution: wheel, source distribution, and a portable zip (see the asset table below).\n- Missing Pillow no longer breaks the query commands: if Pillow is absent, `--version`, `--help`, `--list` and `fonts` still work, and rendering exits with code `2` plus an instruction to install it.\n\n## Install\n\nFrom this release:\n\n```bash\npipx install pixellogo-0.2.0-py3-none-any.whl\n# or\npip install pixellogo-0.2.0-py3-none-any.whl\n```\n\nFrom source at this tag:\n\n```bash\npipx install git+https://github.com/sogeisetsu/pixel-logo-toolkit.git@v0.2.0\n```\n\n## Release assets\n\n| File | What it is |\n| --- | --- |\n| `pixellogo-0.2.0-py3-none-any.whl` | Wheel. `pip install` this for a normal install; it adds the `pixellogo` command and bundles the five fonts, license texts and JSON schema. |\n| `pixellogo-0.2.0.tar.gz` | Source distribution (sdist), for packagers or `pip install` from source. |\n| `pixellogo-0.2.0-portable.zip` | No installation needed. Unpack and run `pixellogo.cmd` (Windows) or `./pixellogo.sh` (macOS / Linux). Contains the package, fonts, licenses, both READMEs and `RUNNING.txt`. |\n\nGitHub also generates \"Source code (zip)\" and \"Source code (tar.gz)\" archives for every release. Those are raw repository snapshots and contain no built package — use the assets above if you just want to install and run the tool.\n\n## Quick start\n\n```bash\n# One cover image, both formats, into out/\npixellogo -t \"REA\" -s \"REVERSE ENGINEER\" -d \"One CLI for agents\"\n\n# A 16:9 slide cover in the cyber palette with a grid texture\npixellogo -t \"PIXEL\" -m slide -p cyber --bg-pattern grid\n\n# Inspect what is available\npixellogo --list modes\npixellogo --list presets\npixellogo fonts\n```\n\nRunning `pixellogo` with no arguments prints the help page; `--help`, `-h` and `pixellogo help` are equivalent.\n\n## Command line at a glance\n\n| Flag | Effect |\n| --- | --- |\n| `-t, --title` | Main title (required) |\n| `-s, --subtitle` / `-d, --desc` | Subtitle and footnote lines, one flag per line |\n| `-m, --mode` | `poster` / `card` / `banner` / `slide` / `square` |\n| `-p, --preset` | One of the ten palettes |\n| `--bg` `--fg` `--primary` `--accent` `--shadow-color` | Single-color overrides |\n| `-f, --format` | `png` / `svg` / `both` (default `both`) |\n| `-o, --out` | Output file or directory |\n| `-c, --config` / `--set` | JSONC config and dot-path overrides |\n| `--ui-lang` | CLI output language: `auto` / `en` / `zh` |\n| `--lang` | Glyph variant: `zh-hans` / `zh-hant` / `ja` / `ko` |\n| `--json` / `--dry-run` / `--open` | Machine-readable output / merged config / open the result |\n\nExit codes: `0` success, `2` invalid arguments or configuration.\n\n## Python API\n\n```python\nfrom pixellogo import render, make_image, make_scene, to_svg_text\n\npaths = render(title=\"REA\", mode=\"banner\", preset=\"cyber\", format=\"png\", out=\"out/\")\nimage = make_image(title=\"REA\", mode=\"square\", scale=1)\nscene = make_scene(title=\"REA\", mode=\"poster\")\nsvg = to_svg_text(title=\"REA\", mode=\"slide\")\n```\n\nKeyword names match the JSONC config keys exactly, so anything valid in a config file is valid here.\n\n## Requirements\n\n- Python 3.9 or newer\n- Pillow 9.0 or newer (only runtime dependency)\n\n## Testing\n\n- 143 unit and integration tests (`PYTHONPATH=src python -m unittest discover -s tests`).\n- CI runs the suite on Python 3.9, 3.10, 3.11 and 3.12, plus a job that renders real images on Linux.\n\n## Known limitations…"
     },
     {
       "repo": "sogeisetsu/opencode-go-model-picker",
@@ -444,7 +449,7 @@
       "name": "3.0.1 — enforced candidate menu, per-source chains, comparing gate",
       "url": "https://github.com/sogeisetsu/opencode-go-model-picker/releases/tag/v3.0.1",
       "publishedAt": "2026-11-02T19:35:59Z",
-      "notes": "## What changed\n\n3.0.1 closes the gap between what the README promised and what the code enforced. The short version: a Go model id can no longer be invented, chain length follows the source, Markdown agents can actually be written, the mode question is asked once, and `check` re-derives the numbers instead of trusting the file.\n\nSee [CHANGELOG.md](https://github.com/sogeisetsu/opencode-go-model-picker/blob/main/CHANGELOG.md#301---2026-11-03) for the full list. The Chinese changelog is at [zh/CHANGELOG-ZH.md](https://github.com/sogeisetsu/opencode-go-model-picker/blob/main/zh/CHANGELOG-ZH.md).\n\n## Install this release\n\nDownload **`opencode-go-model-picker-3.0.1-min.zip`** below. It is the minimal package, not the GitHub \"source code\" archive:\n\n- top-level directory is `opencode-go-model-picker/`\n- it contains only `SKILL.md`, `references/`, `scripts/` and `LICENSE` — no tests, no docs site, no `assets/`, no `.git`, no `node_modules`\n- 18 files\n\nExtract it into your OpenCode skills directory so the folder name matches the skill name:\n\n```bash\nunzip opencode-go-model-picker-3.0.1-min.zip -d ~/.config/opencode/skills/\n```\n\n```powershell\nExpand-Archive opencode-go-model-picker-3.0.1-min.zip -DestinationPath \"$env:USERPROFILE\\.config\\opencode\\skills\"\n```\n\nThen ask OpenCode to check your agent models. The skill is read-only until you confirm a diff.\n\nRequirements: Node.js 22+ (Node…"
+      "notes": "## What changed\n\n3.0.1 closes the gap between what the README promised and what the code enforced. The short version: a Go model id can no longer be invented, chain length follows the source, Markdown agents can actually be written, the mode question is asked once, and `check` re-derives the numbers instead of trusting the file.\n\nSee [CHANGELOG.md](https://github.com/sogeisetsu/opencode-go-model-picker/blob/main/CHANGELOG.md#301---2026-11-03) for the full list. The Chinese changelog is at [zh/CHANGELOG-ZH.md](https://github.com/sogeisetsu/opencode-go-model-picker/blob/main/zh/CHANGELOG-ZH.md).\n\n## Install this release\n\nDownload **`opencode-go-model-picker-3.0.1-min.zip`** below. It is the minimal package, not the GitHub \"source code\" archive:\n\n- top-level directory is `opencode-go-model-picker/`\n- it contains only `SKILL.md`, `references/`, `scripts/` and `LICENSE` — no tests, no docs site, no `assets/`, no `.git`, no `node_modules`\n- 18 files\n\nExtract it into your OpenCode skills directory so the folder name matches the skill name:\n\n```bash\nunzip opencode-go-model-picker-3.0.1-min.zip -d ~/.config/opencode/skills/\n```\n\n```powershell\nExpand-Archive opencode-go-model-picker-3.0.1-min.zip -DestinationPath \"$env:USERPROFILE\\.config\\opencode\\skills\"\n```\n\nThen ask OpenCode to check your agent models. The skill is read-only until you confirm a diff.\n\nRequirements: Node.js 22+ (Node 18+ for everything except the local usage DB read), and OpenCode with Agent Skills support.\n\n## Chinese documentation\n\n- [README-ZH.md](https://github.com/sogeisetsu/opencode-go-model-picker/blob/main/README-ZH.md)\n- [zh/CHANGELOG-ZH.md](https://github.com/sogeisetsu/opencode-go-model-picker/blob/main/zh/CHANGELOG-ZH.md)\n\n## Verification\n\n- `node --test tests/*.test.mjs` — 29 pass, 0 fail\n- `node tools/check-docs.mjs` — 0 errors, 0 warnings\n- the extracted package: `node --check` on every script, and `node scripts/go.mjs run --offline --json` against a real config (8 agents, 38 candidates, `quality=seed`)"
     }
   ],
   "stars": [],
@@ -569,34 +574,34 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "73 own commits plus 23 automated across five repositories",
-      "summary": "**73 own commits** were recorded across five repositories, plus 23 automated commits by `github-actions[bot]`. In `sogeisetsu/pixel-logo-toolkit`, 26 own commits added bilingual CLI support, on-demand multilingual glyph variants, Korean Galmuri font handling, layout fixes, and expanded documentation with a 40-image gallery. In `sogeisetsu/opencode-agent-sandbox`, 17 own commits tightened the `plain-language` skill, documented the development workflow, and updated the role roster and routing rules. In `sogeisetsu/opencode-skill-management`, 16 own commits added the `starlight-docs` template and scripts, restored mobile theme and language controls, and refined external-link checks. In `sogeisetsu/sogeisetsu`, 8 own commits updated daily-report wording and rendering to use action-based counts, while 23 automated commits were made by `github-actions[bot]`. In `sogeisetsu/opencode-go-model-picker`, 6 own commits enforced the candidate menu, per-source chains, and a fail-closed comparison gate. No pull requests, issues, reviews, or discussions were recorded.",
+      "headline": "74 own commits plus 25 automated commits across five repositories",
+      "summary": "**74 own commits** were made across five repositories, plus 25 automated commits by `github-actions[bot]`. In `sogeisetsu/pixel-logo-toolkit`, work covered bilingual CLI output, on-demand multilingual glyph variants, Korean font handling, layout fixes, and expanded documentation with a 40-image example gallery. In `sogeisetsu/opencode-agent-sandbox`, the `plain-language` skill was tightened and converted to the OpenCode format, while `AGENTS.md` gained branch, chapter-commit, and post-merge push guidance and the knowledge role roster was updated. In `sogeisetsu/opencode-skill-management`, the `starlight-docs` skill gained template resources and a `detect`/`scaffold`/`check`/`audit`/`emit-check` script skeleton, the mobile splash controls were restored, and external-link checks were regraded to avoid proxy and offline false positives. In `sogeisetsu/sogeisetsu`, release notes were fully fed into AI with a collapsible default page, and daily/summary wording was corrected to describe issue and PR counts by action count. In `sogeisetsu/opencode-go-model-picker`, the candidate menu, per-source chains, and comparing check gate were enforced, with caveat wording allowed to be reworded while the gate fails closed. No pull requests, issues, reviews, or discussions were recorded.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/pixel-logo-toolkit",
           "tag": "v0.2.0",
-          "summary": "The first tagged release introduced a bilingual CLI that renders titles, subtitles, and footnotes as pixel art in PNG and SVG. It provides five canvases, ten palettes, and mixed Latin, Chinese, Japanese, and Korean text without missing glyphs."
+          "summary": "The first tagged release introduces a bilingual CLI that renders titles, subtitles, and footnotes as 8-bit pixel art in PNG and SVG from one shared geometry. It adds five canvas sizes, ten WCAG-checked palettes, bundled Chinese pixel fonts with on-demand Traditional Chinese, Japanese, and Korean variants, and a `--ui-lang auto|en|zh` option independent of the image glyph `--lang` option. Documentation is now English-first with `README.md` and `README.zh-CN.md`, and query commands such as `--version`, `--help`, `--list`, and `fonts` still work when Pillow is missing while rendering exits with code `2`."
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "This release enforced the documented candidate menu, source-specific chain lengths, and a comparison gate that re-derives values instead of trusting the file. It also allows Markdown agents to be written and asks the mode question once."
+          "summary": "This release enforces the candidate menu, per-source chains, and a comparing check gate so Go model IDs cannot be invented and chain length follows the source. The caveat section may be reworded, while a flagless check is treated as structural and the gate fails closed. The minimal package `opencode-go-model-picker-3.0.1-min.zip` contains 18 files limited to `SKILL.md`, `references/`, `scripts/`, and `LICENSE`, and verification reports 29 passing tests, 0 documentation errors, and 0 warnings."
         }
       ]
     },
     "zh": {
-      "headline": "五个仓库共 73 次本人提交，另有 23 次自动提交",
-      "summary": "五个仓库共记录 **73 次本人提交**，另有 23 次由 `github-actions[bot]` 自动提交。`sogeisetsu/pixel-logo-toolkit` 的 26 次本人提交加入中英双语命令行、按需下载的多语言字形变体、韩语 Galmuri 字体处理、布局修复，以及含 40 张图片的示例画廊。`sogeisetsu/opencode-agent-sandbox` 的 17 次本人提交收紧 `plain-language` skill，补充开发流程，并更新角色名册与路由规则。`sogeisetsu/opencode-skill-management` 的 16 次本人提交新增 `starlight-docs` 模板与脚本，恢复手机端主题和语言控件，并改进外链检查。`sogeisetsu/sogeisetsu` 的 8 次本人提交将日报表述与渲染改为按动作数统计，另有 23 次由 `github-actions[bot]` 自动提交。`sogeisetsu/opencode-go-model-picker` 的 6 次本人提交落实候选菜单、按来源划分的链和失败即拦截的比较检查门禁。当天没有记录拉取请求、issue、评审或讨论。",
+      "headline": "74 次本人提交，另有 25 次自动提交，覆盖五个仓库",
+      "summary": "当日在五个仓库完成 **74 次本人提交**，另有 25 次由 `github-actions[bot]` 自动提交。`sogeisetsu/pixel-logo-toolkit` 推进了中英双语命令行、按需下载的多语言字形变体、韩语字体处理与布局修复，并补充含 40 张图片的示例画廊。`sogeisetsu/opencode-agent-sandbox` 收紧并改造了 `plain-language` skill，`AGENTS.md` 增加分支、分章提交与合并后推送要求，知识角色名册也同步更新。`sogeisetsu/opencode-skill-management` 为 `starlight-docs` 增加模板资源和 `detect`/`scaffold`/`check`/`audit`/`emit-check` 脚本骨架，恢复手机端 splash 页控件，并按失败原因分级外链检查以避免代理和离线误报。`sogeisetsu/sogeisetsu` 将 release notes 全量喂入 AI 并让页面默认收起可展开，同时修正日报与摘要中按动作数表述 issue 和 PR 计数。`sogeisetsu/opencode-go-model-picker` 落实候选菜单、逐来源链和 comparing 检查门禁，允许 caveat 措辞改写，并让门禁失败即拦截。当天没有 pull request、issue、review 或讨论记录。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/pixel-logo-toolkit",
           "tag": "v0.2.0",
-          "summary": "首个带标签版本引入双语命令行，可将标题、副标题和脚注渲染为像素艺术 PNG 与 SVG。它提供五种画布、十套调色板，并支持中英日韩混排且不缺失字形。"
+          "summary": "首个带标签版本推出双语命令行，可将标题、副标题和脚注渲染为 8-bit 像素画，PNG 与 SVG 共用同一套几何结构。版本提供五种画布尺寸、十套通过 WCAG 对比度检查的调色板、内置中文像素字体，并按需下载繁体中文、日文和韩文字形；`--ui-lang auto|en|zh` 控制界面语言，与图像字形的 `--lang` 相互独立。文档改为英文优先的 `README.md` 与 `README.zh-CN.md`，缺少 Pillow 时 `--version`、`--help`、`--list` 和 `fonts` 等查询命令仍可使用，渲染则以退出码 `2` 终止。"
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "该版本落实文档承诺的候选菜单、按来源确定的链长度，以及重新计算数值而非信任文件的比较门禁。它还允许编写 Markdown agents，并将模式问题改为只询问一次。"
+          "summary": "该版本落实候选菜单、逐来源链和 comparing 检查门禁，使 Go 模型 ID 无法被臆造，链长度随来源而定。caveat 段落允许改写，无 flag 的检查被视为结构性问题，门禁采用失败即拦截的方式。最小包 `opencode-go-model-picker-3.0.1-min.zip` 含 18 个文件，仅包含 `SKILL.md`、`references/`、`scripts/` 和 `LICENSE`；验证结果为 29 项测试通过、文档检查 0 错误 0 警告。"
         }
       ]
     }
@@ -604,5 +609,5 @@
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "1f6575d3a6e445757dee7570ce8a159f69ed1250c79ba410aba64bd876da1f41"
+  "dataHash": "cd3d3b54f7f432a25af1a9f920846a4f3513f9590fc5fb8c060212b1d4fa1c24"
 }
