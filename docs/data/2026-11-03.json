@@ -3,10 +3,10 @@
   "windowStart": "2026-11-03T00:00:00+08:00",
   "windowEnd": "2026-11-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-03T10:51:13.310Z",
+  "generatedAt": "2026-11-03T11:28:36.276Z",
   "empty": false,
   "totals": {
-    "commits": 59,
+    "commits": 64,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -242,9 +242,19 @@
     },
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
-      "count": 10,
+      "count": 12,
       "own": true,
       "messages": [
+        {
+          "sha": "c6c61b99538b36160142e151b669f627ccce5e7a",
+          "message": "docs: AGENTS.md 补开发流程（分支、分章提交、合并后推送）",
+          "ts": "2026-11-03T11:25:34Z"
+        },
+        {
+          "sha": "bc1bdb99376730cef6b1a6c18d3a782c07f95683",
+          "message": "skills: 安装 plain-language，改造成 OpenCode 格式",
+          "ts": "2026-11-03T11:25:23Z"
+        },
         {
           "sha": "ecc036305f8c190917fc32ab532b3212e49d1687",
           "message": "knowledge: 角色名册里的随包 skill 数量改成实测的 11 个",
@@ -340,22 +350,37 @@
     },
     {
       "repo": "sogeisetsu/sogeisetsu",
-      "count": 1,
+      "count": 4,
       "own": true,
       "messages": [
+        {
+          "sha": "f7d35392c9a355f60a159f2b09cb917344763b7e",
+          "message": "docs: 按新标签重渲染 daily / summary / index",
+          "ts": "2026-11-03T11:27:36Z"
+        },
+        {
+          "sha": "56cba1a791ab97a4737a537f8887cd32f308be8d",
+          "message": "fix(site): 数字条 PR / Issue 标签改成动作数口径",
+          "ts": "2026-11-03T11:26:23Z"
+        },
+        {
+          "sha": "f4490a6060a6e620f32f07cdea034f7a8d4810fb",
+          "message": "docs(agents): 补齐「分支开发 + 按段落提交」的硬要求",
+          "ts": "2026-11-03T11:26:23Z"
+        },
         {
           "sha": "4f39247b97c73790cd9c086bd47514a814bba11b",
           "message": "fix(summary): issue 数字按动作数叙述，禁止写成新建数",
           "ts": "2026-11-02T22:23:30Z"
         }
       ],
-      "automated": 17,
+      "automated": 18,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 17,
+  "automatedCommits": 18,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -499,40 +524,40 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "59 own commits plus 17 automated across 5 repos; 2 releases published",
-      "summary": "The day produced **59** own commits and 17 automated commits by `github-actions[bot]` across five repositories. In `sogeisetsu/pixel-logo-toolkit` (26 commits), work covered bilingual CLI and docs, Korean font fixes, canvas width handling, example galleries, and README rewrites, culminating in the `v0.2.0` release. `sogeisetsu/opencode-skill-management` (16 commits) added full file-tree README, bilingual docs, MIT license, mobile splash fixes, external-link check grading, and `starlight-docs` scaffolding. `sogeisetsu/opencode-agent-sandbox` (10 commits) updated knowledge docs: skill counts, routing rules, Mermaid diagrams, AI-detection results (40%→0.x%), WorkBuddy session encoding, and host/CLI boundaries. `sogeisetsu/opencode-go-model-picker` (6 commits) enforced candidate menu, per-source chains, comparing gate, and caveat handling, released as `v3.0.1`. `sogeisetsu/sogeisetsu` had 1 own commit fixing issue-count wording plus the 17 automated commits. Two releases were published: `sogeisetsu/pixel-logo-toolkit@v0.2.0` (first release: bilingual CLI, English-first docs, five canvases, ten palettes, mixed CJK glyphs) and `sogeisetsu/opencode-go-model-picker@v3.0.1` (enforced candidate menu, per-source chains, comparing gate, mode question asked once, check re-derives numbers).",
+      "headline": "64 own commits plus 18 automated across five repositories",
+      "summary": "**64 own commits** were made across five repositories, plus 18 automated commits by `github-actions[bot]`. In `sogeisetsu/pixel-logo-toolkit`, work covered bilingual CLI output, on-demand multilingual glyph variants, Korean font handling, right-side decoration spacing, and expanded README examples, followed by the `v0.2.0` release with English-first docs and PNG/SVG output from shared geometry. In `sogeisetsu/opencode-skill-management`, the `starlight-docs` skill gained templates, a detect/scaffold/check/audit/emit-check script skeleton, and documentation, while mobile splash controls and external-link false positives were fixed. In `sogeisetsu/opencode-agent-sandbox`, the `plain-language` skill was installed, the role roster was updated to 11 bundled skills, routing and Mermaid guidance were revised, and knowledge notes recorded a 40%→0.x% user test result. In `sogeisetsu/opencode-go-model-picker`, candidate menus, per-source chains, and a fail-closed comparing gate were enforced, and `v3.0.1` was released. In `sogeisetsu/sogeisetsu`, daily, summary, and index pages were re-rendered, and PR/Issue labels and issue wording were corrected to use action counts. No pull requests, issues, reviews, or discussions were recorded.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/pixel-logo-toolkit",
           "tag": "v0.2.0",
-          "summary": "First tagged release. Bilingual CLI with English-first docs. Five canvases, ten palettes, mixed Latin/CJK text without missing glyphs."
+          "summary": "The first tagged release provides a bilingual CLI that renders titles, subtitles, and footnotes as 8-bit pixel art in PNG and SVG from the same geometry. It includes five canvases, ten palettes, and mixed Latin, Chinese, Japanese, and Korean text without missing glyphs."
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "Enforces candidate menu, per-source chains, and comparing check gate. Caveat section rewordable, flagless check marked structural. Mode question asked once; check re-derives numbers instead of trusting file."
+          "summary": "This release enforces the candidate menu, per-source chain lengths, and a comparing check gate that re-derives values instead of trusting the file. It also allows Markdown agents to be written and asks the mode question once."
         }
       ]
     },
     "zh": {
-      "headline": "59 次本人提交，另有 17 次自动提交，跨 5 个仓库；发布 2 个版本",
-      "summary": "当天共产生 **59** 次本人提交和 17 次由 `github-actions[bot]` 自动提交，分布在五个仓库。`sogeisetsu/pixel-logo-toolkit`（26 次）涵盖双语 CLI 与文档、韩语字体修复、画布宽度处理、示例图库、README 重写，并发布 `v0.2.0`。`sogeisetsu/opencode-skill-management`（16 次）新增完整文件树 README、双语文档、MIT 许可证、移动端 splash 修复、外链检查分级、 `starlight-docs` 脚手架。`sogeisetsu/opencode-agent-sandbox`（10 次）更新知识文档：技能计数、路由规则、Mermaid 图表、AI 检测结果（40%→0.x%）、WorkBuddy 会话编码、宿主/CLI 边界。`sogeisetsu/opencode-go-model-picker`（6 次）强制候选菜单、按来源链、比较门控、警示语处理，发布 `v3.0.1`。`sogeisetsu/sogeisetsu` 有 1 次本人提交修正 issue 计数措辞，加上 17 次自动提交。发布两个版本：`sogeisetsu/pixel-logo-toolkit@v0.2.0`（首个版本：双语 CLI、英文优先文档、五画布、十调色板、混合 CJK 字形）和 `sogeisetsu/opencode-go-model-picker@v3.0.1`（强制候选菜单、按来源链、比较门控、模式问题仅询问一次、检查重新推导数字）。",
+      "headline": "64 次本人提交，另有 18 次自动提交，覆盖五个仓库",
+      "summary": "当天在五个仓库完成 **64 次本人提交**，另有 18 次由 `github-actions[bot]` 自动提交。`sogeisetsu/pixel-logo-toolkit` 完善了中英双语命令行、按需下载的多语言字形变体、韩语字体处理与右侧装饰间距，并扩充 README 示例，随后发布 `v0.2.0`，以同一套几何数据输出 PNG 与 SVG。`sogeisetsu/opencode-skill-management` 新增 `starlight-docs` 模板资源与 detect/scaffold/check/audit/emit-check 脚本骨架及文档，同时修复手机端启动页控件和外链检查误报。`sogeisetsu/opencode-agent-sandbox` 安装 `plain-language` 技能，将随包技能数量更新为实测的 11 个，修订角色路由与 Mermaid 规范，并记录用户实测的 40%→0.x% 结果。`sogeisetsu/opencode-go-model-picker` 落实候选菜单、按来源链长与失败即拦截的比较门禁，并发布 `v3.0.1`。`sogeisetsu/sogeisetsu` 重新渲染 daily、summary 与 index 页面，并将 PR/Issue 标签及 issue 表述改为动作数口径。当天没有记录 pull request、issue、review 或讨论。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/pixel-logo-toolkit",
           "tag": "v0.2.0",
-          "summary": "首个标签版本。双语 CLI、英文优先文档。五种画布、十种调色板、混合拉丁/CJK 文本无缺字。"
+          "summary": "首个带标签版本提供双语命令行，可将标题、副标题与脚注渲染为 8-bit 像素画，并以同一套几何数据生成 PNG 和 SVG。它包含五种画布、十套调色板，以及不缺失字形的拉丁文、中文、日文和韩文混排支持。"
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "强制候选菜单、按来源链、比较检查门控。警示语可重述、无标志检查标记为结构性。模式问题仅问一次；检查重新推导数字而非信任文件。"
+          "summary": "该版本落实候选菜单、按来源确定的链长，以及重新计算数值而非信任文件的比较门禁。它还允许编写 Markdown agent，并将模式问题改为只询问一次。"
         }
       ]
     }
   },
-  "aiProvider": "nvidia-nemotron-ultra",
-  "aiModel": "nvidia/nemotron-3-ultra-550b-a55b",
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "727ec322d12fb324a163f5bdd7065d3067f10de705b418f8dbfd6de86ff5d84a"
+  "dataHash": "2e385e4ce80bc08dbee458a08b2474c07c044f2ad557b3916ff869eeecdb9fbd"
 }
