@@ -106,7 +106,7 @@ node scripts/daily/test-dataset.mjs     # 数据契约 DAY_FIELDS / HASH_EXCLUDE
 
 1. 生成 / 重渲染（见上）。
 2. `node scripts/daily/check.mjs` 全绿。
-3. `git add scripts config docs assets README.md MODELS.md data/backfill data/attribution.json .github AGENTS.md` → 提交（**中文提交信息用 `git commit -F <msgfile>`，不要用 `-m` 传中文**）→ `git pull --rebase --autostash origin main` → `git push`。代码修改走分支：新建分支 → 按段落提交 → 合并回 `main` → push（见「分支与提交粒度」）。
+3. `git add scripts config docs assets README.md MODELS.md data/backfill data/attribution.json .github AGENTS.md` → 在分支上按段落提交（写法与粒度见「分支与提交粒度」）→ 合并回 `main` → `git pull --rebase --autostash origin main` → `git push`。
 4. push 后**手动触发 Action，不要等 cron**：`gh workflow run update-daily-report.yml --ref main` / `gh workflow run update-summary.yml --ref main [ -f force=true ]`，再 `gh run watch <run-id> --exit-status`。CI 会把生成物推回 main，本地记得 `git pull --rebase --autostash`。
 5. `gh api repos/sogeisetsu/sogeisetsu/pages/builds/latest` 确认 `status: built`。
 6. 用 `openchamber_web` 打开线上页（带 `?v=<短哈希>` 击穿缓存）截图确认。
