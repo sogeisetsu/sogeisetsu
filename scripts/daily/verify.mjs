@@ -509,8 +509,8 @@ function main() {
     const totals = data.totals && typeof data.totals === "object" ? data.totals : {};
     const pillPairs = [
       ["Commits", "commits"],
-      ["Pull requests", "prs"],
-      ["Issues", "issues"],
+      ["PR actions", "prs"],
+      ["Issue actions", "issues"],
       ["Reviews", "reviews"],
     ];
     const pillBad = [];

@@ -214,6 +214,8 @@ export function statsStrip(totals) {
   // prs / issues 是**动作条数**（PR：新开 / 关闭 / 合并；Issue：新开 / 关闭 / 评论，同一个 item
   // 被评论两次计两次），不是「几个 PR / 几个 Issue」——线上实证 2026-11-02：50 条 issue 动作
   // 被总结正文写成「提出 50 个 issue」。标签只说动作，别退回「Issues / 个 Issue」。
+  // 注意 PR 的会话评论落在 issues[] 里（github.mjs 的 IssueCommentEvent：pull_request 与 issue
+  // 两个 target 都 push 到 issues），所以「Issue 互动」里会混进少量 PR 讨论，属已知口径。
   const defs = [
     { key: 'commits', en: 'Commits', zh: '提交' },
     { key: 'prs', en: 'PR actions', zh: 'PR 互动' },

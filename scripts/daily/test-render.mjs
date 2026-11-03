@@ -325,35 +325,67 @@ check("renderReportPage: commits 角标取 totals=0，不用条目行数兜底",
   ];
 });
 
-check("statsStrip: PR / Issue 数字条标签按动作数表述（不回退成 Issues / 个 Issue）", () => {
-  // prs / issues 是动作条数（PR：新开/关闭/合并；Issue：新开/关闭/评论），标签必须说「actions / 互动」。
+check("数字条 / 区块标题 / md Totals 都按动作数表述（PR actions、Issue actions）", () => {
+  // prs / issues 是动作条数（PR：新开/关闭/合并；Issue：新开/关闭/评论），三处文案都要带单位。
   // 线上实证 2026-11-02：标签写「Issue 50」再配上正文「提出 50 个 issue」，读者会当成新建了 50 个。
-  const html = renderReportPage({
-    data: {
-      date: "2026-10-07",
-      username: "sogeisetsu",
-      generatedAt: "2026-10-07T09:54:00.000Z",
-      empty: false,
-      totals: { commits: 3, prs: 1, issues: 47, reviews: 0 },
-      commits: [{ repo: "sogeisetsu/sogeisetsu", count: 3, own: true, messages: [], automated: 0 }],
-      pullRequests: [],
-      reviews: [],
-      issues: [],
-      stateChanges: [],
-      discussions: [],
-      releases: [],
-      stars: [],
-      replies: [],
-    },
-    ai: null,
-  });
+  const data = {
+    date: "2026-10-07",
+    username: "sogeisetsu",
+    generatedAt: "2026-10-07T09:54:00.000Z",
+    empty: false,
+    totals: { commits: 3, prs: 1, issues: 47, reviews: 0 },
+    commits: [{ repo: "sogeisetsu/sogeisetsu", count: 3, own: true, messages: [], automated: 0 }],
+    pullRequests: [
+      {
+        repo: "sogeisetsu/sogeisetsu",
+        number: 42,
+        title: "a pr",
+        url: "https://github.com/sogeisetsu/sogeisetsu/pull/42",
+        action: "opened",
+        ts: "2026-10-07T09:00:00.000Z",
+        own: true,
+      },
+    ],
+    reviews: [],
+    issues: [
+      {
+        repo: "sogeisetsu/sogeisetsu",
+        number: 9,
+        title: "an issue",
+        url: "https://github.com/sogeisetsu/sogeisetsu/issues/9",
+        action: "opened",
+        ts: "2026-10-07T10:00:00.000Z",
+        own: true,
+      },
+    ],
+    stateChanges: [],
+    discussions: [],
+    releases: [],
+    stars: [],
+    replies: [],
+  };
+  const html = renderReportPage({ data, ai: null });
+  const md = renderMarkdown({ data, ai: null });
+
+  // ① 只锁数字条本身：`<div class="stat-label">` 剥掉 i18n 包裹后的四段文字。
+  // 不能再用「整页不含 >Issues<」——fixture 里带了 issue 行时，那种断言会因为区块标题而假红。
+  const labels = [...html.matchAll(/<div class="stat-label">([\s\S]*?)<\/div>/g)].map((m) =>
+    m[1].replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()
+  );
+  // ② 区块标题（sec-title）同样要带单位，否则一页里出现两种口径
+  const titles = [...html.matchAll(/<h2 class="sec-title">([\s\S]*?)<\/h2>/g)].map((m) =>
+    m[1].replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()
+  );
   return [
-    ["enPr", html.includes('data-lang="en">PR actions</span>')],
-    ["enIssue", html.includes('data-lang="en">Issue actions</span>')],
-    ["zhPr", html.includes('data-lang="zh">PR 互动</span>')],
-    ["zhIssue", html.includes('data-lang="zh">Issue 互动</span>')],
-    ["noBareIssue", !html.includes('>Issues<') && !html.includes('>Issue</span>')],
-    ["noBarePr", !html.includes('>Pull requests</span>')],
+    ["fourLabels", labels.length === 4],
+    [
+      "labels",
+      labels.join("|") === "Commits 提交|PR actions PR 互动|Issue actions Issue 互动|Reviews 评审",
+    ],
+    ["prTitle", titles.includes("PR actions PR 互动")],
+    ["issueTitle", titles.includes("Issue actions Issue 互动")],
+    ["mdTotals", md.includes("- PR actions: 1") && md.includes("- Issue actions: 47")],
+    ["mdHeading", md.includes("## Issue actions") && md.includes("## PR actions")],
   ];
 });
 

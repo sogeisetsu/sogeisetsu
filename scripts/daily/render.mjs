@@ -240,8 +240,8 @@ function prSection(items, totals, notice) {
     .join('');
   return section(
     'pr',
-    'Pull requests',
-    'PR',
+    'PR actions',
+    'PR 互动',
     pill(totals.prs, items.length),
     `<ul class="list">${rows}</ul>${notice || ''}`
   );
@@ -277,8 +277,8 @@ function issuesSection(items, totals, notice) {
     .join('');
   return section(
     'issue',
-    'Issues',
-    'Issue',
+    'Issue actions',
+    'Issue 互动',
     pill(totals.issues, items.length),
     `<ul class="list">${rows}</ul>${notice || ''}`
   );
@@ -763,8 +763,8 @@ export function renderMarkdown({ data, ai } = {}) {
   out.push('## Totals');
   out.push('');
   out.push(`- Commits: ${num(totals.commits)}`);
-  out.push(`- Pull requests: ${num(totals.prs)}`);
-  out.push(`- Issues: ${num(totals.issues)}`);
+  out.push(`- PR actions: ${num(totals.prs)}`);
+  out.push(`- Issue actions: ${num(totals.issues)}`);
   out.push(`- Reviews: ${num(totals.reviews)}`);
   out.push('');
 
@@ -785,7 +785,7 @@ export function renderMarkdown({ data, ai } = {}) {
   // pull requests
   const prs = A(d.pullRequests).filter(Boolean);
   if (prs.length) {
-    out.push('## Pull requests');
+    out.push('## PR actions');
     out.push('');
     for (const p of prs) {
       const action = String(p.action || '').toLowerCase();
@@ -811,7 +811,7 @@ export function renderMarkdown({ data, ai } = {}) {
   // issues
   const issues = A(d.issues).filter(Boolean);
   if (issues.length) {
-    out.push('## Issues');
+    out.push('## Issue actions');
     out.push('');
     for (const it of issues) {
       const action = String(it.action || '').toLowerCase();
