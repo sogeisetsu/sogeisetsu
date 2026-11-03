@@ -3,7 +3,7 @@
   "windowStart": "2026-11-03T00:00:00+08:00",
   "windowEnd": "2026-11-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-03T11:52:03.165Z",
+  "generatedAt": "2026-11-03T11:55:10.736Z",
   "empty": false,
   "totals": {
     "commits": 73,
@@ -380,7 +380,7 @@
           "ts": "2026-11-02T22:23:30Z"
         }
       ],
-      "automated": 20,
+      "automated": 22,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -425,7 +425,7 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 20,
+  "automatedCommits": 22,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -569,34 +569,34 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "73 own commits plus 20 automated commits across five repositories",
-      "summary": "**73 own commits** landed across five repositories, plus 20 automated commits by `github-actions[bot]`. In `sogeisetsu/pixel-logo-toolkit`, work added a bilingual CLI, on-demand multilingual glyph variants, Korean support via the Galmuri font, and a 40-image example gallery, while keeping query commands usable without Pillow. In `sogeisetsu/opencode-agent-sandbox`, the `plain-language` skill was tightened to 46 lines with six red lines, the author was changed to the user, and `AGENTS.md` gained a branch-and-chapter commit workflow. In `sogeisetsu/opencode-skill-management`, the `starlight-docs` skill gained template resources and a detect/scaffold/check/audit/emit-check script skeleton, mobile splash controls were restored, and external-link checks were regraded to avoid proxy or offline false positives. In `sogeisetsu/sogeisetsu`, daily and summary pages were re-rendered to report issue and PR counts by action, and bare issue counts were rejected. In `sogeisetsu/opencode-go-model-picker`, candidate menus, per-source chains, and a fail-closed comparing gate were enforced. No pull requests, issues, reviews, or discussions were recorded.",
+      "headline": "73 own commits plus 22 automated commits across five repositories",
+      "summary": "**73 own commits** landed across five repositories, plus 22 automated commits by `github-actions[bot]`. In `sogeisetsu/pixel-logo-toolkit`, 26 commits added a bilingual CLI, on-demand multilingual glyph variants, a Korean Galmuri font fix, layout adjustments, and expanded documentation with a 40-image example gallery. The `v0.2.0` release published the first tagged version, generating matching PNG and SVG pixel art from one geometry with five canvases, ten palettes, and Latin, Chinese, Japanese, and Korean text. In `sogeisetsu/opencode-agent-sandbox`, 17 commits tightened the `plain-language` skill to 46 lines and six red lines, documented the branch-and-chapter workflow in `AGENTS.md`, and updated the role roster and routing rules. In `sogeisetsu/opencode-skill-management`, 16 commits added the `starlight-docs` skill scaffold with detect, scaffold, check, audit, and emit-check scripts, restored mobile theme and language controls, and refined external-link failure classification. In `sogeisetsu/sogeisetsu`, 8 commits reworked daily and summary wording to count issue and PR actions, rejected bare issue counts, and documented branch-based development requirements. In `sogeisetsu/opencode-go-model-picker`, 6 commits enforced the candidate menu, per-source chains, and a fail-closed comparing gate, and the `v3.0.1` release aligned the README with those checks.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/pixel-logo-toolkit",
           "tag": "v0.2.0",
-          "summary": "The first tagged release provides a bilingual command line tool that renders titles, subtitles, and footnotes as 8-bit pixel art in PNG and SVG from the same geometry. It offers five canvases, ten palettes, and mixed Latin, Chinese, Japanese, and Korean text without missing glyphs."
+          "summary": "The first tagged release introduced a bilingual CLI that renders titles, subtitles, and footnotes as 8-bit pixel art. PNG and SVG share one geometry, with five canvases, ten palettes, and mixed Latin, Chinese, Japanese, and Korean text."
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "This release enforces a candidate menu, per-source chains, and a comparing check gate so Go model IDs cannot be invented and chain length follows the source. The `check` command re-derives numbers instead of trusting the file, and the mode question is asked once."
+          "summary": "This release enforced the candidate menu, per-source chains, and a comparing check gate so model IDs cannot be invented and `check` re-derives values instead of trusting the file. It also allowed Markdown agents to be written and asked the mode question once."
         }
       ]
     },
     "zh": {
-      "headline": "73 次本人提交，另有 20 次自动提交，覆盖五个仓库",
-      "summary": "当天在五个仓库完成 **73 次本人提交**，另有 20 次由 `github-actions[bot]` 自动提交。`sogeisetsu/pixel-logo-toolkit` 增加中英双语命令行、按需下载的多语言字形变体、改用 Galmuri 字体支持韩语，并补充 40 张示例画廊，同时保证缺少 Pillow 时纯查询命令仍可使用。`sogeisetsu/opencode-agent-sandbox` 将 `plain-language` 技能精简到 46 行、保留 6 条红线，作者改为本人，并在 `AGENTS.md` 补充分支开发与分章提交流程。`sogeisetsu/opencode-skill-management` 为 `starlight-docs` 技能加入模板资源和 detect/scaffold/check/audit/emit-check 脚本骨架，恢复手机端 splash 页主题与语言控件，并按失败原因分级外链检查以避免代理或离线误报。`sogeisetsu/sogeisetsu` 重新渲染日报与汇总页，使 issue 和 PR 数字按动作数表述，并拒收裸 issue 计数。`sogeisetsu/opencode-go-model-picker` 落实候选菜单、按来源链和失败即拦截的比较检查门禁。当天没有 pull request、issue、评审或讨论记录。",
+      "headline": "73 次本人提交，另有 22 次自动提交，覆盖五个仓库",
+      "summary": "当天在五个仓库完成 **73 次本人提交**，另有 22 次由 `github-actions[bot]` 自动提交。`sogeisetsu/pixel-logo-toolkit` 的 26 次提交加入中英双语命令行、按需下载的多语言字形变体、韩语 Galmuri 字体修复、布局调整，以及含 40 张示例图的文档扩充。`v0.2.0` 发布首个带标签版本，可用同一几何结构生成 PNG 与 SVG 像素画，支持五种画布、十套调色板及中英日韩混排。`sogeisetsu/opencode-agent-sandbox` 的 17 次提交将 `plain-language` 技能收紧到 46 行和六条红线，在 `AGENTS.md` 记录分支与分章开发流程，并更新角色名册和路由规则。`sogeisetsu/opencode-skill-management` 的 16 次提交新增 `starlight-docs` 技能骨架及 detect、scaffold、check、audit、emit-check 脚本，恢复手机端主题与语言控件，并细化外链失败分级。`sogeisetsu/sogeisetsu` 的 8 次提交统一日报与摘要中的 issue、PR 动作数表述，拒绝裸 issue 计数，并补充分支开发要求。`sogeisetsu/opencode-go-model-picker` 的 6 次提交落实候选菜单、按来源链和失败即拦截的比较检查门禁，`v3.0.1` 也使 README 与实际校验保持一致。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/pixel-logo-toolkit",
           "tag": "v0.2.0",
-          "summary": "首个标签版本提供中英双语命令行工具，可用同一套几何结构将标题、副标题和脚注渲染为 8-bit 像素风格的 PNG 与 SVG。它包含五种画布、十套配色，并支持拉丁文、中文、日文和韩文混排且不缺失字形。"
+          "summary": "首个带标签版本引入双语命令行，可将标题、副标题和脚注渲染为 8-bit 像素画。PNG 与 SVG 共用同一几何结构，提供五种画布、十套调色板，并支持中英日韩混排。"
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "该版本落实候选菜单、按来源链和比较检查门禁，禁止自行编造 Go 模型 ID，链长度随来源而定。`check` 命令会重新推导数字而不直接信任文件，模式问题只询问一次。"
+          "summary": "该版本落实候选菜单、按来源链和比较检查门禁，模型 ID 不再能被随意编造，`check` 会重新推导数值而非信任文件。同时允许编写 Markdown agents，并将模式问题合并为一次询问。"
         }
       ]
     }
@@ -604,5 +604,5 @@
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "0f33a0adfe1eee7a7d98a29bf3da1694d964a364fbd0d04df32ef6408b9b5c15"
+  "dataHash": "f460a200b37c8c8f52c8c1e18f548f170f6b7b8788bfe2437fbbb38d78a9229c"
 }
