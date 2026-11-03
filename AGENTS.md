@@ -96,11 +96,17 @@ node scripts/daily/test-dataset.mjs     # 数据契约 DAY_FIELDS / HASH_EXCLUDE
 - **回滚只改往后**：`disable <slug>` 即可（测试断言 lane 顺序、不依赖某条腿 enabled，`check.mjs` 仍绿）；不重写历史日期、不碰 `--force`。
 - `config/**` 在日报 workflow 的 push 白名单里：**合并即触发一次真实运行**，这既是验收也是第一次真实证据。
 
+## 分支与提交粒度（硬要求）
+
+1. **不在 `main` 上开发。** 代码 / 配置 / 文档的改动一律先开分支：`git checkout -b <type>/<short-name>`，全部做完且 `check.mjs` 全绿后再合并回 `main`、push。例外只有两类：bot workflow 自动推的生成物提交，以及 `git pull --rebase --autostash` 带下来的东西。
+2. **按段落提交，不要攒成一个巨型提交。** 分支上每完成一个自洽的部分（一个章节 / 一个模块 / 一次重渲染）就单独 `git commit -F <msgfile>`。判据是「这个提交能不能单独读懂、单独回滚」：代码改动与 `docs/` 重渲染分开，文档口径与实现分开。**不要**等整个计划全做完才提交一次。
+3. 中文提交信息用 `git commit -F <msgfile>`（不要 `-m`）；写清「为什么」（口径 / 线上事故 / 判据），生成物的批量噪声留给单独的生成物提交。
+
 ## 发布流程
 
 1. 生成 / 重渲染（见上）。
 2. `node scripts/daily/check.mjs` 全绿。
-3. `git add scripts config docs assets README.md MODELS.md data/backfill data/attribution.json .github AGENTS.md` → 提交（**中文提交信息用 `git commit -F <msgfile>`，不要用 `-m` 传中文**）→ `git pull --rebase --autostash origin main` → `git push`。代码修改走分支：新建分支 → 合并回 `main` → push。
+3. `git add scripts config docs assets README.md MODELS.md data/backfill data/attribution.json .github AGENTS.md` → 提交（**中文提交信息用 `git commit -F <msgfile>`，不要用 `-m` 传中文**）→ `git pull --rebase --autostash origin main` → `git push`。代码修改走分支：新建分支 → 按段落提交 → 合并回 `main` → push（见「分支与提交粒度」）。
 4. push 后**手动触发 Action，不要等 cron**：`gh workflow run update-daily-report.yml --ref main` / `gh workflow run update-summary.yml --ref main [ -f force=true ]`，再 `gh run watch <run-id> --exit-status`。CI 会把生成物推回 main，本地记得 `git pull --rebase --autostash`。
 5. `gh api repos/sogeisetsu/sogeisetsu/pages/builds/latest` 确认 `status: built`。
 6. 用 `openchamber_web` 打开线上页（带 `?v=<短哈希>` 击穿缓存）截图确认。
@@ -142,7 +148,7 @@ git push
 - **`data/backfill/` 是一次性回填**：事件流只保留最近 300 条 / 90 天，2026-09-16 ~ 10-01 只能用 Search API + 逐条 REST 校时重建，属**近似**（stars 留空、releases 只覆盖自有仓库、评论数不回填），每个文件带 `source: "search-backfill"` 与 `backfillLimits`。窗口每天前移，这批日期会逐日退出窗口。
 - **30 天活动卡片的窗口** = 最近 30 个 +08 自然日、**含今天**（`cstDayMinus(29)..cstDayMinus(0)`）；`daily` 柱状也按 +08 自然日分桶（不能用 UTC 日期）。卡片线 `totals` 与日报同一条恒等式：只由**过滤后的公开明细**求和；`contributionsCollection` 标量在 user-scoped token 下含私有贡献，故逐仓 / 逐条按 `isPrivate` / `visibility` 过滤（拿不准一律按不公开），标量只用于对账告警、不进产物。`README.md` 里 `<!--START:activity-->`…`<!--END:activity-->` 必须各出现且仅一次，否则直接 fail。
 - 站点 head 与字体受 `verify.mjs` 硬约束（改 head / CSS / 渲染层后**必跑 `check.mjs`**）：必须有 Chomsky `@font-face`（资产保留，但标题栈不得引用）、`--headline` 与 `--headline-zh` 同字族、zh h1 用 `var(--headline-zh)`、favicon 与 `docs/assets/fonts/chomsky.woff2` 实体（wOF2 魔数）都在；**`<head>` 里禁用字体名 `Newsreader` / `霞鹜文楷` / `lxgw`**。
-- 不擅自新增依赖；改 CI / 改权限前先确认。代码修改必须走分支：新建分支 → 提交 → 合并回 `main` → push；不要直接在 `main` 上改。
+- 不擅自新增依赖；改 CI / 改权限前先确认。代码修改必须走分支：新建分支 → 提交 → 合并回 `main` → push；不要直接在 `main` 上改（提交粒度见「分支与提交粒度」）。
 
 ## 已知问题（别当成自己弄坏的）
 
