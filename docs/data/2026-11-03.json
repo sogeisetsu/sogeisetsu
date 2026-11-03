@@ -3,10 +3,10 @@
   "windowStart": "2026-11-03T00:00:00+08:00",
   "windowEnd": "2026-11-04T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-03T12:37:13.083Z",
+  "generatedAt": "2026-11-03T14:26:18.084Z",
   "empty": false,
   "totals": {
-    "commits": 75,
+    "commits": 76,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/pixel-logo-toolkit",
-      "count": 26,
+      "count": 27,
       "own": true,
       "messages": [
+        {
+          "sha": "fb0491a9b9785a6a5214a4957eecd8ada15a4f21",
+          "message": "feat: 文本自动折行与溢出保护，补两份文档",
+          "ts": "2026-11-03T13:00:48Z"
+        },
         {
           "sha": "0935f2e6a80a9208e962307c82f3c95cbe0529d0",
           "message": "fix: 缺 Pillow 时纯查询命令仍可用",
@@ -390,7 +395,7 @@
           "ts": "2026-11-02T22:23:30Z"
         }
       ],
-      "automated": 29,
+      "automated": 31,
       "automatedBots": [
         "github-actions[bot]"
       ]
@@ -435,11 +440,19 @@
       "automatedBots": []
     }
   ],
-  "automatedCommits": 29,
+  "automatedCommits": 31,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
   "releases": [
+    {
+      "repo": "sogeisetsu/pixel-logo-toolkit",
+      "tag": "v0.3.0",
+      "name": "v0.3.0 — Automatic text wrapping, overflow protection, and a full CLI manual",
+      "url": "https://github.com/sogeisetsu/pixel-logo-toolkit/releases/tag/v0.3.0",
+      "publishedAt": "2026-11-03T13:02:36Z",
+      "notes": "## What's new\n\nText now adapts itself instead of being silently clipped, mixed CJK/Latin lines no longer collapse into a row of boxes, and the project finally has a reference manual.\n\n### Automatic line wrapping\n\nSubtitle, footnote (`-d`) and eyebrow (`-e`) lines wrap to the text area when they are too wide, so long copy no longer runs off the canvas and gets cut.\n\n- CJK characters and full-width punctuation break per character, so Chinese wraps without spaces.\n- Latin text breaks on spaces; a single word wider than the text area (long URL, hash) is hard-split by character as a last resort.\n- Wrapping happens **inside each line you pass**: `-s` repeated still means separate paragraphs.\n- On by default. `--no-wrap` (CLI) or `\"layout\": {\"wrap\": false}` (JSONC) restores the old single-line behaviour.\n\n### Overflow protection\n\nWhen the wrapped block is still taller than the available height, the subtitle and footnote font sizes step down proportionally, re-wrapping as they go, with a floor of 9px. Only if it still does not fit does `pixellogo` print a warning and continue:\n\n```\npixellogo: warning: content is 810px tall but only 656px is available; font size is already at 9px, the rest will be clipped\n```\n\nThe exit code stays `0`, so batch runs are not interrupted. Measured ceilings on a clean canvas (`title` 3–4 characters, subtitle only):\n\n| Canvas | Lines that still fit |\n| --- | --- |\n| `poster` | ~30 |\n| `square` | ~20 |\n| `card` | ~16 |\n| `slide` | ~13 |\n| `banner` | ~8 |\n\n`--badge` is a solid box, so it is not wrapped; it shrinks its font size instead when it would exceed the content width.\n\n### Missing glyphs no longer take the whole line down\n\nThe bundled `ArkPixel-zh-hans.ttf` covers 18,648 of the 20,902 basic CJK ideographs (89.2%), and a few common characters are genuinely absent (「即」U+5373, 「然」U+7136, 「餐」U+9910). The old font picker gave up on the entire line when no single font covered it and fell back to the Latin font, which turned **every** CJK character on that line into a tofu box.\n\nNow the line keeps the font that covers the most characters, and the characters that no font can draw are named on stderr:\n\n```\npixellogo: warning: font ArkPixel-zh-hans.ttf has no glyph for 即; those characters will render as boxes\n```\n\nBoth the warning and the font choice are also reported by `--dry-run`, so you can check before rendering. Pass `--font-title` / `--font-sub` / `--font-body` with any pixel TTF to cover a missing glyph.\n\n### Documentation\n\n- **[`docs/architecture.md`](docs/architecture.md)** — annotated three-level file tree, layer-by-layer module responsibilities, render data flow, and the constraints the architecture imposes (in Chinese).\n- **[`docs/cli-guide.md`](docs/cli-guide.md)** — a full command-line manual: guided quick start, every flag, JSONC configs and batch mode, scripting and exit codes, plus a dedicated chapter on limits (characters per line, line ceilings, glyph coverage) and a troubleshooting table (in Chinese).\n\nBoth are linked from the table of contents and the new \"Documentation\" section of the English and Chinese READMEs.\n\n### Packaging fix\n\n`v0.2.0` wheels accidentally shipped a retired font (`ArkPixel12pxProportional.ttf`), because setuptools packaged from a stale `build/lib` snapshot. Release builds now start from a clean `build/`, so the wheel contains exactly the four fonts listed in the docs.\n\n## Upgrade notes\n\n- **Output changes only where text used to be clipped.** All 40 gallery samples produce byte-identical geometry; no images were regenerated.\n- Wrapping is on by default: if you depend on a single overflowing line, add `--no-wrap`.\n- `layout.wrap` is a new config key; the JSON Schema has been updated to match.\n- `\"uppercase\": \"false\"` (a string) is now correctly treated as off instead of on.\n\n## Install\n\n```bash\npipx install git+https://github.com/sogeisetsu/pixel-logo-toolkit.git\n# or\npip install git+https://github.com/sogeisetsu/pixel-logo-toolkit.git\n```\n\nOr grab an asset below: `pip install pixellogo-0.3.0-py3-none-any.whl`, or unpack the portable zip and run `pixellogo.cmd` / `./pixellogo.sh` with no install at all. Python 3.9+, Pillow for rendering.\n\n## Tests\n\n160 unit tests pass on Python 3.12 locally, and CI covers 3.9 / 3.10 / 3.11 / 3.12.\n\n**Full changelog**: https://github.com/sogeisetsu/pixel-logo-toolkit/compare/v0.2.0...v0.3.0"
+    },
     {
       "repo": "sogeisetsu/pixel-logo-toolkit",
       "tag": "v0.2.0",
@@ -579,34 +592,44 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "75 own commits plus 29 automated commits across five repositories",
-      "summary": "**75 own commits** landed across five repositories, plus 29 automated commits by `github-actions[bot]`. In `sogeisetsu/pixel-logo-toolkit`, 26 commits added bilingual CLI output, on-demand multilingual glyph variants, a Korean Galmuri font fix, right-side decoration spacing, and a 40-image example gallery; `v0.2.0` shipped as the first tagged release with PNG/SVG output, five canvases, ten palettes, JSONC configuration, and query commands that still work without Pillow. In `sogeisetsu/opencode-agent-sandbox`, 17 commits tightened the `plain-language` skill to 46 lines and six red lines, documented branch-based development, and updated the role roster and routing block for OpenCode 3.0.6. In `sogeisetsu/opencode-skill-management`, 16 commits added the `starlight-docs` skill scaffold with detect, scaffold, check, audit and emit-check scripts, restored mobile splash controls, and graded external-link failures to avoid proxy and offline false positives. In `sogeisetsu/sogeisetsu`, 10 commits made release notes feed the AI in full, added collapsible release-note pages, and enforced action-based wording for issue and PR counts. In `sogeisetsu/opencode-go-model-picker`, 6 commits enforced the candidate menu, per-source chains and a fail-closed comparing gate; `v3.0.1` was released with a minimal 18-file package and 29 passing tests.",
+      "headline": "76 own commits plus 31 automated; three releases published",
+      "summary": "**76 own commits** were recorded across five repositories, plus 31 automated commits by `github-actions[bot]`. In `sogeisetsu/pixel-logo-toolkit`, 27 own commits added automatic text wrapping, overflow protection, bilingual CLI output, Korean font handling, and expanded documentation, and the `v0.3.0` release was published. The same repository also published `v0.2.0`, its first tagged release with a bilingual CLI, English-first docs, five canvases, ten palettes, and CJK font support. In `sogeisetsu/opencode-agent-sandbox`, 17 own commits tightened the `plain-language` skill, documented the development flow, and updated the role roster and routing rules. In `sogeisetsu/opencode-skill-management`, 16 own commits added the `starlight-docs` skill scaffold and templates, fixed mobile splash controls and external-link false positives, and added English and Chinese READMEs with an MIT license. In `sogeisetsu/sogeisetsu`, 10 own commits updated release-note generation and daily-report wording, including action-count phrasing for PR and issue labels. In `sogeisetsu/opencode-go-model-picker`, 6 own commits enforced the candidate menu, per-source chains, and the comparing check gate, and `v3.0.1` was published. No pull requests, issues, reviews, or discussions were recorded.",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/pixel-logo-toolkit",
+          "tag": "v0.3.0",
+          "summary": "Text now wraps automatically within each supplied line, with CJK breaking per character and long Latin words hard-split; `--no-wrap` and `layout.wrap` restore single-line behaviour. Subtitle and footnote font sizes step down proportionally to a 9px floor when content is still too tall, and missing glyphs are reported on stderr and by `--dry-run` instead of discarding the whole line. The release adds `docs/architecture.md` and `docs/cli-guide.md`, fixes stale font packaging from `build/lib`, and corrects the string value `\"uppercase\": \"false\"` to be treated as off."
+        },
+        {
+          "repo": "sogeisetsu/pixel-logo-toolkit",
           "tag": "v0.2.0",
-          "summary": "This first tagged release introduces a bilingual command line that renders titles, subtitles and footnotes into 8-bit pixel art as PNG and SVG from one shared geometry. It adds five canvases, ten WCAG-checked palettes, bundled Chinese pixel fonts with on-demand Traditional Chinese, Japanese and Korean variants, JSONC configuration with dot-path overrides, batch mode and `--dry-run`. The English `README.md` becomes the default entry point with `README.zh-CN.md` alongside it, and query commands such as `--version`, `--help`, `--list` and `fonts` keep working when Pillow is missing while rendering exits with code `2`."
+          "summary": "This first tagged release introduces the `pixellogo` command line tool, producing matching PNG and SVG pixel art from one geometry across five canvases and ten palettes. It adds an English and Simplified Chinese interface via `--ui-lang` and `PIXELLOGO_UI_LANG`, ships a Chinese pixel font with on-demand Traditional Chinese, Japanese, and Korean fonts, and provides JSONC configuration, batch mode, and `--dry-run`. Documentation becomes English-first with `README.md` and `README.zh-CN.md`, and query commands such as `--version`, `--help`, `--list`, and `fonts` keep working when Pillow is missing."
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "This release makes the code enforce what the README promised: Go model IDs can no longer be invented, chain length follows the source, Markdown agents can be written, and the mode question is asked once. The `check` command re-derives numbers instead of trusting the file, with a fail-closed comparing gate and a caveat section that may be reworded while remaining structurally checked. It ships `opencode-go-model-picker-3.0.1-min.zip` with 18 files limited to `SKILL.md`, `references/`, `scripts/` and `LICENSE`, and verification reports 29 passing tests with no documentation errors or warnings."
+          "summary": "The release prevents invented Go model ids, makes chain length follow each source, allows Markdown agents to be written, and asks the mode question once. The `check` command re-derives numbers instead of trusting the file, and the caveat section is allowed to be reworded while the check gate fails closed. The minimal package `opencode-go-model-picker-3.0.1-min.zip` contains 18 files with `SKILL.md`, `references/`, `scripts/`, and `LICENSE`, and requires Node.js 22+ except for the local usage database read."
         }
       ]
     },
     "zh": {
-      "headline": "五个仓库共完成 75 次本人提交，另有 29 次自动提交",
-      "summary": "**75 次本人提交**分布在五个仓库，另有 29 次由 `github-actions[bot]` 自动提交。`sogeisetsu/pixel-logo-toolkit` 的 26 次提交加入中英双语命令行、按需下载的多语言字形变体、韩语 Galmuri 字体修复、右侧装饰宽度处理和 40 张示例图；`v0.2.0` 作为首个标签版本发布，提供 PNG/SVG 输出、五种画布、十套调色板、JSONC 配置，缺少 Pillow 时查询命令仍可使用。`sogeisetsu/opencode-agent-sandbox` 的 17 次提交将 `plain-language` skill 收紧到 46 行和 6 条红线，补充分支开发流程，并按 OpenCode 3.0.6 更新角色名册与 routing block。`sogeisetsu/opencode-skill-management` 的 16 次提交新增 `starlight-docs` skill 骨架及 detect、scaffold、check、audit、emit-check 脚本，恢复手机端 splash 控件，并对外链失败分级以避免代理和离线误报。`sogeisetsu/sogeisetsu` 的 10 次提交让 release notes 全量喂入 AI、页面默认收起可展开，并强制 issue 与 PR 计数采用动作数表述。`sogeisetsu/opencode-go-model-picker` 的 6 次提交落实候选菜单、按来源链和失败即拦截的比较门禁；`v3.0.1` 发布最小 18 文件包，测试 29 项通过。",
+      "headline": "76 次本人提交，另有 31 次自动提交；发布三个版本",
+      "summary": "当天在五个仓库记录了 **76 次本人提交**，另有 31 次由 `github-actions[bot]` 自动提交。`sogeisetsu/pixel-logo-toolkit` 的 27 次本人提交加入自动折行、溢出保护、中英双语命令行、韩文字体处理和扩充文档，并发布 `v0.3.0`。同一仓库还发布了首个带标签版本 `v0.2.0`，包含双语命令行、英文优先文档、五种画布、十套配色和 CJK 字体支持。`sogeisetsu/opencode-agent-sandbox` 的 17 次本人提交收紧 `plain-language` skill、补充开发流程，并更新角色名册与路由规则。`sogeisetsu/opencode-skill-management` 的 16 次本人提交新增 `starlight-docs` skill 骨架与模板，修复手机端启动页控件和外链检查误报，并补充英文、中文 README 与 MIT 许可证。`sogeisetsu/sogeisetsu` 的 10 次本人提交更新发布说明生成与日报措辞，包括 PR 和 issue 标签改用动作数口径。`sogeisetsu/opencode-go-model-picker` 的 6 次本人提交落实候选菜单、按来源链和比较检查门禁，并发布 `v3.0.1`。当天没有记录 pull request、issue、review 或讨论。",
       "releaseNotes": [
         {
           "repo": "sogeisetsu/pixel-logo-toolkit",
+          "tag": "v0.3.0",
+          "summary": "文本现在会在每一行传入内容内自动折行，CJK 按字符断行，超长拉丁词在必要时按字符硬切；`--no-wrap` 与 `layout.wrap` 可恢复单行行为。副标题和脚注在仍超高时会按比例缩小字号至 9px 下限，缺字字符会通过 stderr 和 `--dry-run` 报告，而不再让整行失效。该版本新增 `docs/architecture.md` 与 `docs/cli-guide.md`，修复 `build/lib` 导致的旧字体打包问题，并让字符串值 `\"uppercase\": \"false\"` 正确按关闭处理。"
+        },
+        {
+          "repo": "sogeisetsu/pixel-logo-toolkit",
           "tag": "v0.2.0",
-          "summary": "首个标签版本引入双语命令行，可将标题、副标题和脚注渲染为 8-bit 像素画，PNG 与 SVG 共用同一套几何结构。新增五种画布、十套通过 WCAG 检查的调色板、内置中文像素字体及按需下载的繁体中文、日文和韩文字形变体，并支持 JSONC 配置、点路径覆盖、批处理模式和 `--dry-run`。英文 `README.md` 成为默认入口，同时提供 `README.zh-CN.md`；缺少 Pillow 时 `--version`、`--help`、`--list` 和 `fonts` 仍可运行，渲染则以代码 `2` 退出。"
+          "summary": "首个带标签版本推出 `pixellogo` 命令行工具，用同一套几何数据在五种画布和十套配色下生成相互匹配的 PNG 与 SVG 像素图。它通过 `--ui-lang` 和 `PIXELLOGO_UI_LANG` 提供英文与简体中文界面，内置中文像素字体并按需下载繁体中文、日文和韩文字体，同时支持 JSONC 配置、批处理模式和 `--dry-run`。文档改为英文优先的 `README.md` 与 `README.zh-CN.md`，缺少 Pillow 时 `--version`、`--help`、`--list` 和 `fonts` 等查询命令仍可使用。"
         },
         {
           "repo": "sogeisetsu/opencode-go-model-picker",
           "tag": "v3.0.1",
-          "summary": "该版本让代码真正落实 README 的承诺：Go 模型 ID 不再能被随意编造，链长度跟随来源，Markdown agent 可以编写，模式问题只询问一次。`check` 命令重新推导数值而不信任文件，比较门禁失败即拦截，caveat 段落允许改写但仍接受结构检查。发布包含 18 个文件的 `opencode-go-model-picker-3.0.1-min.zip`，仅含 `SKILL.md`、`references/`、`scripts/` 和 `LICENSE`；验证结果为 29 项测试通过，文档检查无错误和警告。"
+          "summary": "该版本禁止虚构 Go 模型 id，链长度改为跟随各来源，允许编写 Markdown agent，并把模式问题改为只询问一次。`check` 命令会重新推导数字而不再信任文件，caveat 段落允许改写，同时检查门禁在失败时默认关闭。最小安装包 `opencode-go-model-picker-3.0.1-min.zip` 含 18 个文件，包括 `SKILL.md`、`references/`、`scripts/` 和 `LICENSE`，除读取本地用量数据库外要求 Node.js 22 以上。"
         }
       ]
     }
@@ -614,5 +637,5 @@
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "0022d45817c5ed56c50b202e62fc67946c6aa0c6ae2a7aa1f90331ebfc05862b"
+  "dataHash": "1bdc3f0fc2adaea6cda58c784be1eacae6c5e0469510a84da74fbce34402c0a0"
 }
