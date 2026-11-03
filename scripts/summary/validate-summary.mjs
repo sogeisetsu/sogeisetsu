@@ -28,8 +28,9 @@
  *     scripts/lib/rules.mjs 的 AUTOMATED_OVERLAP_RE（verify 共用同一份）。
  *   · issue 是**动作数**不是新建数：`totals.issues` 与 `repos[].issues` 都按 opened / closed /
  *     commented 逐条计（同一个 issue 被评论两次算两次）。headline / teaser / overview /
- *     highlights / byRepo 里出现「提出 50 个 issue」「opened 50 issues」这类带数字的聚合说法
- *     就拒收（线上实证 2026-11-02 首页卡片：50 条动作被写成「提出 50 个 issue」）。
+ *     highlights / byRepo 里出现「提出 50 个 issue」「opened 50 issues」这类带数字的说法，
+ *     或「50 issues」「50 个 issue」这种裸计数，就拒收（线上实证 2026-11-02 首页卡片：
+ *     50 条动作被写成「提出 50 个 issue」；审阅时逐句回放旧 summary.json，5 句错话里 3 句是裸计数）。
  *     正则见 scripts/lib/rules.mjs 的 ISSUE_CREATION_CLAIM_RE；合规写法是「50 次 issue 互动」。
  *   · reason 用中文、简短可执行 —— 它会打进日志并被 summaryFeedback 消费。
  *

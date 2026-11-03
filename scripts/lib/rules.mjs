@@ -52,13 +52,17 @@ export const AUTOMATED_OVERLAP_RE = new RegExp(
  * 线上实证（2026-11-02 的首页卡片）：窗口内 50 条动作（21 开 / 3 关 / 26 评论、去重 30 个 issue）
  * 被 AI 写成「提出 50 个 issue」—— 数字对、动词错，读者会当成新建了 50 个 issue。
  *
- * 只拦「提出/提交/新建/新开/创建/开了 + 数字 + issue」「opened/created/filed N issues」这一族
- * **带数字的聚合**说法（日报提示词里本来就允许「opened 3 issues, one of which…」这种按明细的
- * 说法，所以正则刻意只认数字：
- *   · 数字与 issue 之间只允许 个/条 两个量词 —— 「提出 21 次 issue 互动」这类合规写法不命中；
- *   · 英文要求数字紧跟 issues 或 issues 紧跟动词，`closed 3 issues`（关闭是另一个动作）不命中。
+ * 拦两族说法（都只认数字，按明细写「opened issue #42」不受影响）：
+ *   ① 带动词的聚合：「提出/提交/新建/新开/创建/开了 + 数字 + issue」「opened/created/filed N issues」。
+ *      数字与 issue 之间只允许 个/条 两个量词，「提出 21 次 issue 互动」这类合规写法不命中；
+ *      英文要求数字紧跟 issues 或 issues 紧跟动词；「提交」也收进来 —— 线上正文里就有
+ *      「向 openchamber 提交 26 个 issue」，26 同样是动作数。
+ *   ② **裸计数**：`50 issues` / `50 个 issue`。审阅时拿修复前那份 summary.json 逐句回放，
+ *      5 句错话里有 3 句是这种没有动词的写法（「总计 393 次本人提交、642 次自动提交、50 个 issue」），
+ *      而它正是 byRepo 规则要求「把 repos[] 的 issues 原样列出来」时最容易复发的形态。
+ *      负向前瞻放行合规写法：`47 issue actions`、`47 个 Issue 互动`、`47 次 issue 互动`。
+ *      代价：连「3 个 issue 已关闭」这种按状态的说法也要改写（它同样是动作数，但没说清是什么动作）。
  * 合规写法：「50 次 issue 互动」「50 issue actions (opened, closed or commented)」。
- * 「提交」也收进来：线上正文里就有「向 openchamber 提交 26 个 issue」，26 同样是动作数。
  */
 export const ISSUE_CREATION_CLAIM_RE = new RegExp(
   [
@@ -66,6 +70,9 @@ export const ISSUE_CREATION_CLAIM_RE = new RegExp(
     String.raw`\d+\s*(?:个|条)\s*(?:新\s*)?issues?\s*(?:已|被)?\s*(?:提交|提出|新建|创建)`,
     String.raw`\b(?:opened|created|filed|raised|submitted)\s+\d+\s+(?:new\s+)?issues?\b`,
     String.raw`\b\d+\s+(?:new\s+)?issues?\s+(?:(?:were|was)\s+)?(?:opened|created|filed|raised|submitted)\b`,
+    // ② 裸计数；前瞻放行 `N issue actions` / `N 个 Issue 互动`（含空格与全角括号）
+    String.raw`\b\d+\s+issues?\b(?!\s*(?:actions?|互动|动作))`,
+    String.raw`\d+\s*(?:个|条)\s*issues?(?!\s*(?:actions?|互动|动作))`,
   ].join("|"),
   "i"
 );

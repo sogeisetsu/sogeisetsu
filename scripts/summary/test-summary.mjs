@@ -632,9 +632,28 @@ await check("validate: 接受「N 次 issue 互动」与按明细写的 opened i
     ["keptEn", Boolean(res.ok && res.value.en.overview.includes("opened issue #42"))],
   ];
 });
-await check("validate: 「50 个 issue 已关闭」这类描述不误伤（关闭是另一个动作）", () => {
-  const raw = baseRaw();
+// 裸计数（无动词）是同一个错的另一半：拿修复前那份 docs/summary.json 逐句回放，5 句错话里
+// 有 3 句是「总计 393 次本人提交、642 次自动提交、50 个 issue」这种没有动词的写法。
+for (const [lang, sentence] of [
+  ["en", "Totals were 393 own commits, 642 automated commits, 50 issues and no pull requests or reviews"],
+  ["en", "149 own commits plus 642 automated commits, 6 issues"],
+  ["zh", "总计 393 次本人提交、642 次自动提交、50 个 issue，没有拉取请求和评审"],
+  ["zh", "149 次本人提交，另有 642 次自动提交，6 个 issue"],
+]) {
+  await reject(`validate: 拒绝-裸计数原句「${sentence.slice(0, 30)}…」`, "issue 动作", (raw) => {
+    raw[lang].overview = `${lang === "en" ? EN_OVERVIEW : ZH_OVERVIEW}\n\n${sentence}`;
+  });
+}
+await reject("validate: 拒收-「3 个 issue 已关闭」也要带单位（裸计数一律不够）", "issue 动作", (raw) => {
   raw.zh.byRepo[1].text = "上游工作：修复与讨论，期间有 3 个 issue 已关闭。";
+});
+await check("validate: 裸计数的合规改写通过（issue actions / 次数）", () => {
+  const raw = baseRaw();
+  raw.en.overview = EN_OVERVIEW.replace(
+    "The overall pace was even.",
+    "The overall pace was even. 6 issue actions were logged in total."
+  );
+  raw.zh.byRepo[1].text = "上游工作：修复与讨论，期间关闭了 3 次 issue。";
   const res = validateSummary(raw, ctx);
   return [["ok", res.ok === true]];
 });
@@ -932,6 +951,19 @@ await check("e2e: summaryCard 按钮/headline，null 时返回空串", () => {
     ["noArgEmpty", summaryCard() === ""],
     ["objNullEmpty", summaryCard({ summary: null }) === ""],
     ["nullSigEmptyOrThrows", nullSig === "" || nullSig === "threw"],
+  ];
+});
+
+await check("e2e: 首页卡片数字行按动作数表述（PR / Issue 都带单位）", () => {
+  if (!e2eSummary) return [["summaryReady", false]];
+  const t = e2eSummary.totals || {};
+  const card = summaryCard({ summary: e2eSummary });
+  const en = `${t.commits} commits · ${t.prs} PR actions · ${t.issues} issue actions · ${t.reviews} reviews`;
+  const zh = `${t.commits} 次提交 · ${t.prs} 次 PR 互动 · ${t.issues} 次 Issue 互动 · ${t.reviews} 次评审`;
+  return [
+    ["enLine", card.includes(en)],
+    ["zhLine", card.includes(zh)],
+    ["noBare", !card.includes(` ${t.issues} issues `) && !card.includes(` ${t.issues} 个 Issue `)],
   ];
 });
 
