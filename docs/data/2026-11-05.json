@@ -1,0 +1,235 @@
+{
+  "date": "2026-11-05",
+  "windowStart": "2026-11-05T00:00:00+08:00",
+  "windowEnd": "2026-11-06T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-11-04T16:51:10.617Z",
+  "empty": false,
+  "totals": {
+    "commits": 12,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "count": 10,
+      "own": true,
+      "messages": [
+        {
+          "sha": "a994d8ca40fe875bd90ad3432acf5c27db431ea2",
+          "message": "docs(agents): 明确 AGENTS.md 为约定唯一落点，补 knowledge 文风约束",
+          "ts": "2026-11-04T16:45:41Z"
+        },
+        {
+          "sha": "b48851bed62669502b68afe1386c2c6b01d33860",
+          "message": "docs(knowledge): 去除对话式自省与第一人称表述，改为直接陈述",
+          "ts": "2026-11-04T16:42:50Z"
+        },
+        {
+          "sha": "f058ba64872fae3854fed3d275f667420b513b1f",
+          "message": "docs(knowledge): 按官方迁移指南改正 LSP 口径，补 todowrite 的 experimental.todo 开关",
+          "ts": "2026-11-04T16:38:18Z"
+        },
+        {
+          "sha": "5aa8230ad0cb4095126e9b2b84892e86eaa61d37",
+          "message": "docs(knowledge): 补 LSP 运行时未实现的源码证据，说明 browser 是命名空间",
+          "ts": "2026-11-04T16:32:43Z"
+        },
+        {
+          "sha": "037845b0b82d3f3a5862603a7dc49df66371d475",
+          "message": "chore: 忽略 .workbuddy 项目数据目录",
+          "ts": "2026-11-04T16:26:08Z"
+        },
+        {
+          "sha": "577bca5d9545e3f941554565feb2f43a442c4ce3",
+          "message": "docs(knowledge): 按 V1/V2 双文档重写内置工具清单，并复检审查工具仓库",
+          "ts": "2026-11-04T16:25:57Z"
+        },
+        {
+          "sha": "8679dd28238eded0c2d7d5c469f081a0dac49aec",
+          "message": "docs(knowledge): 更新目录索引并补 enhance-prompt 的形态判据",
+          "ts": "2026-11-04T16:17:41Z"
+        },
+        {
+          "sha": "2429386e5e9312a49a34ea63872d74a7c4869e96",
+          "message": "docs(knowledge): 收录桌面 harness 清单与 OpenCode V2 评论/工具对照",
+          "ts": "2026-11-04T16:16:14Z"
+        },
+        {
+          "sha": "59b5f82ca57d583884d13d2a7e8cda439553214b",
+          "message": "docs(knowledge): 收录审查工具谱系与会话内审查提示词",
+          "ts": "2026-11-04T16:13:55Z"
+        },
+        {
+          "sha": "cb8eb0656552510b5fa208a7a8e96a850ceaf3c0",
+          "message": "docs(knowledge): 收录 Windows Shell 环境三篇（PSReadLine / MINGW64 / WSL）",
+          "ts": "2026-11-04T16:13:22Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/pixel-logo-toolkit",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "342af7956c50f2b80986b721e12bbff4f25a2a8c",
+          "message": "feat: 画廊升级为 Pages 首页，双语/明暗/复制命令，内容改由 Markdown 驱动",
+          "ts": "2026-11-04T16:47:53Z"
+        },
+        {
+          "sha": "440ac4af356825e530db218380daa9b596c53dc0",
+          "message": "feat: 新增 12 张小红书风格封面与可浏览画廊页面",
+          "ts": "2026-11-04T16:03:32Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    }
+  ],
+  "automatedCommits": 0,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [],
+  "stars": [],
+  "starInventory": [
+    {
+      "repo": "sogeisetsu/WOW-Csharp",
+      "total": 108
+    },
+    {
+      "repo": "sogeisetsu/shumeipai",
+      "total": 24
+    },
+    {
+      "repo": "sogeisetsu/OGFont",
+      "total": 3
+    },
+    {
+      "repo": "sogeisetsu/lianxi",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/springstudyy",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/-java-",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/awesome-agent-skills",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/myBlog",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-creator",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ownsalesforcelearnbook",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/pixel-logo-toolkit",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ruan-js",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu.github.io",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sopen-translate",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/testhello",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/tuangou",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typora-support-apex",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typoraimage",
+      "total": 0
+    }
+  ],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "ai": {
+    "en": {
+      "headline": "12 own commits across two repositories",
+      "summary": "**12 own commits** were recorded across `sogeisetsu/opencode-agent-sandbox` and `sogeisetsu/pixel-logo-toolkit`, with no automated commits. In `sogeisetsu/opencode-agent-sandbox`, 10 commits revised agent and knowledge documentation: `AGENTS.md` was designated as the agreed single landing point, conversational self-reflection and first-person wording were removed, and LSP guidance was corrected to match the official migration guide, including the `experimental.todo` switch for `todowrite`. The documentation also added source evidence that the LSP runtime is unimplemented, clarified that `browser` is a namespace, rewrote the built-in tool list for V1/V2, and updated the directory index with criteria for `enhance-prompt`. Further commits added desktop harness inventories, OpenCode V2 comment and tool comparisons, review-tool lineage and in-session review prompts, three Windows Shell environment notes covering `PSReadLine`, `MINGW64`, and `WSL`, and ignored the `.workbuddy` project data directory. In `sogeisetsu/pixel-logo-toolkit`, 2 commits upgraded the gallery into a GitHub Pages homepage with bilingual, light/dark, and copy-command features driven by Markdown, and added 12 Xiaohongshu-style covers plus a browsable gallery page. No pull requests, issues, reviews, releases, or discussions were recorded.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "两个仓库共完成 12 次本人提交",
+      "summary": "当天在 `sogeisetsu/opencode-agent-sandbox` 和 `sogeisetsu/pixel-logo-toolkit` 共完成 **12 次本人提交**，无自动提交。`sogeisetsu/opencode-agent-sandbox` 的 10 次提交集中修订代理与知识文档：将 `AGENTS.md` 明确为约定唯一落点，去除对话式自省和第一人称表述，并按官方迁移指南改正 LSP 口径，补充 `todowrite` 的 `experimental.todo` 开关。文档还补充了 LSP 运行时未实现的源码证据，说明 `browser` 是命名空间，按 V1/V2 双文档重写内置工具清单，并更新目录索引及 `enhance-prompt` 的形态判据。其余提交收录桌面 harness 清单、OpenCode V2 评论与工具对照、审查工具谱系与会话内审查提示词，以及涵盖 `PSReadLine`、`MINGW64`、`WSL` 的三篇 Windows Shell 环境文档，并将 `.workbuddy` 项目数据目录加入忽略列表。`sogeisetsu/pixel-logo-toolkit` 的 2 次提交将画廊升级为 GitHub Pages 首页，提供双语、明暗主题和复制命令，内容改由 Markdown 驱动，同时新增 12 张小红书风格封面与可浏览画廊页面。当天没有 pull request、issue、review、release 或讨论记录。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
+  "aiFailure": null,
+  "dataHash": "912bd598dff1f07f2b3de23d749d1ca12a8aa7a076ebc4700c0c662793028a98"
+}
