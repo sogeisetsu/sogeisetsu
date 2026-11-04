@@ -3,10 +3,10 @@
   "windowStart": "2026-11-05T00:00:00+08:00",
   "windowEnd": "2026-11-06T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-04T16:51:10.617Z",
+  "generatedAt": "2026-11-04T18:02:17.935Z",
   "empty": false,
   "totals": {
-    "commits": 12,
+    "commits": 14,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,19 @@
   "commits": [
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
-      "count": 10,
+      "count": 12,
       "own": true,
       "messages": [
+        {
+          "sha": "74a5884cf39a656446ffa3e01ac6b03b590cba4f",
+          "message": "docs(knowledge): 新增混元 4 版鹈鹕骑车实测与四版对比，并同步既有评测",
+          "ts": "2026-11-04T17:42:36Z"
+        },
+        {
+          "sha": "dd22754afa1f28740724d8f1c5ba3f28793f7187",
+          "message": "docs(evals): 归档混元 4 鹈鹕骑车产物并登记提示词原文",
+          "ts": "2026-11-04T17:11:05Z"
+        },
         {
           "sha": "a994d8ca40fe875bd90ad3432acf5c27db431ea2",
           "message": "docs(agents): 明确 AGENTS.md 为约定唯一落点，补 knowledge 文风约束",
@@ -89,9 +99,19 @@
       ],
       "automated": 0,
       "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 0,
+      "own": true,
+      "messages": [],
+      "automated": 2,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
     }
   ],
-  "automatedCommits": 0,
+  "automatedCommits": 2,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -218,18 +238,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "12 own commits across two repositories",
-      "summary": "**12 own commits** were recorded across `sogeisetsu/opencode-agent-sandbox` and `sogeisetsu/pixel-logo-toolkit`, with no automated commits. In `sogeisetsu/opencode-agent-sandbox`, 10 commits revised agent and knowledge documentation: `AGENTS.md` was designated as the agreed single landing point, conversational self-reflection and first-person wording were removed, and LSP guidance was corrected to match the official migration guide, including the `experimental.todo` switch for `todowrite`. The documentation also added source evidence that the LSP runtime is unimplemented, clarified that `browser` is a namespace, rewrote the built-in tool list for V1/V2, and updated the directory index with criteria for `enhance-prompt`. Further commits added desktop harness inventories, OpenCode V2 comment and tool comparisons, review-tool lineage and in-session review prompts, three Windows Shell environment notes covering `PSReadLine`, `MINGW64`, and `WSL`, and ignored the `.workbuddy` project data directory. In `sogeisetsu/pixel-logo-toolkit`, 2 commits upgraded the gallery into a GitHub Pages homepage with bilingual, light/dark, and copy-command features driven by Markdown, and added 12 Xiaohongshu-style covers plus a browsable gallery page. No pull requests, issues, reviews, releases, or discussions were recorded.",
+      "headline": "14 own commits plus 2 automated commits across three repositories",
+      "summary": "**14 own commits** were made across `sogeisetsu/opencode-agent-sandbox` and `sogeisetsu/pixel-logo-toolkit`, plus 2 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-agent-sandbox`, 12 commits added Hunyuan 4 pelican-bike-riding test results and a four-version comparison, archived the evaluation artifacts and prompt text, and clarified the `AGENTS.md` convention and knowledge writing style. They also corrected the LSP description using the official migration guide, documented the `experimental.todo` switch and unimplemented runtime evidence, noted that `browser` is a namespace, and rewrote the built-in tool list for the V1/V2 dual-document setup. Further updates ignored the `.workbuddy` project data directory, refreshed the directory index with `enhance-prompt` criteria, and recorded the desktop harness list with an OpenCode V2 comment/tool comparison. In `sogeisetsu/pixel-logo-toolkit`, 2 commits upgraded the gallery into a GitHub Pages homepage with bilingual, light/dark, and copy-command features driven by Markdown, and added 12 Xiaohongshu-style covers plus a browsable gallery page. No pull requests, issues, reviews, releases, or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "两个仓库共完成 12 次本人提交",
-      "summary": "当天在 `sogeisetsu/opencode-agent-sandbox` 和 `sogeisetsu/pixel-logo-toolkit` 共完成 **12 次本人提交**，无自动提交。`sogeisetsu/opencode-agent-sandbox` 的 10 次提交集中修订代理与知识文档：将 `AGENTS.md` 明确为约定唯一落点，去除对话式自省和第一人称表述，并按官方迁移指南改正 LSP 口径，补充 `todowrite` 的 `experimental.todo` 开关。文档还补充了 LSP 运行时未实现的源码证据，说明 `browser` 是命名空间，按 V1/V2 双文档重写内置工具清单，并更新目录索引及 `enhance-prompt` 的形态判据。其余提交收录桌面 harness 清单、OpenCode V2 评论与工具对照、审查工具谱系与会话内审查提示词，以及涵盖 `PSReadLine`、`MINGW64`、`WSL` 的三篇 Windows Shell 环境文档，并将 `.workbuddy` 项目数据目录加入忽略列表。`sogeisetsu/pixel-logo-toolkit` 的 2 次提交将画廊升级为 GitHub Pages 首页，提供双语、明暗主题和复制命令，内容改由 Markdown 驱动，同时新增 12 张小红书风格封面与可浏览画廊页面。当天没有 pull request、issue、review、release 或讨论记录。",
+      "headline": "14 次本人提交，另有 2 次自动提交，涉及三个仓库",
+      "summary": "**14 次本人提交**分布在 `sogeisetsu/opencode-agent-sandbox` 和 `sogeisetsu/pixel-logo-toolkit`，另有 2 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。`sogeisetsu/opencode-agent-sandbox` 的 12 次提交新增混元 4 版鹈鹕骑车实测与四版对比，归档评测产物和提示词原文，并明确 `AGENTS.md` 约定与 knowledge 文风约束。提交还按官方迁移指南改正 LSP 口径，补充 `experimental.todo` 开关与运行时未实现的源码证据，说明 `browser` 是命名空间，并按 V1/V2 双文档重写内置工具清单。其余更新包括忽略 `.workbuddy` 项目数据目录、刷新目录索引并补充 `enhance-prompt` 判据，以及收录桌面 harness 清单与 OpenCode V2 评论/工具对照。`sogeisetsu/pixel-logo-toolkit` 的 2 次提交将画廊升级为 GitHub Pages 首页，提供双语、明暗主题和复制命令，内容改由 Markdown 驱动，并新增 12 张小红书风格封面与可浏览画廊页面。当天没有 pull request、issue、review、release 或讨论记录。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "912bd598dff1f07f2b3de23d749d1ca12a8aa7a076ebc4700c0c662793028a98"
+  "dataHash": "df13e0108ee06784fe2442f6cef8d11bd37f16bbc1909a1c5878bc79b146de63"
 }
