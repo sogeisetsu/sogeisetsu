@@ -3,7 +3,7 @@
   "windowStart": "2026-11-05T00:00:00+08:00",
   "windowEnd": "2026-11-06T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-05T06:55:52.984Z",
+  "generatedAt": "2026-11-05T08:51:15.592Z",
   "empty": false,
   "totals": {
     "commits": 14,
@@ -105,13 +105,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 18,
+      "automated": 19,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 18,
+  "automatedCommits": 19,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -215,8 +215,52 @@
       "total": 0
     }
   ],
-  "replies": [],
-  "stateChanges": [],
+  "replies": [
+    {
+      "repo": "vercel-labs/skills",
+      "number": 2298,
+      "title": "[Listing]: Request indexing for sogeisetsu/asset-inventory",
+      "url": "https://github.com/vercel-labs/skills/issues/2298",
+      "author": "antfu",
+      "excerpt": "Thanks! skills.sh indexes skills on its own when someone installs them with `npx skills add sogeisetsu/asset-inventory` while telemetry is on. You do not need to file a request. If it is still missin…",
+      "kind": "issue_comment",
+      "ts": "2026-11-05T07:02:00.000Z",
+      "own": false
+    },
+    {
+      "repo": "vercel-labs/skills",
+      "number": 2297,
+      "title": "[Listing]: Request indexing for sogeisetsu/opencode-go-model-picker",
+      "url": "https://github.com/vercel-labs/skills/issues/2297",
+      "author": "antfu",
+      "excerpt": "Thanks! skills.sh indexes skills on its own when someone installs them with `npx skills add sogeisetsu/opencode-go-model-picker` while telemetry is on. You do not need to file a request. If it is sti…",
+      "kind": "issue_comment",
+      "ts": "2026-11-05T07:01:53.000Z",
+      "own": false
+    }
+  ],
+  "stateChanges": [
+    {
+      "repo": "vercel-labs/skills",
+      "number": 2298,
+      "title": "[Listing]: Request indexing for sogeisetsu/asset-inventory",
+      "url": "https://github.com/vercel-labs/skills/issues/2298",
+      "action": "closed",
+      "actor": "antfu",
+      "ts": "2026-11-05T07:02:04.000Z",
+      "own": false
+    },
+    {
+      "repo": "vercel-labs/skills",
+      "number": 2297,
+      "title": "[Listing]: Request indexing for sogeisetsu/opencode-go-model-picker",
+      "url": "https://github.com/vercel-labs/skills/issues/2297",
+      "action": "closed",
+      "actor": "antfu",
+      "ts": "2026-11-05T07:01:58.000Z",
+      "own": false
+    }
+  ],
   "truncated": {
     "events": {
       "cap": 300,
@@ -238,18 +282,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "14 own commits plus 18 automated commits across three repositories",
-      "summary": "**14 own commits** were recorded across `sogeisetsu/opencode-agent-sandbox` and `sogeisetsu/pixel-logo-toolkit`, plus 18 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-agent-sandbox`, 12 own commits added Hunyuan 4 pelican-riding evaluation results and four-version comparisons, archived the evaluation artifacts and prompt text, and clarified that `AGENTS.md` is the agreed single landing point with knowledge writing-style constraints. Further documentation work removed conversational self-reflection and first-person wording, corrected the LSP description according to the official migration guide, documented the `experimental.todo` switch for `todowrite`, and cited source evidence that the LSP runtime is not implemented while `browser` is a namespace. The same repository also ignored the `.workbuddy` project data directory, rewrote the built-in tool list for the V1/V2 dual-document setup, rechecked the review-tool repository, updated the directory index with criteria for `enhance-prompt`, and recorded the desktop harness list with an OpenCode V2 comment/tool comparison. In `sogeisetsu/pixel-logo-toolkit`, 2 own commits upgraded the gallery into a Pages homepage with bilingual, light/dark, and copy-command features driven by Markdown, and added 12 Xiaohongshu-style covers plus a browsable gallery page.",
+      "headline": "14 own commits plus 19 automated commits across three repositories",
+      "summary": "**14 own commits** were made, plus 19 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-agent-sandbox`, 12 own commits added Hunyuan 4 pelican-riding evaluation results and a four-version comparison, archived the evaluation artifacts and prompt text, and clarified that `AGENTS.md` is the agreed single landing point with knowledge writing constraints. Those commits also removed conversational self-reflection and first-person wording, corrected the LSP description against the official migration guide, documented the `experimental.todo` switch and evidence that LSP runtime features are unimplemented, and explained that `browser` is a namespace. Further updates rewrote the built-in tool list for the V1/V2 documents, added `enhance-prompt` criteria, indexed the desktop harness list with OpenCode V2 comment and tool comparisons, and ignored the `.workbuddy` project data directory. In `sogeisetsu/pixel-logo-toolkit`, 2 own commits upgraded the gallery into a Pages homepage with bilingual, light/dark, and copy-command features driven by Markdown, and added 12 Xiaohongshu-style covers plus a browsable gallery page.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "14 次本人提交，另有 18 次自动提交，分布在三个仓库",
-      "summary": "**14 次本人提交**分布在 `sogeisetsu/opencode-agent-sandbox` 和 `sogeisetsu/pixel-logo-toolkit`，另有 18 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。在 `sogeisetsu/opencode-agent-sandbox` 的 12 次本人提交中，新增了混元 4 版鹈鹕骑车实测与四版对比，归档评测产物并登记提示词原文，同时明确 `AGENTS.md` 为约定唯一落点并补充 knowledge 文风约束。后续文档工作去除对话式自省与第一人称表述，按官方迁移指南改正 LSP 口径，补充 `todowrite` 的 `experimental.todo` 开关，并附上 LSP 运行时未实现的源码证据，说明 `browser` 是命名空间。同一仓库还忽略 `.workbuddy` 项目数据目录，按 V1/V2 双文档重写内置工具清单并复检审查工具仓库，更新目录索引并补充 `enhance-prompt` 的形态判据，收录桌面 harness 清单与 OpenCode V2 评论/工具对照。在 `sogeisetsu/pixel-logo-toolkit` 的 2 次本人提交中，画廊升级为 Pages 首页，支持双语、明暗与复制命令，内容改由 Markdown 驱动，并新增 12 张小红书风格封面与可浏览画廊页面。当天未记录拉取请求、issue、评审、发布或讨论。",
+      "headline": "14 次本人提交，另有 19 次自动提交，分布于三个仓库",
+      "summary": "当天完成 **14 次本人提交**，另有 19 次由 `github-actions[bot]` 自动提交，均发生在 `sogeisetsu/sogeisetsu`。在 `sogeisetsu/opencode-agent-sandbox` 的 12 次本人提交中，新增了混元 4 版鹈鹕骑车实测与四版对比，归档了评测产物和提示词原文，并明确 `AGENTS.md` 为约定唯一落点，同时补充 knowledge 文风约束。这些提交还去除了对话式自省与第一人称表述，按官方迁移指南改正 LSP 口径，记录 `experimental.todo` 开关以及 LSP 运行时未实现的源码证据，并说明 `browser` 是命名空间。后续提交按 V1/V2 双文档重写内置工具清单，补充 `enhance-prompt` 的形态判据，更新目录索引并收录桌面 harness 清单与 OpenCode V2 评论、工具对照，同时将 `.workbuddy` 项目数据目录加入忽略列表。在 `sogeisetsu/pixel-logo-toolkit` 的 2 次本人提交中，画廊升级为 Pages 首页，支持双语、明暗主题和复制命令，内容改由 Markdown 驱动，并新增 12 张小红书风格封面与可浏览画廊页面。`antfu` 在 `vercel-labs/skills` 的两个收录 issue 中回复并关闭了 #2298（`sogeisetsu/asset-inventory`）和 #2297（`sogeisetsu/opencode-go-model-picker`），说明开启遥测后通过 `npx skills add` 安装即可由 `skills.sh` 自动索引。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "dbc1c2a5b6740e1cf2cd2d4e2920faad225544e80e425ceed33b805b0bd8fde0"
+  "dataHash": "8c74ac6e370de9f6ffd0fa6176a553fb35b7d48362267139833c410d26d87e10"
 }
