@@ -3,7 +3,7 @@
   "windowStart": "2026-11-08T00:00:00+08:00",
   "windowEnd": "2026-11-09T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-08T14:51:06.173Z",
+  "generatedAt": "2026-11-08T16:42:46.376Z",
   "empty": false,
   "totals": {
     "commits": 15,
@@ -110,13 +110,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 19,
+      "automated": 21,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 19,
+  "automatedCommits": 21,
   "pullRequests": [],
   "reviews": [],
   "issues": [
@@ -259,18 +259,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "15 own commits plus 19 automated commits across three repositories",
-      "summary": "**15 own commits** were made across `sogeisetsu/dsh-ecosystem-report` and `sogeisetsu/opencode-agent-sandbox`, plus 19 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/dsh-ecosystem-report`, 11 own commits improved mobile layouts for 375/414 viewports, replaced theme controls with a single-button popup and compact icon options, added an SVG favicon, a GitHub repository button, `LICENSE`, and `.gitattributes`, and refined visuals such as gradient top lines, KPI color bars, card title bars, zebra striping, and navigation underlines. The same repository's content changes merged three plugins into the resource-library list, corrected automation attribution, added a community installation combination, removed the suggestion-formation subsection, and documented repository and GitHub Pages publishing. In `sogeisetsu/opencode-agent-sandbox`, 4 own commits updated agent documentation to remove historical worktree paths, drop the OpenChamber prerequisite, support external document sources with four evidence levels, and record memory-mechanism paths, `DSH run_code` dual channels, plugin package verification, and keyless search options. The user opened 1 issue in `microsoft/PowerToys`: #52004, titled \"[Shortcut Guide] Hold-Win activation throws NullReferenceException and shows nothing when the runner process cannot be inspected\".",
+      "headline": "15 own commits plus 21 automated commits across three repositories",
+      "summary": "**15 own commits** were made across `sogeisetsu/dsh-ecosystem-report` and `sogeisetsu/opencode-agent-sandbox`, plus 21 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/dsh-ecosystem-report`, work covered mobile table cards and 375/414 viewport adaptation, removal of orphaned theme CSS, a single-button theme switcher with an SVG favicon, and visual refinements such as gradient top lines, KPI color bars, zebra striping, and navigation underlines. The same repository also merged three plugins into the resource inventory, corrected automation attribution, added a GitHub repository button, `LICENSE`, `.gitattributes`, and GitHub Pages publishing documentation, and removed the section on how suggestions are formed. In `sogeisetsu/opencode-agent-sandbox`, documentation updates removed historical worktree path references, dropped the OpenChamber prerequisite from horizontal evaluations, added external document sources with four evidence levels, and recorded memory mechanisms, DSH `run_code` dual channels, plugin package names, and keyless search options. The user opened or closed **1 issue**: `microsoft/PowerToys` issue #52004, “[Shortcut Guide] Hold-Win activation throws NullReferenceException and shows nothing when the runner process cannot be inspected”. No pull requests, reviews, releases, or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "15 次本人提交，另有 19 次自动提交，分布于三个仓库",
-      "summary": "**15 次本人提交**分布在 `sogeisetsu/dsh-ecosystem-report` 和 `sogeisetsu/opencode-agent-sandbox`，另有 19 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。在 `sogeisetsu/dsh-ecosystem-report` 的 11 次本人提交中，改进了 375/414 视口下的移动端布局，将主题控件改为单按钮弹出菜单和紧凑图标选项，新增 SVG favicon、GitHub 仓库按钮、`LICENSE` 与 `.gitattributes`，并精修渐变顶线、KPI 色条、卡片标题条、斑马纹和导航下划线等视觉细节。该仓库的内容调整将 3 个插件并入资料库清单，修正 automation 归属，补充社区安装组合，删除建议的形成方式小节，并记录仓库与 GitHub Pages 发布说明。在 `sogeisetsu/opencode-agent-sandbox` 的 4 次本人提交中，更新了 agent 文档，清理工作树路径历史残留，移除 OpenChamber 前提，支持外部文档来源并采用四档证据等级，同时收录记忆机制链路、`DSH run_code` 双通道、插件包名核实和免 Key 搜索选型。用户新开了 1 个 `microsoft/PowerToys` issue：#52004，标题为 \"[Shortcut Guide] Hold-Win activation throws NullReferenceException and shows nothing when the runner process cannot be inspected\"。当日没有 pull request、review、release 或讨论记录。",
+      "headline": "15 次本人提交，另有 21 次自动提交，分布于三个仓库",
+      "summary": "在 `sogeisetsu/dsh-ecosystem-report` 和 `sogeisetsu/opencode-agent-sandbox` 完成 **15 次本人提交**，另有 21 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。`sogeisetsu/dsh-ecosystem-report` 的改动涵盖移动端表格卡片与 375/414 视口适配、清理旧主题控件的孤儿 CSS、将主题切换改为单按钮加弹出菜单并补充 SVG favicon，以及渐变顶线、KPI 色条、斑马纹和导航下划线等视觉精修。该仓库还将 3 个插件并入资料库清单、修正 automation 归属，新增 GitHub 仓库按钮、`LICENSE`、`.gitattributes` 和 GitHub Pages 发布说明，并删除建议的形成方式小节。`sogeisetsu/opencode-agent-sandbox` 的文档更新清除了工作树路径的历史残留，移除了横向评测中的 OpenChamber 前提，补充外部文档来源与四档证据等级，并收录记忆机制、DSH `run_code` 双通道、插件包名核实和免 Key 搜索选型。用户新开或关闭了 **1 个 issue**：`microsoft/PowerToys` 的 #52004“[Shortcut Guide] Hold-Win activation throws NullReferenceException and shows nothing when the runner process cannot be inspected”。当日没有 pull request、review、发布或讨论记录。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "b8976bb2d10b01f4d40313bce3cf606a2700702011a1f9aa3bb380b6d436ffaf"
+  "dataHash": "dddf51f957aa204ad12e3baacbbd177202fc3f97ba4a90519f389e14ea1be0b6"
 }
