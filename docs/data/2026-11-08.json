@@ -3,27 +3,66 @@
   "windowStart": "2026-11-08T00:00:00+08:00",
   "windowEnd": "2026-11-09T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-08T09:06:07.862Z",
-  "empty": true,
+  "generatedAt": "2026-11-08T10:51:07.745Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 6,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
     {
+      "repo": "sogeisetsu/dsh-ecosystem-report",
+      "count": 6,
+      "own": true,
+      "messages": [
+        {
+          "sha": "b91b43cc9aa391082c2bbe062c9278bb574e6f96",
+          "message": "style: 视觉精修（渐变顶线、KPI 色条、卡片标题条、斑马纹、导航下划线）",
+          "ts": "2026-11-08T10:30:10Z"
+        },
+        {
+          "sha": "7b6def26da9dc1f12353da429e6a7252e4ab423d",
+          "message": "refactor: 删除建议的形成方式小节，原生短板并入补充建议表定位列",
+          "ts": "2026-11-08T09:37:40Z"
+        },
+        {
+          "sha": "9a6bc4da9803bc1c60c880661d588ef7d57fce50",
+          "message": "feat: 并入资料库清单的 3 个插件，修正 automation 归属，补社区安装组合",
+          "ts": "2026-11-08T09:27:50Z"
+        },
+        {
+          "sha": "3e03a7850597963b9e87165b14f80489ae6972a3",
+          "message": "feat: 右上角加 GitHub 仓库按钮；补 LICENSE 与 .gitattributes",
+          "ts": "2026-11-08T09:17:01Z"
+        },
+        {
+          "sha": "88084ff632b1a15ab1d81fafc591bf058947e412",
+          "message": "docs: 补充仓库与 GitHub Pages 发布说明",
+          "ts": "2026-11-08T09:11:04Z"
+        },
+        {
+          "sha": "c4aefef71f4acfef131b739691015180224d222a",
+          "message": "feat: DSH 生态调研报告（422 官方包 + 65 社区插件）",
+          "ts": "2026-11-08T09:09:13Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 13,
+      "automated": 15,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 13,
+  "automatedCommits": 15,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -64,6 +103,10 @@
     },
     {
       "repo": "sogeisetsu/awesome-agent-skills",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/dsh-ecosystem-report",
       "total": 0
     },
     {
@@ -148,9 +191,20 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "ai": {
+    "en": {
+      "headline": "6 own commits plus 15 automated commits in the DSH ecosystem report",
+      "summary": "**6 own commits** were made in `sogeisetsu/dsh-ecosystem-report`, plus 15 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The report work covered 422 official packages and 65 community plugins, including merging three plugins from the resource-library list, correcting automation attribution, and adding community installation combinations. The “建议的形成方式” section was removed, with native shortcomings folded into the positioning column of the supplementary recommendations table. Visual refinements included gradient top lines, KPI color bars, card title bars, zebra striping, and navigation underlines. A GitHub repository button was added to the upper right, along with `LICENSE` and `.gitattributes`, and repository and GitHub Pages publishing instructions were documented. No pull requests, issues, reviews, or releases were recorded.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "DSH 生态报告完成 6 次本人提交，另有 15 次自动提交",
+      "summary": "在 `sogeisetsu/dsh-ecosystem-report` 完成 **6 次本人提交**，另有 15 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。报告内容覆盖 422 个官方包与 65 个社区插件，并入资料库清单中的 3 个插件、修正 automation 归属、补充社区安装组合。删除“建议的形成方式”小节，将原生短板并入补充建议表的定位列。视觉方面精修渐变顶线、KPI 色条、卡片标题条、斑马纹与导航下划线。右上角新增 GitHub 仓库按钮，并补充 `LICENSE` 与 `.gitattributes`，同时完善仓库及 GitHub Pages 发布说明。当天没有 pull request、issue、review 或发布记录。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "5b8406925e2a9b2d1214202360546f40c674fca7fd349965b081523986d276b7"
+  "dataHash": "8e8b330cf3f694f3b117efde087da9e653606070d00b34a32969aabb682f73ce"
 }

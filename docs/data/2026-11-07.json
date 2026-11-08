@@ -3,7 +3,7 @@
   "windowStart": "2026-11-07T00:00:00+08:00",
   "windowEnd": "2026-11-08T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-07T16:29:33.678Z",
+  "generatedAt": "2026-11-08T10:51:03.471Z",
   "empty": true,
   "totals": {
     "commits": 0,
@@ -64,6 +64,10 @@
     },
     {
       "repo": "sogeisetsu/awesome-agent-skills",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/dsh-ecosystem-report",
       "total": 0
     },
     {
@@ -152,5 +156,5 @@
   "aiProvider": null,
   "aiModel": null,
   "aiFailure": null,
-  "dataHash": "d50c1506da399c57871038697d70bf1d66c297bd36a43fde434f3067a57bf7c1"
+  "dataHash": "dbe038da109f00dd3529b7c86d77ee63969eba1f28a8788db7ab0190b7e3f0bb"
 }
