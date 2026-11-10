@@ -3,7 +3,7 @@
   "windowStart": "2026-11-10T00:00:00+08:00",
   "windowEnd": "2026-11-11T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-10T16:51:05.593Z",
+  "generatedAt": "2026-11-10T22:51:03.693Z",
   "empty": true,
   "totals": {
     "commits": 0,
@@ -68,6 +68,10 @@
     },
     {
       "repo": "sogeisetsu/dsh-ecosystem-report",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/dsh-openchamber-plugins",
       "total": 0
     },
     {
@@ -156,5 +160,5 @@
   "aiProvider": null,
   "aiModel": null,
   "aiFailure": null,
-  "dataHash": "c29dfcd022c5c3cf0f557630afd4aa638766386aab189d251be25041f89579ca"
+  "dataHash": "8c0328a5b8eaeb1b883ec1c257a61ec070e7734eebca11b5e94f213a58fa889d"
 }

@@ -3,27 +3,41 @@
   "windowStart": "2026-11-11T00:00:00+08:00",
   "windowEnd": "2026-11-12T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-10T20:52:19.045Z",
-  "empty": true,
+  "generatedAt": "2026-11-10T22:51:07.986Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 1,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
     {
+      "repo": "sogeisetsu/dsh-openchamber-plugins",
+      "count": 1,
+      "own": true,
+      "messages": [
+        {
+          "sha": "a89d199198237752acc73b9f3f512e829c7cbb98",
+          "message": "Add DSH plugins porting OpenChamber features",
+          "ts": "2026-11-10T21:59:20Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 4,
+      "automated": 5,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 4,
+  "automatedCommits": 5,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -68,6 +82,10 @@
     },
     {
       "repo": "sogeisetsu/dsh-ecosystem-report",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/dsh-openchamber-plugins",
       "total": 0
     },
     {
@@ -152,9 +170,20 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "ai": {
+    "en": {
+      "headline": "1 own commit plus 5 automated commits",
+      "summary": "**1 own commit** was made in `sogeisetsu/dsh-openchamber-plugins`, adding a port of OpenChamber features as DSH plugins. The repository `sogeisetsu/sogeisetsu` received 5 automated commits by `github-actions[bot]`. No pull requests, issues, reviews, releases, or discussions were recorded, and no collection section hit its cap.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "1 次本人提交，另有 5 次自动提交",
+      "summary": "在 `sogeisetsu/dsh-openchamber-plugins` 完成 **1 次本人提交**，将 OpenChamber 功能移植为 DSH 插件。仓库 `sogeisetsu/sogeisetsu` 另有 5 次由 `github-actions[bot]` 自动提交。当天没有拉取请求、issue、评审、发布或讨论记录，各采集部分均未触及上限。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "64962a5d04edac666ba8f601f74123161c50bc63e11dde76b4c0575f55cbe273"
+  "dataHash": "9a6f1bda1cbb0a0949352ecec6363d4772b19c57bad18b3efa21c9c6e113f5f3"
 }
