@@ -3,27 +3,41 @@
   "windowStart": "2026-11-12T00:00:00+08:00",
   "windowEnd": "2026-11-13T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-11T18:51:08.410Z",
-  "empty": true,
+  "generatedAt": "2026-11-11T22:52:54.369Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 1,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
     {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "count": 1,
+      "own": true,
+      "messages": [
+        {
+          "sha": "85f1265142277fc7a75a1a5b023f766105e9e9dc",
+          "message": "docs(knowledge): 收录 DSH 复盘 11 篇（配置/会话/沙箱/模型/凭据/插件/安全/Web/轨迹 + PDF/省考）并更新索引",
+          "ts": "2026-11-11T22:44:26Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 3,
+      "automated": 5,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 3,
+  "automatedCommits": 5,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -156,9 +170,20 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "ai": {
+    "en": {
+      "headline": "1 own commit plus 5 automated commits",
+      "summary": "**1 own commit** was made in `sogeisetsu/opencode-agent-sandbox`, adding 11 DSH retrospective articles covering configuration, sessions, sandboxing, models, credentials, plugins, security, web, traces, PDF, and provincial exams, and updating the index. The documentation commit was recorded under the `docs(knowledge)` scope. In `sogeisetsu/sogeisetsu`, there were **5 automated commits** by `github-actions[bot]`. No pull requests, issues, reviews, releases, or discussions were recorded for the day.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "1 次本人提交，另有 5 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **1 次本人提交**，以 `docs(knowledge)` 范围收录 11 篇 DSH 复盘，涵盖配置、会话、沙箱、模型、凭据、插件、安全、Web、轨迹、PDF 与省考，并更新索引。在 `sogeisetsu/sogeisetsu` 中，另有 **5 次自动提交**，由 `github-actions[bot]` 创建。当天未记录拉取请求、issue、评审、发布或讨论。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "8339fae59ac81b66d0860de1d3b7c248aec0e546a1bff7a3ff8267faceb76588"
+  "dataHash": "707e41a1c51ab6fa2d2a71a5f4e8da5597538136bda95be86b85ff5c4debeb25"
 }
