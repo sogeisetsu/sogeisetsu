@@ -3,15 +3,29 @@
   "windowStart": "2026-11-12T00:00:00+08:00",
   "windowEnd": "2026-11-13T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-12T14:51:12.235Z",
+  "generatedAt": "2026-11-12T16:51:02.830Z",
   "empty": false,
   "totals": {
-    "commits": 1,
+    "commits": 2,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
+    {
+      "repo": "sogeisetsu/myBlog",
+      "count": 1,
+      "own": true,
+      "messages": [
+        {
+          "sha": "4edf697be11b56f1c875f41f25c0a9e755f63e02",
+          "message": "docs: add DSH stats 'show context delta' bug screenshots",
+          "ts": "2026-11-12T15:18:49Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
       "count": 1,
@@ -31,13 +45,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 16,
+      "automated": 18,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 16,
+  "automatedCommits": 18,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -184,18 +198,18 @@
   ],
   "ai": {
     "en": {
-      "headline": "1 own commit plus 16 automated commits and one new discussion",
-      "summary": "**1 own commit** was recorded in `sogeisetsu/opencode-agent-sandbox`, adding 11 DSH retrospectives covering configuration, sessions, sandboxing, models, credentials, plugins, security, web, traces, PDF, and provincial exam scenarios, and updating the index. The same repository also received **16 automated commits** by `github-actions[bot]`. No pull requests, issues, or reviews were opened or handled. In `deepseek-ai/deepseek-harness`, the user started discussion #13121, titled \"[Bug] 统计页签「显示上下文增量」的增量被「上下文」列宽裁掉，正常窗口下只显示一个「…」\", reporting that the context-increment value is clipped by the context column width and shows only an ellipsis in a normal-sized window. The discussion had no comments at collection time, and no releases were published.",
+      "headline": "2 own commits plus 18 automated commits",
+      "summary": "**2 own commits** were made, plus 18 automated commits by `github-actions[bot]`. In `sogeisetsu/myBlog`, documentation was added with screenshots of the DSH statistics tab bug where “show context delta” is clipped. In `sogeisetsu/opencode-agent-sandbox`, the knowledge base was expanded with 11 DSH retrospectives covering configuration, sessions, sandboxing, models, credentials, plugins, security, Web, traces, PDF, and provincial exams, and its index was updated. The user also started a discussion in `deepseek-ai/deepseek-harness`: “[Bug] 统计页签「显示上下文增量」的增量被「上下文」列宽裁掉，正常窗口下只显示一个「…」” (discussion #13121). No pull requests, issues, reviews, or releases were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "1 次本人提交，另有 16 次自动提交，并发起 1 个讨论",
-      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **1 次本人提交**，收录 11 篇 DSH 复盘，涵盖配置、会话、沙箱、模型、凭据、插件、安全、Web、轨迹、PDF 与省考场景，并更新索引。同一仓库另有 **16 次由 `github-actions[bot]` 自动提交**。当日没有发起或处理拉取请求、issue 与代码评审。在 `deepseek-ai/deepseek-harness` 发起了讨论 #13121，标题为 \"[Bug] 统计页签「显示上下文增量」的增量被「上下文」列宽裁掉，正常窗口下只显示一个「…」\"，指出上下文增量被「上下文」列宽裁掉，在正常窗口下仅显示省略号。收集时该讨论尚无评论，也没有发布新版本。",
+      "headline": "2 次本人提交，另有 18 次自动提交",
+      "summary": "当天有 **2 次本人提交**，另有 18 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/myBlog` 中，补充了 DSH 统计页签“显示上下文增量”缺陷的截图文档。在 `sogeisetsu/opencode-agent-sandbox` 中，知识库新增 11 篇 DSH 复盘，涵盖配置、会话、沙箱、模型、凭据、插件、安全、Web、轨迹、PDF 与省考，并更新了索引。用户还在 `deepseek-ai/deepseek-harness` 发起了讨论“[Bug] 统计页签「显示上下文增量」的增量被「上下文」列宽裁掉，正常窗口下只显示一个「…」”（讨论 #13121）。当天没有拉取请求、issue、评审或发布记录。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "7a115675f9cf0011e45392fae79e7d07a567a23cd763c2a22438fae19ef15475"
+  "dataHash": "969ee91503e7b4ab5d31eb354947810c9b9dd4f8f16820f3d5638bcd7b7a2acd"
 }
