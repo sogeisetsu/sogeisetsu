@@ -3,27 +3,51 @@
   "windowStart": "2026-11-13T00:00:00+08:00",
   "windowEnd": "2026-11-14T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-12T18:22:36.546Z",
-  "empty": true,
+  "generatedAt": "2026-11-12T20:51:15.631Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 3,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
     {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "count": 3,
+      "own": true,
+      "messages": [
+        {
+          "sha": "77ffe64b9a70c84e9f82e409d9d97dddb5781701",
+          "message": "docs(knowledge): 收录 DSH Desktop 与浏览器 Web 的判定信号",
+          "ts": "2026-11-12T19:28:28Z"
+        },
+        {
+          "sha": "1ec49f0785cbff38d8decd5d12cbdc2b4a4f259e",
+          "message": "docs(knowledge): 收录 Windows workspace-write 已有子目录不可写的成因与定位",
+          "ts": "2026-11-12T19:17:28Z"
+        },
+        {
+          "sha": "665f379174b658876b8b491f9efb39e3bfc5e19f",
+          "message": "docs(knowledge): 收录 DSH 模型设置页状态圆点判定（绿/红/无点）",
+          "ts": "2026-11-12T18:46:25Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 2,
+      "automated": 3,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 2,
+  "automatedCommits": 3,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -155,10 +179,44 @@
       "hits": false
     }
   },
-  "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "discussions": [
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "number": 11154,
+      "title": "`workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/discussions/11154",
+      "category": "General",
+      "comments": 1,
+      "action": "commented",
+      "ts": "2026-11-12T19:14:19.000Z",
+      "own": false
+    },
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "number": 13026,
+      "title": "[Bug][Windows] 「在 VS Code 中打开」必定失败：宿主把 ELECTRON_RUN_AS_NODE=1 泄漏给子进程",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/discussions/13026",
+      "category": "General",
+      "comments": 1,
+      "action": "commented",
+      "ts": "2026-11-12T18:45:15.000Z",
+      "own": false
+    }
+  ],
+  "ai": {
+    "en": {
+      "headline": "3 own commits plus 3 automated commits",
+      "summary": "**3 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, plus 3 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The own commits expanded the knowledge base with DSH Desktop and browser Web detection signals, the cause and diagnosis of unwritable pre-existing subdirectories under Windows workspace-write, and the green/red/absent-dot status indicators on the DSH model settings page. No pull requests, issues, or reviews were recorded. The user joined two existing discussions in `deepseek-ai/deepseek-harness`: #11154 on the missing Low mandatory label and capability ACE for pre-existing subdirectories under `workspace-write`, and #13026 on Windows failing to open in VS Code because the host leaks `ELECTRON_RUN_AS_NODE=1` to child processes. No releases were published.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "3 次本人提交，另有 3 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **3 次本人提交**，另有 3 次由 `github-actions[bot]` 自动提交，记录在 `sogeisetsu/sogeisetsu`。本人提交扩充知识库，涵盖 DSH Desktop 与浏览器 Web 的判定信号、Windows workspace-write 下已有子目录不可写的成因与定位，以及 DSH 模型设置页状态圆点的绿/红/无点判定。当天没有 pull request、issue 或 review。用户参与了两个 `deepseek-ai/deepseek-harness` 的既有讨论：#11154 讨论 `workspace-write` 下已有子目录缺少 Low 强制标签与 capability ACE，#13026 讨论 Windows 在 VS Code 中打开必定失败、宿主向子进程泄漏 `ELECTRON_RUN_AS_NODE=1` 的问题。没有发布 release。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "720e219a23a71d45b98929bade7ca837052aa47bd3491111bf8d8872b524aaa8"
+  "dataHash": "d186a8298c5cf1541b62a0c6b5af7f5d10e15cfcc07badcf0808cee285602fcd"
 }
