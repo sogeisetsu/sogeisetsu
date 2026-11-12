@@ -3,11 +3,11 @@
 ![GitHub activity over the last 30 days](./assets/30-day-activity.svg)
 
 <!--START:activity-->
-_Updated automatically: 2026-11-12_
+_Updated automatically: 2026-11-13_
 
 <details><summary>🔨 Owned repos</summary>
 
-- 📝 Pushed 121 commits to `sogeisetsu/sogeisetsu`
+- 📝 Pushed 120 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 98 commits to `sogeisetsu/opencode-skill-management`
 - 📝 Pushed 93 commits to `sogeisetsu/opencode-agent-sandbox`
 - 📝 Pushed 60 commits to `sogeisetsu/sopen-translate`
