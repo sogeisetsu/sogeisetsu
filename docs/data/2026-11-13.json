@@ -3,7 +3,7 @@
   "windowStart": "2026-11-13T00:00:00+08:00",
   "windowEnd": "2026-11-14T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-13T01:09:50.277Z",
+  "generatedAt": "2026-11-13T02:51:08.972Z",
   "empty": false,
   "totals": {
     "commits": 3,
@@ -41,13 +41,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 8,
+      "automated": 9,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 8,
+  "automatedCommits": 9,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -205,18 +205,18 @@
   ],
   "ai": {
     "en": {
-      "headline": "3 own commits plus 8 automated commits",
-      "summary": "**3 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, all updating knowledge documentation. The changes recorded DSH Desktop and browser Web detection signals, the cause and diagnosis of existing subdirectories being unwritable under Windows `workspace-write`, and the green/red/no-dot status indicators on the DSH model settings page. In `sogeisetsu/sogeisetsu`, there were **8 automated commits** by `github-actions[bot]`. The user commented in two `deepseek-ai/deepseek-harness` discussions: #11154 on `workspace-write` pre-existing subdirectories missing the Low mandatory label and capability ACE, and #13026 on the Windows “Open in VS Code” failure caused by `ELECTRON_RUN_AS_NODE=1` leaking to child processes. No pull requests, issues, reviews, or releases were recorded.",
+      "headline": "3 own commits plus 9 automated commits",
+      "summary": "**3 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, updating the knowledge base with three topics: DSH Desktop and browser Web detection signals, the cause and diagnosis of unwritable pre-existing subdirectories under Windows `workspace-write`, and the green/red/no-dot status indicators on the DSH model settings page. The repository `sogeisetsu/sogeisetsu` also received **9 automated commits** by `github-actions[bot]`. The user commented in the existing `deepseek-ai/deepseek-harness` discussion #11154, titled `workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE. They also joined discussion #13026, titled [Bug][Windows] 「在 VS Code 中打开」必定失败：宿主把 ELECTRON_RUN_AS_NODE=1 泄漏给子进程. No pull requests, issues, reviews, or releases were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "3 次本人提交，另有 8 次自动提交",
-      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **3 次本人提交**，均用于更新知识文档，内容包括 DSH Desktop 与浏览器 Web 的判定信号、Windows 下 `workspace-write` 已有子目录不可写的成因与定位方法，以及 DSH 模型设置页状态圆点的绿/红/无点判定。`sogeisetsu/sogeisetsu` 另有 **8 次由 `github-actions[bot]` 自动提交**。用户参与评论了 `deepseek-ai/deepseek-harness` 的两则讨论：#11154 涉及 `workspace-write` 预存子目录缺少 Low 强制标签与 capability ACE，#13026 涉及 Windows “在 VS Code 中打开” 因 `ELECTRON_RUN_AS_NODE=1` 泄漏给子进程而必定失败。当天没有拉取请求、issue、评审或发布记录。",
+      "headline": "3 次本人提交，另有 9 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **3 次本人提交**，更新知识库，涵盖 DSH Desktop 与浏览器 Web 的判定信号、Windows `workspace-write` 下已有子目录不可写的成因与定位，以及 DSH 模型设置页状态圆点的绿/红/无点判定。仓库 `sogeisetsu/sogeisetsu` 另有 **9 次由 `github-actions[bot]` 自动提交**。用户在 `deepseek-ai/deepseek-harness` 的现有讨论 #11154「`workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE」中发表评论，并参与了讨论 #13026「[Bug][Windows] 「在 VS Code 中打开」必定失败：宿主把 ELECTRON_RUN_AS_NODE=1 泄漏给子进程」。当日没有拉取请求、issue、评审或发布记录。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "c06ab86c0a7863f88481b34d3aa99e85e9341aa84af2c56245a49e357e153136"
+  "dataHash": "ff5f22b27b9bed23450210db1792433913769e45284a1295b100746513f6de6f"
 }
