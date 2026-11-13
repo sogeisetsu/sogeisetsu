@@ -3,13 +3,13 @@
 ![GitHub activity over the last 30 days](./assets/30-day-activity.svg)
 
 <!--START:activity-->
-_Updated automatically: 2026-11-13_
+_Updated automatically: 2026-11-14_
 
 <details><summary>🔨 Owned repos</summary>
 
-- 📝 Pushed 120 commits to `sogeisetsu/sogeisetsu`
+- 📝 Pushed 119 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 98 commits to `sogeisetsu/opencode-skill-management`
-- 📝 Pushed 96 commits to `sogeisetsu/opencode-agent-sandbox`
+- 📝 Pushed 95 commits to `sogeisetsu/opencode-agent-sandbox`
 - 📝 Pushed 60 commits to `sogeisetsu/sopen-translate`
 - 📝 Pushed 54 commits to `sogeisetsu/pixel-logo-toolkit`
 - 📝 Pushed 37 commits to `sogeisetsu/opencode-go-model-picker`
