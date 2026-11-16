@@ -3,10 +3,10 @@
   "windowStart": "2026-11-16T00:00:00+08:00",
   "windowEnd": "2026-11-17T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-16T14:51:10.307Z",
+  "generatedAt": "2026-11-16T16:51:01.538Z",
   "empty": false,
   "totals": {
-    "commits": 12,
+    "commits": 14,
     "prs": 1,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,19 @@
   "commits": [
     {
       "repo": "sogeisetsu/dsh-openchamber-plugins",
-      "count": 6,
+      "count": 8,
       "own": true,
       "messages": [
+        {
+          "sha": "ae4c5179f92d988d9d1a9ccf63af59cfb26233e7",
+          "message": "docs: document packed reinstall flow and rename ZH files",
+          "ts": "2026-11-16T15:00:05Z"
+        },
+        {
+          "sha": "2df47885539a5b66ec68d9f6b7b5ca220c1f479a",
+          "message": "feat(plugin): add files hidden-files toggle",
+          "ts": "2026-11-16T14:24:31Z"
+        },
         {
           "sha": "ed5c9f8683cb2e9fe2db004dc41434a36f8bb0b7",
           "message": "feat(skill): add /init project instructions skill",
@@ -95,13 +105,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 17,
+      "automated": 19,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 17,
+  "automatedCommits": 19,
   "pullRequests": [
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
@@ -248,18 +258,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "12 own commits plus 17 automated across 3 repos; 1 PR opened",
-      "summary": "Across three repositories, the day produced **12** own commits and 17 automated commits by `github-actions[bot]`. In `sogeisetsu/dsh-openchamber-plugins`, six commits added two new skills (`/init` project instructions and `zh-doc-sync` project), plus Chinese README, AGENTS translation, development workflow, porting rules, and backlog todo records. In `sogeisetsu/opencode-agent-sandbox`, six commits updated knowledge docs: indexed two new entries (preset mount / plan mode), recorded preset persona/instruction mount and built-in plan mode, named the surface-check skill `dsh-surface-check` with `whenToUse` excluded from triggers, added `ELECTRON_RUN_AS_NODE` and multi-profile guidance for DSH surface detection, verified model settings status dot at `0.2.2-rc.1`, and documented `.opencode/skills`, local ignore dirs, and unified push rules. A pull request was opened in `sogeisetsu/opencode-agent-sandbox` (#1). The `sogeisetsu/sogeisetsu` repo received only the 17 automated commits.",
+      "headline": "14 own commits plus 19 automated commits across three repositories",
+      "summary": "**14 own commits** were made across `sogeisetsu/dsh-openchamber-plugins` and `sogeisetsu/opencode-agent-sandbox`, plus 19 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/dsh-openchamber-plugins`, work added a hidden-files toggle, an `/init` project instructions skill, and a Chinese documentation sync skill, alongside Chinese README and AGENTS translations, development and porting rules, and backlog plans. In `sogeisetsu/opencode-agent-sandbox`, knowledge entries covered preset persona and instruction mounting, built-in plan mode, the `dsh-surface-check` skill naming, `ELECTRON_RUN_AS_NODE` and multi-profile behavior, and model-setting status indicators for `0.2.2-rc.1`; agent guidance was also updated for `.opencode/skills`, local ignored directories, and unified push rules. The user opened pull request #1 in `sogeisetsu/opencode-agent-sandbox`, titled with no text, which remains open with no comments. No issues, reviews, releases, discussions, replies, or state changes were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "3 个仓库共 12 次本人提交，另有 17 次自动提交；新开 1 个 PR",
-      "summary": "三个仓库共产生 **12** 次本人提交，另有 17 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/dsh-openchamber-plugins` 中，6 次提交新增两个 skill（`/init` 项目指令与 `zh-doc-sync` 项目）、中文 README 与 AGENTS 翻译、开发工作流与移植规则、待办回log 记录。在 `sogeisetsu/opencode-agent-sandbox` 中，6 次提交更新知识库文档：登记预设挂载与 plan mode 两条新条目、记录预设 persona/指令挂载与内置 plan mode、将端判定 skill 定名为 `dsh-surface-check` 并注明 `whenToUse` 不参与触发、为 DSH 端判定补齐 `ELECTRON_RUN_AS_NODE` 与多 profile 口径、复核模型设置状态圆点（`0.2.2-rc.1`）、补齐 `.opencode/skills` 与本地忽略目录、统一 push 规则。在 `sogeisetsu/opencode-agent-sandbox` 新开 PR #1。`sogeisetsu/sogeisetsu` 仅收到 17 次自动提交。",
+      "headline": "三个仓库共 14 次本人提交，另有 19 次自动提交",
+      "summary": "**14 次本人提交**分布在 `sogeisetsu/dsh-openchamber-plugins` 和 `sogeisetsu/opencode-agent-sandbox`，另有 19 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。在 `sogeisetsu/dsh-openchamber-plugins` 中，新增了隐藏文件开关、`/init` 项目指令 skill 和中文文档同步 skill，并补充中文 README 与 AGENTS 译文、开发及移植规则和待办计划。在 `sogeisetsu/opencode-agent-sandbox` 中，知识库新增了预设 persona 与指令挂载、内置 plan mode、`dsh-surface-check` skill 命名、`ELECTRON_RUN_AS_NODE` 与多 profile 口径，以及 `0.2.2-rc.1` 模型设置状态圆点的复核内容；agent 文档也更新了 `.opencode/skills`、本地忽略目录和统一 push 规则。用户新建了 `sogeisetsu/opencode-agent-sandbox` 的 pull request #1，标题未填写，当前处于开放状态且无评论。当天没有 issue、评审、发布、讨论、回复或状态变更记录。",
       "releaseNotes": []
     }
   },
-  "aiProvider": "nvidia-nemotron-ultra",
-  "aiModel": "nvidia/nemotron-3-ultra-550b-a55b",
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "43213ab9cf2a20ef907db25a97f506e93606e1d25e0834ed731e898aae0554d0"
+  "dataHash": "733228edb1ba46872a6241c72fcda3cc848b887b1407c3280bc6cb7be0ae76c2"
 }
