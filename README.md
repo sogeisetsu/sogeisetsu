@@ -3,13 +3,13 @@
 ![GitHub activity over the last 30 days](./assets/30-day-activity.svg)
 
 <!--START:activity-->
-_Updated automatically: 2026-11-18_
+_Updated automatically: 2026-11-19_
 
 <details><summary>🔨 Owned repos</summary>
 
-- 📝 Pushed 90 commits to `sogeisetsu/opencode-agent-sandbox`
-- 📝 Pushed 85 commits to `sogeisetsu/opencode-skill-management`
-- 📝 Pushed 77 commits to `sogeisetsu/sogeisetsu`
+- 📝 Pushed 86 commits to `sogeisetsu/opencode-agent-sandbox`
+- 📝 Pushed 73 commits to `sogeisetsu/opencode-skill-management`
+- 📝 Pushed 69 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 60 commits to `sogeisetsu/sopen-translate`
 - 📝 Pushed 54 commits to `sogeisetsu/pixel-logo-toolkit`
 - 📝 Pushed 29 commits to `sogeisetsu/opencode-go-model-picker`
@@ -31,7 +31,6 @@ _Updated automatically: 2026-11-18_
 - 🐛 Opened issue [\[Bug\] Quote card's arrow is a silent no-op when the quoted message is outside the loaded history](https://github.com/openchamber/openchamber/issues/5584) in `openchamber/openchamber`
 - 🐛 Opened issue [\[Bug\] Files view: dragging across line numbers to comment is unreliable \(web, desktop, VS Code extension\)](https://github.com/openchamber/openchamber/issues/5556) in `openchamber/openchamber`
 - 🐛 Opened issue [\[Bug\] "Run as goal" on a plan's Improve action arms an implement objective, so the agent starts executing the plan](https://github.com/openchamber/openchamber/issues/5489) in `openchamber/openchamber`
-- 🐛 Opened issue [\[Bug\] Project actions menu: Auto-discover dev server runs the first saved action instead of discovering a server](https://github.com/openchamber/openchamber/issues/5293) in `openchamber/openchamber`
 
 </details>
 <!--END:activity-->
