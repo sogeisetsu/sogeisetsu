@@ -3,10 +3,10 @@
   "windowStart": "2026-11-19T00:00:00+08:00",
   "windowEnd": "2026-11-20T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-18T22:59:10.153Z",
+  "generatedAt": "2026-11-19T00:28:17.695Z",
   "empty": false,
   "totals": {
-    "commits": 1,
+    "commits": 5,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,29 @@
   "commits": [
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
-      "count": 1,
+      "count": 5,
       "own": true,
       "messages": [
+        {
+          "sha": "8d75a04d0f3e06c1141b6540dc2695a4e496649c",
+          "message": "docs(knowledge): 单列 dsh.profile.bundles 字段的启动四道关与改写语义",
+          "ts": "2026-11-18T23:46:51Z"
+        },
+        {
+          "sha": "5ba513a837dbce8bb97493e69eb516e1f72a4f2b",
+          "message": "docs(knowledge): 还原 dsh-claude-style 取消勾选仍生效的时序与后果",
+          "ts": "2026-11-18T23:40:22Z"
+        },
+        {
+          "sha": "de550c46027c19da6efdfc5565582442c0a972f4",
+          "message": "docs(knowledge): 补三份清单与两份 cordis.patch.yml 的分工及实测对照",
+          "ts": "2026-11-18T23:33:16Z"
+        },
+        {
+          "sha": "2caa7cd24ff62e94382e259313f39def9f00a52a",
+          "message": "docs(knowledge): 补插件装/选/挂三层与 deps×bundles 决策树",
+          "ts": "2026-11-18T23:27:07Z"
+        },
         {
           "sha": "f77aee1aa2ed58ddf846e00f9859590a4c269b03",
           "message": "docs(knowledge): 补 persona 槽位/分层与 AGENTS.md 压缩后重注入",
@@ -31,13 +51,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 6,
+      "automated": 8,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 6,
+  "automatedCommits": 8,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -172,18 +192,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "1 own commit plus 6 automated commits in sogeisetsu repositories",
-      "summary": "On 2026-11-19, `sogeisetsu` made **1 own commit** in `sogeisetsu/opencode-agent-sandbox`, documenting persona slot and layering behavior along with how `AGENTS.md` is reinjected after compression. The same day, `github-actions[bot]` added 6 automated commits in `sogeisetsu/sogeisetsu`. No pull requests, issues, reviews, releases, stars, replies, state changes, or discussions were recorded, and no collection section was truncated.",
+      "headline": "5 own commits plus 8 automated commits",
+      "summary": "**5 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, with no automated commits in that repository. The documentation updates covered the four startup gates and rewrite semantics of `dsh.profile.bundles`, the timing and consequences of unchecking `dsh-claude-style`, and the division of responsibility among three checklists and two `cordis.patch.yml` files with measured comparisons. They also documented the plugin installation, selection, and mounting layers with a `deps×bundles` decision tree, plus persona slots, layering, and reinjection after `AGENTS.md` compression. In `sogeisetsu/sogeisetsu`, there were **8 automated commits** by `github-actions[bot]` and no own commits. The day included 0 pull requests, 0 issues, and 0 reviews.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 各仓库共 1 次本人提交，另有 6 次自动提交",
-      "summary": "2026-11-19，`sogeisetsu` 在 `sogeisetsu/opencode-agent-sandbox` 完成 **1 次本人提交**，记录了 persona 槽位与分层机制，以及 `AGENTS.md` 压缩后的重注入方式。同日，`github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 产生 6 次自动提交。当天没有拉取请求、issue、评审、发布、star、回复、状态变更或讨论记录，各采集部分均未触及截断上限。",
+      "headline": "5 次本人提交，另有 8 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **5 次本人提交**，该仓库没有自动提交。文档更新涵盖 `dsh.profile.bundles` 的启动四道关与改写语义、取消勾选 `dsh-claude-style` 后仍生效的时序与后果，以及三份清单与两份 `cordis.patch.yml` 的分工及实测对照。文档还补充了插件装、选、挂三层与 `deps×bundles` 决策树，以及 persona 槽位、分层和 `AGENTS.md` 压缩后的重注入机制。在 `sogeisetsu/sogeisetsu`，有 **8 次由 `github-actions[bot]` 完成的自动提交**，没有本人提交。当天共有 0 个拉取请求、0 个 issue 和 0 次评审。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "53bbaf5a5d36600db99ec7edffcb19807339c8bdf7576029c91aaf5b787fed80"
+  "dataHash": "f993ebdb2a81d8eb8e70d25c692166709e293960fe72c5097aefcecb4063135b"
 }
