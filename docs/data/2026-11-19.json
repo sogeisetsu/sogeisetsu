@@ -3,7 +3,7 @@
   "windowStart": "2026-11-19T00:00:00+08:00",
   "windowEnd": "2026-11-20T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-19T12:51:09.218Z",
+  "generatedAt": "2026-11-19T14:51:10.014Z",
   "empty": false,
   "totals": {
     "commits": 5,
@@ -51,13 +51,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 16,
+      "automated": 17,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 16,
+  "automatedCommits": 17,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -192,18 +192,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "5 own commits plus 16 automated commits",
-      "summary": "**5 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, plus 16 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The own commits documented the four startup gates and rewrite semantics for the `dsh.profile.bundles` field. They also restored the timing and consequences of unchecking `dsh-claude-style` while it remains effective. Further documentation covered the division of labor among three checklists and two `cordis.patch.yml` files with measured comparisons, the plugin installation/selection/mounting layers and the `deps`×`bundles` decision tree, and persona slots, layering, and re-injection after `AGENTS.md` compression. No pull requests, issues, reviews, releases, or discussions were recorded.",
+      "headline": "5 own commits plus 17 automated commits in two repositories",
+      "summary": "**5 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, all focused on knowledge documentation. The changes documented the four startup gates and rewrite semantics of the `dsh.profile.bundles` field, and the timing and consequences of unchecking `dsh-claude-style` while it remains effective. Additional notes clarified the division of responsibility among three checklists and two `cordis.patch.yml` files, with measured comparisons. The work also added the plugin installation, selection, and mounting layers with a `deps×bundles` decision tree, plus persona slots, layering, and reinjection after `AGENTS.md` compression. In `sogeisetsu/sogeisetsu`, there were **17 automated commits** by `github-actions[bot]` and no own commits. No pull requests, issues, reviews, releases, stars, replies, state changes, or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "5 次本人提交，另有 16 次自动提交",
-      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **5 次本人提交**，另有 16 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。本人提交记录了 `dsh.profile.bundles` 字段的启动四道关与改写语义，并还原了取消勾选 `dsh-claude-style` 仍生效的时序与后果。后续还补充了三份清单与两份 `cordis.patch.yml` 的分工及实测对照、插件装/选/挂三层与 `deps`×`bundles` 决策树，以及 persona 槽位、分层与 `AGENTS.md` 压缩后的重注入。当天没有 pull request、issue、review、release 或讨论记录。",
+      "headline": "两个仓库共 5 次本人提交，另有 17 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **5 次本人提交**，均围绕知识文档展开。提交记录了 `dsh.profile.bundles` 字段的启动四道关与改写语义，以及取消勾选 `dsh-claude-style` 后仍生效的时序与后果。后续补充了三份清单与两份 `cordis.patch.yml` 的分工及实测对照，并加入插件装、选、挂三层与 `deps×bundles` 决策树。文档还覆盖 persona 槽位、分层，以及 `AGENTS.md` 压缩后的重注入。`sogeisetsu/sogeisetsu` 有 **17 次自动提交**，由 `github-actions[bot]` 创建，无本人提交。当天没有拉取请求、issue、评审、发布、收藏、回复、状态变更或讨论。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "fbfa0821d6d3e85bb7ecca5160a1139f66dfe656f420ff738b80a3aa2689e9a5"
+  "dataHash": "2cddb08341f19d486eb270b203c6bf7a6c1764061873ac5186437ea097f847d3"
 }
