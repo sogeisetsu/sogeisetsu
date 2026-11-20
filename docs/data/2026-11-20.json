@@ -1,0 +1,164 @@
+{
+  "date": "2026-11-20",
+  "windowStart": "2026-11-20T00:00:00+08:00",
+  "windowEnd": "2026-11-21T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-11-20T16:51:01.277Z",
+  "empty": true,
+  "totals": {
+    "commits": 0,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 0,
+      "own": true,
+      "messages": [],
+      "automated": 3,
+      "automatedBots": [
+        "github-actions[bot]"
+      ]
+    }
+  ],
+  "automatedCommits": 3,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [],
+  "stars": [],
+  "starInventory": [
+    {
+      "repo": "sogeisetsu/WOW-Csharp",
+      "total": 109
+    },
+    {
+      "repo": "sogeisetsu/shumeipai",
+      "total": 24
+    },
+    {
+      "repo": "sogeisetsu/OGFont",
+      "total": 3
+    },
+    {
+      "repo": "sogeisetsu/lianxi",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/springstudyy",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/-java-",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/awesome-agent-skills",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/dsh-ecosystem-report",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/dsh-openchamber-plugins",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/myBlog",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-creator",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ownsalesforcelearnbook",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/pixel-logo-toolkit",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ruan-js",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu.github.io",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sopen-translate",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/testhello",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/tuangou",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typora-support-apex",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typoraimage",
+      "total": 0
+    }
+  ],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [],
+  "ai": null,
+  "aiProvider": null,
+  "aiModel": null,
+  "aiFailure": null,
+  "dataHash": "ed1eead2f8461c0d4541e1fad461e0614d69aebaac8ffc5e96f3da722e7f9c7f"
+}
