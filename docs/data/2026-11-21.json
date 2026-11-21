@@ -3,10 +3,10 @@
   "windowStart": "2026-11-21T00:00:00+08:00",
   "windowEnd": "2026-11-22T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-21T08:51:03.506Z",
+  "generatedAt": "2026-11-21T10:51:03.804Z",
   "empty": false,
   "totals": {
-    "commits": 6,
+    "commits": 8,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -52,17 +52,36 @@
       "automatedBots": []
     },
     {
+      "repo": "sogeisetsu/dsh-openchamber-plugins",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "7d53782662c172e43e9acb741f3fe8d5013e754e",
+          "message": "chore(sidebar-search): pause the plugin, archive its source, record the outage",
+          "ts": "2026-11-21T09:44:41Z"
+        },
+        {
+          "sha": "f80c510257a0ad28530cdde5a22c48e2e61b5b79",
+          "message": "fix(files-show-hidden): keep the files search bar collapsed after the eye toggle",
+          "ts": "2026-11-21T09:44:26Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 15,
+      "automated": 17,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 15,
+  "automatedCommits": 17,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -197,18 +216,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "6 own commits plus 15 automated commits",
-      "summary": "**6 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, plus 15 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The documentation updates recorded that GitHub port 443 was unreachable while direct SSH worked, and described proxy configuration options. Knowledge notes were expanded with the default thinking level for `opencode-go` models, which uses upstream `high` when no level is specified. The DSH Profile and preset boundary was clarified with session-header evidence, and the plugin-system chapter was reorganized into a quick overview, terminology, mental model, and troubleshooting guide. Additional notes separated the `row` configuration entry field and its two forms, and distinguished the roles of three `package.json` files, including the third for shell-form usage.",
+      "headline": "8 own commits plus 17 automated commits across three repositories",
+      "summary": "**8 own commits** were recorded across `sogeisetsu/opencode-agent-sandbox` and `sogeisetsu/dsh-openchamber-plugins`, plus 17 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/opencode-agent-sandbox`, six documentation commits covered GitHub 443 and SSH connectivity, default thinking strength for `opencode-go`, DSH Profile and preset boundaries, a plugin-system restructure, the `row` configuration field, and the roles of three `package.json` files. In `sogeisetsu/dsh-openchamber-plugins`, the `sidebar-search` plugin was paused and its source archived with the outage recorded, while `files-show-hidden` was fixed to keep the files search bar collapsed after the eye toggle. No pull requests, issues, reviews, releases, discussions, replies, or state changes were reported.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "6 次本人提交，另有 15 次自动提交",
-      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **6 次本人提交**，另有 15 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。文档记录了 GitHub 443 端口不通、SSH 直连可用以及代理配置方式。知识库补充了 `opencode-go` 模型的默认思考强度，未指定档位时上游使用 `high`。同时明确了 DSH Profile 与预设的两层边界并补充会话头证据，插件体系篇被重构为速览、术语、心智模型和排查手册。笔记还单列了 `row` 配置条目字段及其两种写法，并按角色区分三个 `package.json`，在壳形态中补齐第三份。",
+      "headline": "8 次本人提交，另有 17 次自动提交，涉及三个仓库",
+      "summary": "当天在 `sogeisetsu/opencode-agent-sandbox` 和 `sogeisetsu/dsh-openchamber-plugins` 完成 **8 次本人提交**，另有 17 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。`sogeisetsu/opencode-agent-sandbox` 的六次提交集中于文档，涵盖 GitHub 443 与 SSH 连通性、`opencode-go` 默认思考强度、DSH Profile 与预设边界、插件体系重构、`row` 配置字段，以及三个 `package.json` 的角色区分。`sogeisetsu/dsh-openchamber-plugins` 暂停并归档了 `sidebar-search` 插件源码并记录故障，同时修复 `files-show-hidden`，使切换眼睛后文件搜索栏保持折叠。当天没有 pull request、issue、review、发布、讨论、回复或状态变更。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "d5c87c6f163c65ec6570742210734200f8858a1314aa4f53386f951931eac909"
+  "dataHash": "01ed58b4da9e0d33b88fc0a082d3bcdaa1938a1f84ffab68c53a2d7221c83a68"
 }
