@@ -3,27 +3,56 @@
   "windowStart": "2026-11-21T00:00:00+08:00",
   "windowEnd": "2026-11-22T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-21T04:51:04.646Z",
-  "empty": true,
+  "generatedAt": "2026-11-21T06:51:03.552Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 4,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
     {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "count": 4,
+      "own": true,
+      "messages": [
+        {
+          "sha": "12638394fb1eccbad27c0a65bd9978369ab3ad29",
+          "message": "docs(knowledge): 补 DSH Profile 与预设的两层边界与会话头证据",
+          "ts": "2026-11-21T06:47:50Z"
+        },
+        {
+          "sha": "fddbd51b302ad539f1bd5fc535df0f055f609015",
+          "message": "docs(knowledge): 重构插件体系篇为速览/术语/心智模型/排查手册结构",
+          "ts": "2026-11-21T06:21:09Z"
+        },
+        {
+          "sha": "ac9c3515739fcb9784c0697e45c1ac24e3871cd5",
+          "message": "docs(knowledge): 单列「row」= 配置条目 entry 的字段与两种写法",
+          "ts": "2026-11-21T06:17:28Z"
+        },
+        {
+          "sha": "56621462abeaed54971501ff3d4a022859e25817",
+          "message": "docs(knowledge): 按角色澄清三个 package.json 并在壳形态补齐第三份",
+          "ts": "2026-11-21T06:13:22Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 12,
+      "automated": 13,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 12,
+  "automatedCommits": 13,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -156,9 +185,20 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "ai": {
+    "en": {
+      "headline": "4 own commits plus 13 automated commits",
+      "summary": "**4 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, plus 13 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The own commits documented the two-layer boundary and session-header evidence for DSH Profile and presets, and restructured the plugin-system chapter into a quick overview, terminology, mental model, and troubleshooting guide. They also separated the `row` field as a configuration entry, covering its fields and two forms of notation. The final commit clarified the roles of three `package.json` files and added the third one to the shell-form description. No pull requests, issues, reviews, releases, or discussions were recorded.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "4 次本人提交，另有 13 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **4 次本人提交**，另有 13 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。本人提交补充了 DSH Profile 与预设的两层边界及会话头证据，并将插件体系篇重构为速览、术语、心智模型和排查手册结构。提交还单列了 `row` 作为配置条目 entry 的字段及其两种写法，并按角色澄清三个 `package.json`，在壳形态说明中补齐第三份。当天没有记录拉取请求、issue、评审、发布或讨论。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "2c87c7b418516b4099e9a3a632bcd792d4133f0d5c48bd3ce496e975e9881210"
+  "dataHash": "69f0476452cad4e2527a539598620215d1c8e7e4b01cdbe0a6a1055bd914f5e1"
 }
