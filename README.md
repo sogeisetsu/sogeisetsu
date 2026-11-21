@@ -3,18 +3,18 @@
 ![GitHub activity over the last 30 days](./assets/30-day-activity.svg)
 
 <!--START:activity-->
-_Updated automatically: 2026-11-21_
+_Updated automatically: 2026-11-22_
 
 <details><summary>🔨 Owned repos</summary>
 
-- 📝 Pushed 95 commits to `sogeisetsu/opencode-agent-sandbox`
-- 📝 Pushed 73 commits to `sogeisetsu/opencode-skill-management`
-- 📝 Pushed 59 commits to `sogeisetsu/sogeisetsu`
+- 📝 Pushed 94 commits to `sogeisetsu/opencode-agent-sandbox`
+- 📝 Pushed 64 commits to `sogeisetsu/opencode-skill-management`
 - 📝 Pushed 54 commits to `sogeisetsu/pixel-logo-toolkit`
-- 📝 Pushed 52 commits to `sogeisetsu/sopen-translate`
+- 📝 Pushed 47 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 29 commits to `sogeisetsu/opencode-go-model-picker`
 - 📝 Pushed 22 commits to `sogeisetsu/dsh-openchamber-plugins`
 - 📝 Pushed 11 commits to `sogeisetsu/dsh-ecosystem-report`
+- 📝 Pushed 7 commits to `sogeisetsu/sopen-translate`
 - 📝 Pushed 2 commits to `sogeisetsu/myBlog`
 - 🚀 [docs\(agents\): 补 .opencode/skills 与本地忽略目录、统一 push 规则](https://github.com/sogeisetsu/opencode-agent-sandbox/pull/1) · merged
 
@@ -30,7 +30,6 @@ _Updated automatically: 2026-11-21_
 - 💬 Commented on [openchamber/openchamber#5584](https://github.com/openchamber/openchamber/issues/5584): \[Bug\] Quote card's arrow is a silent no-op when the quoted message is outside the loaded history
 - 🐛 Opened issue [\[Bug\] Quote card's arrow is a silent no-op when the quoted message is outside the loaded history](https://github.com/openchamber/openchamber/issues/5584) in `openchamber/openchamber`
 - 🐛 Opened issue [\[Bug\] Files view: dragging across line numbers to comment is unreliable \(web, desktop, VS Code extension\)](https://github.com/openchamber/openchamber/issues/5556) in `openchamber/openchamber`
-- 🐛 Opened issue [\[Bug\] "Run as goal" on a plan's Improve action arms an implement objective, so the agent starts executing the plan](https://github.com/openchamber/openchamber/issues/5489) in `openchamber/openchamber`
 
 </details>
 <!--END:activity-->
