@@ -3,10 +3,10 @@
   "windowStart": "2026-11-21T00:00:00+08:00",
   "windowEnd": "2026-11-22T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-21T06:51:03.552Z",
+  "generatedAt": "2026-11-21T08:51:03.506Z",
   "empty": false,
   "totals": {
-    "commits": 4,
+    "commits": 6,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,19 @@
   "commits": [
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
-      "count": 4,
+      "count": 6,
       "own": true,
       "messages": [
+        {
+          "sha": "56d0f6f408a016f4a4d3ae481b849d3f9e5bacb7",
+          "message": "docs(agents): 记 GitHub 443 不通、SSH 直连可用与代理走法",
+          "ts": "2026-11-21T08:31:48Z"
+        },
+        {
+          "sha": "ba3cbe4bf60860333e0770dc3966a23df0ad641b",
+          "message": "docs(knowledge): 补 opencode-go 模型默认思考强度（不指定档位即上游 high）",
+          "ts": "2026-11-21T07:00:53Z"
+        },
         {
           "sha": "12638394fb1eccbad27c0a65bd9978369ab3ad29",
           "message": "docs(knowledge): 补 DSH Profile 与预设的两层边界与会话头证据",
@@ -46,13 +56,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 13,
+      "automated": 15,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 13,
+  "automatedCommits": 15,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -187,18 +197,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "4 own commits plus 13 automated commits",
-      "summary": "**4 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, plus 13 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The own commits documented the two-layer boundary and session-header evidence for DSH Profile and presets, and restructured the plugin-system chapter into a quick overview, terminology, mental model, and troubleshooting guide. They also separated the `row` field as a configuration entry, covering its fields and two forms of notation. The final commit clarified the roles of three `package.json` files and added the third one to the shell-form description. No pull requests, issues, reviews, releases, or discussions were recorded.",
+      "headline": "6 own commits plus 15 automated commits",
+      "summary": "**6 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, plus 15 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The documentation updates recorded that GitHub port 443 was unreachable while direct SSH worked, and described proxy configuration options. Knowledge notes were expanded with the default thinking level for `opencode-go` models, which uses upstream `high` when no level is specified. The DSH Profile and preset boundary was clarified with session-header evidence, and the plugin-system chapter was reorganized into a quick overview, terminology, mental model, and troubleshooting guide. Additional notes separated the `row` configuration entry field and its two forms, and distinguished the roles of three `package.json` files, including the third for shell-form usage.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "4 次本人提交，另有 13 次自动提交",
-      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **4 次本人提交**，另有 13 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。本人提交补充了 DSH Profile 与预设的两层边界及会话头证据，并将插件体系篇重构为速览、术语、心智模型和排查手册结构。提交还单列了 `row` 作为配置条目 entry 的字段及其两种写法，并按角色澄清三个 `package.json`，在壳形态说明中补齐第三份。当天没有记录拉取请求、issue、评审、发布或讨论。",
+      "headline": "6 次本人提交，另有 15 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **6 次本人提交**，另有 15 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。文档记录了 GitHub 443 端口不通、SSH 直连可用以及代理配置方式。知识库补充了 `opencode-go` 模型的默认思考强度，未指定档位时上游使用 `high`。同时明确了 DSH Profile 与预设的两层边界并补充会话头证据，插件体系篇被重构为速览、术语、心智模型和排查手册。笔记还单列了 `row` 配置条目字段及其两种写法，并按角色区分三个 `package.json`，在壳形态中补齐第三份。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "69f0476452cad4e2527a539598620215d1c8e7e4b01cdbe0a6a1055bd914f5e1"
+  "dataHash": "d5c87c6f163c65ec6570742210734200f8858a1314aa4f53386f951931eac909"
 }
