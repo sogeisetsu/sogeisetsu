@@ -3,7 +3,7 @@
   "windowStart": "2026-11-24T00:00:00+08:00",
   "windowEnd": "2026-11-25T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-24T14:56:14.733Z",
+  "generatedAt": "2026-11-24T16:51:01.733Z",
   "empty": false,
   "totals": {
     "commits": 2,
@@ -36,13 +36,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 18,
+      "automated": 19,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 18,
+  "automatedCommits": 19,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -177,18 +177,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "2 own commits plus 18 automated commits by github-actions[bot]",
-      "summary": "The day produced **2** own commits across two repositories. In `sogeisetsu/opencode-agent-sandbox`, two documentation updates were made: one correcting the GitHub push path to check for a private key first and fall back to an HTTPS proxy with revocation checks disabled, and another describing DSH compression masking boundaries, entry limits, and cache costs. Meanwhile, `sogeisetsu/sogeisetsu` received 18 automated commits from `github-actions[bot]` with no manual changes. No pull requests, issues, reviews, releases, or discussions were recorded.",
+      "headline": "2 own commits plus 19 automated commits",
+      "summary": "**2 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, with no automated commits in that repository. The first commit corrected the GitHub push path in the agent documentation: it now checks for a private key first, and falls back to an HTTPS proxy with revocation checking disabled when no key is available. The second commit documented the masking boundaries, entry restrictions, and cache costs of DSH compression. A separate repository, `sogeisetsu/sogeisetsu`, received **19 automated commits** by `github-actions[bot]` and no own commits. No pull requests, issues, reviews, releases, stars, replies, state changes, or discussions were recorded, and no collection section was truncated.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "2 次本人提交，另有 18 次由 github-actions[bot] 自动提交",
-      "summary": "当天共产生 **2** 次本人提交，分布在两个仓库。在 `sogeisetsu/opencode-agent-sandbox` 中提交了两份文档更新：一份修正 GitHub 推送路径，改为先检查私钥，无密钥时走 HTTPS 代理并关闭吊销检查；另一份补充了 DSH 压缩的遮蔽边界、入口限制与缓存代价说明。`sogeisetsu/sogeisetsu` 仅收到 18 次来自 `github-actions[bot]` 的自动提交，无人工变更。全天无拉取请求、Issue、代码评审、发布或讨论活动。",
+      "headline": "2 次本人提交，另有 19 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **2 次本人提交**，该仓库没有自动提交。第一次提交修正了智能体文档中的 GitHub 推送路径：先检查私钥，无密钥时改走 HTTPS 代理并关闭吊销检查。第二次提交记录了 DSH 压缩的遮蔽边界、入口限制与缓存代价。另一个仓库 `sogeisetsu/sogeisetsu` 有 **19 次自动提交**，均由 `github-actions[bot]` 创建，没有本人提交。当天没有拉取请求、issue、评审、发布、star、回复、状态变更或讨论记录，各采集部分均未截断。",
       "releaseNotes": []
     }
   },
-  "aiProvider": "nvidia-nemotron-ultra",
-  "aiModel": "nvidia/nemotron-3-ultra-550b-a55b",
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "737418ebdd034ebf4485735d9836a003bad65d7d8b09bd40db2484473d4cd424"
+  "dataHash": "d011e033dd640fea0c03fc7123add252a07bac7621c6cabb1eec8a696c60d088"
 }
