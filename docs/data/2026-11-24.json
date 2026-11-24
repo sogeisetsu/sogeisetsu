@@ -3,10 +3,10 @@
   "windowStart": "2026-11-24T00:00:00+08:00",
   "windowEnd": "2026-11-25T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-24T10:51:03.916Z",
+  "generatedAt": "2026-11-24T12:51:08.633Z",
   "empty": false,
   "totals": {
-    "commits": 1,
+    "commits": 2,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
-      "count": 1,
+      "count": 2,
       "own": true,
       "messages": [
+        {
+          "sha": "85b99b5186b390acec5b33764c13e2942663b55d",
+          "message": "docs(agents): 修正 GitHub 推送路径：先查私钥，无密钥走 HTTPS 代理并关吊销检查",
+          "ts": "2026-11-24T11:15:07Z"
+        },
         {
           "sha": "819a267de6a41f7fb8ac7dd83fd80c791c0b477f",
           "message": "docs(knowledge): DSH 压缩的遮蔽边界、入口限制与缓存代价",
@@ -31,13 +36,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 13,
+      "automated": 15,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 13,
+  "automatedCommits": 15,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -172,18 +177,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "1 own commit plus 13 automated commits",
-      "summary": "**1 own commit** was recorded in `sogeisetsu/opencode-agent-sandbox`, documenting the masking boundaries, entry restrictions, and cache costs of DSH compression. The commit message was `docs(knowledge): DSH 压缩的遮蔽边界、入口限制与缓存代价`. In `sogeisetsu/sogeisetsu`, there were **13 automated commits** by `github-actions[bot]` and no own commits. No pull requests, issues, reviews, releases, stars, replies, state changes, or discussions were recorded for the day.",
+      "headline": "2 own commits plus 15 automated commits",
+      "summary": "**2 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, with no pull requests, issues, or reviews recorded. The first commit corrected the GitHub push path in the agent documentation: it now checks for a private key first, and falls back to an HTTPS proxy with revocation checking disabled when no key is available. The second commit documented the masking boundaries, entry restrictions, and cache costs of DSH compression. A separate **15 automated commits** were created by `github-actions[bot]` in `sogeisetsu/sogeisetsu`; no releases, discussions, replies, or state changes were reported.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "1 次本人提交，另有 13 次自动提交",
-      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 记录了 **1 次本人提交**，内容为 DSH 压缩的遮蔽边界、入口限制与缓存代价文档。提交信息为 `docs(knowledge): DSH 压缩的遮蔽边界、入口限制与缓存代价`。在 `sogeisetsu/sogeisetsu` 中有 **13 次由 `github-actions[bot]` 完成的自动提交**，无本人提交。当天未记录拉取请求、issue、评审、发布、star、回复、状态变更或讨论。",
+      "headline": "2 次本人提交，另有 15 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **2 次本人提交**，未记录拉取请求、issue 或评审。第一次提交修正了智能体文档中的 GitHub 推送路径：先检查私钥，无密钥时改用 HTTPS 代理并关闭吊销检查。第二次提交记录了 DSH 压缩的遮蔽边界、入口限制与缓存代价。另有 **15 次自动提交**由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 创建；当日未报告发布、讨论、回复或状态变更。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "1f9545f677820774cda2a55e27fcf114f0bf3ece046fcdfca5e5c2ade53f681c"
+  "dataHash": "82e4fad4ddf7922dddd0057039f8a197bb75b266954b0d023a8a72623b498e7a"
 }
