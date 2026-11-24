@@ -3,11 +3,11 @@
 ![GitHub activity over the last 30 days](./assets/30-day-activity.svg)
 
 <!--START:activity-->
-_Updated automatically: 2026-11-24_
+_Updated automatically: 2026-11-25_
 
 <details><summary>🔨 Owned repos</summary>
 
-- 📝 Pushed 94 commits to `sogeisetsu/opencode-agent-sandbox`
+- 📝 Pushed 93 commits to `sogeisetsu/opencode-agent-sandbox`
 - 📝 Pushed 54 commits to `sogeisetsu/pixel-logo-toolkit`
 - 📝 Pushed 52 commits to `sogeisetsu/opencode-skill-management`
 - 📝 Pushed 30 commits to `sogeisetsu/dsh-openchamber-plugins`
@@ -15,7 +15,7 @@ _Updated automatically: 2026-11-24_
 - 📝 Pushed 15 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 11 commits to `sogeisetsu/dsh-ecosystem-report`
 - 📝 Pushed 3 commits to `sogeisetsu/sopen-translate`
-- 📝 Pushed 2 commits to `sogeisetsu/myBlog`
+- 📝 Pushed 1 commit to `sogeisetsu/myBlog`
 - 🚀 [docs\(agents\): 补 .opencode/skills 与本地忽略目录、统一 push 规则](https://github.com/sogeisetsu/opencode-agent-sandbox/pull/1) · merged
 
 </details>
@@ -25,8 +25,6 @@ _Updated automatically: 2026-11-24_
 - 🐛 Opened issue [\[Shortcut Guide\] Hold-Win activation throws NullReferenceException and shows nothing when the runner process cannot be inspected](https://github.com/microsoft/PowerToys/issues/52004) in `microsoft/PowerToys`
 - 💬 Commented on [openchamber/openchamber#5879](https://github.com/openchamber/openchamber/issues/5879): Storage management: see which temp files a task produced, where they are, and clear them
 - 🐛 Opened issue [\[Bug\] Settings > MCP omits the Console MCP server that OpenCode adds at runtime](https://github.com/openchamber/openchamber/issues/5935) in `openchamber/openchamber`
-- 🐛 Opened issue [\[Bug\] Session retention hint still describes the old "Only archived sessions" checkbox](https://github.com/openchamber/openchamber/issues/5680) in `openchamber/openchamber`
-- 💬 Commented on [anomalyco/opencode#55772](https://github.com/anomalyco/opencode/issues/55772): \[FEATURE\]: Windows desktop ships the CLI but there is no way to run it
 
 </details>
 <!--END:activity-->
