@@ -3,27 +3,46 @@
   "windowStart": "2026-11-25T00:00:00+08:00",
   "windowEnd": "2026-11-26T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-25T14:51:03.512Z",
-  "empty": true,
+  "generatedAt": "2026-11-25T16:50:59.773Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 2,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
     {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "fa56419eebfb615c0e8af1f3fcbf0daeaee8b8b3",
+          "message": "docs(knowledge): 补齐 Windows 沙箱子目录不可写的整树修复配方与上游状态",
+          "ts": "2026-11-25T15:58:13Z"
+        },
+        {
+          "sha": "48b3fee372f0af82f23a668685b4f3462329885d",
+          "message": "docs(agents): 删除 push 相关约定",
+          "ts": "2026-11-25T15:35:11Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
       "repo": "sogeisetsu/sogeisetsu",
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 14,
+      "automated": 15,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 14,
+  "automatedCommits": 15,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -155,10 +174,33 @@
       "hits": false
     }
   },
-  "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "discussions": [
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "number": 11154,
+      "title": "`workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/discussions/11154",
+      "category": "General",
+      "comments": 4,
+      "action": "commented",
+      "ts": "2026-11-25T15:56:51.000Z",
+      "own": false
+    }
+  ],
+  "ai": {
+    "en": {
+      "headline": "2 own commits plus 15 automated commits",
+      "summary": "**2 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, documenting a Windows sandbox fix for unwritable subdirectories and removing push-related conventions from the agent documentation. A further **15 automated commits** were created by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. No pull requests, issues, or reviews were recorded. The user joined an existing discussion in `deepseek-ai/deepseek-harness`: `workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE, which had 4 comments.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "2 次本人提交，另有 15 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **2 次本人提交**，记录了 Windows 沙箱子目录不可写的整树修复配方与上游状态，并从 agent 文档中删除 push 相关约定。另有 **15 次自动提交**由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 创建。当天没有 pull request、issue 或 review 记录。用户参与了 `deepseek-ai/deepseek-harness` 的现有讨论 `workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE，该讨论共有 4 条评论。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "3fc1649e22da6793abf02d15e924626808bfd21b0706feded1bb4e61f79a7717"
+  "dataHash": "0bd959004303c0c73b53ddc538282de0413d252664c2e7c5429678877afa96b6"
 }

@@ -1,0 +1,196 @@
+{
+  "date": "2026-11-26",
+  "windowStart": "2026-11-26T00:00:00+08:00",
+  "windowEnd": "2026-11-27T00:00:00+08:00",
+  "username": "sogeisetsu",
+  "generatedAt": "2026-11-25T16:51:14.757Z",
+  "empty": false,
+  "totals": {
+    "commits": 2,
+    "prs": 0,
+    "issues": 0,
+    "reviews": 0
+  },
+  "commits": [
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "b7e1a12954b95d95423da101fc738f0bd5c6ce70",
+          "message": "docs(agents): 补充沙箱写入排查与可行性实测两条环境规则",
+          "ts": "2026-11-25T16:15:10Z"
+        },
+        {
+          "sha": "313630bb8223a6c3e5845dc01847492e24550046",
+          "message": "docs(knowledge): 补第三方诊断插件的 WARN 评审结论",
+          "ts": "2026-11-25T16:06:56Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    }
+  ],
+  "automatedCommits": 0,
+  "pullRequests": [],
+  "reviews": [],
+  "issues": [],
+  "releases": [],
+  "stars": [],
+  "starInventory": [
+    {
+      "repo": "sogeisetsu/WOW-Csharp",
+      "total": 109
+    },
+    {
+      "repo": "sogeisetsu/shumeipai",
+      "total": 24
+    },
+    {
+      "repo": "sogeisetsu/OGFont",
+      "total": 3
+    },
+    {
+      "repo": "sogeisetsu/lianxi",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/opencode-go-model-picker",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/springstudyy",
+      "total": 1
+    },
+    {
+      "repo": "sogeisetsu/-java-",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/asset-inventory",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/awesome-agent-skills",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/dsh-ecosystem-report",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/dsh-openchamber-plugins",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/meld-deepresearch",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/myBlog",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-agent-sandbox",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-creator",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/opencode-skill-management",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ownsalesforcelearnbook",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/pixel-logo-toolkit",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/ruan-js",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu.github.io",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/sopen-translate",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/testhello",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/tuangou",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typora-support-apex",
+      "total": 0
+    },
+    {
+      "repo": "sogeisetsu/typoraimage",
+      "total": 0
+    }
+  ],
+  "replies": [],
+  "stateChanges": [],
+  "truncated": {
+    "events": {
+      "cap": 300,
+      "hits": false
+    },
+    "targets": {
+      "cap": 25,
+      "hits": false
+    },
+    "replies": {
+      "cap": 30,
+      "hits": false
+    },
+    "stateChanges": {
+      "cap": 100,
+      "hits": false
+    }
+  },
+  "discussions": [
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "number": 11154,
+      "title": "`workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/discussions/11154",
+      "category": "General",
+      "comments": 4,
+      "action": "commented",
+      "ts": "2026-11-25T16:39:28.000Z",
+      "own": false
+    }
+  ],
+  "ai": {
+    "en": {
+      "headline": "2 own commits and a discussion reply in deepseek-harness",
+      "summary": "**2 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, with no automated commits. The first added two environment rules covering sandbox write troubleshooting and feasibility testing, while the second recorded a WARN review conclusion for a third-party diagnostic plugin. The user commented in the existing `deepseek-ai/deepseek-harness` discussion #11154, titled `workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE, which had 4 comments. No pull requests, issues, reviews, or releases were recorded on this day.",
+      "releaseNotes": []
+    },
+    "zh": {
+      "headline": "2 次本人提交，并在 deepseek-harness 参与讨论",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **2 次本人提交**，没有自动提交。第一条提交补充了两条环境规则，涉及沙箱写入排查与可行性实测；第二条提交记录了第三方诊断插件的 WARN 评审结论。用户参与了 `deepseek-ai/deepseek-harness` 现有讨论 #11154 的回复，该讨论标题为 `workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE，共有 4 条评论。当天没有记录到拉取请求、issue、评审或发布。",
+      "releaseNotes": []
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
+  "aiFailure": null,
+  "dataHash": "b446505abc6082042d11ac97a0308c11fdeb31b46532ceb1880180b16457306d"
+}
