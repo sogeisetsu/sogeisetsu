@@ -3,10 +3,10 @@
   "windowStart": "2026-11-26T00:00:00+08:00",
   "windowEnd": "2026-11-27T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-26T14:51:05.493Z",
+  "generatedAt": "2026-11-26T16:50:58.855Z",
   "empty": false,
   "totals": {
-    "commits": 3,
+    "commits": 8,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,34 @@
   "commits": [
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
-      "count": 3,
+      "count": 8,
       "own": true,
       "messages": [
+        {
+          "sha": "a1b19ef98f63b609e464bb7eb1ba9cdbd555547a",
+          "message": "docs(knowledge): 补记 evals/.openchamber 未被整树修复覆盖的实测",
+          "ts": "2026-11-26T15:52:57Z"
+        },
+        {
+          "sha": "b8318d2ef86133f1b43edd90130ede36f37c1b90",
+          "message": "docs(knowledge): 补插件形态学、纯插件最小构成与安装对账分流",
+          "ts": "2026-11-26T15:45:40Z"
+        },
+        {
+          "sha": "56f7521f0579954989933c68a6a20836043aceb7",
+          "message": "docs(knowledge): 补 Profile 与 Preset 的一句话比喻及池子边界",
+          "ts": "2026-11-26T15:26:30Z"
+        },
+        {
+          "sha": "e9e5d18b33d46adfbe183ba0c630e9384bcfc508",
+          "message": "docs(knowledge): 收录跑分口径与模型路由、聊天输出美元符号渲染坑",
+          "ts": "2026-11-26T15:23:36Z"
+        },
+        {
+          "sha": "226bcc20424ef31d2ba03becabaa0daaeec96469",
+          "message": "docs(knowledge): 补全 DSH Profile 与 Preset 注入链路",
+          "ts": "2026-11-26T14:46:04Z"
+        },
         {
           "sha": "db7459813cc9bccf84a5de0e6806a3c0867ca031",
           "message": "docs(knowledge): 补 profile 与 preset 的三类插件与 patch 语法速查",
@@ -41,13 +66,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 17,
+      "automated": 18,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 17,
+  "automatedCommits": 18,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -194,18 +219,18 @@
   ],
   "ai": {
     "en": {
-      "headline": "3 own commits plus 17 automated commits in sogeisetsu repositories",
-      "summary": "**3 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, plus 17 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The own commits added quick-reference material for three plugin types and patch syntax in profiles and presets, documented sandbox write troubleshooting and a feasibility test as two environment rules, and recorded a WARN review conclusion for a third-party diagnostic plugin. No pull requests, issues, or reviews were recorded. The user also joined an existing discussion in `deepseek-ai/deepseek-harness`: `workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE, which had 4 comments.",
+      "headline": "8 own commits plus 18 automated commits",
+      "summary": "**8 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, plus 18 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The own commits expanded knowledge notes on plugin forms, minimal plugin composition, installation reconciliation, Profile and Preset analogies and boundaries, and the DSH Profile/Preset injection chain. They also added a quick reference for three plugin types and patch syntax, benchmark criteria, model routing, and the dollar-sign rendering issue in chat output. Two agent environment rules covered sandbox write troubleshooting and feasibility testing, while another note recorded the WARN review conclusion for a third-party diagnostic plugin. The user commented in the existing `deepseek-ai/deepseek-harness` discussion #11154, “`workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE”, which has 4 comments. No pull requests, issues, reviews, or releases were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "sogeisetsu 各仓库共 3 次本人提交，另有 17 次自动提交",
-      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **3 次本人提交**，另有 17 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。本人提交为 profile 与 preset 补充了三类插件及 patch 语法速查，将沙箱写入排查与可行性实测记录为两条环境规则，并补充了第三方诊断插件的 WARN 评审结论。当天没有记录到 pull request、issue 或 review。用户还参与了 `deepseek-ai/deepseek-harness` 的既有讨论 `workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE，该讨论共有 4 条评论。",
+      "headline": "8 次本人提交，另有 18 次自动提交",
+      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **8 次本人提交**，另有 18 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。本人提交扩充了知识笔记，涵盖插件形态、纯插件最小构成、安装对账分流，以及 Profile 与 Preset 的比喻和池子边界。还补全了 DSH Profile 与 Preset 注入链路、三类插件与 patch 语法速查、跑分口径、模型路由和聊天输出中的美元符号渲染问题。两条 agent 环境规则补充了沙箱写入排查与可行性实测，另有一条笔记记录第三方诊断插件的 WARN 评审结论。本人在 `deepseek-ai/deepseek-harness` 的既有讨论 #11154 “`workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE” 中发表评论，该讨论共 4 条评论。当天未记录拉取请求、issue、评审或发布。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "62f89437740725303f943e9a883b37799fce3c1134604cc68e4737ddc9d4e498"
+  "dataHash": "b4ba43a85144216accfea58918d53f53541462e2f86cf7c8be981fd3a007b686"
 }
