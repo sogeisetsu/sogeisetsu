@@ -3,10 +3,10 @@
   "windowStart": "2026-11-26T00:00:00+08:00",
   "windowEnd": "2026-11-27T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-26T02:51:09.284Z",
+  "generatedAt": "2026-11-26T04:11:34.126Z",
   "empty": false,
   "totals": {
-    "commits": 2,
+    "commits": 3,
     "prs": 0,
     "issues": 0,
     "reviews": 0
@@ -14,9 +14,14 @@
   "commits": [
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
-      "count": 2,
+      "count": 3,
       "own": true,
       "messages": [
+        {
+          "sha": "db7459813cc9bccf84a5de0e6806a3c0867ca031",
+          "message": "docs(knowledge): 补 profile 与 preset 的三类插件与 patch 语法速查",
+          "ts": "2026-11-26T03:32:32Z"
+        },
         {
           "sha": "b7e1a12954b95d95423da101fc738f0bd5c6ce70",
           "message": "docs(agents): 补充沙箱写入排查与可行性实测两条环境规则",
@@ -36,13 +41,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 8,
+      "automated": 9,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 8,
+  "automatedCommits": 9,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -189,18 +194,18 @@
   ],
   "ai": {
     "en": {
-      "headline": "2 own commits plus 8 automated commits",
-      "summary": "**2 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, plus 8 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. The sandbox documentation gained two environment rules covering write troubleshooting and feasibility testing, and the knowledge documentation added a WARN review conclusion for a third-party diagnostic plugin. No pull requests, issues, or reviews were recorded. The user commented in the existing `deepseek-ai/deepseek-harness` discussion #11154, titled `workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE, which had 4 comments. No releases were published.",
+      "headline": "3 own commits plus 9 automated by github-actions[bot]",
+      "summary": "Across two repositories, the day produced **3** own commits and 9 automated commits by `github-actions[bot]`. In `sogeisetsu/opencode-agent-sandbox`, three documentation commits added a quick-reference for the three plugin and patch syntax categories under profile and preset, added two environment rules covering sandbox write troubleshooting and feasibility testing, and recorded the WARN review conclusion for third-party diagnostic plugins. In `sogeisetsu/sogeisetsu`, all 9 commits were automated by `github-actions[bot]` with no user-authored changes. The user also commented on discussion #11154 in `deepseek-ai/deepseek-harness`, addressing missing Low mandatory labels and capability ACEs on pre-existing subdirectories for the `workspace-write` feature.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "2 次本人提交，另有 8 次自动提交",
-      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **2 次本人提交**，另有 8 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。沙箱文档新增两条环境规则，涵盖写入排查与可行性实测；知识文档补充了第三方诊断插件的 WARN 评审结论。当天没有拉取请求、issue 或评审记录。用户参与了 `deepseek-ai/deepseek-harness` 现有讨论 #11154 `workspace-write`: pre-existing subdirectories are missing the Low mandatory label and the capability ACE 的讨论，该讨论共有 4 条评论。没有发布新版本。",
+      "headline": "3 次本人提交，另有 9 次由 github-actions[bot] 自动提交",
+      "summary": "在两个仓库中，当天产生 **3** 次本人提交和 9 次由 `github-actions[bot]` 自动提交。在 `sogeisetsu/opencode-agent-sandbox` 中，三次文档提交分别补充了 profile 与 preset 下三类插件与 patch 语法的速查表、新增了沙箱写入排查与可行性实测两条环境规则、记录了第三方诊断插件的 WARN 评审结论。在 `sogeisetsu/sogeisetsu` 中，全部 9 次提交均为 `github-actions[bot]` 自动生成，无本人变更。此外，用户在 `deepseek-ai/deepseek-harness` 的讨论 #11154 中发表评论，针对 `workspace-write` 功能中预存子目录缺少 Low 强制标签与能力 ACE 的问题进行了回复。",
       "releaseNotes": []
     }
   },
-  "aiProvider": "nvidia-minimax-flash",
-  "aiModel": "minimaxai/minimax-m3.1-flash",
+  "aiProvider": "nvidia-nemotron-ultra",
+  "aiModel": "nvidia/nemotron-3-ultra-550b-a55b",
   "aiFailure": null,
-  "dataHash": "bba1fcb13c5e85f81e7dc5b5933ba96db0dcb87aed376d3f1fcc39bdc1f6ee8c"
+  "dataHash": "ef2f324f73c73b7889e7c938aec10c1ac9e17027f1fda7dd4fd8a371b7f5214c"
 }
