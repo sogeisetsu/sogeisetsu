@@ -3,7 +3,7 @@
   "windowStart": "2026-11-27T00:00:00+08:00",
   "windowEnd": "2026-11-28T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-26T23:02:07.259Z",
+  "generatedAt": "2026-11-27T00:51:05.635Z",
   "empty": false,
   "totals": {
     "commits": 1,
@@ -31,13 +31,13 @@
       "count": 0,
       "own": true,
       "messages": [],
-      "automated": 7,
+      "automated": 8,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 7,
+  "automatedCommits": 8,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
@@ -172,18 +172,18 @@
   "discussions": [],
   "ai": {
     "en": {
-      "headline": "1 own commit plus 7 automated commits",
-      "summary": "**1 own commit** was recorded in `sogeisetsu/opencode-agent-sandbox`, documenting ACL propagation experiments and the root cause of a missed fix. The commit message was `docs(knowledge): 补记 ACL 传播实验与漏修根因`, indicating a knowledge-base documentation update. In `sogeisetsu/sogeisetsu`, there were **7 automated commits** by `github-actions[bot]` and no own commits. No pull requests, issues, reviews, releases, stars, replies, state changes, or discussions were recorded for the day.",
+      "headline": "1 own commit plus 8 automated commits by github-actions[bot]",
+      "summary": "The day produced **1** own commit in `sogeisetsu/opencode-agent-sandbox` adding documentation about an ACL propagation experiment and the root cause of a missed fix. In `sogeisetsu/sogeisetsu` there were 8 automated commits by `github-actions[bot]`. No pull requests, issues, reviews, releases, stars, replies, state changes, or discussions were recorded.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "1 次本人提交，另有 7 次自动提交",
-      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **1 次本人提交**，补记 ACL 传播实验与漏修根因。提交信息为 `docs(knowledge): 补记 ACL 传播实验与漏修根因`，属于知识库文档更新。在 `sogeisetsu/sogeisetsu` 有 **7 次自动提交**，均由 `github-actions[bot]` 创建，无本人提交。当天没有记录拉取请求、issue、评审、发布、star、回复、状态变更或讨论。",
+      "headline": "1 次本人提交，另有 8 次由 github-actions[bot] 自动提交",
+      "summary": "当天在 `sogeisetsu/opencode-agent-sandbox` 产生 **1** 次本人提交，补记 ACL 传播实验与漏修根因的文档。在 `sogeisetsu/sogeisetsu` 有 8 次由 `github-actions[bot]` 自动提交。无拉取请求、Issue、审查、发布、Star、回复、状态变更或讨论记录。",
       "releaseNotes": []
     }
   },
-  "aiProvider": "nvidia-minimax-flash",
-  "aiModel": "minimaxai/minimax-m3.1-flash",
+  "aiProvider": "nvidia-nemotron-ultra",
+  "aiModel": "nvidia/nemotron-3-ultra-550b-a55b",
   "aiFailure": null,
-  "dataHash": "68fc1f03d6c98331c87ec7098822315f916336df2bc4b290283af5702f431cdd"
+  "dataHash": "722fc4115fc3900283f199ed8026ce791e23a5a4e4fd05d161360c3d9a66966f"
 }
