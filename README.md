@@ -8,12 +8,12 @@ _Updated automatically: 2026-11-28_
 <details><summary>🔨 Owned repos</summary>
 
 - 📝 Pushed 99 commits to `sogeisetsu/opencode-agent-sandbox`
-- 📝 Pushed 78 commits to `sogeisetsu/subagent-preset-select`
+- 📝 Pushed 86 commits to `sogeisetsu/subagent-preset-select`
 - 📝 Pushed 54 commits to `sogeisetsu/pixel-logo-toolkit`
 - 📝 Pushed 52 commits to `sogeisetsu/opencode-skill-management`
 - 📝 Pushed 30 commits to `sogeisetsu/dsh-openchamber-plugins`
 - 📝 Pushed 29 commits to `sogeisetsu/opencode-go-model-picker`
-- 📝 Pushed 15 commits to `sogeisetsu/sogeisetsu`
+- 📝 Pushed 17 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 11 commits to `sogeisetsu/dsh-ecosystem-report`
 - 📝 Pushed 3 commits to `sogeisetsu/sopen-translate`
 - 📝 Pushed 1 commit to `sogeisetsu/myBlog`
