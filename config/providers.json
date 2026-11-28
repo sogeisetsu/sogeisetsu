@@ -15,10 +15,6 @@
         "x-opencode-session": "sogeisetsu-daily-report-${session}"
       }
     },
-    "sensenova": {
-      "baseUrl": "https://token.sensenova.cn/v1",
-      "keyEnv": "SENSENOVA_API_KEY"
-    },
     "dots": {
       "baseUrl": "https://note3-prev-api.askdiandian.com/v1",
       "keyEnv": "DOTS_API_KEY"
@@ -43,18 +39,6 @@
       "apiModel": "deepseek-v4.1-flash",
       "note": "Go 套餐内额度；总结线的链首（长输出 + 强校验只有它稳定过）"
     },
-    "sensenova": {
-      "endpoint": "sensenova",
-      "apiModel": "glm-5.2",
-      "params": {
-        "extraBody": {
-          "thinking": {
-            "type": "disabled"
-          }
-        }
-      },
-      "note": "额度独立于 Go 账号；必须关思考，否则 reasoning 吃光预算、content 恒为空"
-    },
     "dots3-note-prev": {
       "endpoint": "dots",
       "apiModel": "dots3-note-prev",
@@ -74,13 +58,12 @@
         "nvidia-minimax-flash",
         "nvidia-nemotron-ultra",
         "opencode-go-deepseek",
-        "sensenova",
         "dots3-note-prev"
       ],
       "budgetMs": 480000
     },
     "summary": {
-      "order": ["opencode-go-deepseek", "sensenova"]
+      "order": ["opencode-go-deepseek"]
     }
   }
 }

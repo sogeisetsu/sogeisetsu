@@ -30,7 +30,7 @@ import { LOG, MIN_ATTEMPT_MS, attemptProvider, normalizeProvider } from "./trans
  * 入口算 deadline，交给 attemptProvider 收敛每条腿的单次超时；预算在腿之间耗尽时，
  * 对**剩余每条腿各补一条合成 attempt**（reason=「未尝试（超出 lane 预算 N 分钟）」）并照常回调
  * onProviderFailure —— 于是自然落进现有的失败记录 + 常驻 issue + 页面失败卡，**绝不静默截断**。
- * 不传 = 不设预算（总结线现状：deepseek 实测 51.8–83.0s + sensenova 兜底）。
+ * 不传 = 不设预算（总结线现状：deepseek 实测 51.8–83.0s，链上只有它一条腿）。
  */
 export async function generateStructured({
   system,

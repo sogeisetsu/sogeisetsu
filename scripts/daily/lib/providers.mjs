@@ -23,7 +23,7 @@
  *   checkWorkflowWiring(opts?)                → workflow 接线硬断言（纯文本扫描，不引 YAML 库）
  *   statusReport(opts?)                       → 本机 env / repo secret / 配置 三方对照
  *
- * 配置缺失 / JSON 损坏 / schema 不合法 → **warn + 回落内置 FALLBACK_CHAIN（deepseek → sensenova）**：
+ * 配置缺失 / JSON 损坏 / schema 不合法 → **warn + 回落内置 FALLBACK_CHAIN（只有 deepseek）**：
  * CI 不能因为一个坏 JSON 全挂；`node scripts/providers.mjs check`（check.mjs 里会跑）让坏配置在提交前就红。
  *
  * 安全线：配置里只允许 `keyEnv`（环境变量名），永不存明文 key；所有输出不打印 key 值（只 name/长度/sha256 前 8 位）。
@@ -50,8 +50,9 @@ export const PARAM_KEYS = ["reasoningEffort", "extraBody", "responseFormat"];
 
 /**
  * 内置兜底链 —— **只在配置不可用时**使用（缺失 / JSON 坏 / schema 不合法）。
- * 内容是「历史默认」的最小副本：先 Go 的 deepseek，再商汤。它与配置里那两条腿必须保持同一口径，
- * 否则坏配置的那次运行会悄悄换成另一条链。改配置时不要动这里（它是灾备，不是事实来源）。
+ * 内容是「历史默认」的最小副本：只有 Go 的 deepseek 一条腿（商汤腿已下线）。
+ * 它与配置里的同 slug 腿必须保持同一口径，否则坏配置的那次运行会悄悄换成另一条链。
+ * 改配置时不要动这里（它是灾备，不是事实来源）。
  */
 export const FALLBACK_CHAIN = Object.freeze([
   Object.freeze({
@@ -65,15 +66,6 @@ export const FALLBACK_CHAIN = Object.freeze([
     }),
     model: "deepseek-v4.1-flash",
     shape: "chat",
-  }),
-  Object.freeze({
-    name: "sensenova",
-    endpoint: "sensenova",
-    baseUrl: "https://token.sensenova.cn/v1",
-    keyEnv: "SENSENOVA_API_KEY",
-    model: "glm-5.2",
-    shape: "chat",
-    extraBody: Object.freeze({ thinking: Object.freeze({ type: "disabled" }) }),
   }),
 ]);
 const FALLBACK_SLUGS = FALLBACK_CHAIN.map((p) => p.name);
@@ -716,7 +708,7 @@ export function parseValue(raw) {
 
 /**
  * 解析 `set` / `show` 的目标：显式前缀 `model:` / `lane:` / `endpoint:` 优先，
- * 否则按 model → lane → endpoint 的顺序找（`sensenova` 既是 model 也是 endpoint，model 优先是刻意的）。
+ * 否则按 model → lane → endpoint 的顺序找（名字撞车时 model 优先是刻意的）。
  */
 export function resolveTarget(config, target) {
   const raw = String(target ?? "").trim();

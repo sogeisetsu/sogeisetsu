@@ -697,7 +697,7 @@ node scripts/daily/check.mjs 与 CI 的 check.yml 都会跑它。只读，不联
   show: `用法：node scripts/providers.mjs show <slug|lane|endpoint:NAME|model:SLUG|lane:LANE>
 
 目标解析：显式前缀（model: / lane: / endpoint:）优先；否则按 model → lane → endpoint 找。
-  sensenova 既是 model 也是 endpoint —— 默认命中 model；要看 endpoint 写 endpoint:sensenova。
+  名字撞车时默认命中 model；要看 endpoint 写 endpoint:NAME。
 
 输出：该节点的完整 JSON。看 model 时额外给：
   lanes           它进了哪些链
@@ -723,8 +723,8 @@ node scripts/daily/check.mjs 与 CI 的 check.yml 都会跑它。只读，不联
 写操作：先打印 diff，--yes 才落盘；--dry-run 显式只读。
 
 示例：
-  node scripts/providers.mjs lane move daily sensenova --top
-  node scripts/providers.mjs lane add summary nvidia-minimax-flash --before=sensenova --yes
+  node scripts/providers.mjs lane move daily opencode-go-deepseek --top
+  node scripts/providers.mjs lane add summary nvidia-nemotron-ultra --before=opencode-go-deepseek --yes
   node scripts/providers.mjs lane remove daily my-leg --yes
 
 注意：lane 预算用 \`set <lane> budgetMs=…\`，不在这里改。`,
@@ -741,7 +741,7 @@ node scripts/daily/check.mjs 与 CI 的 check.yml 都会跑它。只读，不联
   node scripts/providers.mjs set nvidia-minimax-flash params.responseFormat=false
   node scripts/providers.mjs set daily budgetMs=600000
   node scripts/providers.mjs set endpoint:nvidia baseUrl=https://integrate.api.nvidia.com/v1
-  node scripts/providers.mjs set sensenova params.extraBody.thinking.type=disabled
+  node scripts/providers.mjs set dots3-note-prev params.extraBody.chat_template_kwargs.enable_thinking=false
 
 限制：params 只允许 reasoningEffort / extraBody / responseFormat —— 写 temperature 会被拒。
 写操作：先打印 diff，--yes 才落盘；会让 schema 不合法的改动直接抛错，不落盘。`,

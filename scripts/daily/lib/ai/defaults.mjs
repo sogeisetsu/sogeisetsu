@@ -17,7 +17,7 @@ import { providersForLane } from "../providers.mjs";
  * `node scripts/providers.mjs check`（`check.mjs` 里会跑）。
  *
  * 配置缺失 / JSON 损坏 / schema 不合法时，`providers.mjs` 会 warn 并回落到内置 FALLBACK_CHAIN
- * （deepseek → sensenova）：CI 不能因为一个坏 JSON 全挂，但提交前预检会让坏配置直接红。
+ * （只有 deepseek）：CI 不能因为一个坏 JSON 全挂，但提交前预检会让坏配置直接红。
  */
 export function defaultProviders(env = process.env) {
   return providersForLane("daily", env);

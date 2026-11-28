@@ -9,7 +9,6 @@
  *   · 429 / 5xx 等 ~2s 重试一次 → 仍失败换下一家
  *   · 带 response_format 收到 400 → 去掉 JSON 模式重试，并进程内记住该 provider
  *   · 带 reasoning_effort 收到 400 → 去掉该参数重试
- *   · SenseNova chat 404/405 → 同 provider 换 responses 形态
  *   · 截断 / 空输出 → 翻倍 max_tokens 重试（上限 MAX_TOKENS_CAP）
  *   · JSON 提取或校验失败 → 逐次加严的纠正提示，最多追加 MAX_CORRECTIONS 次
  *   · deadline（lane 总预算）→ 每次发请求前收敛单次超时
@@ -169,11 +168,11 @@ function extractContent(json, shape) {  if (shape === "responses") {
  *     取值可由 provider.reasoningEffort 覆盖 —— minimax 不认 "none"（400），而整个去掉参数
  *     它又会无约束地思考到超时，所以它单独配 "low"
  *   · provider.headers（可选）原样追加进请求头（OpenCode Go 的 user-agent / 会话 id 走这里）
- *   · provider.extraBody（可选）合并进 chat 请求体（sensenova 的 thinking:{type:"disabled"} 走这里）
+ *   · provider.extraBody（可选）合并进 chat 请求体（如 dots 的 chat_template_kwargs 走这里）
  *   · provider.responseFormat === false → 从不发 json_object（默认发）
  *   · deadline（可选，epoch ms）→ lane 总预算：每次发请求前剩余 ≤ MIN_ATTEMPT_MS 就立刻放弃，
  *     否则 timeout = min(CHAT_TIMEOUT_MS, 剩余)。**这是本函数唯一为 lane 预算加的分支**
- *     ——重试 / 纠正 / 截断翻倍 / JSON 模式退让 / 形态切换一律不动。
+ *     ——重试 / 纠正 / 截断翻倍 / JSON 模式退让一律不动。
  *
  * `validate(parsed)` 是同步校验器，返回 { ok:true, value } 或 { ok:false, reason }；
  * `feedback(reason, n)` 按失败原因生成可执行的纠正提示（默认 buildRetryFeedback，日报专用）。
@@ -185,7 +184,6 @@ export async function attemptProvider(provider, system, user, validate, feedback
   let prompt = user;
   let retriedStatus = false; // 429/5xx 已重试过
   let corrections = 0; // 已因 JSON/校验失败追加纠正提示的次数（最多 MAX_CORRECTIONS 次）
-  let triedResponses = false; // SenseNova 404/405 → responses 已切换过
   let reasoningOff = true; // chat 形态默认发 reasoning_effort=none 关思考；400 时去掉重试
   // 实测（2026-10-22，真实日报 prompt，deepseek-v4.1-flash）：none → reasoning_tokens=0 / 8.5s；
   // low → 1077 / 17.1s；整个不带参数 → 2799 / 24.0s。所以 "none" 对它是真关掉的，不是被忽略。
@@ -222,7 +220,7 @@ export async function attemptProvider(provider, system, user, validate, feedback
             max_tokens: maxTokens,
             ...(reasoningOff ? { reasoning_effort: provider.reasoningEffort || "none" } : {}),
             ...(useJsonMode ? { response_format: { type: "json_object" } } : {}),
-            // provider 自定义请求体片段（sensenova 的 thinking:{type:"disabled"} 走这里）；
+            // provider 自定义请求体片段（如 dots 关思考的 chat_template_kwargs 走这里）；
             // 只作用于 chat 形态，responses 形态不带（那边的参数名不同）
             ...(provider.extraBody && typeof provider.extraBody === "object" ? provider.extraBody : {}),
           };
@@ -258,22 +256,6 @@ export async function attemptProvider(provider, system, user, validate, feedback
         continue;
       }
       return { ok: false, reason: `HTTP ${res.status}（已重试仍失败）` };
-    }
-
-    // SenseNova chat 形态 404/405：同一 provider 换 /responses 形态再试一次。
-    // 按 endpoint 判断（不按 name）：name 是可随便改的稳定 slug，线上历史数据与测试都依赖它不变。
-    if (
-      (res.status === 404 || res.status === 405) &&
-      provider.endpoint === "sensenova" &&
-      shape === "chat" &&
-      !triedResponses
-    ) {
-      triedResponses = true;
-      shape = "responses";
-      console.error(
-        `${LOG} ${provider.name}: chat 形态 HTTP ${res.status}，改用 responses 形态重试`
-      );
-      continue;
     }
 
     // 400：先去掉可能不被支持的 reasoning_effort，再退让 response_format（都不放弃 provider）

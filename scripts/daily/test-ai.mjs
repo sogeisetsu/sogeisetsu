@@ -4,7 +4,7 @@
  * ------------------------------------------------------------------
  * lib/ai.mjs 的确定性回归测试（零依赖，不需要真实 API key）。
  *
- * 做法：起一个本地 http 服务器冒充 SenseNova 的 chat/completions，
+ * 做法：起一个本地 http 服务器冒充 chat/completions 端点，
  * 按脚本依次返回受控响应，验证 generateNarrative 在各失败形态下的处理：
  *   · summary / headline 超长 → 代码确定性截断到上限后接受（不整段失败）
  *   · JSON 夹在散文里 / 字符串内有未转义换行 → 仍能提取解析
@@ -298,16 +298,16 @@ const cases = [
     fn: () => {
       const none = defaultProviders({});
       const goOnly = defaultProviders({ OPENCODE_API_KEY: "go-key" });
-      const both = defaultProviders({ SENSENOVA_API_KEY: "k", OPENCODE_API_KEY: "go-key" });
-      const fromConfig = providersForLane("daily", { SENSENOVA_API_KEY: "k", OPENCODE_API_KEY: "go-key" });
+      const both = defaultProviders({ DOTS_API_KEY: "k", OPENCODE_API_KEY: "go-key" });
+      const fromConfig = providersForLane("daily", { DOTS_API_KEY: "k", OPENCODE_API_KEY: "go-key" });
       const go = goOnly;
-      const sense = both.at(-1);
+      const dots = both.at(-1);
       const ua = String(go[0]?.headers?.["user-agent"] || "");
       const sessions = new Set(go.map((p) => p.headers?.["x-opencode-session"]));
       return [
         ["noKeysEmpty", none.length === 0],
         ["goOnlyOne", goOnly.length === 1 && goOnly.every((p) => p.name.startsWith("opencode-go-"))],
-        ["order", both.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova"],
+        ["order", both.map((p) => p.name).join(",") === "opencode-go-deepseek,dots3-note-prev"],
         ["sameAsLane", both.map((p) => p.name).join(",") === fromConfig.map((p) => p.name).join(",")],
         ["goNoReasoningOverride", go[0]?.reasoningEffort === undefined],
         [
@@ -328,11 +328,11 @@ const cases = [
         ["selfIdentifiedUA", /^[A-Za-z0-9._-]+\/[\d.]+/.test(ua) && !/undici|axios|node-fetch|^node\//i.test(ua)],
         ["stableSession", sessions.size === 1 && String([...sessions][0] || "").length > 8],
         ["noZen", !both.some((p) => p.name === "zen" || /zen/i.test(String(p.baseUrl)))],
-        // 商汤腿：写死 glm-5.2（不再动态解析）+ thinking 关闭；Go 腿不带 extraBody
-        ["senseModel", sense?.model === "glm-5.2"],
-        ["senseThinkingOff", sense?.extraBody?.thinking?.type === "disabled"],
-        ["senseNoExtraBodyOnGo", go.every((p) => p.extraBody === undefined)],
-        ["senseBase", sense?.baseUrl === "https://token.sensenova.cn/v1" && sense?.shape === "chat"],
+        // 链尾 Dots：写死 dots3-note-prev + 关思考；Go 腿不带 extraBody
+        ["dotsModel", dots?.model === "dots3-note-prev"],
+        ["dotsThinkingOff", dots?.extraBody?.chat_template_kwargs?.enable_thinking === false],
+        ["noExtraBodyOnGo", go.every((p) => p.extraBody === undefined)],
+        ["dotsBase", dots?.baseUrl === "https://note3-prev-api.askdiandian.com/v1" && dots?.shape === "chat"],
       ];
     },
   },
@@ -342,7 +342,7 @@ const cases = [
     // 「enabled:false 会被跳过」由 test-providers.mjs 用专门 fixture 断言。
     name: "lanes-order-from-config",
     fn: () => {
-      const env = { SENSENOVA_API_KEY: "k", OPENCODE_API_KEY: "go-key" };
+      const env = { DOTS_API_KEY: "k", OPENCODE_API_KEY: "go-key" };
       const allKeys = { ...env, NVIDIA_API_KEY: "nv-key" };
       const summary = providersForLane("summary", env);
       const daily = providersForLane("daily", env);
@@ -352,17 +352,17 @@ const cases = [
       const minimax = catalogue(allKeys).find((r) => r.name === "nvidia-minimax-flash");
       const names = dailyAll.map((p) => p.name);
       return [
-        ["summaryOrder", summaryOrder.join(",") === "opencode-go-deepseek,sensenova"],
+        ["summaryOrder", summaryOrder.join(",") === "opencode-go-deepseek"],
         ["summaryStartsWithDeepseek", summary[0]?.name === "opencode-go-deepseek"],
         ["summaryHasNoNvidia", !summary.some((p) => p.endpoint === "nvidia")],
         [
           "dailyFullOrder",
-          dailyOrder.join(",") === "nvidia-minimax-flash,nvidia-nemotron-ultra,opencode-go-deepseek,sensenova,dots3-note-prev",
+          dailyOrder.join(",") === "nvidia-minimax-flash,nvidia-nemotron-ultra,opencode-go-deepseek,dots3-note-prev",
         ],
         ["dailyFollowsLaneOrder", names.every((n, i) => dailyOrder.includes(n) && (i === 0 || dailyOrder.indexOf(n) > dailyOrder.indexOf(names[i - 1])))],
         ["dailyMinimaxLow", minimax?.params?.reasoningEffort === "low"],
         ["dailyUltraNone", catalogue(allKeys).find((r) => r.name === "nvidia-nemotron-ultra")?.params?.reasoningEffort === undefined],
-        ["dailyWithoutNvidiaKeyStillHasTwo", daily.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova"],
+        ["dailyWithoutNvidiaKeyStillHasTwo", daily.map((p) => p.name).join(",") === "opencode-go-deepseek,dots3-note-prev"],
         ["noMutation", providersForLane("summary", env).map((p) => p.name).join(",") === summary.map((p) => p.name).join(",")],
         ["unknownLaneEmpty", providersForLane("no-such-lane", env).length === 0],
       ];
@@ -373,14 +373,14 @@ const cases = [
     name: "sanitize-reason-redacts-secrets",
     fn: () => {
       const out = sanitizeReason(
-        "HTTP 401 Bearer gho_ABCDEFGHIJKLMNOPQRSTUVWXYZ012345 sk-ABCDEFGH12345678 https://token.sensenova.cn/v1/chat?x=1 done"
+        "HTTP 401 Bearer gho_ABCDEFGHIJKLMNOPQRSTUVWXYZ012345 sk-ABCDEFGH12345678 https://api.example.invalid/v1/chat?x=1 done"
       );
       const longRun = sanitizeReason(`head ${"a".repeat(40)} tail`);
       const longText = sanitizeReason(Array.from({ length: 200 }, () => "ab").join(" "));
       return [
         ["noBearer", !out.includes("gho_ABCDEFGHIJKLMNOPQRSTUVWXYZ012345")],
         ["noSk", !out.includes("sk-ABCDEFGH12345678")],
-        ["noUrl", !out.includes("token.sensenova.cn")],
+        ["noUrl", !out.includes("api.example.invalid")],
         ["hasRedacted", out.includes("<redacted>")],
         ["longRunRedacted", !longRun.includes("a".repeat(40))],
         ["truncated", longText.length <= 301 && longText.endsWith("…")],

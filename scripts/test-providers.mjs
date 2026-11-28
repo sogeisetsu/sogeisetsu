@@ -125,7 +125,7 @@ try {
 
   // ------------------------------------------------------------ 2 lane 解析
   {
-    const env = { OPENCODE_API_KEY: "go-key", SENSENOVA_API_KEY: "sense-key", NVIDIA_API_KEY: "nv-key" };
+    const env = { OPENCODE_API_KEY: "go-key", DOTS_API_KEY: "dots-key", NVIDIA_API_KEY: "nv-key" };
     const canonFile = writeTmpConfig(canonicalConfig());
     const daily = providers.providersForLane("daily", env, { configPath: canonFile });
     const summary = providers.providersForLane("summary", env, { configPath: canonFile });
@@ -137,8 +137,8 @@ try {
     const disabledFile = writeTmpConfig(cfg);
     const withoutMinimax = providers.providersForLane("daily", env, { configPath: disabledFile });
 
-    const noNvidiaKey = providers.providersForLane("daily", { OPENCODE_API_KEY: "go-key", SENSENOVA_API_KEY: "s" }, { configPath: canonFile });
-    const alias = providers.providersForLane("daily", { Nvidia: "alias-key", OPENCODE_API_KEY: "go-key", SENSENOVA_API_KEY: "s" }, { configPath: canonFile });
+    const noNvidiaKey = providers.providersForLane("daily", { OPENCODE_API_KEY: "go-key", DOTS_API_KEY: "s" }, { configPath: canonFile });
+    const alias = providers.providersForLane("daily", { Nvidia: "alias-key", OPENCODE_API_KEY: "go-key", DOTS_API_KEY: "s" }, { configPath: canonFile });
 
     // `${session}`：同一 endpoint 上挂两条腿，一次调用必须共用一个会话 id
     const sessionCfg = canonicalConfig();
@@ -152,13 +152,13 @@ try {
     );
 
     check("lane-resolution", [
-      ["dailyOrder", ordered === "nvidia-minimax-flash,nvidia-nemotron-ultra,opencode-go-deepseek,sensenova"],
-      ["summaryOrder", summary.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova"],
+      ["dailyOrder", ordered === "nvidia-minimax-flash,nvidia-nemotron-ultra,opencode-go-deepseek,dots3-note-prev"],
+      ["summaryOrder", summary.map((p) => p.name).join(",") === "opencode-go-deepseek"],
       ["minimaxReasoningLow", daily[0]?.reasoningEffort === "low"],
       ["ultraNoReasoning", daily[1]?.reasoningEffort === undefined],
-      ["senseThinkingOff", daily.at(-1)?.extraBody?.thinking?.type === "disabled"],
+      ["dotsThinkingOff", daily.at(-1)?.extraBody?.chat_template_kwargs?.enable_thinking === false],
       ["slugIsName", daily[0]?.name === "nvidia-minimax-flash" && daily[0]?.model === "minimaxai/minimax-m3.1-flash"],
-      ["endpointField", daily[0]?.endpoint === "nvidia" && daily.at(-1)?.endpoint === "sensenova"],
+      ["endpointField", daily[0]?.endpoint === "nvidia" && daily.at(-1)?.endpoint === "dots"],
       ["disabledSkipped", !withoutMinimax.some((p) => p.name === "nvidia-minimax-flash")],
       ["missingKeySkipped", !noNvidiaKey.some((p) => p.endpoint === "nvidia")],
       ["aliasHit", alias[0]?.name === "nvidia-minimax-flash" && alias[0]?.apiKey === "alias-key"],
@@ -178,7 +178,7 @@ try {
     drainStderr();
     const brokenFile = tmpPath();
     writeFileSync(brokenFile, "{ this is not json", "utf8");
-    const env = { OPENCODE_API_KEY: "go-key", SENSENOVA_API_KEY: "sense-key" };
+    const env = { OPENCODE_API_KEY: "go-key" };
     const list = providers.providersForLane("daily", env, { configPath: brokenFile });
     const warn1 = drainStderr();
 
@@ -192,19 +192,19 @@ try {
     drainStderr();
 
     check("bad-config-fallback", [
-      ["brokenJsonFallback", list.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova"],
+      ["brokenJsonFallback", list.map((p) => p.name).join(",") === "opencode-go-deepseek"],
       ["brokenJsonWarns", /FALLBACK_CHAIN/.test(warn1)],
-      ["invalidSchemaFallback", list2.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova"],
+      ["invalidSchemaFallback", list2.map((p) => p.name).join(",") === "opencode-go-deepseek"],
       ["invalidSchemaWarns", /FALLBACK_CHAIN/.test(warn2)],
-      ["missingFileFallback", list3.map((p) => p.name).join(",") === "opencode-go-deepseek,sensenova"],
-      ["fallbackKeepsParams", list3.at(-1)?.extraBody?.thinking?.type === "disabled"],
+      ["missingFileFallback", list3.map((p) => p.name).join(",") === "opencode-go-deepseek"],
+      ["fallbackNoExtraBody", list3.at(-1)?.extraBody === undefined],
       [
         "fallbackCatalogueLanes",
         providers
           .catalogue(env, { configPath: missingFile })
           .every((r) => r.lanes.join(",") === "daily,summary" && r.configured === true),
       ],
-      ["warnOnce", providers.providersForLane("daily", env, { configPath: brokenFile }).length === 2 && drainStderr() === ""],
+      ["warnOnce", providers.providersForLane("daily", env, { configPath: brokenFile }).length === 1 && drainStderr() === ""],
     ]);
   }
 
@@ -229,7 +229,7 @@ try {
 
     // lane add / move / remove
     let cfg = reloaded.config;
-    cfg = providers.laneAdd(cfg, "summary", "nvidia-nemotron-lightning", { where: "before", ref: "sensenova" });
+    cfg = providers.laneAdd(cfg, "summary", "nvidia-nemotron-lightning", { where: "before", ref: "opencode-go-deepseek" });
     providers.writeConfig(cfg, file);
     const summaryAfterAdd = providers.loadConfig(file).config.lanes.summary.order.join(",");
     cfg = providers.laneMove(cfg, "summary", "nvidia-nemotron-lightning", { where: "top" });
@@ -277,15 +277,15 @@ try {
     // 干跑（不带 --yes）也必须不落盘
     const cliFile2 = writeTmpConfig(realConfig());
     const cliBefore2 = readFileSync(cliFile2, "utf8");
-    spawnSync(process.execPath, [CLI, "disable", "sensenova", `--config=${cliFile2}`], { encoding: "utf8" });
+    spawnSync(process.execPath, [CLI, "disable", "opencode-go-deepseek", `--config=${cliFile2}`], { encoding: "utf8" });
     const afterNoYes = readFileSync(cliFile2, "utf8");
 
     check("write-roundtrip", [
       ["added", added?.apiModel === "nvidia/nemotron-3.5-lightning-30b-a3b" && added?.params?.reasoningEffort === "none"],
       ["addedTopOfLane", reloaded.config.lanes.daily.order[0] === "nvidia-nemotron-lightning"],
-      ["laneAddBefore", summaryAfterAdd === "opencode-go-deepseek,nvidia-nemotron-lightning,sensenova"],
-      ["laneMoveTop", summaryAfterMove === "nvidia-nemotron-lightning,opencode-go-deepseek,sensenova"],
-      ["laneRemove", summaryAfterRemove === "opencode-go-deepseek,sensenova"],
+      ["laneAddBefore", summaryAfterAdd === "nvidia-nemotron-lightning,opencode-go-deepseek"],
+      ["laneMoveTop", summaryAfterMove === "nvidia-nemotron-lightning,opencode-go-deepseek"],
+      ["laneRemove", summaryAfterRemove === "opencode-go-deepseek"],
       ["setNested", effort === "low"],
       ["setNumber", budget === 600000],
       ["disableWritesFalse", disabled === false],
@@ -371,7 +371,6 @@ try {
         "        env:",
         "          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}",
         "          # NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}   ← 注释不算数",
-        "          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}",
         "",
       ].join("\n"),
       "utf8"
@@ -391,14 +390,12 @@ try {
         "        run: node scripts/daily/index.mjs",
         "        env:",
         "          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}",
-        "          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}",
         "          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}",
         "          DOTS_API_KEY: ${{ secrets.DOTS_API_KEY }}",
         "      - name: diag",
         "        run: node scripts/diagnose-providers.mjs",
         "        env:",
         "          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}",
-        "          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}",
         "          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}",
         "          DOTS_API_KEY: ${{ secrets.DOTS_API_KEY }}",
         "",
@@ -412,7 +409,7 @@ try {
     mkdirSync(onlyDiag, { recursive: true });
     writeFileSync(
       path.join(onlyDiag, "d.yml"),
-      "steps:\n  - run: node scripts/diagnose-providers.mjs\n    env:\n      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}\n      SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}\n",
+      "steps:\n  - run: node scripts/diagnose-providers.mjs\n    env:\n      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}\n",
       "utf8"
     );
     const diag = providers.checkWorkflowWiring({ workflowDir: onlyDiag });
@@ -538,7 +535,7 @@ try {
 
     const listed = spawnSync(process.execPath, [CLI, "list", "--json"], {
       encoding: "utf8",
-      env: { ...process.env, NVIDIA_API_KEY: secretValue, OPENCODE_API_KEY: "oc-secret-value", SENSENOVA_API_KEY: "sn-secret-value" },
+      env: { ...process.env, NVIDIA_API_KEY: secretValue, OPENCODE_API_KEY: "oc-secret-value" },
     });
     const statusRows = providers.statusReport({
       env: { NVIDIA_API_KEY: secretValue },
