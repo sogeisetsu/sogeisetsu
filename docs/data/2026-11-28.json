@@ -3,31 +3,319 @@
   "windowStart": "2026-11-28T00:00:00+08:00",
   "windowEnd": "2026-11-29T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-28T06:51:03.727Z",
-  "empty": true,
+  "generatedAt": "2026-11-28T14:42:18.814Z",
+  "empty": false,
   "totals": {
-    "commits": 0,
+    "commits": 49,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
     {
-      "repo": "sogeisetsu/sogeisetsu",
-      "count": 0,
+      "repo": "sogeisetsu/subagent-preset-select",
+      "count": 47,
       "own": true,
-      "messages": [],
-      "automated": 11,
+      "messages": [
+        {
+          "sha": "3a3a78b44b3493406e8368cb008d0e062166a257",
+          "message": "docs: tighten the README opening to three sentences",
+          "ts": "2026-11-28T14:31:43Z"
+        },
+        {
+          "sha": "0ffab38a6f551877a7ca7353f63a88a038484459",
+          "message": "docs: require a detailed install section in release notes",
+          "ts": "2026-11-28T14:14:46Z"
+        },
+        {
+          "sha": "398f3036ad45b78b9b9306f5ecfad56a5d37620a",
+          "message": "docs: lead the README with the benefit, not the packaging description",
+          "ts": "2026-11-28T14:13:43Z"
+        },
+        {
+          "sha": "975ee997fcb2655138561ea7b93653cccb619888",
+          "message": "docs: record the trusted-publishing setup and its pitfalls",
+          "ts": "2026-11-28T14:05:24Z"
+        },
+        {
+          "sha": "fa61a3ba1eced05f7d78f58c65b155bcb448c5ca",
+          "message": "ci: drop the OIDC probe steps",
+          "ts": "2026-11-28T14:05:01Z"
+        },
+        {
+          "sha": "8cd0668150cf69bfb8a241d1e81d5cd5df76e4b2",
+          "message": "ci: probe the npm OIDC token exchange",
+          "ts": "2026-11-28T11:28:59Z"
+        },
+        {
+          "sha": "c265d997d686a83f7bd27d83951004c22d2a15c7",
+          "message": "ci: pin npm 11 for the OIDC exchange",
+          "ts": "2026-11-28T11:27:25Z"
+        },
+        {
+          "sha": "d58f7224d02611c6798b607dc959f9f727d32c66",
+          "message": "ci: trigger the npm OIDC flow with --provenance",
+          "ts": "2026-11-28T11:25:53Z"
+        },
+        {
+          "sha": "21119ae8699d2d43782896d317ff7107582cff39",
+          "message": "ci: debug the OIDC environment before publishing",
+          "ts": "2026-11-28T11:24:36Z"
+        },
+        {
+          "sha": "635ffe8b5011d7363b1aa16634295516ee21876c",
+          "message": "ci: stop setup-node from shadowing the npm OIDC token",
+          "ts": "2026-11-28T11:22:13Z"
+        },
+        {
+          "sha": "f4cfb455dd4a2dbfcb81ad521e72225c4d0bcb97",
+          "message": "release: v1.3.0",
+          "ts": "2026-11-28T11:18:34Z"
+        },
+        {
+          "sha": "09ae02efccbf1c65bdecc40ec4ca214e6d35f077",
+          "message": "feat(icon): contrast the two subagent presets by color",
+          "ts": "2026-11-28T11:16:44Z"
+        },
+        {
+          "sha": "517888e4ea42f8a080dfe949c9f78e2ebdf36b3e",
+          "message": "feat(icon): show the per-subagent preset choice in the icon",
+          "ts": "2026-11-28T11:13:44Z"
+        },
+        {
+          "sha": "a41d1ee409096cbba1fde61a780e145ff948b3ae",
+          "message": "docs(presets): clarify the lead preset description and README wording",
+          "ts": "2026-11-28T11:13:15Z"
+        },
+        {
+          "sha": "70da8c61f91cb40bfaf2f2f36b27ffc019473b05",
+          "message": "feat(icon): redraw the bundle icon",
+          "ts": "2026-11-28T10:55:35Z"
+        },
+        {
+          "sha": "ada24a17785defabe8b76a03b17c3b7c71753b4c",
+          "message": "docs: define the release-note scope and bundled file tree",
+          "ts": "2026-11-28T10:55:22Z"
+        },
+        {
+          "sha": "5668a7afbc5a1fdf6dcb40ace1f3efcd8e6f1025",
+          "message": "docs: record that preset units need no README",
+          "ts": "2026-11-28T10:54:53Z"
+        },
+        {
+          "sha": "9e09559444298dfd7a8f972b468e17e00cefdf5e",
+          "message": "docs: rewrite the READMEs with usage and license",
+          "ts": "2026-11-28T10:54:43Z"
+        },
+        {
+          "sha": "473ff8dc3e990521a9ca00aa776a63be23b3c59f",
+          "message": "docs: keep a local Chinese AGENTS mirror out of git",
+          "ts": "2026-11-28T10:35:57Z"
+        },
+        {
+          "sha": "bacbb59df3e18fc2188953b88a2151df085bab74",
+          "message": "feat(skill): add the bilingual sync skill",
+          "ts": "2026-11-28T10:35:11Z"
+        },
+        {
+          "sha": "f7ee394da5e514a830a486619fecc63620353929",
+          "message": "docs: add the powered-by-dsh badge to the READMEs",
+          "ts": "2026-11-28T10:34:11Z"
+        },
+        {
+          "sha": "85c1751db4e931efb9d766633e5fec5e498f7b1e",
+          "message": "docs: add an npm version badge to the READMEs",
+          "ts": "2026-11-28T10:07:12Z"
+        },
+        {
+          "sha": "ef7e1b1d30dff3b3cc94c56269bf750504920a65",
+          "message": "ci: publish with npm trusted publishing",
+          "ts": "2026-11-28T10:02:33Z"
+        },
+        {
+          "sha": "0d723c5b1f002ee8a075fed97b7273d54ddcf1ad",
+          "message": "docs: document npm installation and publishing",
+          "ts": "2026-11-28T09:56:42Z"
+        },
+        {
+          "sha": "bdac0e334088c27d2597dcd3d8dc45862aff9781",
+          "message": "ci: publish release tags to npm",
+          "ts": "2026-11-28T09:56:11Z"
+        },
+        {
+          "sha": "ee73ad0c74e774c597b86afb8b76d790fb51a4c0",
+          "message": "feat(package): publish the bundle to npm",
+          "ts": "2026-11-28T09:55:00Z"
+        },
+        {
+          "sha": "66384008364e7ac6bc5e6882fae9e38226afcc96",
+          "message": "docs: document the capability-unit folder convention",
+          "ts": "2026-11-28T09:51:03Z"
+        },
+        {
+          "sha": "56b0b14b6ad43e2054d7bbe4efb0795a07cbf320",
+          "message": "refactor(presets): resolve the lead skill dir through pluginPackages",
+          "ts": "2026-11-28T09:51:02Z"
+        },
+        {
+          "sha": "783ea0795b33b14d26d4837ff236f8721d38fa70",
+          "message": "refactor(presets): move the lead declaration into lead/preset.patch.yml",
+          "ts": "2026-11-28T09:44:42Z"
+        },
+        {
+          "sha": "3a5538e26d3d8b60ac19ccdacb310dacbd660427",
+          "message": "docs: keep an Unreleased changelog section and update it per commit",
+          "ts": "2026-11-28T09:27:17Z"
+        },
+        {
+          "sha": "88689922c90490384a6edf137496562e8c897e69",
+          "message": "refactor(presets): keep each teammate declaration beside its subpath plugin",
+          "ts": "2026-11-28T09:23:29Z"
+        },
+        {
+          "sha": "690262491a93727000cf9f7701ed006ed2380c2a",
+          "message": "feat(presets): give worker and reader the skill tools",
+          "ts": "2026-11-28T09:17:20Z"
+        },
+        {
+          "sha": "27869a92859dffd2c9a33b7da704c7d8e809c9b8",
+          "message": "docs: make the plugin description state Lead's root-agent preset choice",
+          "ts": "2026-11-28T09:11:59Z"
+        },
+        {
+          "sha": "588349bb4b37a4640bddb8dc90b8b1baf962cf44",
+          "message": "docs: explain why the allowlist only takes communication-capable presets",
+          "ts": "2026-11-28T09:09:32Z"
+        },
+        {
+          "sha": "d39c6951c801f646ba4b7ccb02e51b3d6e6cc248",
+          "message": "chore(release): prepare v1.2.2",
+          "ts": "2026-11-28T09:02:52Z"
+        },
+        {
+          "sha": "94421da8152ac6219d028edd58306b9459ca0980",
+          "message": "docs(release): correct the v1.2.1 note wording",
+          "ts": "2026-11-28T09:02:21Z"
+        },
+        {
+          "sha": "0da922ea9271fe14ad09b86a8a110c085caf9816",
+          "message": "docs: correct the Git-install packaging claim",
+          "ts": "2026-11-28T09:01:54Z"
+        },
+        {
+          "sha": "7504a3c46207a4ea72275b57b99d6a376b67d9c0",
+          "message": "chore(release): prepare v1.2.1",
+          "ts": "2026-11-28T08:58:16Z"
+        },
+        {
+          "sha": "bdbbed3832684d3850594f6fe3848304ffe0ae3b",
+          "message": "docs: document installing the bundle from its Git address",
+          "ts": "2026-11-28T08:57:42Z"
+        },
+        {
+          "sha": "45e1f421537cf10f778079bd3ee12a2acc9533cc",
+          "message": "feat(package): ship only the runtime files in the tarball",
+          "ts": "2026-11-28T08:57:14Z"
+        },
+        {
+          "sha": "f2f4c5d6027588e815eee87e7547950eed3f97c2",
+          "message": "chore: normalize line endings with .gitattributes",
+          "ts": "2026-11-28T08:53:06Z"
+        },
+        {
+          "sha": "c5852d590ece20931964b4055a7fd1fc1d355ab3",
+          "message": "docs: unwrap CJK paragraphs so rendered text has no stray spaces",
+          "ts": "2026-11-28T08:51:59Z"
+        },
+        {
+          "sha": "71b6a5f140aecbc52e5d3f8a455096528753838a",
+          "message": "chore(package): ship CHANGELOG and CONTRIBUTING in the tarball",
+          "ts": "2026-11-28T08:49:20Z"
+        },
+        {
+          "sha": "99d4f5824014b196eab887c6c91458e00e8121e8",
+          "message": "chore(release): prepare v1.2.0",
+          "ts": "2026-11-28T08:47:52Z"
+        },
+        {
+          "sha": "4f00f662d2e41a24a5511ae309ae4eeeb0d24e63",
+          "message": "feat(i18n): keep the plugin name English and clarify the description",
+          "ts": "2026-11-28T08:47:15Z"
+        },
+        {
+          "sha": "dc10ab32cba67463737c20728dd24dc862b48949",
+          "message": "docs: add Chinese CHANGELOG.md",
+          "ts": "2026-11-28T08:46:05Z"
+        },
+        {
+          "sha": "59748d8704eca3d553c271e38e88f5036b289b26",
+          "message": "docs: add CONTRIBUTING.md",
+          "ts": "2026-11-28T08:45:57Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
+    {
+      "repo": "sogeisetsu/sogeisetsu",
+      "count": 2,
+      "own": true,
+      "messages": [
+        {
+          "sha": "1e237411d934a07ed60ac792156527aca4a53482",
+          "message": "fix: 对齐总结 highlights 的 number 提示词与校验口径",
+          "ts": "2026-11-28T14:40:22Z"
+        },
+        {
+          "sha": "1198ac2943a9243618feb35d928f1ff23c799f09",
+          "message": "fix: 定稿日补录后同步总结数字，解除日报发布门禁",
+          "ts": "2026-11-28T14:40:21Z"
+        }
+      ],
+      "automated": 17,
       "automatedBots": [
         "github-actions[bot]"
       ]
     }
   ],
-  "automatedCommits": 11,
+  "automatedCommits": 17,
   "pullRequests": [],
   "reviews": [],
   "issues": [],
-  "releases": [],
+  "releases": [
+    {
+      "repo": "sogeisetsu/subagent-preset-select",
+      "tag": "v1.3.0",
+      "name": "v1.3.0",
+      "url": "https://github.com/sogeisetsu/subagent-preset-select/releases/tag/v1.3.0",
+      "publishedAt": "2026-11-28T11:19:13Z",
+      "notes": "# v1.3.0\n\n## 中文\n\n### 这个版本在做什么\n\n- `worker` / `reader` 队友预设现在挂载 `skill-filesystem` + `tool-skill`：子智能体也能使用项目技能（`<project>/.dsh/skills`、`<project>/.agents/skills`）与用户技能（`~/.dsh/skills`、`~/.agents/skills`）；随 DSH 分发的 `dsh-doc` 仍只给 `lead`。\n- 重画插件图标：透明背景、36×36；父节点 → 两个形状与颜色都不同的子节点（品牌蓝实心圆角方 + 琥珀色菱形），表达「同一个父智能体可以给不同子智能体指定不同 preset」。\n- `Lead` 的 preset 卡片简介改为「相当于标准模式，另外可以给派生的每个子智能体指定不同的预设」；Plugins 页该行简介同步。\n- README（中英）重构：新增 **Usage** 章节（把新会话切到 Lead、用 `agent_preset` 派活的示例、团队协作、如何选 preset）与 **License** 章节；安装方式补上 npm，限制说明重写。\n- 安装包内部结构：每个 preset 的声明放在自己的 unit 目录（`lead/preset.patch.yml`、`worker/preset.patch.yml`、`reader/preset.patch.yml`），根 `cordis.patch.yml` 移除。\n- npm 发布：`dsh-subagent-preset-select` 现在可从 npm 安装；发布使用 Trusted Publishing（OIDC），不再依赖长期 token。\n\n### 安装包内容\n\n从实际构建的 `.tgz` 生成，深度 1–2：\n\n```text\ndsh-subagent-preset-select-1.3.0.tgz\n├── package.json # manifest：bundle 补丁列表、files、exports、peer/engines\n├── README.md / README.zh.md # 双语说明；同时是插件详情页\n├── LICENSE # MIT\n├── icon.svg # 插件图标（品牌蓝方形 + 琥珀菱形）\n├── locale/{en,zh}.json # bundle 卡片文案 + 按 UI 语言的 meta.detail\n├── lead/ # lead 单元：根智能体 preset，暴露 agent_preset\n│ ├── index.js # subpath plugin `dsh-subagent-preset-select/lead`\n│ ├── preset.patch.yml # 声明：standard 工具列表 + allowedAgentPresets\n│ └── locale/{en,zh}.json # 该行在 Plugins 页的标题/简介\n├── worker/ # worker 单元：可写队友 preset\n│ └── index.js, preset.patch.yml, locale/{en,zh}.json\n└── reader/ # reader 单元：只读队友 preset\n └── index.js, preset.patch.yml, locale/{en,zh}.json\n```\n\n共 19 个文件；`npm pack` 生成的 `.tgz` 约 11.7 KB。\n\n### 升级注意\n\n- 直接升级即可，无需额外操作：preset 声明、locale 与安装方式保持兼容。\n- 装好后在 **Settings → General → Agent preset** 里选择 **Lead**（新会话生效）；已有会话保持启动时的 preset。\n\n### 安装\n\n四种方式装到同一个精简包：Release `.tgz` / Git 地址 / npm（`dsh plugin --profile <profile> add dsh-subagent-preset-select@1.3.0`）/ 本地仓库。\n\n### 要求\n\n- DSH `0.2.2-rc.5` Desktop（`engines.dsh`: `>=0.2.2-rc.5 <0.3.0`）。\n\n### 回滚\n\n- **Settings → Agent preset** 把新会话默认切回 `Standard`；或在 Plugins 页禁用/卸载。\n\n### 校验和\n\n- 附 `SHA256SUMS.txt`；用 `sha256sum -c SHA256SUMS.txt` 或 Windows `Get-FileHash` 核对。\n\n## English\n\n### What this release changes\n\n- The `worker` / `reader` teammate presets now mount `skill-filesystem` + `tool-skill`, so a child agent can use project skills (`<project>/.dsh/skills`, `<project>/.agents/skills`) and user skills (`~/.dsh/skills`, `~/.agents/skills`). The shipped `dsh-doc` directory stays lead-only.\n- Redrawn plugin icon: transparent, 36×36; a parent node branching to two children with different shapes and colors (brand-blue rounded square + amber diamond), showing that one root agent can give each subagent a different preset.\n- The `Lead` preset card description is now \"The standard mode, plus a per-subagent preset choice\"; the matching Plugins row description was updated too.\n- README (both languages) restructured: new **Usage** section (switch new sessions to Lead, delegate with `agent_preset`, team hand-off, choosing a preset) and **License** section; npm install added, limits rewritten.\n- Package layout: each preset declaration now lives in its own unit folder (`lead/preset.patch.yml`, `worker/preset.patch.yml`, `reader/preset.patch.yml`); the root `cordis.patch.yml` is gone.\n- npm publishing: `dsh-subagent-preset-select` is installable from npm; publication uses Trusted Publishing (OIDC) instead of a long-lived token.\n\n### Bundled files\n\nGenerated from the built `.tgz`, depth 1–2:\n\n```text\ndsh-subagent-preset-select-1.3.0.tgz\n├── package.json # manifest: bundle patch list, files, exports, peer/engines\n├── README.md / README.zh.md # bilingual user docs; also the plugin detail page\n├── LICENSE # MIT\n├── icon.svg # bundle icon (brand-blue square + amber diamond)\n├── locale/{en,zh}.json # bundle card text + meta.detail per UI language\n├── lead/ # the lead unit: root-agent preset exposing agent_preset\n│ ├── index.js # subpath plugin `dsh-subagent-preset-select/lead`\n│ ├── preset.patch.yml # declaration: standard tool list + allowedAgentPresets\n│ └── locale/{en,zh}.json # row title/description on the Plugins page\n├── worker/ # the worker unit: writable teammate preset\n│ └── index.js, preset.patch.yml, locale/{en,zh}.json\n└── reader/ # the reader unit: read-only teammate preset\n └── index.js, preset.patch.yml, locale/{en,zh}.json\n```\n\n19 files; the `npm pack` `.tgz` is about 11.7 KB.\n\n### Upgrade notes\n\n- Upgrade in place, no extra steps: preset declarations, locales, and install paths stay compatible.\n- Then pick **Lead** in **Settings → General → Agent preset** for new sessions; existing sessions keep the preset they started with.\n\n### Install\n\nAll four paths install the same lean package: release `.tgz` / Git address / npm (`dsh plugin --profile <profile> add dsh-subagent-preset-select@1.3.0`) / local checkout.\n\n### Requirements\n\n- DSH `0.2.2-rc.5` Desktop (`engines.dsh`: `>=0.2.2-rc.5 <0.3.0`).\n\n### Rollback\n\n- Switch the new-session default back to `Standard` in **Settings → Agent preset**, or disable/uninstall the bundle in Plugins.\n\n### Verification\n\n- `SHA256SUMS.txt` is attached; verify with `sha256sum -c SHA256SUMS.txt` (or `Get-FileHash`).\n\n## Assets\n\n| Asset | Purpose |\n| --- | --- |\n| `dsh-subagent-preset-select-1.3.0.tgz` | installable runtime package |\n| `dsh-subagent-preset-select-1.3.0.zip` | the same files, for browsing |\n| `SHA256SUMS.txt` | checksums for both archives |\n\n**Full Changelog**: <https://github.com/sogeisetsu/subagent-preset-select/compare/v1.2.2...v1.3.0>"
+    },
+    {
+      "repo": "sogeisetsu/subagent-preset-select",
+      "tag": "v1.2.2",
+      "name": "v1.2.2 — docs: Git install is lean too / 文档更正：Git 安装同样是精简包",
+      "url": "https://github.com/sogeisetsu/subagent-preset-select/releases/tag/v1.2.2",
+      "publishedAt": "2026-11-28T09:03:46Z",
+      "notes": "# v1.2.2\n\n## 中文\n\n### 这个版本在做什么\n\n- **文档更正**：Git 地址安装与 Release `.tgz` 安装得到的是**同一个精简包**——两者都按 `package.json` 的 `files` 打包（17 个运行时文件）。Git 安装只是额外在本机克隆一次仓库，安装后的目录与 `.tgz` 完全一致。\n- 此前 v1.2.0 / v1.2.1 的 README 与 Release 说明里写的“Git 安装会拉取整个仓库”是错误说法，已更正；Git 安装示例也钉到了 `v1.2.2`。\n- 无运行时行为变化：补丁、三个 preset（`lead` / `worker` / `reader`）与 locale 均未改动。\n\n### 实测证据\n\n在本机用 pnpm 从 GitHub 的 `v1.2.1` tag 安装：\n\n```\n$ pnpm add \"github:sogeisetsu/subagent-preset-select#v1.2.1\" --ignore-scripts\n+ dsh-subagent-preset-select 1.2.1\nDone in 20.2s\n```\n\n安装目录 `node_modules/dsh-subagent-preset-select` 里恰好是 17 个文件、约 29 KB（未压缩），与 Release `.tgz` 的文件清单一模一样。\n\n### 安装（三种方式，装到的都是精简包）\n\n1. Release 压缩包：下载 `dsh-subagent-preset-select-1.2.2.tgz`，执行 `dsh plugin --profile <profile> add <下载目录>/dsh-subagent-preset-select-1.2.2.tgz`，或在 Plugins → Add plugin 里填它的绝对路径。\n2. Git 地址：`dsh plugin --profile <profile> add github:sogeisetsu/subagent-preset-select#v1.2.2`（完整写法 `git+https://github.com/sogeisetsu/subagent-preset-select.git#v1.2.2` 也可以）。\n3. 本地仓库：克隆后在 Plugins → Add plugin 里填仓库根的绝对路径。\n\n装好后在 Settings → Agent Preset 里选 `Lead`。\n\n### 要求\n\n- DSH `0.2.2-rc.5` Desktop（`engines.dsh`: `>=0.2.2-rc.5 <0.3.0`）。\n- Node.js ≥ 22.15 只用于本地校验脚本；安装与运行不需要 Node。\n\n### 回滚\n\n- Settings → Agent Preset 把新会话默认切回 `Standard`；或在 Plugins 页禁用/卸载本插件。\n- 官方 `standard` 预设没有被覆盖。\n\n### 校验和\n\n- 附 `SHA256SUMS.txt`，可用 `sha256sum -c SHA256SUMS.txt` 或 Windows 的 `Get-FileHash` 核对。\n\n## English\n\n### What this release is\n\n- **Documentation fix:** installing from a Git address and installing the release `.tgz` produce the **same lean package** — both are packed with `package.json` `files` (17 runtime files). A Git install only clones the repository on the installing machine; the installed tree is identical.\n- The earlier claim in v1.2.0 / v1.2.1 docs (“a Git install fetches the whole repository”) was wrong and is corrected; the Git-install examples now pin `v1.2.2`.\n- No runtime behavior change: the patch, the three presets (`lead`, `worker`, `reader`), and the locales are untouched.\n\n### Measured evidence\n\nInstalling the `v1.2.1` tag from GitHub with pnpm on this machine:\n\n```\n$ pnpm add \"github:sogeisetsu/subagent-preset-select#v1.2.1\" --ignore-scripts\n+ dsh-subagent-preset-select 1.2.1\nDone in 20.2s\n```\n\n`node_modules/dsh-subagent-preset-select` contained exactly 17 files, about 29 KB unpacked — the same file list as the release `.tgz`.\n\n### Install (three paths, all lean)\n\n1. Release tarball: download `dsh-subagent-preset-select-1.2.2.tgz`, run `dsh plugin --profile <profile> add <downloads>/dsh-subagent-preset-select-1.2.2.tgz`, or give its absolute path in Plugins → Add plugin.\n2. Git address: `dsh plugin --profile <profile> add github:sogeisetsu/subagent-preset-select#v1.2.2` (the full `git+https://github.com/sogeisetsu/subagent-preset-select.git#v1.2.2` form works too).\n3. Local checkout: clone the repository, then give the repository root's absolute path in Plugins → Add plugin.\n\nThen pick `Lead` in Settings → Agent Preset.\n\n### Requirements\n\n- DSH `0.2.2-rc.5` Desktop (`engines.dsh`: `>=0.2.2-rc.5 <0.3.0`).\n- Node.js >= 22.15 is needed only for the local validation script; installing and running the plugin does not need Node.\n\n### Rollback\n\n- Switch the new-session default back to `Standard` in Settings → Agent Preset, or disable/uninstall the bundle in Plugins.\n- The shipped `standard` preset is never overwritten.\n\n### Verification\n\n- `SHA256SUMS.txt` is attached; verify with `sha256sum -c SHA256SUMS.txt` (or `Get-FileHash` on Windows).\n\n## Assets\n\n| Asset | Purpose |\n| --- | --- |\n| `dsh-subagent-preset-select-1.2.2.tgz` | installable, lean runtime package (17 files) |\n| `dsh-subagent-preset-select-1.2.2.zip` | the same files, for browsing |\n| `SHA256SUMS.txt` | checksums for both archives |\n\n**Full Changelog**: <https://github.com/sogeisetsu/subagent-preset-select/compare/v1.2.1...v1.2.2>"
+    },
+    {
+      "repo": "sogeisetsu/subagent-preset-select",
+      "tag": "v1.2.1",
+      "name": "v1.2.1 — lean package / 精简安装包",
+      "url": "https://github.com/sogeisetsu/subagent-preset-select/releases/tag/v1.2.1",
+      "publishedAt": "2026-11-28T08:59:26Z",
+      "notes": "# v1.2.1\n\n## 中文\n\n### 这个版本在做什么\n\n- **安装包精简**：`package.json` 的 `files` 现在只保留运行时文件——补丁、三个 subpath plugin（`lead`/`worker`/`reader`）及其 locale、`locale/*.json`、图标，以及插件详情页 `meta.detail` 指向的两份 README。`AGENTS.md`、`CHANGELOG.md`、`CONTRIBUTING.md`、`docs/`、`scripts/`、`.github/` 不再随包安装。\n- **新增 Git 地址安装**：可以直接从 GitHub 安装本仓库，或钉住某个 tag：\n\n ```sh\n dsh plugin --profile <profile> add github:sogeisetsu/subagent-preset-select#v1.2.1\n # 或完整写法\n dsh plugin --profile <profile> add git+https://github.com/sogeisetsu/subagent-preset-select.git#v1.2.1\n ```\n\n 也可以把上述地址粘贴到 Plugins → Add plugin。两种安装方式得到的是同一个精简包（都按 `package.json` 的 `files` 打包）；Git 安装只是额外在本机克隆仓库。\n- **Release 资产同步精简**：`.tgz` 从约 25 KB 降到约 10 KB（17 个文件），`.zip` 同步变小。\n\n### 安装（三选一）\n\n1. ** Release 压缩包（推荐，最精简）**：下载 `dsh-subagent-preset-select-1.2.1.tgz`，然后 `dsh plugin --profile <profile> add <下载目录>/dsh-subagent-preset-select-1.2.1.tgz`，或在 Plugins → Add plugin 填它的绝对路径。\n2. **Git 地址**：`dsh plugin --profile <profile> add github:sogeisetsu/subagent-preset-select#v1.2.1`。\n3. **本地目录**：克隆本仓库后，在 Plugins → Add plugin 填仓库根的绝对路径。\n\n装好后在 Settings → Agent Preset 里把 `Lead` 设为新会话默认（或对单个会话选择 Lead）。\n\n### 要求\n\n- DSH `0.2.2-rc.5` Desktop（`engines.dsh`: `>=0.2.2-rc.5 <0.3.0`）。\n- 只有本地校验脚本需要 Node.js ≥ 22.15；安装与运行不需要 Node。\n\n### 回滚\n\n- Settings → Agent Preset 把新会话默认切回 `Standard`；或在 Plugins 页禁用/卸载本插件。\n- 官方 `standard` 预设没有被覆盖。\n\n### 校验和\n\n- 附 `SHA256SUMS.txt`，可用 `sha256sum -c SHA256SUMS.txt` 或 Windows 的 `Get-FileHash` 核对。\n\n## English\n\n### What this release is\n\n- **Lean package:** `package.json` `files` now lists runtime files only — the patch, the three subpath plugins (`lead` / `worker` / `reader`) with their locales, `locale/*.json`, the icon, and the two READMEs named by the detail page's `meta.detail`. `AGENTS.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `docs/`, `scripts/`, and `.github/` are no longer installed with the plugin.\n- **Git-address install:** install straight from GitHub, optionally pinned to a tag:\n\n ```sh\n dsh plugin --profile <profile> add github:sogeisetsu/subagent-preset-select#v1.2.1\n # or the full form\n dsh plugin --profile <profile> add git+https://github.com/sogeisetsu/subagent-preset-select.git#v1.2.1\n ```\n\n The same address can be pasted into Plugins → Add plugin. Both install paths produce the same lean package (packed with `package.json` `files`); a Git install additionally clones the repository.\n- **Leaner release assets:** the `.tgz` drops from about 25 KB to about 10 KB (17 files), and the `.zip` shrinks with it.\n\n### Install (pick one)\n\n1. **Release tarball (leanest):** download `dsh-subagent-preset-select-1.2.1.tgz`, then `dsh plugin --profile <profile> add <downloads>/dsh-subagent-preset-select-1.2.1.tgz`, or give its absolute path in Plugins → Add plugin.\n2. **Git address:** `dsh plugin --profile <profile> add github:sogeisetsu/subagent-preset-select#v1.2.1`.\n3. **Local checkout:** clone this repository, then give the repository root's absolute path in Plugins → Add plugin.\n\nThen pick `Lead` as the new-session default in Settings → Agent Preset (or select it for a single session).\n\n### Requirements\n\n- DSH `0.2.2-rc.5` Desktop (`engines.dsh`: `>=0.2.2-rc.5 <0.3.0`).\n- Node.js >= 22.15 is needed only for the local validation script; installing and running the plugin does not need Node.\n\n### Rollback\n\n- Switch the new-session default back to `Standard` in Settings → Agent Preset, or disable/uninstall the bundle in Plugins.\n- The shipped `standard` preset is never overwritten.\n\n### Verification\n\n- `SHA256SUMS.txt` is attached; verify with `sha256sum -c SHA256SUMS.txt` (or `Get-FileHash` on Windows).\n\n## Assets\n\n| Asset | Purpose |\n| --- | --- |\n| `dsh-subagent-preset-select-1.2.1.tgz` | installable, lean runtime package (17 files) |\n| `dsh-subagent-preset-select-1.2.1.zip` | the same files, for browsing |\n| `SHA256SUMS.txt` | checksums for both archives |\n\n**Full Changelog**: <https://github.com/sogeisetsu/subagent-preset-select/compare/v1.2.0...v1.2.1>"
+    },
+    {
+      "repo": "sogeisetsu/subagent-preset-select",
+      "tag": "v1.2.0",
+      "name": "v1.2.0 — Lead 预设 / Lead preset",
+      "url": "https://github.com/sogeisetsu/subagent-preset-select/releases/tag/v1.2.0",
+      "publishedAt": "2026-11-28T08:50:34Z",
+      "notes": "# v1.2.0\n\n## 中文\n\n### 这个版本在做什么\n\n- **核心能力**：新增的 `Lead` 智能体预设，让主智能体在调用 `subagent` 时通过 `agent_preset` 为它派生的每个子智能体指定不同的预设（`worker` / `reader` / `cordis`）；不传该参数时，子智能体继承父智能体的预设。\n- 同时新增两个队友预设：**Worker**（可写：文件、搜索、shell、子智能体控制工具）与 **Reader**（只读：只有读取与搜索工具，没有任何写入或 shell 工具）。\n- 插件名在中英文界面统一为英文 `Subagent preset select`；插件简介重写，突出“Lead 让每个子智能体使用不同预设”这一核心，而不是“新增了三个预设”。\n- preset 卡片简介改为中英双语单行（DSH 不对自定义 preset 的显示文案做本地化，见上游 Discussion #3610）。\n- 新增 `CONTRIBUTING.md` 与中文 `CHANGELOG.md`。\n\n### 安装\n\n1. 下载本 Release 的 `dsh-subagent-preset-select-1.2.0.tgz`。\n2. 任选其一：\n - 命令行：`dsh plugin --profile <profile> add <下载目录>/dsh-subagent-preset-select-1.2.0.tgz`\n - 桌面端：Plugins → Add plugin，填写该 `.tgz` 的绝对路径。\n3. 在 Settings → Agent Preset 里把 `Lead` 设为新会话默认（或对单个会话选择 Lead）。\n\n> `.zip` 只是同样的文件、方便浏览；给 DSH 安装请用 `.tgz`。\n\n### 要求\n\n- DSH `0.2.2-rc.5` Desktop（`package.json` 的 `engines.dsh` 为 `>=0.2.2-rc.5 <0.3.0`）。\n- 仅本地校验脚本需要 Node.js ≥ 22.15。\n\n### 回滚\n\n- 在 Settings → Agent Preset 把新会话默认切回 `Standard`；或在 Plugins 页禁用/卸载本插件。\n- 官方 `standard` 预设没有被覆盖，不需要恢复任何官方定义。\n\n### 校验和\n\n- 附 `SHA256SUMS.txt`，可用 `sha256sum -c SHA256SUMS.txt` 或 Windows 的 `Get-FileHash` 核对。\n\n## English\n\n### What this release is\n\n- **Core capability:** the new `Lead` Agent preset lets the main agent pass `agent_preset` to `subagent` and give every spawned child a different preset (`worker` / `reader` / `cordis`); omitting the parameter inherits the parent's preset.\n- Two teammate presets ship alongside it: **Worker** (writable: files, search, shell, subagent controls) and **Reader** (read-only: read and search only, with no write or shell tool).\n- The plugin name is English in every UI language (`Subagent preset select`), and the description was rewritten to lead with the capability — Lead lets each subagent run a different preset — instead of “adds three presets”.\n- Preset roster descriptions are bilingual single-line strings (DSH does not localize user-authored preset metadata; see upstream Discussion #3610).\n- Added `CONTRIBUTING.md` and a Chinese `CHANGELOG.md`.\n\n### Install\n\n1. Download `dsh-subagent-preset-select-1.2.0.tgz` from this release.\n2. Either:\n - CLI: `dsh plugin --profile <profile> add <downloads>/dsh-subagent-preset-select-1.2.0.tgz`\n - Desktop: Plugins → Add plugin, then the absolute path of the `.tgz`.\n3. Pick `Lead` as the new-session default in Settings → Agent Preset (or select it for a single session).\n\n> The `.zip` holds the same files for browsing; install DSH from the `.tgz`.\n\n### Requirements\n\n- DSH `0.2.2-rc.5` Desktop (`engines.dsh`: `>=0.2.2-rc.5 <0.3.0`).\n- Node.js >= 22.15 only for the local validation script.\n\n### Rollback\n\n- Switch the new-session default back to `Standard` in Settings → Agent Preset, or disable/uninstall the bundle in Plugins.\n- The shipped `standard` preset is never overwritten.\n\n### Verification\n\n- `SHA256SUMS.txt` is attached; verify with `sha256sum -c SHA256SUMS.txt` (or `Get-FileHash` on Windows).\n\n## Assets\n\n| Asset | Purpose |\n| --- | --- |\n| `dsh-subagent-preset-select-1.2.0.tgz` | installable plugin package |\n| `dsh-subagent-preset-select-1.2.0.zip` | the same files, for browsing |\n| `SHA256SUMS.txt` | checksums for both archives |\n\n**Full Changelog**: <https://github.com/sogeisetsu/subagent-preset-select/commits/v1.2.0>"
+    }
+  ],
   "stars": [],
   "starInventory": [
     {
@@ -119,6 +407,10 @@
       "total": 0
     },
     {
+      "repo": "sogeisetsu/subagent-preset-select",
+      "total": 0
+    },
+    {
       "repo": "sogeisetsu/testhello",
       "total": 0
     },
@@ -156,9 +448,62 @@
     }
   },
   "discussions": [],
-  "ai": null,
-  "aiProvider": null,
-  "aiModel": null,
+  "ai": {
+    "en": {
+      "headline": "49 own commits plus 17 automated, and four plugin releases",
+      "summary": "**49 own commits** landed on 2026-11-28, plus **17 automated commits** by `github-actions[bot]`. In `sogeisetsu/subagent-preset-select`, 47 own commits tightened the README opening and install requirements, documented trusted publishing and its pitfalls, and reworked the npm OIDC flow in CI by pinning npm 11, using `--provenance`, and stopping `setup-node` from shadowing the token exchange. In `sogeisetsu/sogeisetsu`, 2 own commits aligned the summary highlights number prompt with its validation and synchronized summary figures after backfilling so the daily-report publishing gate was released. Four releases were published for `sogeisetsu/subagent-preset-select`: `v1.2.0`, `v1.2.1`, `v1.2.2`, and `v1.3.0`. No pull requests, issues, or reviews were recorded.",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/subagent-preset-select",
+          "tag": "v1.3.0",
+          "summary": "The `worker` and `reader` teammate presets now mount `skill-filesystem` and `tool-skill`, letting child agents use project and user skills while `dsh-doc` stays lead-only. The plugin icon was redrawn as a transparent 36×36 parent-to-two-children graphic, and the `Lead` card description was updated in both locales. The bilingual README gained Usage and License sections, npm installation was added, and each preset declaration moved into its own unit directory with the root `cordis.patch.yml` removed. Publishing now uses npm Trusted Publishing via OIDC instead of a long-lived token."
+        },
+        {
+          "repo": "sogeisetsu/subagent-preset-select",
+          "tag": "v1.2.2",
+          "summary": "This release corrects the documentation claim that a Git-address install pulls the whole repository: Git and release `.tgz` installs produce the same lean package of 17 runtime files. The earlier wording in `v1.2.0` and `v1.2.1` was wrong and the Git-install examples now pin `v1.2.2`. No runtime behavior changed; the patch, the `lead` / `worker` / `reader` presets, and the locales are untouched."
+        },
+        {
+          "repo": "sogeisetsu/subagent-preset-select",
+          "tag": "v1.2.1",
+          "summary": "The `package.json` `files` list was narrowed to runtime files only, so `AGENTS.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `docs/`, `scripts/`, and `.github/` are no longer installed with the plugin. Installing directly from a GitHub address, optionally pinned to a tag, was added alongside the release tarball and local checkout paths. The `.tgz` asset shrank from about 25 KB to about 10 KB with 17 files, and the `.zip` shrank accordingly."
+        },
+        {
+          "repo": "sogeisetsu/subagent-preset-select",
+          "tag": "v1.2.0",
+          "summary": "The new `Lead` agent preset lets the main agent pass `agent_preset` to `subagent` so each spawned child can use a different preset such as `worker`, `reader`, or `cordis`, while omitting the parameter inherits the parent's preset. Two teammate presets were added: `Worker` with file, search, shell, and subagent-control tools, and `Reader` limited to read and search tools. The plugin name was unified as `Subagent preset select`, the description was rewritten around per-subagent preset selection, and `CONTRIBUTING.md` plus a Chinese `CHANGELOG.md` were added."
+        }
+      ]
+    },
+    "zh": {
+      "headline": "49 次本人提交，另有 17 次自动提交，并发布四个插件版本",
+      "summary": "2026-11-28 共落地 **49 次本人提交**，另有 **17 次由 `github-actions[bot]` 自动提交**。在 `sogeisetsu/subagent-preset-select` 的 47 次本人提交中，收紧了 README 开头与安装说明，记录了可信发布配置及其常见问题，并重做 CI 中的 npm OIDC 流程，包括固定 npm 11、使用 `--provenance` 以及避免 `setup-node` 覆盖令牌交换。在 `sogeisetsu/sogeisetsu` 的 2 次本人提交中，对齐了总结 highlights 的数字提示词与校验口径，并在日补录后同步总结数字，解除日报发布门禁。`sogeisetsu/subagent-preset-select` 当天发布了 `v1.2.0`、`v1.2.1`、`v1.2.2` 和 `v1.3.0` 四个版本。未记录拉取请求、issue 或评审。",
+      "releaseNotes": [
+        {
+          "repo": "sogeisetsu/subagent-preset-select",
+          "tag": "v1.3.0",
+          "summary": "`worker` 与 `reader` 队友预设现在挂载 `skill-filesystem` 和 `tool-skill`，使子智能体可使用项目技能与用户技能，而 `dsh-doc` 仍仅提供给 lead。插件图标重绘为 36×36 透明背景的父节点连接两个不同形状子节点图形，`Lead` 卡片简介也在两种语言中同步更新。中英双语 README 新增 Usage 与 License 章节并补充 npm 安装方式，每个 preset 的声明移入各自的 unit 目录，根 `cordis.patch.yml` 被移除。发布改用 npm Trusted Publishing 的 OIDC 流程，不再依赖长期 token。"
+        },
+        {
+          "repo": "sogeisetsu/subagent-preset-select",
+          "tag": "v1.2.2",
+          "summary": "本次发布更正了“Git 地址安装会拉取整个仓库”的文档说法：Git 安装与 Release `.tgz` 安装得到的是同一个包含 17 个运行时文件的精简包。`v1.2.0` 与 `v1.2.1` 中的旧表述有误，Git 安装示例现已固定到 `v1.2.2`。运行时行为没有变化，补丁、`lead` / `worker` / `reader` 三个预设与 locale 均未改动。"
+        },
+        {
+          "repo": "sogeisetsu/subagent-preset-select",
+          "tag": "v1.2.1",
+          "summary": "`package.json` 的 `files` 列表被精简为仅保留运行时文件，`AGENTS.md`、`CHANGELOG.md`、`CONTRIBUTING.md`、`docs/`、`scripts/` 和 `.github/` 不再随插件安装。新增从 GitHub 地址安装的方式，可选择固定到某个 tag，与 Release 压缩包和本地目录安装并列。`.tgz` 资产由约 25 KB 降至约 10 KB，共 17 个文件，`.zip` 也同步缩小。"
+        },
+        {
+          "repo": "sogeisetsu/subagent-preset-select",
+          "tag": "v1.2.0",
+          "summary": "新增的 `Lead` 智能体预设允许主智能体在调用 `subagent` 时传入 `agent_preset`，为每个派生的子智能体指定 `worker`、`reader` 或 `cordis` 等不同预设，不传该参数则继承父智能体预设。同时新增两个队友预设：`Worker` 具备文件、搜索、shell 与子智能体控制工具，`Reader` 仅保留读取与搜索工具。插件名称统一为 `Subagent preset select`，简介改写为突出按子智能体选择预设，并新增 `CONTRIBUTING.md` 与中文 `CHANGELOG.md`。"
+        }
+      ]
+    }
+  },
+  "aiProvider": "nvidia-minimax-flash",
+  "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "eeab17e303400a4455c56bdb5542b6281a657d299e4f0f792c81578fc4464060"
+  "dataHash": "b39e294a22c9f9e4f3f0f2ae09f9b1675437642f1759a6a4d0273f56383df231"
 }

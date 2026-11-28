@@ -3,15 +3,64 @@
   "windowStart": "2026-11-27T00:00:00+08:00",
   "windowEnd": "2026-11-28T00:00:00+08:00",
   "username": "sogeisetsu",
-  "generatedAt": "2026-11-27T16:50:59.542Z",
+  "generatedAt": "2026-11-28T14:41:03.423Z",
   "empty": false,
   "totals": {
-    "commits": 5,
+    "commits": 13,
     "prs": 0,
     "issues": 0,
     "reviews": 0
   },
   "commits": [
+    {
+      "repo": "sogeisetsu/subagent-preset-select",
+      "count": 8,
+      "own": true,
+      "messages": [
+        {
+          "sha": "fbb3992d4c4b9df6501c415bd730614a1a9e2568",
+          "message": "feat(presets): add Chinese to the roster descriptions",
+          "ts": "2026-11-27T15:56:14Z"
+        },
+        {
+          "sha": "65473740cbe00956905616a0ceb66d3b83b14b69",
+          "message": "docs(agents): require a topic branch and per-section commits",
+          "ts": "2026-11-27T15:27:34Z"
+        },
+        {
+          "sha": "a44c613ce9f65a8ecf4ef1292ccbd6e130c9e6cb",
+          "message": "refactor: rename the package to dsh-subagent-preset-select",
+          "ts": "2026-11-27T15:17:13Z"
+        },
+        {
+          "sha": "7e87090772331bf45c53e19467c76c57d3825151",
+          "message": "refactor(bundle): flatten package to repo root and split preset rows into subpath plugins",
+          "ts": "2026-11-27T15:10:41Z"
+        },
+        {
+          "sha": "9d38fe691c218f545c4863fb9fe6f2fca3775505",
+          "message": "docs: add repo-level Chinese README with language switch",
+          "ts": "2026-11-27T14:56:24Z"
+        },
+        {
+          "sha": "457e9774f263566e85c70577f9edf4cb696212bc",
+          "message": "docs(subagent-preset): add Chinese README and per-language plugin metadata",
+          "ts": "2026-11-27T14:41:33Z"
+        },
+        {
+          "sha": "7ab64e051eb8316345e91a96dd696c5dc6c3e6b4",
+          "message": "fix(subagent-preset): restore shipped skill-path resolution in the lead preset",
+          "ts": "2026-11-27T14:41:24Z"
+        },
+        {
+          "sha": "36f1c061b0d2eea1b57bdc9e5a013bcd0709f5c6",
+          "message": "docs: add project instructions",
+          "ts": "2026-11-27T14:34:29Z"
+        }
+      ],
+      "automated": 0,
+      "automatedBots": []
+    },
     {
       "repo": "sogeisetsu/opencode-agent-sandbox",
       "count": 5,
@@ -153,6 +202,10 @@
       "total": 0
     },
     {
+      "repo": "sogeisetsu/subagent-preset-select",
+      "total": 0
+    },
+    {
       "repo": "sogeisetsu/testhello",
       "total": 0
     },
@@ -204,18 +257,18 @@
   ],
   "ai": {
     "en": {
-      "headline": "5 own commits plus 22 automated commits",
-      "summary": "**5 own commits** were made in `sogeisetsu/opencode-agent-sandbox`, documenting DSH statistics timing, automated task mechanisms and archiving boundaries, `dsh web` persistent startup alongside Desktop, and ACL propagation experiments with the root cause of missed fixes. The documentation also added a HungerG Free pelican riding evaluation example and updated its notes. In `sogeisetsu/sogeisetsu`, there were 22 automated commits by `github-actions[bot]`. The user commented in the existing `deepseek-ai/deepseek-harness` discussion #3610, “自定义 Agent Preset 的 name/description 无法随界面语言本地化”, which had 2 comments. No pull requests, issues, reviews, or releases were recorded.",
+      "headline": "13 own commits plus 22 automated commits across three repositories",
+      "summary": "**13 own commits** were made across `sogeisetsu/subagent-preset-select` and `sogeisetsu/opencode-agent-sandbox`, plus 22 automated commits by `github-actions[bot]` in `sogeisetsu/sogeisetsu`. In `sogeisetsu/subagent-preset-select`, 8 commits added Chinese roster descriptions, renamed the package to `dsh-subagent-preset-select`, flattened the bundle to the repository root, split preset rows into subpath plugins, restored shipped skill-path resolution in the lead preset, and added Chinese READMEs, language metadata, and project instructions. In `sogeisetsu/opencode-agent-sandbox`, 5 commits documented DSH timing metrics, automated task mechanisms and archiving boundaries, a HungerG Free pelican riding evaluation sample, `dsh web` persistent startup alongside Desktop, and ACL propagation experiments with their missed-fix root cause. No pull requests, issues, or reviews were recorded. The user commented in the existing `deepseek-ai/deepseek-harness` discussion #3610, “自定义 Agent Preset 的 name/description 无法随界面语言本地化”, which had 2 comments.",
       "releaseNotes": []
     },
     "zh": {
-      "headline": "5 次本人提交，另有 22 次自动提交",
-      "summary": "在 `sogeisetsu/opencode-agent-sandbox` 完成 **5 次本人提交**，记录 DSH 统计页签的工具用时口径、自动化任务机制与归档边界、`dsh web` 启动常驻与 Desktop 共存，以及 ACL 传播实验与漏修根因。文档还新增了 HungerG Free 鹈鹕骑行评估样例并更新说明。在 `sogeisetsu/sogeisetsu` 中，另有 22 次由 `github-actions[bot]` 自动提交。用户参与了 `deepseek-ai/deepseek-harness` 现有讨论 #3610“自定义 Agent Preset 的 name/description 无法随界面语言本地化”的讨论，该讨论共有 2 条评论。当天没有记录到 pull request、issue、review 或发布。",
+      "headline": "13 次本人提交，另有 22 次自动提交，分布在三个仓库",
+      "summary": "**13 次本人提交**分布在 `sogeisetsu/subagent-preset-select` 和 `sogeisetsu/opencode-agent-sandbox`，另有 22 次由 `github-actions[bot]` 在 `sogeisetsu/sogeisetsu` 自动提交。在 `sogeisetsu/subagent-preset-select` 的 8 次提交中，新增了中文名册描述，将包重命名为 `dsh-subagent-preset-select`，把 bundle 平铺到仓库根目录，将预设行拆分为子路径插件，恢复 lead 预设随包发布的 skill 路径解析，并补充中文 README、语言元数据和项目说明。在 `sogeisetsu/opencode-agent-sandbox` 的 5 次提交中，记录了 DSH 统计口径、自动化任务机制与归档边界、HungerG Free 鹈鹕骑行评估样例、`dsh web` 常驻启动与 Desktop 共存，以及 ACL 传播实验与漏修根因。当天没有 PR、issue 或 review 记录。用户参与了 `deepseek-ai/deepseek-harness` 已有讨论 #3610“自定义 Agent Preset 的 name/description 无法随界面语言本地化”的讨论，该讨论共有 2 条评论。",
       "releaseNotes": []
     }
   },
   "aiProvider": "nvidia-minimax-flash",
   "aiModel": "minimaxai/minimax-m3.1-flash",
   "aiFailure": null,
-  "dataHash": "f5d83a49e8d95f8b1be2743eb4be234612627d3f2247da379704049b054ffda3"
+  "dataHash": "20b2a5a5a9e146eef1ede8d280a72191dca1068fe21b41400ba3a60e33b3a450"
 }
