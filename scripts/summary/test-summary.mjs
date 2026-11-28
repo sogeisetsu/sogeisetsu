@@ -817,6 +817,7 @@ await check("prompt: summaryFeedback 按原因给章节式纠正提示（3-6 段
     ["sentChars4200", sent.includes("10-16 sentences") && sent.includes("4200")],
     ["mdOnlySubset", md.includes("### ") && md.includes("markdown")],
     ["issueActions", /issue actions/.test(iss) && iss.includes("互动") && iss.startsWith("REJECTED:")],
+    ["missingNumber", /MUST carry `number`/.test(summaryFeedback("en.highlights[7].number 必须是正整数: null", 0))],
   ];
 });
 
