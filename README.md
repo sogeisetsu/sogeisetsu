@@ -12,11 +12,11 @@ _Updated automatically: 2026-11-28_
 - 📝 Pushed 52 commits to `sogeisetsu/opencode-skill-management`
 - 📝 Pushed 30 commits to `sogeisetsu/dsh-openchamber-plugins`
 - 📝 Pushed 29 commits to `sogeisetsu/opencode-go-model-picker`
+- 📝 Pushed 26 commits to `sogeisetsu/subagent-preset-select`
 - 📝 Pushed 15 commits to `sogeisetsu/sogeisetsu`
 - 📝 Pushed 11 commits to `sogeisetsu/dsh-ecosystem-report`
 - 📝 Pushed 3 commits to `sogeisetsu/sopen-translate`
 - 📝 Pushed 1 commit to `sogeisetsu/myBlog`
-- 🚀 [docs\(agents\): 补 .opencode/skills 与本地忽略目录、统一 push 规则](https://github.com/sogeisetsu/opencode-agent-sandbox/pull/1) · merged
 
 </details>
 
