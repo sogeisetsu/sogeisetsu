@@ -70,6 +70,14 @@ jobs:
           # 链尾兜底（小红书 Dots）
           DOTS_API_KEY: ${{ secrets.DOTS_API_KEY }}
 
+      # 日报每轮都会重取「昨天」定稿日：新仓库 / 历史漏采被补录时，那天的提交数会变，
+      # 而 summary.json 只在自己的 cron 里重算 —— verify 的「summary.totals = 逐日 Σ」
+      # 会因此变红，日报连续多轮不发布（2026-11-28 实证）。这里在生成后立刻按当前
+      # docs/data ∪ data/backfill 重算总结窗口与数字，沿用已有叙述、不调任何 provider。
+      # 数字没变时 --sync 自行跳过，不会制造噪声提交。
+      - name: 同步总结数字（定稿日补录后）
+        run: node scripts/summary/index.mjs --sync
+
       - name: AI 失败可见性（开/关 issue + 回写 + 重渲染）
         id: notify
         run: node scripts/notify-ai-failure.mjs

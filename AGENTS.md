@@ -23,7 +23,8 @@
 node scripts/daily/index.mjs                      # 昨天（定稿）+ 今天（滚动）；--date=YYYY-MM-DD 只跑一天
 node scripts/daily/index.mjs --rerender            # 只按已存 JSON 重渲染，不抓数据、不调 AI（改渲染 / CSS 后用）
 node scripts/daily/index.mjs --no-ai [--dry-run]   # 跳过 AI / 只打印不写文件
-node scripts/summary/index.mjs                     # 30 天总结（--rerender / --no-ai / --dry-run / --force 同理）
+node scripts/summary/index.mjs                     # 30 天总结（--rerender / --no-ai / --dry-run / --force / --sync 同理）
+                                                  # --sync：按当前 docs/data 重算窗口与数字、沿用上次 AI 叙述；日报线补录定稿日后用它对齐 verify 的逐日 Σ
 node scripts/summary/backfill.mjs --from=… --to=… [--force] [--dry-run]   # 一次性 Search 回填，不挂 workflow
 node scripts/preview.mjs                           # fixtures → scripts/preview-*.svg（活动卡片目测）
 

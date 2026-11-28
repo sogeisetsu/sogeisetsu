@@ -14,11 +14,14 @@
  *   docs/summary.json 为结构化真相源（只留最新一份），含 dataHash 供「无变化跳过」。
  *
  * 用法：
- *   node scripts/summary/index.mjs [--force] [--dry-run] [--no-ai] [--rerender]
+ *   node scripts/summary/index.mjs [--force] [--dry-run] [--no-ai] [--rerender] [--sync]
  *   --force     忽略窗口哈希，强制重新调 AI（改了提示词 / 数据口径后用）
  *   --dry-run   只打印摘要，不写任何文件
  *   --no-ai     跳过 AI 调用，只产出确定数字 + 空叙述（联调用）
  *   --rerender  只按已存的 docs/summary.json 重渲染 summary.html 与 index.html，不聚合、不调 AI
+ *   --sync      按当前 docs/data ∪ data/backfill 重算窗口与数字，沿用上一次 AI 叙述，不调任何 provider。
+ *               日报线补录定稿日（新仓库的漏采提交被追回）后会用它把 summary 对齐，
+ *               否则 verify.mjs 的「summary.totals = 逐日 Σ」门禁会把日报发布整个挡住。
  *
  * 无变化跳过：窗口不含今天，「昨天」一旦定稿，一天之内窗口数据通常不再变化；
  * 聚合哈希与已存 summary.json 相同且非 --force 时不调 AI、不写文件，避免浪费 token。
@@ -66,6 +69,9 @@ const DRY_RUN = args.includes("--dry-run");
 const NO_AI = args.includes("--no-ai");
 const FORCE = args.includes("--force");
 const RERENDER = args.includes("--rerender");
+const SYNC = args.includes("--sync");
+// --sync 与 --no-ai 都不调 provider；区别只在 --sync 即使窗口数据变了也沿用已有叙述。
+const SKIP_AI = NO_AI || SYNC;
 
 // ---------------------------------------------------------------- 写站点产物
 
@@ -179,7 +185,7 @@ async function main() {
   const existing = readJsonIfExists(SUMMARY_JSON_PATH);
   const sameHash = Boolean(existing && existing.dataHash === collected.dataHash);
   // 数据没变但上一次没拿到叙述时，仍要重试 AI（同日报的 missingAi 逻辑）
-  const missingAi = !NO_AI && !(existing && existing.ai);
+  const missingAi = !SKIP_AI && !(existing && existing.ai);
   if (sameHash && !FORCE && !missingAi) {
     console.log(`${LOG} 窗口数据无变化（dataHash 相同），跳过 AI 与写入`);
     return;
@@ -212,14 +218,15 @@ async function main() {
     targets: targetList,
   });
   const emptyWindow = !hasAnyActivity(collected);
-  if (NO_AI || emptyWindow) {
+  if (SKIP_AI || emptyWindow) {
     if (emptyWindow) console.log(`${LOG} 窗口内没有任何可叙述的活动，跳过 AI（只出确定数字）`);
+    else if (SYNC) console.log(`${LOG} 重算窗口数字（--sync），沿用上一次 AI 叙述`);
     else console.log(`${LOG} 跳过 AI（--no-ai）`);
-    if (sameHash && existing && existing.ai) {
+    if ((sameHash || SYNC) && existing && existing.ai) {
       ai = existing.ai;
       aiProvider = existing.aiProvider ?? null;
       aiModel = existing.aiModel ?? null;
-      console.log(`${LOG} 窗口未变，保留上一次 AI 叙述`);
+      console.log(`${LOG} ${SYNC ? "沿用" : "窗口未变，保留"}上一次 AI 叙述`);
     }
   } else {
     attempted = true;
@@ -296,7 +303,7 @@ async function main() {
   );
 
   // run 级 AI 结果记录：本次做过 AI 尝试才写（state=failed 供 notify 开/追加 issue，
-  // state=ok 供 notify 关闭已恢复的 issue）；一次 AI 都没调（--no-ai / 窗口内无可叙述活动 /
+  // state=ok 供 notify 关闭已恢复的 issue）；一次 AI 都没调（--no-ai / --sync / 窗口内无可叙述活动 /
   // 无变化早退）时不动这个文件 ——「没尝试」不等于「已恢复」，不能拿它当关闭信号。
   // --dry-run 已先 return（不写任何文件）；kept-previous 分支在上面已写记录并 return。
   if (attempted) {

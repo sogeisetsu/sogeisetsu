@@ -4,7 +4,7 @@
 「近 30 天 GitHub 活动 AI 总结」这条线：站在 `scripts/daily/` 引擎之上，把最近 30 个已定稿 +08 自然日的日报/回填数据聚合成一个窗口，产出三件产物 —— `docs/summary.json`（结构化真相源）、`docs/summary.html`（完整总结页）、`docs/index.html` 顶部的总结卡片片段。核心不变式：**确定数字（totals / automatedCommits / 每仓库数字）全部由代码求和，AI 只叙述、不计算**；模型输出经严格校验后才落盘，URL 一律由校验器从真实数据注入，模型永远写不出链接。
 
 文件分工：
-- `index.mjs` —— 编排器：聚合 → 去重判断 → AI（含校验重试）→ 写站点产物；含 `--force / --dry-run / --no-ai / --rerender` 四个开关
+- `index.mjs` —— 编排器：聚合 → 去重判断 → AI（含校验重试）→ 写站点产物；含 `--force / --dry-run / --no-ai / --rerender / --sync` 五个开关（`--sync` 重算窗口数字、沿用旧叙述、不调 provider）
 - `collect.mjs` —— 窗口聚合 `collectSummaryData()` + 校验白名单构建 `buildItemIndex()`
 - `prompt.mjs` —— 英文 system prompt（含 JSON schema 与硬规则）、user prompt 压缩、按失败原因的纠正反馈 `summaryFeedback()`
 - `validate-summary.mjs` —— AI 输出同步校验器 `validateSummary()`：白名单命中 / 禁令 / 截断 / URL 注入
@@ -28,7 +28,7 @@
 ## Flow
 1. **进入**：`index.mjs main()` → `collectSummaryData({ username })` 逐日读 `docs/data/<date>.json`（缺失则试 `data/backfill/<date>.json`，再缺失记入 `missing`），`normalizeDay()` 补齐缺段，累加 totals、合并 commits/items、统计每仓库数字，产出 `{ windowStart/End, missing, totals, automatedCommits, sources, backfilled, backfillLimits, daily, aiPayload, dataHash }`。
 2. **去重判断**：读已存 `docs/summary.json`；`dataHash` 相同且非 `--force` 且已有叙述 → 跳过 AI 与写入（无变化跳过）。`missingAi`（hash 同但上一次没拿到叙述）例外：仍重试 AI，与日报 missingAi 逻辑对齐。
-3. **AI 前置门**：`--no-ai` 或 `hasAnyActivity()` 判定窗口无可叙述活动（空跑日）→ 跳过 AI；若窗口未变且已有叙述则沿用。
+3. **AI 前置门**：`--no-ai` / `--sync` 或 `hasAnyActivity()` 判定窗口无可叙述活动（空跑日）→ 跳过 AI；若窗口未变且已有叙述则沿用，**`--sync` 即使窗口变了也沿用旧叙述**（只重算数字，不调 provider）。日报线每轮补录定稿日后由 `.github/workflows/update-daily-report.yml` 调 `--sync`，否则「summary.totals = 逐日 Σ」门禁会因补录的新提交变红、把日报发布整个挡住（2026-11-28 实证）。
 4. **AI 段**：`buildItemIndex(collected.daily)` 建白名单 → `buildSummaryPrompts({ collected })` 把 `aiPayload` 压成 user prompt → `generateStructured({ system, user, validate, providers: providersForLane("summary"), feedback: summaryFeedback })`（链 = `config/providers.json` 的 `lanes.summary`，现状 deepseek → sensenova；总结线不设 lane 预算）。校验失败经 `summaryFeedback` 转成纠正提示重试。
 5. **状态转移（AI 结果）**：
    - 成功 → `ai = res.value`
@@ -38,7 +38,7 @@
 7. **回填支线**：`backfill.mjs` 独立 CLI，逐日调 `collectHistoricalData()`（Search API + 逐条 REST 校时）写 `data/backfill/<date>.json`（带 `source`/`backfillLimits`，`previousData` 恒 null 所以 stars 不回填）；可重入（已存在跳过），逐日失败继续、最后退出码 1。
 
 ## Integration
-- Consumed by: `.github/workflows/update-summary.yml`（cron `17 22 * * *` UTC，CI 里跑 `node scripts/summary/index.mjs` 并回推生成物）；`scripts/daily/check.mjs`（递归语法检查 + 本目录 `test-summary.mjs` + `verify.mjs`，含总结窗口数字一致性自检）；`scripts/site/indexPage.mjs` 的 `renderIndexPage()`（接收本线产出的 `summaryCardHtml` 片段）。用户侧入口：Pages 的 `index.html` 卡片与 `summary.html`。
+- Consumed by: `.github/workflows/update-summary.yml`（cron `17 22 * * *` UTC，CI 里跑 `node scripts/summary/index.mjs` 并回推生成物）、`.github/workflows/update-daily-report.yml`（生成日报后调 `node scripts/summary/index.mjs --sync` 对齐数字）；`scripts/daily/check.mjs`（递归语法检查 + 本目录 `test-summary.mjs` + `verify.mjs`，含总结窗口数字一致性自检）；`scripts/site/indexPage.mjs` 的 `renderIndexPage()`（接收本线产出的 `summaryCardHtml` 片段）。用户侧入口：Pages 的 `index.html` 卡片与 `summary.html`。
 - Depends on: `scripts/daily/lib/days.mjs`（`cstDayMinus`/`dateRange`/`readJsonIfExists`/`writeAtomic`/`contentHash`/`DATA_DIR`/`BACKFILL_DIR`/各路径常量）；`scripts/daily/lib/ai.mjs`（桶：`generateStructured`）、`scripts/daily/lib/ai/prose.mjs`（`fitHeadline`/`fitText`/`countSentences`/`sanitizeReason`）、`scripts/lib/rules.mjs`（`AUTOMATED_OVERLAP_RE`/`HEADLINE_MAX_CHARS`）；`scripts/daily/lib/providers.mjs`（`providersForLane("summary")`，链来自 `config/providers.json`）；`scripts/site/{shell,md,css}.mjs`（页面皮与双语组件全套）；`scripts/daily/lib/github.mjs`（`collectHistoricalData`，仅 backfill 用）。
 
 ## Notes
