@@ -28,11 +28,10 @@
 | 1 | `nvidia-minimax-flash` | `nvidia` / `minimaxai/minimax-m3.1-flash` | `reasoningEffort: low` | 最快且中英对称（实测 8.9–9.8s）；连续快调会 429 |
 | 2 | `nvidia-nemotron-ultra` | `nvidia` / `nvidia/nemotron-3-ultra-550b-a55b` | 默认（`reasoning_effort: none`） | 27–33s，事实 3/3；改 `low` 会到 37–106s，别改 |
 | 3 | `opencode-go-deepseek` | `opencode-go` / `deepseek-v4.1-flash` | 默认 | OpenCode Go 套餐内额度 |
-| 4 | `sensenova` | `sensenova` / `glm-5.2` | `extraBody.thinking.type=disabled` | 额度独立于 Go 账号；不关思考 content 恒为空 |
 | 5 | `dots3-note-prev` | `dots` / `dots3-note-prev` | `extraBody.chat_template_kwargs.enable_thinking=false` | 小红书 Dots Studio，限时免费。**实测生产 prompt 撞 180s 超时，未过 ≤90s 门槛**，所以只做链尾兜底 |
 
 - 每次日报运行会跑**两天**：昨天（定稿）+ 今天（滚动），所以链的耗时是双份的。
-- 链尾的 `dots3-note-prev` 只在前四条全挂时才会被用到；它慢，但慢在最后一段，不会拖累正常路径。
+- 链尾的 `dots3-note-prev` 只在前三条全挂时才会被用到；它慢，但慢在最后一段，不会拖累正常路径。
 - 认证：`dots` 用 `Authorization: Bearer <key>`（平台文档写的 `api-key` 头同样可用），所以传输层不需要特例。
 
 ## 3. 30 天总结链（`lanes.summary`）
@@ -42,7 +41,6 @@
 | # | slug | endpoint / 真实模型 | 说明 |
 | --- | --- | --- | --- |
 | 1 | `opencode-go-deepseek` | `opencode-go` / `deepseek-v4.1-flash` | 长输出 + 强校验只有它稳定过 |
-| 2 | `sensenova` | `sensenova` / `glm-5.2` | Go 不可用时的兜底 |
 
 总结线**不用** `nvidia-*` 与 `dots3-note-prev`：它的输出更长、校验更严，免费额度的限流会拖垮整条链。
 
@@ -50,10 +48,10 @@
 
 | 用途 | 模型 | 配置位置 |
 | --- | --- | --- |
-| AI 失败诊断叙述 | `opencode-go/deepseek-v4.1-flash`（默认） | 仓库变量 `DIAG_MODEL`；`opencode-go` 整体挂掉时换成 `sensenova/glm-5.2` |
-| 配置坏掉时的灾备链 | `opencode-go-deepseek` → `sensenova` | `scripts/daily/lib/providers.mjs` 的 `FALLBACK_CHAIN`（**刻意不跟随配置改动**，只在 JSON 读不出 / schema 不合法时生效） |
+| AI 失败诊断叙述 | `opencode-go/deepseek-v4.1-flash`（默认） | 仓库变量 `DIAG_MODEL`；商汤腿已下线，Go 整体挂掉时只留证据不叙述 |
+| 配置坏掉时的灾备链 | `opencode-go-deepseek` | `scripts/daily/lib/providers.mjs` 的 `FALLBACK_CHAIN`（**刻意不跟随配置改动**，只在 JSON 读不出 / schema 不合法时生效） |
 
-诊断叙述走 `opencode run`，凭据用 `OPENCODE_CONFIG_CONTENT` 里的 `{env:OPENCODE_API_KEY}` / `{env:SENSENOVA_API_KEY}` 注入，不依赖 `auth.json`。
+诊断叙述走 `opencode run`，凭据用 `OPENCODE_CONFIG_CONTENT` 里的 `{env:OPENCODE_API_KEY}` 注入，不依赖 `auth.json`。
 
 ## 5. key 与接线
 
@@ -61,8 +59,7 @@
 | --- | --- | --- |
 | `nvidia` | `NVIDIA_API_KEY`（本地别名 `Nvidia`） | 日报链 1–2 |
 | `opencode-go` | `OPENCODE_API_KEY` | 日报链 3、总结链 1、诊断 |
-| `sensenova` | `SENSENOVA_API_KEY` | 日报链 4、总结链 2、诊断兜底 |
-| `dots` | `DOTS_API_KEY` | 日报链 5 |
+| `dots` | `DOTS_API_KEY` | 日报链 4 |
 
 key 只以环境变量名出现在配置里，明文永不入库。跑 `node scripts/daily/index.mjs` 的 workflow 必须有 daily 链每个 endpoint 的 `secrets.<KEY_ENV>`；跑总结的必须有 summary 链的；跑诊断的必须有**每个 enabled endpoint** 的 —— 这套接线是硬断言（`node scripts/providers.mjs check`，`check.mjs` 里会跑），漏配提交前就红。
 

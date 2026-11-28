@@ -29,7 +29,7 @@
 1. **进入**：`index.mjs main()` → `collectSummaryData({ username })` 逐日读 `docs/data/<date>.json`（缺失则试 `data/backfill/<date>.json`，再缺失记入 `missing`），`normalizeDay()` 补齐缺段，累加 totals、合并 commits/items、统计每仓库数字，产出 `{ windowStart/End, missing, totals, automatedCommits, sources, backfilled, backfillLimits, daily, aiPayload, dataHash }`。
 2. **去重判断**：读已存 `docs/summary.json`；`dataHash` 相同且非 `--force` 且已有叙述 → 跳过 AI 与写入（无变化跳过）。`missingAi`（hash 同但上一次没拿到叙述）例外：仍重试 AI，与日报 missingAi 逻辑对齐。
 3. **AI 前置门**：`--no-ai` / `--sync` 或 `hasAnyActivity()` 判定窗口无可叙述活动（空跑日）→ 跳过 AI；若窗口未变且已有叙述则沿用，**`--sync` 即使窗口变了也沿用旧叙述**（只重算数字，不调 provider）。日报线每轮补录定稿日后由 `.github/workflows/update-daily-report.yml` 调 `--sync`，否则「summary.totals = 逐日 Σ」门禁会因补录的新提交变红、把日报发布整个挡住（2026-11-28 实证）。
-4. **AI 段**：`buildItemIndex(collected.daily)` 建白名单 → `buildSummaryPrompts({ collected })` 把 `aiPayload` 压成 user prompt → `generateStructured({ system, user, validate, providers: providersForLane("summary"), feedback: summaryFeedback })`（链 = `config/providers.json` 的 `lanes.summary`，现状 deepseek → sensenova；总结线不设 lane 预算）。校验失败经 `summaryFeedback` 转成纠正提示重试。
+4. **AI 段**：`buildItemIndex(collected.daily)` 建白名单 → `buildSummaryPrompts({ collected })` 把 `aiPayload` 压成 user prompt → `generateStructured({ system, user, validate, providers: providersForLane("summary"), feedback: summaryFeedback })`（链 = `config/providers.json` 的 `lanes.summary`，现状只有 deepseek；商汤腿已下线，总结线不设 lane 预算）。校验失败经 `summaryFeedback` 转成纠正提示重试。
 5. **状态转移（AI 结果）**：
    - 成功 → `ai = res.value`
    - 全失败且已有带叙述的 `summary.json` → 沿用旧 `ai`，**`!DRY_RUN` 时直接 return，不写任何文件**（页面不降级）

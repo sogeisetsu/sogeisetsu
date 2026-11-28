@@ -54,7 +54,6 @@ jobs:
         timeout-minutes: 5
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
           # 诊断会探每个 enabled endpoint 的 /models，缺 key 会误报「未配置」
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
           DOTS_API_KEY: ${{ secrets.DOTS_API_KEY }}
@@ -70,11 +69,10 @@ jobs:
         uses: anomalyco/opencode/github@latest
         env:
           OPENCODE_AUTH_CONTENT: ${{ secrets.OPENCODE_AUTH_CONTENT }}
-          # 凭据不依赖 auth.json：与自动档同法，用仓库已有的两个 key 经 OPENCODE_CONFIG_CONTENT 注入
+          # 凭据不依赖 auth.json：与自动档同法，用 OPENCODE_API_KEY 经 OPENCODE_CONFIG_CONTENT 注入
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
           OPENCODE_CONFIG_CONTENT: |
-            {"$schema":"https://opencode.ai/config.json","provider":{"opencode-go":{"options":{"apiKey":"{env:OPENCODE_API_KEY}"}},"sensenova":{"npm":"@ai-sdk/openai-compatible","name":"SenseNova","options":{"baseURL":"https://token.sensenova.cn/v1","apiKey":"{env:SENSENOVA_API_KEY}"},"models":{"glm-5.2":{"name":"GLM-5.2"}}}}}
+            {"$schema":"https://opencode.ai/config.json","provider":{"opencode-go":{"options":{"apiKey":"{env:OPENCODE_API_KEY}"}}}}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           # 免费腿（longcat / minimax）2026-10-23 下线后改走 Go 套餐内的 deepseek；要换回免费模型就改这一行

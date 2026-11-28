@@ -7,7 +7,7 @@
  * 数据流：
  *   collectSummaryData()  → 最近 30 个已定稿 +08 自然日的聚合（docs/data ∪ data/backfill）
  *                           数字条全部由代码逐日求和，不经 AI
- *   generateStructured()  → 按 `config/providers.json` 的 `lanes.summary`（deepseek → sensenova）
+ *   generateStructured()  → 按 `config/providers.json` 的 `lanes.summary`（只有 deepseek）
  *                           产出 en+zh 结构化叙述（失败则 null）
  *   renderSummaryPage()   → docs/summary.html（独立页，中英内联切换）
  *   summaryCard()         → docs/index.html 顶部的总结卡片片段
@@ -239,7 +239,7 @@ async function main() {
       // 总结线读自己那条 lane（config/providers.json 的 lanes.summary）：顺序就是那份配置，
       // 不再在调用点重排。历史上 longcat-2.5-preview-free 做不了 30 天总结（连接约 306s 后被掐断），
       // 所以 summary lane 把 deepseek 放在第一位 —— 那条历史现在只体现在配置里。
-      // 总结线不设 budgetMs（现状：deepseek 实测 51.8–83.0s + sensenova 兜底）。
+      // 总结线不设 budgetMs（现状：只有 deepseek，实测 51.8–83.0s；商汤腿已下线）。
       providers: providersForLane("summary"),
       feedback: summaryFeedback,
       onProviderFailure: (a) => attempts.push(a),

@@ -80,7 +80,6 @@ slug                   endpoint     apiModel                           enabled  
 nvidia-minimax-flash   nvidia       minimaxai/minimax-m3.1-flash       ✓        ✗ (缺 NVIDIA_API_KEY)     daily
 nvidia-nemotron-ultra  nvidia       nvidia/nemotron-3-ultra-550b-a55b  ✓        ✗ (缺 NVIDIA_API_KEY)     daily
 opencode-go-deepseek   opencode-go  deepseek-v4.1-flash                ✓        ✗ (缺 OPENCODE_API_KEY)   daily,summary
-sensenova              sensenova    glm-5.2                            ✓        ✗ (缺 SENSENOVA_API_KEY)  daily,summary
 dots3-note-prev        dots         dots3-note-prev                    ✓        ✗ (缺 DOTS_API_KEY)       daily
 
 预算：480000ms（8 分钟）
@@ -104,7 +103,7 @@ node scripts/providers.mjs show model:nvidia-minimax-flash      # 显式前缀�
 ```
 
 目标解析规则：显式前缀 `model:` / `lane:` / `endpoint:` 优先；否则按 **model → lane → endpoint** 找。
-（`sensenova` 既是 model 也是 endpoint，默认命中 model —— 要改 endpoint 就写 `endpoint:sensenova`。）
+（名字撞车时默认命中 model —— 要改 endpoint 就写 `endpoint:NAME`。）
 
 `show` 一条 model 时会额外给出 `lanes`（它进了哪些链）、完整的 `endpointDef`，以及 `keyPresent` / `keyEnvUsed`
 （**只给布尔与变量名，不给值**）。
@@ -219,7 +218,7 @@ node scripts/providers.mjs set nvidia-minimax-flash params.reasoningEffort=none 
 
 - 值的解析顺序：`true` / `false` / `null` / 数字 / JSON 字面量 / 其余按字符串。
 - `=null` 是**删掉这个字段**（例：`set daily budgetMs=null` 取消预算）。
-- 路径是相对目标对象的，可以建中间层：`set sensenova params.extraBody.thinking.type=disabled`。
+- 路径是相对目标对象的，可以建中间层：`set dots3-note-prev params.extraBody.chat_template_kwargs.enable_thinking=false`。
 - `params` 只允许三个字段：`reasoningEffort` / `extraBody` / `responseFormat`。
   写别的（比如 `temperature`）会被 schema 拒绝 —— 这是刻意的（per-model 数值参数不在设计里，
   慢腿统一由 lane 预算兜住）。
@@ -239,9 +238,9 @@ node scripts/providers.mjs enable  nvidia-minimax-flash --yes    # 删掉 enable
 ### 4.3 换链顺序
 
 ```powershell
-node scripts/providers.mjs lane move daily sensenova --top          # 提到链首
+node scripts/providers.mjs lane move daily opencode-go-deepseek --top          # 提到链首
 node scripts/providers.mjs lane move daily nvidia-nemotron-ultra --before=opencode-go-deepseek --yes
-node scripts/providers.mjs lane add  summary nvidia-minimax-flash --before=sensenova --yes
+node scripts/providers.mjs lane add  summary nvidia-nemotron-ultra --before=opencode-go-deepseek --yes
 node scripts/providers.mjs lane remove summary nvidia-minimax-flash --yes
 ```
 
@@ -355,8 +354,8 @@ node scripts/daily/check.mjs
     }
   },
   "lanes": {
-    "daily":   { "order": ["…", "opencode-go-deepseek", "sensenova"], "budgetMs": 480000 },
-    "summary": { "order": ["opencode-go-deepseek", "sensenova"] }
+    "daily":   { "order": ["…", "opencode-go-deepseek", "dots3-note-prev"], "budgetMs": 480000 },
+    "summary": { "order": ["opencode-go-deepseek"] }
   }
 }
 ```
@@ -365,7 +364,7 @@ node scripts/daily/check.mjs
 或同一条腿重复；同一 endpoint 下两个 slug 用同一个 `apiModel`；`params` 里的未知字段；`budgetMs` 不是正数。
 
 配置坏了（读不到 / JSON 坏 / schema 不合法）时，运行时会 warn 并回落到内置 `FALLBACK_CHAIN`
-（`opencode-go-deepseek` → `sensenova`），保证 CI 不会因为一个坏 JSON 全挂；
+（只有 `opencode-go-deepseek`），保证 CI 不会因为一个坏 JSON 全挂；
 但 `providers check` 会让它在提交前就红。
 
 ---

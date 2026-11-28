@@ -48,7 +48,6 @@ jobs:
         run: node scripts/summary/index.mjs ${{ inputs.force && '--force' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
 
       - name: AI 失败可见性（开/关 issue + 回写 + 重渲染）
@@ -100,7 +99,6 @@ jobs:
         timeout-minutes: 5
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
           # 诊断会探每个 enabled endpoint 的 /models，缺 key 会误报「未配置」
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
           DOTS_API_KEY: ${{ secrets.DOTS_API_KEY }}
@@ -112,15 +110,14 @@ jobs:
         timeout-minutes: 10
         env:
           OPENCODE_AUTH_CONTENT: ${{ secrets.OPENCODE_AUTH_CONTENT }}
-          # 凭据不依赖 auth.json：直接用仓库已有的两个 key（下面 OPENCODE_CONFIG_CONTENT 用 {env:…} 注入），
+          # 凭据不依赖 auth.json：用仓库已有的 OPENCODE_API_KEY（下面 OPENCODE_CONFIG_CONTENT 用 {env:…} 注入），
           # 所以 OPENCODE_AUTH_CONTENT 没配也能叙述（实测：auth.json 为空 + 本配置 → 调用成功）
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          SENSENOVA_API_KEY: ${{ secrets.SENSENOVA_API_KEY }}
-          # 默认走 Go 套餐内的 deepseek（免费腿 2026-10-23 已下线）；Go 整体不可用时把仓库变量 DIAG_MODEL 换成 sensenova/glm-5.2（下面已备好该 provider）
+          # 默认走 Go 套餐内的 deepseek（免费腿 2026-10-23 已下线）；商汤腿已下线，Go 整体挂掉时只留证据
           DIAG_MODEL: ${{ vars.DIAG_MODEL || 'opencode-go/deepseek-v4.1-flash' }}
-          # opencode-go 只覆盖 apiKey（npm / api / 模型目录仍取 models.dev），sensenova 作为 Go 挂掉时的 fallback 腿
+          # opencode-go 只覆盖 apiKey（npm / api / 模型目录仍取 models.dev）
           OPENCODE_CONFIG_CONTENT: |
-            {"$schema":"https://opencode.ai/config.json","provider":{"opencode-go":{"options":{"apiKey":"{env:OPENCODE_API_KEY}"}},"sensenova":{"npm":"@ai-sdk/openai-compatible","name":"SenseNova","options":{"baseURL":"https://token.sensenova.cn/v1","apiKey":"{env:SENSENOVA_API_KEY}"},"models":{"glm-5.2":{"name":"GLM-5.2"}}}}}
+            {"$schema":"https://opencode.ai/config.json","provider":{"opencode-go":{"options":{"apiKey":"{env:OPENCODE_API_KEY}"}}}}
         run: |
           # 发布已经推送完毕：先摘掉 checkout 留下的 git 凭据，让 agent 连「推 main」的能力都没有
           # （本步不注入任何 GitHub token；回帖由下一步用 GH_TOKEN 自己做）

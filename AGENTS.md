@@ -73,13 +73,13 @@ node scripts/daily/test-dataset.mjs     # 数据契约 DAY_FIELDS / HASH_EXCLUDE
 
 - 配置 schema（endpoints / models / lanes 字段与允许的 `params`）见 `assets/providers-cli.md` §5。**`params` 只有 `reasoningEffort` / `extraBody` / `responseFormat` 三个字段**，刻意没有 per-model `maxTokens` / `temperature` / `timeoutMs` —— 少开口子 = 少一处能配错的地方。
 - 选型结论（P0 实测，完整表格在 `MODELS.md` §7）：minimax 必须 `reasoningEffort: low`（`none` 会漏编号）；nemotron-ultra 必须默认 `none`（`low` 会到 37–106s，逼近超时）；`nemotron-3.5-lightning` 已淘汰（事实 2/3、格式不合规）；`dots3-note-prev` 只做链尾（生产 prompt 实测 180s 超时）。**要复议就带上这些判据重测**。
-- 商汤腿必须带 `extraBody:{thinking:{type:"disabled"}}` 关思考 —— 不关则 reasoning 吃光预算、content 恒为空。
-- 配置缺失 / JSON 损坏 / schema 不合法 → warn 并回落内置 `FALLBACK_CHAIN`（deepseek → sensenova），CI 不因一个坏 JSON 全挂；`providers.mjs check` 让它在提交前就红。
+- 商汤（`sensenova` / `glm-5.2`）已下线，不再配置、不在任何 lane、也没有备用腿；历史产物里的 `aiProvider: sensenova` 只是旧记录，不要据此恢复它。
+- 配置缺失 / JSON 损坏 / schema 不合法 → warn 并回落内置 `FALLBACK_CHAIN`（只有 deepseek），CI 不因一个坏 JSON 全挂；`providers.mjs check` 让它在提交前就红。
 - `MAX_TOKENS = 49152`（截断翻倍到 65536）；`CHAT_TIMEOUT_MS = 180000`。lane 预算每次发请求前收敛（剩余 ≤1s 放弃，否则 `timeout = min(180s, 剩余)`）；预算耗尽 → 对**剩余每条腿各补一条合成 attempt** 并照常走失败可见性，**绝不静默截断**。abort / 网络异常不重试，直接换下一条。
 - **全失败的可见性**：编排器写 `data/ai-failure.json`（gitignore 的 run 状态）+ 把 `aiFailure` 写进 `docs/data/<date>.json` / `docs/summary.json`；`notify-ai-failure.mjs` 开 / 追加**常驻** issue（label `ai-failure`）、回写 issue 号并重渲染。两个 workflow 保持 0 退出，可见性靠 issue + `::warning::` + `$GITHUB_STEP_SUMMARY` —— 为此需要 `issues: write`。
 - **动 notifier 之前先读它的头注释**，两条都是实测坑：① 记录里的 `state:"ok"|"failed"` 才是恢复信号 —— **「没有记录」不等于已恢复**（CI 每次全新 checkout，一次跳过 AI 的运行会误关仍有效的 issue）；② issue 列表在新建后有几秒可见延迟 —— 所以走 REST `/issues`、创建前多确认几次，并在看到多条 open 时保留编号最小的一条、其余追加说明后关闭（自愈）。
 - **自动诊断只在「本次新建了常驻 issue」（ok→failed 首次转换）时跑**：notifier 往 `$GITHUB_OUTPUT` 写 `should_diagnose` / `issue_number`，workflow 在**「提交并推送」之后**依次跑 安装 opencode CLI → `diagnose-providers.mjs`（纯脚本证据：失败记录 + 各 `/models` 现状 + 机械对账，不依赖 LLM）→ `diagnose-narrate.mjs`（`opencode run`，LLM 起不来就只留证据）→ `gh issue comment`。agent 那步不注入 GitHub token 并先摘掉 checkout 的 git 凭据；回帖是 workflow 的动作。追加评论的路径不诊断 → 天然去重；同一失败事件另按产物首行 `<!-- ai-diagnosis … -->` 再查重。
-- **`DIAGNOSE=1`（workflow_dispatch 勾 `diagnose`）是逃生口**：强制写 `should_diagnose`，让「追加评论」路径也再诊断一次。诊断模型走仓库变量 `DIAG_MODEL`（默认 `opencode-go/deepseek-v4.1-flash`，Go 整体挂掉时换 `sensenova/glm-5.2`）。**凭据不依赖 auth.json**：`OPENCODE_CONFIG_CONTENT` 用 `{env:…}` 注入仓库 secret（实测 auth.json 为空也能调通）。
+- **`DIAGNOSE=1`（workflow_dispatch 勾 `diagnose`）是逃生口**：强制写 `should_diagnose`，让「追加评论」路径也再诊断一次。诊断模型走仓库变量 `DIAG_MODEL`（默认 `opencode-go/deepseek-v4.1-flash`；商汤腿已下线，没有备用腿，Go 整体挂掉时只留证据）。**凭据不依赖 auth.json**：`OPENCODE_CONFIG_CONTENT` 用 `{env:…}` 注入仓库 secret（实测 auth.json 为空也能调通）。
 - **`/oc` 手动入口（`opencode.yml`）**：门是 `comment.user.login == 'sogeisetsu'` 且评论含 `/oc` —— **别人评论的表现是 job `skipped`，不是失败、不计费**。
 - 诊断产物 `data/ai-diagnosis.md` 与 `data/ai-failure.json` 同类：gitignore 的 run 状态，不发布、不提交；回帖正文不出现 key / token（证据层异常文本一律过 `sanitizeReason`）。
 - NIM 的思考正文在 `message.reasoning_content`（不是 `reasoning`）。

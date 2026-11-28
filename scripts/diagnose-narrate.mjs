@@ -20,9 +20,8 @@
  *
  * 用法：node scripts/diagnose-narrate.mjs
  * 环境变量：
- *   DIAG_MODEL    诊断用的模型（默认 opencode-go/deepseek-v4.1-flash；
- *                 Go 整体不可用时换成 sensenova/glm-5.2 —— provider 定义由 workflow 的
- *                 OPENCODE_CONFIG_CONTENT 提供）
+ *   DIAG_MODEL    诊断用的模型（默认 opencode-go/deepseek-v4.1-flash，provider 定义由
+ *                 workflow 的 OPENCODE_CONFIG_CONTENT 提供；商汤腿已下线，没有备用腿）
  *   OPENCODE_BIN  opencode 可执行文件（默认 `opencode`；本地在 Windows 上跑时指到 .exe）
  */
 
